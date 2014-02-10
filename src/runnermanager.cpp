@@ -98,12 +98,8 @@ public:
         KConfigGroup config = configGroup();
 
         //The number of threads used scales with the number of processors.
-#if !PLASMA_NO_SOLID
         const int numProcs =
             qMax(Solid::Device::listFromType(Solid::DeviceInterface::Processor).count(), 1);
-#else
-        const int numProcs = 1;
-#endif
         //This entry allows to define a hard upper limit independent of the number of processors.
         const int maxThreads = config.readEntry("maxThreads", 16);
         const int numThreads = qMin(maxThreads, 2 + ((numProcs - 1) * 2));
