@@ -74,7 +74,7 @@ QStringList RunnerSyntax::exampleQueriesWithTermDescription() const
     QStringList queries;
     const QString termDesc('<' + searchTermDescription() + '>');
     foreach (QString query, d->exampleQueries) {
-        queries << query.replace(":q:", termDesc);
+        queries << query.replace(QStringLiteral(":q:"), termDesc);
     }
 
     return queries;

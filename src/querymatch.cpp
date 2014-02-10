@@ -75,7 +75,7 @@ class QueryMatchPrivate : public QSharedData
         }
 
         QReadWriteLock *lock;
-        QWeakPointer<AbstractRunner> runner;
+        QPointer<AbstractRunner> runner;
         QueryMatch::Type type;
         QString id;
         QString text;

@@ -81,6 +81,7 @@ public:
     };
 
     RunnerModel(QObject *parent = 0);
+    virtual QHash< int, QByteArray > roleNames() const;
 
     QString currentQuery() const;
 

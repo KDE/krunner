@@ -34,7 +34,18 @@ RunnerModel::RunnerModel(QObject *parent)
       m_runningChangedTimeout(new QTimer(this)),
       m_running(false)
 {
-    QHash<int, QByteArray> roles;
+    m_startQueryTimer->setSingleShot(true);
+    m_startQueryTimer->setInterval(10);
+    connect(m_startQueryTimer, SIGNAL(timeout()), this, SLOT(startQuery()));
+
+    //FIXME: HACK: some runners stay in a running but finished state, not possible to say if it's actually over
+    m_runningChangedTimeout->setSingleShot(true);
+    connect(m_runningChangedTimeout, SIGNAL(timeout()), this, SLOT(queryHasFinished()));
+}
+
+QHash<int, QByteArray> RunnerModel::roleNames() const
+{
+    QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();
     roles.insert(Qt::DisplayRole, "display");
     roles.insert(Qt::DecorationRole, "decoration");
     roles.insert(Label, "label");
@@ -48,15 +59,7 @@ RunnerModel::RunnerModel(QObject *parent)
     roles.insert(RunnerId, "runnerid");
     roles.insert(RunnerName, "runnerName");
     roles.insert(Actions, "actions");
-    setRoleNames(roles);
-
-    m_startQueryTimer->setSingleShot(true);
-    m_startQueryTimer->setInterval(10);
-    connect(m_startQueryTimer, SIGNAL(timeout()), this, SLOT(startQuery()));
-
-    //FIXME: HACK: some runners stay in a running but finished state, not possible to say if it's actually over
-    m_runningChangedTimeout->setSingleShot(true);
-    connect(m_runningChangedTimeout, SIGNAL(timeout()), this, SLOT(queryHasFinished()));
+    return roles;
 }
 
 int RunnerModel::rowCount(const QModelIndex& index) const
