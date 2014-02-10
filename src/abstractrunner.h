@@ -44,7 +44,6 @@ namespace Plasma
 
 class DataEngine;
 class Package;
-class RunnerScript;
 class QueryMatch;
 class AbstractRunnerPrivate;
 
@@ -449,8 +448,6 @@ class PLASMA_EXPORT AbstractRunner : public QObject
         virtual QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match);
 
     private:
-        friend class RunnerScript;
-
         AbstractRunnerPrivate *const d;
 };
 

@@ -36,13 +36,11 @@ public:
     ~AbstractRunnerPrivate();
     void init(const KService::Ptr service);
     void init(const QString &path);
-    void prepScripting(const QString &path, const QString &api);
     void setupScriptSupport();
 
     AbstractRunner::Priority priority;
     AbstractRunner::Speed speed;
     RunnerContext::Types blackListed;
-    RunnerScript *script;
     KPluginInfo runnerDescription;
     AbstractRunner *runner;
     int fastRuns;

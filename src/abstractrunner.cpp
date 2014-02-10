@@ -86,9 +86,6 @@ KConfigGroup AbstractRunner::config() const
 
 void AbstractRunner::reloadConfiguration()
 {
-    if (d->script) {
-        emit d->script->reloadConfiguration();
-    }
 }
 
 void AbstractRunner::addSyntax(const RunnerSyntax &syntax)
@@ -164,9 +161,6 @@ QList<QAction*> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
     Q_UNUSED(match)
     QList<QAction*> ret;
-    if (d->script) {
-        emit d->script->actionsForMatch(match, &ret);
-    }
     return ret;
 }
 
@@ -222,9 +216,6 @@ void AbstractRunner::setHasRunOptions(bool hasRunOptions)
 
 void AbstractRunner::createRunOptions(QWidget *parent)
 {
-    if (d->script) {
-        emit d->script->createRunOptions(parent);
-    }
 }
 
 AbstractRunner::Speed AbstractRunner::speed() const
@@ -270,16 +261,10 @@ void AbstractRunner::setIgnoredTypes(RunnerContext::Types types)
 
 void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::QueryMatch &action)
 {
-    if (d->script) {
-        return d->script->run(search, action);
-    }
 }
 
 void AbstractRunner::match(Plasma::RunnerContext &search)
 {
-    if (d->script) {
-        return d->script->match(search);
-    }
 }
 
 QString AbstractRunner::name() const
@@ -326,11 +311,6 @@ Package AbstractRunner::package() const
 
 void AbstractRunner::init()
 {
-    if (d->script) {
-        d->setupScriptSupport();
-        d->script->init();
-    }
-
     reloadConfiguration();
 }
 
@@ -358,7 +338,6 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),
       blackListed(0),
-      script(0),
       runner(r),
       fastRuns(0),
       package(0),
@@ -370,8 +349,6 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
 
 AbstractRunnerPrivate::~AbstractRunnerPrivate()
 {
-    delete script;
-    script = 0;
     delete package;
     package = 0;
 }
@@ -379,55 +356,12 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 void AbstractRunnerPrivate::init(const KService::Ptr service)
 {
     runnerDescription = KPluginInfo(service);
-    if (runnerDescription.isValid()) {
-        const QString api = runnerDescription.property("X-Plasma-API").toString();
-        if (!api.isEmpty()) {
-            const QString path = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/runners/" + runnerDescription.pluginName() + '/');
-            prepScripting(path, api);
-            if (!script) {
-#ifndef NDEBUG
-                // qDebug() << "Could not create a(n)" << api << "ScriptEngine for the" << runnerDescription.name() << "Runner.";
-#endif
-            }
-        }
-    }
 }
 
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginInfo(path + "/metadata.desktop");
     const QString api = runnerDescription.property("X-Plasma-API").toString();
-    prepScripting(path, api);
-}
-
-void AbstractRunnerPrivate::prepScripting(const QString &path, const QString &api)
-{
-    if (script) {
-        return;
-    }
-
-    delete package;
-    package = 0;
-
-    if (api.isEmpty()) {
-        return;
-    }
-
-    package = new Package(PluginLoader::self()->loadPackage("Plasma/Runner", api));
-    package->setPath(path);
-
-    if (!package->isValid()) {
-#ifndef NDEBUG
-        // qDebug() << "Invalid Runner package at" << path;
-#endif
-        return;
-    }
-
-    script = Plasma::loadScriptEngine(api, runner);
-    if (!script) {
-        delete package;
-        package = 0;
-    }
 }
 
 // put all setup routines for script here. at this point we can assume that
