@@ -25,7 +25,7 @@
 
 #include <QDebug>
 
-#include <Plasma/RunnerManager>
+#include <KRunner/RunnerManager>
 
 RunnerModel::RunnerModel(QObject *parent)
     : QAbstractListModel(parent),

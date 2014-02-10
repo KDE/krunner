@@ -23,9 +23,9 @@
 
 #include <QDebug>
 
-#include <Plasma/QueryMatch>
+#include <KRunner/QueryMatch>
 
-#include "../core/runnermodel.h"
+#include "runnermodel.h"
 
 void RunnerModelPlugin::registerTypes(const char *uri)
 {

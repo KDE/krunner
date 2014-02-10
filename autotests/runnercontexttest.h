@@ -21,7 +21,7 @@
 
 #include <QtTest/QtTest>
 
-#include "plasma/runnercontext.h"
+#include "runnercontext.h"
 
 class RunnerContextTest : public QObject
 {

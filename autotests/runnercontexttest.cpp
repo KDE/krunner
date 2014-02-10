@@ -20,7 +20,7 @@
 #include "runnercontexttest.h"
 
 #include <kprotocolinfo.h>
-#include "plasma/runnercontext.h"
+#include "runnercontext.h"
 
 Q_DECLARE_METATYPE(Plasma::RunnerContext::Type)
 

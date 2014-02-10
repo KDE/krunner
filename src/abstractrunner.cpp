@@ -31,11 +31,9 @@
 #include <kplugininfo.h>
 #include <kservicetypetrader.h>
 #include <klocalizedstring.h>
-#include <kiconloader.h>
+#include <Plasma/PluginLoader>
 #include <qstandardpaths.h>
 
-#include "package.h"
-#include "pluginloader.h"
 #include "private/abstractrunner_p.h"
 #include "querymatch.h"
 #include "runnercontext.h"

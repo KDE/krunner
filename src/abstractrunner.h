@@ -28,11 +28,11 @@
 #include <kconfiggroup.h>
 #include <kservice.h>
 
-#include <plasma/plasma_export.h>
-#include <plasma/querymatch.h>
-#include <plasma/runnercontext.h>
-#include <plasma/runnersyntax.h>
-#include <plasma/version.h>
+#include <krunner_export.h>
+#include <querymatch.h>
+#include <runnercontext.h>
+#include <runnersyntax.h>
+#include <plasma_version.h>
 
 class QAction;
 class QMimeData;

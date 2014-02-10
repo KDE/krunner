@@ -22,7 +22,7 @@
 
 #include <QReadWriteLock>
 
-#include "dataengineconsumer.h"
+#include "plasma/dataengineconsumer.h"
 
 namespace Plasma
 {

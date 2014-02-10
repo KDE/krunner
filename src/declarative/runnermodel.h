@@ -23,7 +23,7 @@
 #include <QAbstractListModel>
 #include <QStringList>
 
-#include <Plasma/QueryMatch>
+#include <KRunner/QueryMatch>
 
 namespace Plasma
 {

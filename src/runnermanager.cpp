@@ -21,8 +21,6 @@
 
 #include "runnermanager.h"
 
-#include "config-plasma.h"
-
 #include <QMutex>
 #include <QTimer>
 #include <QCoreApplication>
@@ -32,17 +30,16 @@
 #include <kplugininfo.h>
 #include <kservicetypetrader.h>
 
-#if !PLASMA_NO_SOLID
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
-#endif
 
 #include <ThreadWeaver/DebuggingAids>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
 
 #include "private/runnerjobs_p.h"
-#include "pluginloader.h"
+#include "plasma/pluginloader.h"
+#include <plasma/version.h>
 #include "querymatch.h"
 
 using ThreadWeaver::Queue;
