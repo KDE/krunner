@@ -15,7 +15,7 @@ include(KDEInstallDirs)
 include(KDECompilerSettings)
 include(KDECMakeSettings)
 
-set(KF5_VERSION "5.0.0")
+set(KF5_VERSION "4.96.0")
 
 ecm_setup_version(${KF5_VERSION}
     VARIABLE_PREFIX KRUNNER
