@@ -24,7 +24,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QSharedDataPointer>
 
-#include <plasma/plasma_export.h>
+#include "krunner_export.h"
 
 class KCompletion;
 class KConfigGroup;
@@ -43,7 +43,7 @@ class RunnerContextPrivate;
  *        including the search term, metadata on the search term and collected
  *        matches.
  */
-class PLASMA_EXPORT RunnerContext : public QObject
+class KRUNNER_EXPORT RunnerContext : public QObject
 {
     Q_OBJECT
 

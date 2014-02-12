@@ -27,7 +27,7 @@
 
 #include <kplugininfo.h>
 
-#include <plasma/plasma_export.h>
+#include "krunner_export.h"
 #include "abstractrunner.h"
 
 class QAction;
@@ -46,7 +46,7 @@ namespace Plasma
  * @short The RunnerManager class decides what installed runners are runnable,
  *        and their ratings. It is the main proxy to the runners.
  */
-class PLASMA_EXPORT RunnerManager : public QObject
+class KRUNNER_EXPORT RunnerManager : public QObject
 {
     Q_OBJECT
 

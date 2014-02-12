@@ -24,7 +24,7 @@
 #include <QtCore/QUrl>
 #include <QtCore/QSharedDataPointer>
 
-#include <plasma/plasma_export.h>
+#include "krunner_export.h"
 
 class QAction;
 class QIcon;
@@ -45,7 +45,7 @@ class QueryMatchPrivate;
  * @short A match returned by an AbstractRunner in response to a given
  * RunnerContext.
  */
-class PLASMA_EXPORT QueryMatch
+class KRUNNER_EXPORT QueryMatch
 {
     public:
         /**

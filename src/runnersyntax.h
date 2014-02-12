@@ -23,6 +23,7 @@
 #include <QtCore/QStringList>
 
 #include <plasma/plasma.h>
+#include "krunner_export.h"
 
 namespace Plasma
 {
@@ -37,7 +38,7 @@ class RunnerSyntaxPrivate;
  * allow applications to show to the user what the runner is currently
  * capable of doing
  */
-class PLASMA_EXPORT RunnerSyntax
+class KRUNNER_EXPORT RunnerSyntax
 {
     public:
         /**

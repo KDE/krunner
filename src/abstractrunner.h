@@ -60,7 +60,7 @@ class AbstractRunnerPrivate;
  * and set a default syntax. See setDefaultSyntax() for details.
  *
  */
-class PLASMA_EXPORT AbstractRunner : public QObject
+class KRUNNER_EXPORT AbstractRunner : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool matchingSuspended READ isMatchingSuspended WRITE suspendMatching NOTIFY matchingSuspended)

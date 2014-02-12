@@ -22,7 +22,7 @@
 
 #include <kplugininfo.h>
 
-#include <plasma/plasma_export.h>
+#include "krunner_export.h"
 #include <abstractrunner.h>
 #include <plasma/scripting/scriptengine.h>
 
@@ -36,7 +36,7 @@ class RunnerScriptPrivate;
  *
  * @short Provides a restricted interface for scripting a runner.
  */
-class PLASMA_EXPORT RunnerScript : public ScriptEngine
+class KRUNNER_EXPORT RunnerScript : public ScriptEngine
 {
     Q_OBJECT
 
