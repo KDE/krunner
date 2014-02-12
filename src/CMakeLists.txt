@@ -20,13 +20,13 @@ target_include_directories(KF5Runner
 target_link_libraries(KF5Runner
     PUBLIC
         Qt5::Core
+        KF5::Plasma # Must be public because abstractrunner.h needs plasma/version.h
     PRIVATE
         Qt5::Gui
         KF5::ConfigCore
         KF5::Service
         KF5::I18n
         KF5::Completion
-        KF5::Plasma
         KF5::ThreadWeaver
         KF5::Solid
         KF5::CoreAddons #KShell
