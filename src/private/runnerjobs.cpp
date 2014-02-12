@@ -24,7 +24,7 @@
 #include <QDebug>
 
 #include "runnermanager.h"
-#include "plasma/querymatch.h"
+#include "querymatch.h"
 
 using ThreadWeaver::Job;
 using ThreadWeaver::Queue;
