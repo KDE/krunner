@@ -22,7 +22,6 @@
 
 #include <QtCore/QStringList>
 
-#include <plasma/plasma.h>
 #include "krunner_export.h"
 
 namespace Plasma
