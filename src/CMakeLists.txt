@@ -39,21 +39,18 @@ set_target_properties(KF5Runner
     EXPORT_NAME "Runner"
 )
 
-ecm_generate_headers(
+ecm_generate_headers(KRunner_HEADERS
+  HEADER_NAMES
     AbstractRunner
     RunnerContext
     RunnerManager
     RunnerSyntax
     QueryMatch
 
-    MODULE_NAME KRunner
     REQUIRED_HEADERS KRunner_HEADERS
 )
 
 # Install files
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/KRunner
-        DESTINATION ${INCLUDE_INSTALL_DIR}
-        COMPONENT Devel)
 
 install(TARGETS KF5Runner
         EXPORT KF5RunnerTargets
