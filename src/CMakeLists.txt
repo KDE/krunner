@@ -12,10 +12,9 @@ add_library(KF5Runner
 generate_export_header(KF5Runner BASE_NAME KRunner)
 add_library(KF5::Runner ALIAS KF5Runner)
 
-target_include_directories(KF5Runner
-    INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KRunner>"
-    PRIVATE   "${CMAKE_CURRENT_BINARY_DIR}/KRunner" "${CMAKE_CURRENT_SOURCE_DIR}"
-)
+target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KRunner>")
+target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BINARY_DIR};${CMAKE_CURRENT_BINARY_DIR}>")
+
 
 target_link_libraries(KF5Runner
     PUBLIC
@@ -39,7 +38,7 @@ set_target_properties(KF5Runner
     EXPORT_NAME "Runner"
 )
 
-ecm_generate_headers(KRunner_HEADERS
+ecm_generate_headers(KRunner_CamelCase_HEADERS
   HEADER_NAMES
     AbstractRunner
     RunnerContext
@@ -47,6 +46,7 @@ ecm_generate_headers(KRunner_HEADERS
     RunnerSyntax
     QueryMatch
 
+    PREFIX KRunner
     REQUIRED_HEADERS KRunner_HEADERS
 )
 
@@ -55,6 +55,10 @@ ecm_generate_headers(KRunner_HEADERS
 install(TARGETS KF5Runner
         EXPORT KF5RunnerTargets
         ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+install(FILES ${KRunner_CamelCase_HEADERS}
+        DESTINATION ${INCLUDE_INSTALL_DIR}/KRunner/KRunner
+        COMPONENT Devel)
 
 install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/krunner_export.h
