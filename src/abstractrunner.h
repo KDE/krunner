@@ -28,7 +28,7 @@
 #include <kconfiggroup.h>
 #include <kservice.h>
 
-#include <krunner_export.h>
+#include "krunner_export.h"
 #include <querymatch.h>
 #include <runnercontext.h>
 #include <runnersyntax.h>
