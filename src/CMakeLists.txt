@@ -63,7 +63,7 @@ install(FILES ${KRunner_CamelCase_HEADERS}
 install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/krunner_export.h
             ${KRunner_HEADERS}
-        DESTINATION ${INCLUDE_INSTALL_DIR}/KRunner
+        DESTINATION ${INCLUDE_INSTALL_DIR}/KRunner/krunner
         COMPONENT Devel)
 
 install(FILES
