@@ -29,9 +29,9 @@
 #include <kservice.h>
 
 #include "krunner_export.h"
-#include <querymatch.h>
-#include <runnercontext.h>
-#include <runnersyntax.h>
+#include "querymatch.h"
+#include "runnercontext.h"
+#include "runnersyntax.h"
 #include <plasma_version.h>
 
 class QAction;
