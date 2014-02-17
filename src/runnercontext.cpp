@@ -28,7 +28,6 @@
 #include <QFileInfo>
 #include <QSharedData>
 
-#include <kcompletion.h>
 #include <kconfiggroup.h>
 #include <QDebug>
 #include <qmimedatabase.h>

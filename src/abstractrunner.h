@@ -37,8 +37,6 @@
 class QAction;
 class QMimeData;
 
-class KCompletion;
-
 namespace Plasma
 {
 

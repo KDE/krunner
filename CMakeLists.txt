@@ -28,17 +28,14 @@ set(REQUIRED_QT_VERSION "5.2.0")
 
 find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Quick)
 
-find_package(KF5I18n ${KF5_VERSION} REQUIRED)
-find_package(KF5ThreadWeaver ${KF5_VERSION} REQUIRED)
 find_package(KF5Config ${KF5_VERSION} REQUIRED)
-find_package(KF5Service ${KF5_VERSION} REQUIRED)
-find_package(KF5Solid ${KF5_VERSION} REQUIRED)
-find_package(KF5Completion ${KF5_VERSION} REQUIRED)
-find_package(KF5Plasma ${KF5_VERSION} REQUIRED)
 find_package(KF5CoreAddons ${KF5_VERSION} REQUIRED)
+find_package(KF5I18n ${KF5_VERSION} REQUIRED)
 find_package(KF5KIO ${KF5_VERSION} REQUIRED)
-
-# find_package(KF5CoreAddons ${KF5_VERSION} REQUIRED)
+find_package(KF5Service ${KF5_VERSION} REQUIRED)
+find_package(KF5Plasma ${KF5_VERSION} REQUIRED)
+find_package(KF5Solid ${KF5_VERSION} REQUIRED)
+find_package(KF5ThreadWeaver ${KF5_VERSION} REQUIRED)
 
 # Subdirectories
 add_subdirectory(src)

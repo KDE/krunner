@@ -26,7 +26,6 @@
 
 #include "krunner_export.h"
 
-class KCompletion;
 class KConfigGroup;
 
 namespace Plasma

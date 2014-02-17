@@ -25,7 +25,6 @@ target_link_libraries(KF5Runner
         KF5::ConfigCore
         KF5::Service
         KF5::I18n
-        KF5::Completion
         KF5::ThreadWeaver
         KF5::Solid
         KF5::CoreAddons #KShell
