@@ -11,6 +11,7 @@ Comment[es]=Complemento para KRunner
 Comment[fi]=KRunner-liitännäinen
 Comment[fr]=Module externe de KRunner
 Comment[hu]=KRunner bővítmény
+Comment[ia]=Plugin de KRunner
 Comment[mr]=KRunner प्लगइन
 Comment[nl]=KRunner-plugin
 Comment[pl]=Wtyczka KRunner
@@ -23,6 +24,7 @@ Comment[tr]=KRunner eklentisi
 Comment[ug]=KRunner قىستۇرما
 Comment[uk]=Додаток KRunner
 Comment[x-test]=xxKRunner pluginxx
+Comment[zh_TW]=KRunner 外掛程式
 
 [PropertyDef::X-Plasma-AdvertiseSingleRunnerQueryMode]
 Type=bool
