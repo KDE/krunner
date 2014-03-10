@@ -33,7 +33,7 @@ target_link_libraries(KF5Runner
 
 set_target_properties(KF5Runner
     PROPERTIES VERSION ${KRUNNER_VERSION_STRING}
-    SOVERSION ${KRUNNER_SOVERSION}
+    SOVERSION 5
     EXPORT_NAME "Runner"
 )
 
