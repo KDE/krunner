@@ -2,6 +2,7 @@
 Name=Home Files
 Name[bs]=Lične datoteke
 Name[ca]=Fitxers personals
+Name[ca@valencia]=Fitxers personals
 Name[cs]=Soubory domovské složky
 Name[da]=Filer i hjem
 Name[de]=Persönliche Dateien
@@ -28,6 +29,7 @@ Name[zh_TW]=家目錄檔案
 Comment=Part of a tutorial demonstrating how to create Runner plugins
 Comment[bs]=Dio tutorijala demonstrira kako se kreiraju Runner priključci
 Comment[ca]=Part d'un programa d'aprenentatge que mostra com crear connectors Runner
+Comment[ca@valencia]=Part d'un programa d'aprenentatge que mostra com crear connectors Runner
 Comment[cs]=Část ukázky demonstrující vytváření modulů pro Runner
 Comment[da]=Del af vejledning til demonstration af hvordan man laver Runner-plugins
 Comment[de]=Teil einer Anleitung zur Demonstration, wie Runner-Module erstellt werden
