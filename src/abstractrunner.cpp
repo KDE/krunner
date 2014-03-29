@@ -29,6 +29,7 @@
 
 #include <QDebug>
 #include <kplugininfo.h>
+#include <ksharedconfig.h>
 #include <kservicetypetrader.h>
 #include <klocalizedstring.h>
 #include <Plasma/PluginLoader>

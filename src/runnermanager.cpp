@@ -25,8 +25,9 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <qstandardpaths.h>
-
 #include <QDebug>
+
+#include <ksharedconfig.h>
 #include <kplugininfo.h>
 #include <kservicetypetrader.h>
 
