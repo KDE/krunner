@@ -20,7 +20,7 @@
 #include "runnerjobs_p.h"
 
 #include <QTimer>
-
+#include <QMutexLocker>
 #include <QDebug>
 
 #include "runnermanager.h"
@@ -128,6 +128,7 @@ FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner,
       m_timer(0),
       m_decorator(new ThreadWeaver::QObjectDecorator(this, true))
 {
+    QMutexLocker l(mutex()); Q_UNUSED(l);
     if (runner->speed() == Plasma::AbstractRunner::SlowSpeed) {
         assignQueuePolicy(&DelayedRunnerPolicy::instance());
     } else {
