@@ -77,6 +77,7 @@ class QueryMatchPrivate : public QSharedData
         QReadWriteLock *lock;
         QPointer<AbstractRunner> runner;
         QueryMatch::Type type;
+        QString matchCategory;
         QString id;
         QString text;
         QString subtext;
@@ -127,6 +128,19 @@ void QueryMatch::setType(Type type)
 QueryMatch::Type QueryMatch::type() const
 {
     return d->type;
+}
+
+void QueryMatch::setMatchCategory(const QString &category)
+{
+    d->matchCategory = category;
+}
+
+QString QueryMatch::matchCategory() const
+{
+    if (d->matchCategory.isEmpty()) {
+        return d->runner->name();
+    }
+    return d->matchCategory;
 }
 
 void QueryMatch::setRelevance(qreal relevance)

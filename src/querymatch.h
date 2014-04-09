@@ -119,6 +119,24 @@ class KRUNNER_EXPORT QueryMatch
         Type type() const;
 
         /**
+         * Sets information about the type of the match which can
+         * be used to categorize the match.
+         *
+         * This string should be translated as it can be displayed
+         * in an UI
+         */
+        void setMatchCategory(const QString& category);
+
+        /**
+         * Extra information about the match which can be used
+         * to categorize the type.
+         *
+         * By default this returns the internal name of the runner
+         * which returned this result
+         */
+        QString matchCategory() const;
+
+        /**
          * Sets the relevance of this action for the search
          * it was created for.
          *
