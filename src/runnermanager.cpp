@@ -271,29 +271,25 @@ public:
             return 0;
         }
 
-        AbstractRunner *runner = PluginLoader::self()->loadRunner(service->property("X-KDE-PluginInfo-Name", QVariant::String).toString());
+        AbstractRunner *runner = 0;
 
-        if (runner) {
-            runner->setParent(q);
-        } else {
-            const QString api = service->property("X-Plasma-API").toString();
+        const QString api = service->property("X-Plasma-API").toString();
 
-            if (api.isEmpty()) {
-                QVariantList args;
-                args << service->storageId();
-                if (Plasma::isPluginVersionCompatible(KPluginLoader(*service).pluginVersion())) {
-                    QString error;
-                    runner = service->createInstance<AbstractRunner>(q, args, &error);
-                    if (!runner) {
+        if (api.isEmpty()) {
+            QVariantList args;
+            args << service->storageId();
+            if (Plasma::isPluginVersionCompatible(KPluginLoader(*service).pluginVersion())) {
+                QString error;
+                runner = service->createInstance<AbstractRunner>(q, args, &error);
+                if (!runner) {
 #ifndef NDEBUG
-                        // qDebug() << "Failed to load runner:" << service->name() << ". error reported:" << error;
+                    // qDebug() << "Failed to load runner:" << service->name() << ". error reported:" << error;
 #endif
-                    }
                 }
-            } else {
-                //qDebug() << "got a script runner known as" << api;
-                runner = new AbstractRunner(service, q);
             }
+        } else {
+            //qDebug() << "got a script runner known as" << api;
+            runner = new AbstractRunner(service, q);
         }
 
         if (runner) {
@@ -654,7 +650,17 @@ QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const
 
 KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
 {
-    return PluginLoader::self()->listRunnerInfo(parentApp);
+    KPluginInfo::List list;
+
+    QString constraint;
+    if (parentApp.isEmpty()) {
+        constraint.append("not exist [X-KDE-ParentApp]");
+    } else {
+        constraint.append("[X-KDE-ParentApp] == '").append(parentApp).append("'");
+    }
+
+    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Runner", constraint);
+    return list + KPluginInfo::fromServices(offers);
 }
 
 void RunnerManager::setupMatchSession()
