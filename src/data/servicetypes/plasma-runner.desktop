@@ -3,35 +3,6 @@ Type=ServiceType
 X-KDE-ServiceType=Plasma/Runner
 
 Comment=KRunner plugin
-Comment[bs]=Priključak za KRunner
-Comment[ca]=Connector del KRunner
-Comment[ca@valencia]=Connector del KRunner
-Comment[cs]=Modul KRunneru
-Comment[da]=KRunner-plugin
-Comment[de]=KRunner-Modul
-Comment[es]=Complemento para KRunner
-Comment[fi]=KRunner-liitännäinen
-Comment[fr]=Module externe de KRunner
-Comment[hu]=KRunner bővítmény
-Comment[ia]=Plugin de KRunner
-Comment[it]=Estensione di KRunner
-Comment[ko]=KRunner 플러그인
-Comment[mr]=KRunner प्लगइन
-Comment[nds]=KRunner-Moduul
-Comment[nl]=KRunner-plugin
-Comment[pa]=ਕੇਰਨਰ ਪਲੱਗਇਨ
-Comment[pl]=Wtyczka KRunner
-Comment[pt]='Plugin' do KRunner
-Comment[pt_BR]=Plugin do KRunner
-Comment[sk]=KRunner modul
-Comment[sl]=Vstavek za KRunner
-Comment[sv]=Krunner-insticksprogram
-Comment[tr]=KRunner eklentisi
-Comment[ug]=KRunner قىستۇرما
-Comment[uk]=Додаток KRunner
-Comment[x-test]=xxKRunner pluginxx
-Comment[zh_CN]=KRunner 插件
-Comment[zh_TW]=KRunner 外掛程式
 
 [PropertyDef::X-Plasma-AdvertiseSingleRunnerQueryMode]
 Type=bool
