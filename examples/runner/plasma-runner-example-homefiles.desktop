@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Home Files
+Name[nl]=Persoonlijke bestanden
 Name[uk]=Файли у домашній теці
 Name[x-test]=xxHome Filesxx
 Comment=Part of a tutorial demonstrating how to create Runner plugins
+Comment[nl]=Deel van een inleiding die demonstreert hoe Runner-plug-ins te maken
 Comment[uk]=Частина підручника, який демонструє створення додатків до засобу запуску
 Comment[x-test]=xxPart of a tutorial demonstrating how to create Runner pluginsxx
 Icon=user-home
