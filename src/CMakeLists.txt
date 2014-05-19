@@ -22,6 +22,7 @@ target_link_libraries(KF5Runner
         KF5::Plasma # Must be public because abstractrunner.h needs plasma/version.h
     PRIVATE
         Qt5::Gui
+        Qt5::Widgets
         KF5::ConfigCore
         KF5::Service
         KF5::I18n

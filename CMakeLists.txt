@@ -27,7 +27,7 @@ ecm_setup_version(${KF5_VERSION}
 # Dependencies
 set(REQUIRED_QT_VERSION "5.2.0")
 
-find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Quick)
+find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Widgets Quick)
 
 find_package(KF5Config ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5CoreAddons ${KF5_DEP_VERSION} REQUIRED)
