@@ -201,7 +201,7 @@ class RunnerContextPrivate : public QSharedData
                 // check for a normal URL first
                 //qDebug() << url << KProtocolInfo::protocolClass(url.scheme()) << url.hasHost() <<
                 //    url.host() << url.isLocalFile() << path << path.indexOf('/');
-                const bool hasProtocol = !url.scheme().isEmpty();
+                const bool hasProtocol = !url.scheme().isEmpty() && (url.scheme() != "http" || term.contains('.'));
                 const bool isLocalProtocol = KProtocolInfo::protocolClass(url.scheme()) == ":local";
                 if (hasProtocol &&
                     ((!isLocalProtocol && !url.host().isEmpty()) ||
