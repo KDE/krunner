@@ -466,6 +466,7 @@ RunnerManager::~RunnerManager()
 
 void RunnerManager::reloadConfiguration()
 {
+    KSharedConfig::openConfig()->reparseConfiguration();
     d->loadConfiguration();
     d->loadRunners();
 }
