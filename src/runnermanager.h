@@ -165,6 +165,13 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         void setAllowedRunners(const QStringList &runners);
 
         /**
+         * Sets the list of categories which matches should be
+         * returned for. It also internally tries not to execute the
+         * runners which do not fall in this category.
+         */
+        void setEnabledCategories(const QStringList &categories);
+
+        /**
          * Attempts to add the AbstractRunner plugin represented
          * by the KService passed in. Usually one can simply let
          * the configuration of plugins handle loading Runner plugins,
@@ -192,6 +199,11 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          * @since 4.4
          */
         QStringList allowedRunners() const;
+
+        /**
+         * @return the list of enabled categories
+         */
+        QStringList enabledCategories() const;
 
         /**
          * @return mime data of the specified match

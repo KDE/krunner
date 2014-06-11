@@ -257,6 +257,7 @@ class RunnerContextPrivate : public QSharedData
         QHash<QString, int> launchCounts;
         QString term;
         QString mimeType;
+        QStringList enabledCategories;
         RunnerContext::Type type;
         RunnerContext * q;
         static RunnerContext s_dummyContext;
@@ -349,6 +350,16 @@ QString RunnerContext::query() const
     // a search starts. in fact, reset() ensures this
     // and setQuery(QString) calls reset()
     return d->term;
+}
+
+void RunnerContext::setEnabledCategories(const QStringList& categories)
+{
+    d->enabledCategories = categories;
+}
+
+QStringList RunnerContext::enabledCategories() const
+{
+    return d->enabledCategories;
 }
 
 RunnerContext::Type RunnerContext::type() const

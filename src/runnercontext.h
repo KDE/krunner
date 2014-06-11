@@ -101,6 +101,20 @@ class KRUNNER_EXPORT RunnerContext : public QObject
         Type type() const;
 
         /**
+         * A list of categories of which results should be returned.
+         * This list is typically populated from the AbstractRunner::categories
+         * function.
+         */
+        QStringList enabledCategories() const;
+
+        /**
+         * Sets the list of enabled categories. Runners can use this list
+         * to optimize themselves by only returning results from the enabled
+         * categories
+         */
+        void setEnabledCategories(const QStringList &categories);
+
+        /**
          * The mimetype that the search term refers to, if discoverable.
          *
          * @return QString() if the mimetype can not be determined, otherwise

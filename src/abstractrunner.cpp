@@ -264,6 +264,11 @@ void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::Quer
 {
 }
 
+QStringList AbstractRunner::categories() const
+{
+    return QStringList() << name();
+}
+
 void AbstractRunner::match(Plasma::RunnerContext &search)
 {
 }

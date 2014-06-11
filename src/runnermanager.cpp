@@ -113,6 +113,7 @@ public:
         const int cap = qMax(2, numThreads/2);
         DefaultRunnerPolicy::instance().setCap(cap);
 
+        enabledCategories = config.readEntry("enabledCategories", QStringList());
         context.restore(config);
     }
 
@@ -181,6 +182,7 @@ public:
 
         advertiseSingleRunnerIds.clear();
 
+        QStringList allCategories;
         QSet<AbstractRunner *> deadRunners;
         QMutableListIterator<KPluginInfo> it(offers);
         while (it.hasNext()) {
@@ -207,11 +209,30 @@ public:
 
             //qDebug() << loadAll << description.isPluginEnabled() << noWhiteList << whiteList.contains(runnerName);
             if (selected) {
+                AbstractRunner *runner = 0;
                 if (!loaded) {
-                    AbstractRunner *runner = loadInstalledRunner(description.service());
+                    runner = loadInstalledRunner(description.service());
+                } else {
+                    runner = runners.value(runnerName);
+                }
 
-                    if (runner) {
+                if (runner) {
+                    const QStringList categories = runner->categories();
+                    allCategories << categories;
+
+                    bool allCategoriesDisabled = true;
+                    Q_FOREACH (const QString &cat, categories) {
+                        if (enabledCategories.contains(cat)) {
+                            allCategoriesDisabled = false;
+                            break;
+                        }
+                    }
+
+                    if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
                         runners.insert(runnerName, runner);
+                    } else {
+                        runners.remove(runnerName);
+                        deadRunners.insert(runner);
                     }
                 }
             } else if (loaded) {
@@ -221,6 +242,10 @@ public:
                 // qDebug() << "Removing runner: " << runnerName;
 #endif
             }
+        }
+
+        if (enabledCategories.isEmpty()) {
+            enabledCategories = allCategories;
         }
 
         if (!deadRunners.isEmpty()) {
@@ -422,6 +447,7 @@ public:
     QSet<QSharedPointer<FindMatchesJob> > searchJobs;
     QSet<QSharedPointer<FindMatchesJob> > oldSearchJobs;
     KConfigGroup conf;
+    QStringList enabledCategories;
     QString singleModeRunnerId;
     bool loadAll : 1;
     bool prepped : 1;
@@ -482,10 +508,35 @@ void RunnerManager::setAllowedRunners(const QStringList &runners)
     }
 }
 
+void RunnerManager::setEnabledCategories(const QStringList& categories)
+{
+    KConfigGroup config = d->configGroup();
+    config.writeEntry("enabledCategories", categories);
+
+    d->enabledCategories = categories;
+
+    if (!d->runners.isEmpty()) {
+        d->loadRunners();
+    }
+}
+
 QStringList RunnerManager::allowedRunners() const
 {
     KConfigGroup config = d->configGroup();
     return config.readEntry("pluginWhiteList", QStringList());
+}
+
+QStringList RunnerManager::enabledCategories() const
+{
+    KConfigGroup config = d->configGroup();
+    QStringList list = config.readEntry("enabledCategories", QStringList());
+    if (list.isEmpty()) {
+        Q_FOREACH (AbstractRunner* runner, d->runners) {
+            list << runner->categories();
+        }
+    }
+
+    return list;
 }
 
 void RunnerManager::loadRunner(const KService::Ptr service)
@@ -744,6 +795,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     reset();
 //    qDebug() << "runners searching for" << term << "on" << runnerName;
     d->context.setQuery(term);
+    d->context.setEnabledCategories(d->enabledCategories);
 
     QHash<QString, AbstractRunner*> runable;
 

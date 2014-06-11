@@ -173,6 +173,17 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         virtual void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match);
 
         /**
+         * Return a list of categories that this runner provides. By default
+         * this list just contains the runners name. It is used by the runner manager
+         * to disable certain runners if all the categories they provide have
+         * been disabled.
+         *
+         * This list of categories is also used to provide a better way to
+         * configure the runner instead of the typical on / off switch.
+         */
+        virtual QStringList categories() const;
+
+        /**
          * The nominal speed of the runner.
          * @see setSpeed
          */
