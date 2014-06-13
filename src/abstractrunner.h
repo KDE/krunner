@@ -184,6 +184,15 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         virtual QStringList categories() const;
 
         /**
+         * Returns the icon which accurately describes the category \p category.
+         * This is meant to be used in a configuration dialog when showing
+         * all the categories.
+         *
+         * By default this returns the icon of the AbstractRunner
+         */
+        virtual QIcon categoryIcon(const QString& category) const;
+
+        /**
          * The nominal speed of the runner.
          * @see setSpeed
          */

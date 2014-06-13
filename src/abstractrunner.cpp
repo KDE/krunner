@@ -269,6 +269,11 @@ QStringList AbstractRunner::categories() const
     return QStringList() << name();
 }
 
+QIcon AbstractRunner::categoryIcon(const QString&) const
+{
+    return icon();
+}
+
 void AbstractRunner::match(Plasma::RunnerContext &search)
 {
 }
