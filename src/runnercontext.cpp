@@ -302,6 +302,7 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
 
 void RunnerContext::reset()
 {
+    LOCK_FOR_WRITE(d);
     // We will detach if we are a copy of someone. But we will reset
     // if we are the 'main' context others copied from. Resetting
     // one RunnerContext makes all the copies obsolete.
@@ -309,6 +310,7 @@ void RunnerContext::reset()
     // We need to mark the q pointer of the detached RunnerContextPrivate
     // as dirty on detach to avoid receiving results for old queries
     d->invalidate();
+    UNLOCK(d);
 
     d.detach();
 
@@ -375,7 +377,10 @@ QString RunnerContext::mimeType() const
 bool RunnerContext::isValid() const
 {
     // if our qptr is dirty, we aren't useful anymore
-    return (d->q != &(d->s_dummyContext));
+    LOCK_FOR_READ(d)
+    const bool valid = (d->q != &(d->s_dummyContext));
+    UNLOCK(d)
+    return valid;
 }
 
 bool RunnerContext::addMatches(const QList<QueryMatch> &matches)

@@ -50,7 +50,7 @@ bool DelayedRunnerPolicy::canRun(ThreadWeaver::JobPointer job)
     if (QTimer *t = aJob->delayTimer()) {
         // If the timer is active, the required delay has not been reached
         //qDebug() << "delayed timer" << aJob->runner()->name() << !t->isActive();
-        return !t->isActive();
+        return !t->isActive(); // DATA RACE!  (with QTimer start/stop from runnermanager.cpp)
     }
 
     return true;
