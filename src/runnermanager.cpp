@@ -187,9 +187,9 @@ public:
         QMutableListIterator<KPluginInfo> it(offers);
         while (it.hasNext()) {
             KPluginInfo &description = it.next();
-            //qDebug() << "Loading runner: " << service->name() << service->storageId();
+            qDebug() << "Loading runner: " << description.pluginName();
+
             QString tryExec = description.property("TryExec").toString();
-            //qDebug() << "TryExec is" << tryExec;
             if (!tryExec.isEmpty() && QStandardPaths::findExecutable(tryExec).isEmpty()) {
                 // we don't actually have this application!
                 continue;
@@ -207,7 +207,6 @@ public:
                 advertiseSingleRunnerIds.insert(runnerName, description.name());
             }
 
-            //qDebug() << loadAll << description.isPluginEnabled() << noWhiteList << whiteList.contains(runnerName);
             if (selected) {
                 AbstractRunner *runner = 0;
                 if (!loaded) {
@@ -229,18 +228,18 @@ public:
                     }
 
                     if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
+                        qDebug() << "Loaded:" << runnerName;
                         runners.insert(runnerName, runner);
                     } else {
                         runners.remove(runnerName);
                         deadRunners.insert(runner);
+                        qDebug() << "Categories not enabled. Removing runner: " << runnerName;
                     }
                 }
             } else if (loaded) {
                 //Remove runner
                 deadRunners.insert(runners.take(runnerName));
-#ifndef NDEBUG
-                // qDebug() << "Removing runner: " << runnerName;
-#endif
+                qDebug() << "Plugin disabled. Removing runner: " << runnerName;
             }
         }
 
