@@ -314,6 +314,11 @@ QString AbstractRunner::description() const
     return objectName();
 }
 
+KPluginInfo AbstractRunner::metadata() const
+{
+    return d->runnerDescription;
+}
+
 Package AbstractRunner::package() const
 {
     return d->package ? *d->package : Package();

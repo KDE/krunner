@@ -27,6 +27,7 @@
 
 #include <kconfiggroup.h>
 #include <kservice.h>
+#include <kplugininfo.h>
 
 #include "krunner_export.h"
 #include "querymatch.h"
@@ -231,6 +232,11 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
           * @return the description of this Runner
           */
         QString description() const;
+
+        /**
+         * @return the plugin info for this runner
+         */
+        KPluginInfo metadata() const;
 
         /**
          * @return the icon for this Runner
