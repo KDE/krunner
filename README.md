@@ -12,12 +12,6 @@ One application for this is the universal runner you can launch with ALT-F2.
 
 This functionality is provided via plugins loaded at runtime called "Runners".
 These plugins can be used by any application using the Plasma library. The
-KRunner framework is used to write these plugins.
+KRunner framework is used to write these plugins, as explained in
+[this tutorial](http://techbase.kde.org/Development/Tutorials/Plasma/AbstractRunner)
 
-## Links
-
-- Home page: <https://projects.kde.org/projects/frameworks/krunner>
-- Mailing list: <https://mail.kde.org/mailman/listinfo/kde-frameworks-devel>
-- IRC channel: #kde-devel on Freenode
-- Git repository: <https://projects.kde.org/projects/frameworks/krunner/repository>
-- Tutorial: <http://techbase.kde.org/Development/Tutorials/Plasma/AbstractRunner>
