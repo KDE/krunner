@@ -60,6 +60,7 @@ class QueryMatchPrivate : public QSharedData
             selAction = other.selAction;
             enabled = other.enabled;
             idSetByData = other.idSetByData;
+            matchCategory = other.matchCategory;
             id = other.id;
             text = other.text;
             subtext = other.subtext;
