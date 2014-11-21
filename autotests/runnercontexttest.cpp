@@ -34,7 +34,8 @@ void RunnerContextTest::typeDetection_data()
       QTest::newRow("ls man page listing") << "man://ls" << Plasma::RunnerContext::NetworkLocation;
     }
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
-    QTest::newRow("http with host") << "http://kde.org" << Plasma::RunnerContext::NetworkLocation;
+    QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
+    QTest::newRow("ftp with host") << "ftp://kde.org" << Plasma::RunnerContext::NetworkLocation;
     QTest::newRow("file double slash") << "file://home" << Plasma::RunnerContext::Directory;
     QTest::newRow("file triple slash") << "file:///home" << Plasma::RunnerContext::Directory;
     QTest::newRow("file single slash") << "file:/home" << Plasma::RunnerContext::Directory;
@@ -46,6 +47,8 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("full path executable with params") << "/bin/ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("protocol-less path") << "/home" << Plasma::RunnerContext::Directory;
     QTest::newRow("invalid protocol-less path") << "/bad/path" << Plasma::RunnerContext::UnknownType;
+    QTest::newRow("calculation") << "5*4" << Plasma::RunnerContext::UnknownType;
+    QTest::newRow("calculation (float)") << "5.2*4" << Plasma::RunnerContext::UnknownType;
 }
 
 void RunnerContextTest::typeDetection()
