@@ -3,7 +3,7 @@ add_subdirectory(declarative)
 add_library(KF5Runner
     abstractrunner.cpp
 #     scripting/runnerscript.cpp
-    private/runnerjobs.cpp
+    runnerjobs.cpp
     querymatch.cpp
     runnercontext.cpp
     runnermanager.cpp

@@ -38,7 +38,7 @@
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
 
-#include "private/runnerjobs_p.h"
+#include "runnerjobs_p.h"
 #include "plasma/pluginloader.h"
 #include <plasma/version.h>
 #include "querymatch.h"

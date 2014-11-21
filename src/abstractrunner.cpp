@@ -35,7 +35,7 @@
 #include <Plasma/PluginLoader>
 #include <qstandardpaths.h>
 
-#include "private/abstractrunner_p.h"
+#include "abstractrunner_p.h"
 #include "querymatch.h"
 #include "runnercontext.h"
 #include "scripting/runnerscript.h"
