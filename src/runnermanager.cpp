@@ -448,7 +448,6 @@ public:
     KConfigGroup conf;
     QStringList enabledCategories;
     QString singleModeRunnerId;
-    bool loadAll : 1;
     bool prepped : 1;
     bool allRunnersPrepped : 1;
     bool singleRunnerPrepped : 1;
