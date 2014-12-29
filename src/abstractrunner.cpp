@@ -217,6 +217,7 @@ void AbstractRunner::setHasRunOptions(bool hasRunOptions)
 
 void AbstractRunner::createRunOptions(QWidget *parent)
 {
+    Q_UNUSED(parent);
 }
 
 AbstractRunner::Speed AbstractRunner::speed() const
@@ -262,6 +263,8 @@ void AbstractRunner::setIgnoredTypes(RunnerContext::Types types)
 
 void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::QueryMatch &action)
 {
+    Q_UNUSED(search);
+    Q_UNUSED(action);
 }
 
 QStringList AbstractRunner::categories() const
@@ -274,7 +277,7 @@ QIcon AbstractRunner::categoryIcon(const QString&) const
     return icon();
 }
 
-void AbstractRunner::match(Plasma::RunnerContext &search)
+void AbstractRunner::match(Plasma::RunnerContext &)
 {
 }
 
