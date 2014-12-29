@@ -53,7 +53,7 @@ class QueryMatchPrivate : public QSharedData
             : QSharedData(other),
               lock(new QReadWriteLock(QReadWriteLock::Recursive))
         {
-            QReadLocker lock(other.lock);
+            QReadLocker l(other.lock);
             runner = other.runner;
             type = other.type;
             relevance = other.relevance;
