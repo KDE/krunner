@@ -138,7 +138,7 @@ void QueryMatch::setMatchCategory(const QString &category)
 
 QString QueryMatch::matchCategory() const
 {
-    if (d->matchCategory.isEmpty()) {
+    if (d->matchCategory.isEmpty() && d->runner) {
         return d->runner->name();
     }
     return d->matchCategory;
