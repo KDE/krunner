@@ -26,6 +26,7 @@
 #include <QCoreApplication>
 #include <qstandardpaths.h>
 #include <QDebug>
+#include "krunner_debug.h"
 
 #include <ksharedconfig.h>
 #include <kplugininfo.h>
@@ -104,7 +105,7 @@ public:
         //This entry allows to define a hard upper limit independent of the number of processors.
         const int maxThreads = config.readEntry("maxThreads", 16);
         const int numThreads = qMin(maxThreads, 2 + ((numProcs - 1) * 2));
-        //qDebug() << "setting up" << numThreads << "threads for" << numProcs << "processors";
+        //qCDebug(KRUNNER) << "setting up" << numThreads << "threads for" << numProcs << "processors";
         if (numThreads > Queue::instance()->maximumNumberOfThreads()) {
             Queue::instance()->setMaximumNumberOfThreads(numThreads);
         }
@@ -187,7 +188,7 @@ public:
         QMutableListIterator<KPluginInfo> it(offers);
         while (it.hasNext()) {
             KPluginInfo &description = it.next();
-            qDebug() << "Loading runner: " << description.pluginName();
+            qCDebug(KRUNNER) << "Loading runner: " << description.pluginName();
 
             QString tryExec = description.property("TryExec").toString();
             if (!tryExec.isEmpty() && QStandardPaths::findExecutable(tryExec).isEmpty()) {
@@ -228,18 +229,18 @@ public:
                     }
 
                     if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
-                        qDebug() << "Loaded:" << runnerName;
+                        qCDebug(KRUNNER) << "Loaded:" << runnerName;
                         runners.insert(runnerName, runner);
                     } else {
                         runners.remove(runnerName);
                         deadRunners.insert(runner);
-                        qDebug() << "Categories not enabled. Removing runner: " << runnerName;
+                        qCDebug(KRUNNER) << "Categories not enabled. Removing runner: " << runnerName;
                     }
                 }
             } else if (loaded) {
                 //Remove runner
                 deadRunners.insert(runners.take(runnerName));
-                qDebug() << "Plugin disabled. Removing runner: " << runnerName;
+                qCDebug(KRUNNER) << "Plugin disabled. Removing runner: " << runnerName;
             }
         }
 
@@ -285,7 +286,7 @@ public:
         }
 
 #ifndef NDEBUG
-        // qDebug() << "All runners loaded, total:" << runners.count();
+        // qCDebug(KRUNNER) << "All runners loaded, total:" << runners.count();
 #endif
     }
 
@@ -307,18 +308,18 @@ public:
                 runner = service->createInstance<AbstractRunner>(q, args, &error);
                 if (!runner) {
 #ifndef NDEBUG
-                    // qDebug() << "Failed to load runner:" << service->name() << ". error reported:" << error;
+                    // qCDebug(KRUNNER) << "Failed to load runner:" << service->name() << ". error reported:" << error;
 #endif
                 }
             }
         } else {
-            //qDebug() << "got a script runner known as" << api;
+            //qCDebug(KRUNNER) << "got a script runner known as" << api;
             runner = new AbstractRunner(service, q);
         }
 
         if (runner) {
 #ifndef NDEBUG
-            // qDebug() << "================= loading runner:" << service->name() << "=================";
+            // qCDebug(KRUNNER) << "================= loading runner:" << service->name() << "=================";
 #endif
             QObject::connect(runner, SIGNAL(matchingSuspended(bool)), q, SLOT(runnerMatchingSuspended(bool)));
             runner->init();
@@ -339,7 +340,7 @@ public:
         }
 
         if (deferredRun.isEnabled() && runJob->runner() == deferredRun.runner()) {
-            //qDebug() << "job actually done, running now **************";
+            //qCDebug(KRUNNER) << "job actually done, running now **************";
             QueryMatch tmpRun = deferredRun;
             deferredRun = QueryMatch(0);
             tmpRun.run(context);
@@ -360,7 +361,7 @@ public:
 
     void checkTearDown()
     {
-        //qDebug() << prepped << teardownRequested << searchJobs.count() << oldSearchJobs.count();
+        //qCDebug(KRUNNER) << prepped << teardownRequested << searchJobs.count() << oldSearchJobs.count();
 
         if (!prepped || !teardownRequested) {
             return;
@@ -658,7 +659,7 @@ void RunnerManager::run(const QueryMatch &match)
     for (auto it = d->searchJobs.constBegin(); it != d->searchJobs.constEnd(); ++it) {
         if ((*it)->runner() == runner && !(*it)->isFinished()) {
 #ifndef NDEBUG
-            // qDebug() << "deferred run";
+            // qCDebug(KRUNNER) << "deferred run";
 #endif
             d->deferredRun = match;
             return;
@@ -736,7 +737,7 @@ void RunnerManager::setupMatchSession()
             emit runner->prepare();
 #ifdef MEASURE_PREPTIME
 #ifndef NDEBUG
-            // qDebug() << t.elapsed() << runner->name();
+            // qCDebug(KRUNNER) << t.elapsed() << runner->name();
 #endif
 #endif
         }
@@ -791,7 +792,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     }
 
     reset();
-//    qDebug() << "runners searching for" << term << "on" << runnerName;
+//    qCDebug(KRUNNER) << "runners searching for" << term << "on" << runnerName;
     d->context.setQuery(term);
     d->context.setEnabledCategories(d->enabledCategories);
 
@@ -837,7 +838,7 @@ void RunnerManager::reset()
     d->searchJobs.clear();
 
     if (d->deferredRun.isEnabled()) {
-        //qDebug() << "job actually done, running now **************";
+        //qCDebug(KRUNNER) << "job actually done, running now **************";
         QueryMatch tmpRun = d->deferredRun;
         d->deferredRun = QueryMatch(0);
         tmpRun.run(d->context);

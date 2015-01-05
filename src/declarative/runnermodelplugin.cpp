@@ -20,8 +20,9 @@
 #include "runnermodelplugin.h"
 
 #include <QtQml>
-
 #include <QDebug>
+
+#include "krunner_debug.h"
 
 #include <KRunner/QueryMatch>
 
@@ -29,7 +30,7 @@
 
 void RunnerModelPlugin::registerTypes(const char *uri)
 {
-    qWarning() << "Using deprecated import org.kde.runnermodel, please port to org.kde.plasma.core";
+    qCWarning(KRUNNER) << "Using deprecated import org.kde.runnermodel, please port to org.kde.plasma.core";
     Q_ASSERT(uri == QLatin1String("org.kde.runnermodel"));
     qmlRegisterType<RunnerModel>(uri, 2, 0, "RunnerModel");
     qmlRegisterInterface<Plasma::QueryMatch>("QueryMatch");

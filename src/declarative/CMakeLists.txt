@@ -3,6 +3,7 @@ project(runnermodel)
 set(runnermodel_SRCS
     runnermodel.cpp
     runnermodelplugin.cpp
+    krunner_debug.cpp
     )
 
 add_library(runnermodelplugin SHARED ${runnermodel_SRCS})

@@ -26,8 +26,9 @@
 #include <QStringList>
 #include <QVariant>
 #include <QWeakPointer>
-
 #include <QDebug>
+
+#include "krunner_debug.h"
 
 #include "abstractrunner.h"
 
@@ -95,7 +96,7 @@ class QueryMatchPrivate : public QSharedData
 QueryMatch::QueryMatch(AbstractRunner *runner)
     : d(new QueryMatchPrivate(runner))
 {
-//    qDebug() << "new match created";
+//    qCDebug(KRUNNER) << "new match created";
 }
 
 QueryMatch::QueryMatch(const QueryMatch &other)
@@ -315,7 +316,7 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
 
 void QueryMatch::run(const RunnerContext &context) const
 {
-    //qDebug() << "we run the term" << context->query() << "whose type is" << context->mimetype();
+    //qCDebug(KRUNNER) << "we run the term" << context->query() << "whose type is" << context->mimetype();
     if (d->runner) {
         d->runner.data()->run(context, *this);
     }

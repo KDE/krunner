@@ -22,8 +22,9 @@
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
-
 #include <QDebug>
+
+#include "krunner_debug.h"
 
 #include <KRunner/RunnerManager>
 
@@ -90,7 +91,7 @@ void RunnerModel::setRunners(const QStringList &allowedRunners)
         m_manager->setSingleMode(allowedRunners.count() == 1);
     } else {
         m_pendingRunnersList = allowedRunners;
-        // qDebug() << "runners set" << m_pendingRunnersList.count();
+        // qCDebug(KRUNNER) << "runners set" << m_pendingRunnersList.count();
     }
 
     // to trigger single runner fun!
@@ -120,7 +121,7 @@ QVariant RunnerModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.parent().isValid() ||
         index.column() > 0 || index.row() < 0 || index.row() >= m_matches.count()) {
         // index requested must be valid, but we have no child items!
-        //qDebug() << "invalid index requested";
+        //qCDebug(KRUNNER) << "invalid index requested";
         return QVariant();
     }
 
@@ -177,10 +178,10 @@ void RunnerModel::startQuery()
         return;
     }
 
-    //qDebug() << "!!!!!!!!!!!!!" << m_pendingQuery << m_manager;
+    //qCDebug(KRUNNER) << "!!!!!!!!!!!!!" << m_pendingQuery << m_manager;
 
     if (createManager() || m_pendingQuery != m_manager->query()) {
-        //qDebug() << "running query" << m_pendingQuery << m_manager;
+        //qCDebug(KRUNNER) << "running query" << m_pendingQuery << m_manager;
         m_manager->launchQuery(m_pendingQuery, m_singleRunnerId);
         emit queryChanged();
         m_running = true;
@@ -210,7 +211,7 @@ bool RunnerModel::createManager()
 
 void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
 {
-    //qDebug() << "got matches:" << matches.count();
+    //qCDebug(KRUNNER) << "got matches:" << matches.count();
     bool fullReset = false;
     int oldCount = m_matches.count();
     int newCount = matches.count();

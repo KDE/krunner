@@ -26,8 +26,9 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QTimer>
-
 #include <QDebug>
+
+#include "krunner_debug.h"
 #include <kplugininfo.h>
 #include <ksharedconfig.h>
 #include <kservicetypetrader.h>
@@ -138,7 +139,7 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
         // we punish runners that return too slowly, even if they don't bring
         // back matches
 #ifndef NDEBUG
-        // qDebug() << id() << "runner is too slow, putting it on the back burner.";
+        // qCDebug(KRUNNER) << id() << "runner is too slow, putting it on the back burner.";
 #endif
         d->fastRuns = 0;
         setSpeed(SlowSpeed);
@@ -151,7 +152,7 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
             // we reward slowed runners who bring back matches fast enough
             // 3 times in a row
 #ifndef NDEBUG
-            // qDebug() << id() << "runner is faster than we thought, kicking it up a notch";
+            // qCDebug(KRUNNER) << id() << "runner is faster than we thought, kicking it up a notch";
 #endif
             setSpeed(NormalSpeed);
         }
@@ -392,7 +393,7 @@ void AbstractRunnerPrivate::setupScriptSupport()
     }
 
 #ifndef NDEBUG
-    // qDebug() << "setting up script support, package is in" << package->path()
+    // qCDebug(KRUNNER) << "setting up script support, package is in" << package->path()
     //         << ", main script is" << package->filePath("mainscript");
 #endif
 

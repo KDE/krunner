@@ -7,7 +7,8 @@ add_library(KF5Runner
     querymatch.cpp
     runnercontext.cpp
     runnermanager.cpp
-    runnersyntax.cpp)
+    runnersyntax.cpp
+    krunner_debug.cpp)
 
 generate_export_header(KF5Runner BASE_NAME KRunner)
 add_library(KF5::Runner ALIAS KF5Runner)
