@@ -39,7 +39,6 @@
 #include "abstractrunner_p.h"
 #include "querymatch.h"
 #include "runnercontext.h"
-#include "scripting/runnerscript.h"
 
 namespace Plasma
 {
