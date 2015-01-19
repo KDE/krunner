@@ -251,5 +251,4 @@ void RunnerModel::queryHasFinished()
     emit runningChanged(false);
 }
 
-#include "runnermodel.moc"
 

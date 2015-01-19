@@ -37,5 +37,4 @@ void RunnerModelPlugin::registerTypes(const char *uri)
     qRegisterMetaType<Plasma::QueryMatch *>("QueryMatch");
 }
 
-#include "runnermodelplugin.moc"
 
