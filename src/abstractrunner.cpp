@@ -383,26 +383,6 @@ void AbstractRunnerPrivate::init(const QString &path)
     const QString api = runnerDescription.property("X-Plasma-API").toString();
 }
 
-// put all setup routines for script here. at this point we can assume that
-// package exists and that we have a script engine
-void AbstractRunnerPrivate::setupScriptSupport()
-{
-    if (!package) {
-        return;
-    }
-
-#ifndef NDEBUG
-    // qCDebug(KRUNNER) << "setting up script support, package is in" << package->path()
-    //         << ", main script is" << package->filePath("mainscript");
-#endif
-
-    // FIXME: Replace with ki18n functionality once semantics is clear.
-    // const QString translationsPath = package->filePath("translations");
-    // if (!translationsPath.isEmpty()) {
-    //     KGlobal::dirs()->addResourceDir("locale", translationsPath);
-    // }
-}
-
 } // Plasma namespace
 
 

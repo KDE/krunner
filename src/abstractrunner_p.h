@@ -36,7 +36,6 @@ public:
     ~AbstractRunnerPrivate();
     void init(const KService::Ptr service);
     void init(const QString &path);
-    void setupScriptSupport();
 
     AbstractRunner::Priority priority;
     AbstractRunner::Speed speed;
