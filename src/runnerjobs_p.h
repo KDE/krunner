@@ -47,10 +47,10 @@ public:
 
     static DelayedRunnerPolicy &instance();
 
-    bool canRun(ThreadWeaver::JobPointer job);
-    void free(ThreadWeaver::JobPointer job);
-    void release(ThreadWeaver::JobPointer job);
-    virtual void destructed(ThreadWeaver::JobInterface* job);
+    bool canRun(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void free(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void release(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void destructed(ThreadWeaver::JobInterface* job) Q_DECL_OVERRIDE;
 
 private:
     DelayedRunnerPolicy();
@@ -74,10 +74,10 @@ public:
         return m_cap;
     }
 
-    bool canRun(ThreadWeaver::JobPointer job);
-    void free(ThreadWeaver::JobPointer job);
-    void release(ThreadWeaver::JobPointer job);
-    void destructed(ThreadWeaver::JobInterface* job);
+    bool canRun(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void free(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void release(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
+    void destructed(ThreadWeaver::JobInterface* job) Q_DECL_OVERRIDE;
 private:
     DefaultRunnerPolicy();
 
@@ -97,7 +97,7 @@ public:
                    Plasma::RunnerContext *context, QObject *parent = 0);
     ~FindMatchesJob();
 
-    int priority() const;
+    int priority() const Q_DECL_OVERRIDE;
     Plasma::AbstractRunner* runner() const;
 
     QTimer* delayTimer() const;
@@ -105,7 +105,7 @@ public:
     ThreadWeaver::QObjectDecorator* decorator() const { return m_decorator; }
 
 protected:
-    virtual void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread);
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) Q_DECL_OVERRIDE;
 
 private:
     Plasma::RunnerContext m_context;
