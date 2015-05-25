@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 //     new ModelTest(runnerModel, widget);
 
     QLineEdit *input = new QLineEdit(widget);
-    QObject::connect(input, SIGNAL(textChanged(QString)), runnerModel, SLOT(startQuery(QString)));
+    QObject::connect(input, &QLineEdit::textChanged, runnerModel, &RunnerModel::scheduleQuery);
     layout->addWidget(input);
 
     QTreeView *view = new QTreeView(widget);
