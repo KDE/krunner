@@ -1,0 +1,33 @@
+# Translation of plasma_runner_example_homefiles.po to Brazilian Portuguese
+# Copyright (C) 2013-2015 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2013, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: plasma_runner_example_homefiles\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2014-04-27 20:56+0000\n"
+"PO-Revision-Date: 2015-04-05 18:09-0300\n"
+"Last-Translator: André Marcelo Alvarenga <alvarenga@kde.org>\n"
+"Language-Team: Brazilian Portuguese <kde-i18n-pt_br@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: homefilesrunner.cpp:71
+#, kde-format
+msgid "Finds files matching :q: in the %1 folder"
+msgstr "Procura arquivos que correspondam a :q: na pasta %1"
+
+#: homefilesrunner.cpp:116
+#, kde-format
+msgid "Open %1"
+msgstr "Abrir %1"
+
+#: homefilesrunner.cpp:157
+msgid "This is just for show"
+msgstr "Isto é apenas para mostrar"
