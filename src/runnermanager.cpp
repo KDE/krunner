@@ -701,8 +701,6 @@ QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const
 
 KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
 {
-    KPluginInfo::List list;
-
     QString constraint;
     if (parentApp.isEmpty()) {
         constraint.append("not exist [X-KDE-ParentApp]");
@@ -711,7 +709,7 @@ KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
     }
 
     KService::List offers = KServiceTypeTrader::self()->query("Plasma/Runner", constraint);
-    return list + KPluginInfo::fromServices(offers);
+    return KPluginInfo::fromServices(offers);
 }
 
 void RunnerManager::setupMatchSession()
