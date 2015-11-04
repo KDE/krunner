@@ -78,7 +78,7 @@ KConfigGroup AbstractRunner::config() const
 {
     QString group = id();
     if (group.isEmpty()) {
-        group = "UnnamedRunner";
+        group = QStringLiteral("UnnamedRunner");
     }
 
     KConfigGroup runners(KSharedConfig::openConfig(), "Runners");
@@ -311,7 +311,7 @@ QString AbstractRunner::id() const
 QString AbstractRunner::description() const
 {
     if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.property("Comment").toString();
+        return d->runnerDescription.property(QStringLiteral("Comment")).toString();
     }
 
     return objectName();
@@ -380,7 +380,7 @@ void AbstractRunnerPrivate::init(const KService::Ptr service)
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginInfo(path + "/metadata.desktop");
-    const QString api = runnerDescription.property("X-Plasma-API").toString();
+    const QString api = runnerDescription.property(QStringLiteral("X-Plasma-API")).toString();
 }
 
 } // Plasma namespace

@@ -29,7 +29,7 @@ void RunnerContextTest::typeDetection_data()
     QTest::addColumn<QString>("url");
     QTest::addColumn<Plasma::RunnerContext::Type>("type");
 
-    if (KProtocolInfo::isKnownProtocol("man")) {
+    if (KProtocolInfo::isKnownProtocol(QStringLiteral("man"))) {
       QTest::newRow("man page listing") << "man:/" << Plasma::RunnerContext::NetworkLocation;
       QTest::newRow("ls man page listing") << "man://ls" << Plasma::RunnerContext::NetworkLocation;
     }

@@ -207,10 +207,10 @@ class RunnerContextPrivate : public QSharedData
                     }
                 }
                 const bool hasProtocol = !url.scheme().isEmpty();
-                const bool isLocalProtocol = KProtocolInfo::protocolClass(url.scheme()) == ":local";
+                const bool isLocalProtocol = KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
                 if (hasProtocol &&
                     ((!isLocalProtocol && !url.host().isEmpty()) ||
-                     (isLocalProtocol && url.scheme() != "file"))) {
+                     (isLocalProtocol && url.scheme() != QLatin1String("file")))) {
                     // we either have a network protocol with a host, so we can show matches for it
                     // or we have a non-file url that may be local so a host isn't required
                     type = RunnerContext::NetworkLocation;
@@ -234,7 +234,7 @@ class RunnerContextPrivate : public QSharedData
                             }
                             if (info.isDir()) {
                                 type = RunnerContext::Directory;
-                                mimeType = "inode/folder";
+                                mimeType = QStringLiteral("inode/folder");
                             } else if (info.isFile()) {
                                 type = RunnerContext::File;
                                 QMimeDatabase db;
@@ -568,7 +568,7 @@ void RunnerContext::restore(const KConfigGroup &config)
 {
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
-    const QRegExp r("(\\d*) (.*)");
+    const QRegExp r(QStringLiteral("(\\d*) (.*)"));
     foreach (const QString& entry, cfgList) {
         r.indexIn(entry);
         int count = r.cap(1).toInt();
@@ -584,7 +584,7 @@ void RunnerContext::save(KConfigGroup &config)
     typedef QHash<QString, int>::const_iterator Iterator;
     Iterator end = d->launchCounts.constEnd();
     for (Iterator i = d->launchCounts.constBegin(); i != end; ++i) {
-        countList << QString("%2 %1").arg(i.key()).arg(i.value());
+        countList << QStringLiteral("%2 %1").arg(i.key()).arg(i.value());
     }
 
     config.writeEntry("LaunchCounts", countList);

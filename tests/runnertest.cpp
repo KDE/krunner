@@ -33,18 +33,18 @@ int main(int argc, char **argv)
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("query"), QStringLiteral("words to query"));
 
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("r") << QLatin1String("runner"),
-                                        QLatin1String("Name of the runner"),
-                                        QLatin1String("runnerName")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("r") << QStringLiteral("runner"),
+                                        QStringLiteral("Name of the runner"),
+                                        QStringLiteral("runnerName")));
 
     parser.addHelpOption();
     parser.process(app);
 
-    QString query = parser.positionalArguments().join(" ");
+    QString query = parser.positionalArguments().join(QStringLiteral(" "));
     if (query.isEmpty()) {
         parser.showHelp(1);
     }
-    QString runnerName = parser.value("runner");
+    QString runnerName = parser.value(QStringLiteral("runner"));
 
     RunnerManager manager;
 

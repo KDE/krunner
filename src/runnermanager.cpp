@@ -154,7 +154,7 @@ public:
             return;
         }
 
-        KService::List offers = KServiceTypeTrader::self()->query("Plasma/Runner", QString("[X-KDE-PluginInfo-Name] == '%1'").arg(singleModeRunnerId));
+        KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), QStringLiteral("[X-KDE-PluginInfo-Name] == '%1'").arg(singleModeRunnerId));
         if (!offers.isEmpty()) {
             const KService::Ptr &service = offers[0];
             currentSingleRunner = loadInstalledRunner(service);
@@ -190,7 +190,7 @@ public:
             KPluginInfo &description = it.next();
             qCDebug(KRUNNER) << "Loading runner: " << description.pluginName();
 
-            QString tryExec = description.property("TryExec").toString();
+            QString tryExec = description.property(QStringLiteral("TryExec")).toString();
             if (!tryExec.isEmpty() && QStandardPaths::findExecutable(tryExec).isEmpty()) {
                 // we don't actually have this application!
                 continue;
@@ -202,7 +202,7 @@ public:
             const bool loaded = runners.contains(runnerName);
             const bool selected = loadAll || (description.isPluginEnabled() && (noWhiteList || whiteList.contains(runnerName)));
 
-            const bool singleQueryModeEnabled = description.property("X-Plasma-AdvertiseSingleRunnerQueryMode").toBool();
+            const bool singleQueryModeEnabled = description.property(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toBool();
 
             if (singleQueryModeEnabled) {
                 advertiseSingleRunnerIds.insert(runnerName, description.name());
@@ -298,7 +298,7 @@ public:
 
         AbstractRunner *runner = 0;
 
-        const QString api = service->property("X-Plasma-API").toString();
+        const QString api = service->property(QStringLiteral("X-Plasma-API")).toString();
 
         if (api.isEmpty()) {
             QVariantList args;
@@ -708,7 +708,7 @@ KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
         constraint.append("[X-KDE-ParentApp] == '").append(parentApp).append("'");
     }
 
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Runner", constraint);
+    KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
     return KPluginInfo::fromServices(offers);
 }
 
@@ -773,7 +773,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 
     if (term.isEmpty()) {
         if (d->singleMode && d->currentSingleRunner->defaultSyntax()) {
-            term = d->currentSingleRunner->defaultSyntax()->exampleQueries().first().remove(QRegExp(":q:"));
+            term = d->currentSingleRunner->defaultSyntax()->exampleQueries().first().remove(QRegExp(QStringLiteral(":q:")));
         } else {
             reset();
             return;

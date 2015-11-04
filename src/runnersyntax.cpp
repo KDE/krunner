@@ -88,7 +88,7 @@ void RunnerSyntax::setDescription(const QString &description)
 QString RunnerSyntax::description() const
 {
     QString description = d->description;
-    description.replace(":q:", '<' + searchTermDescription() + '>');
+    description.replace(QLatin1String(":q:"), '<' + searchTermDescription() + '>');
     return description;
 }
 
