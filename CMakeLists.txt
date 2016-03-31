@@ -18,6 +18,7 @@ include(ECMPackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
+include(KDEPackageAppTemplates)
 
 set(KF5_VERSION "5.21.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.20.0") # handled by release scripts
@@ -46,6 +47,7 @@ find_package(KF5ThreadWeaver ${KF5_DEP_VERSION} REQUIRED)
 add_subdirectory(src)
 add_subdirectory(autotests)
 add_subdirectory(tests)
+add_subdirectory(templates)
 
 # Create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Runner")

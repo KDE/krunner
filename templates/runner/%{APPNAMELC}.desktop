@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=%{APPNAME}
+Comment=%{APPNAME} runner
+Icon=
+
+X-KDE-ServiceTypes=Plasma/Runner
+Type=Service
+X-KDE-Library=krunner_%{APPNAMELC}
+X-KDE-PluginInfo-Author=%{AUTHOR}
+X-KDE-PluginInfo-Email=%{EMAIL}
+X-KDE-PluginInfo-Name=%{APPNAMELC}
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
