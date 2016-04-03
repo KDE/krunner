@@ -1,19 +1,27 @@
 [Desktop Entry]
 Name=%{APPNAME}
 Name[ca]=%{APPNAME}
+Name[ca@valencia]=%{APPNAME}
 Name[es]=%{APPNAME}
 Name[nl]=%{APPNAME}
 Name[pl]=%{APPNAME}
 Name[pt]=%{APPNAME}
+Name[pt_BR]=%{APPNAME}
+Name[sk]=%{APPNAME}
+Name[sl]=%{APPNAME}
 Name[sv]=%{APPNAME}
 Name[uk]=%{APPNAME}
 Name[x-test]=xx%{APPNAME}xx
 Comment=%{APPNAME} runner
 Comment[ca]=Llançador del %{APPNAME}
+Comment[ca@valencia]=Llançador del %{APPNAME}
 Comment[es]=Lanzador de %{APPNAME}
 Comment[nl]=%{APPNAME} runner
 Comment[pl]=Uruchamianie %{APPNAME}
 Comment[pt]=Execução do %{APPNAME}
+Comment[pt_BR]=Execução do %{APPNAME}
+Comment[sk]=%{APPNAME} runner
+Comment[sl]=Zaganjalnik %{APPNAME}
 Comment[sv]=Körprogram %{APPNAME}
 Comment[uk]=Засіб запуску %{APPNAME}
 Comment[x-test]=xx%{APPNAME} runnerxx
