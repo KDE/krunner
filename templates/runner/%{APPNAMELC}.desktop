@@ -2,6 +2,7 @@
 Name=%{APPNAME}
 Name[ca]=%{APPNAME}
 Name[ca@valencia]=%{APPNAME}
+Name[de]=%{APPNAME}
 Name[es]=%{APPNAME}
 Name[nl]=%{APPNAME}
 Name[pl]=%{APPNAME}
@@ -15,6 +16,7 @@ Name[x-test]=xx%{APPNAME}xx
 Comment=%{APPNAME} runner
 Comment[ca]=Llançador del %{APPNAME}
 Comment[ca@valencia]=Llançador del %{APPNAME}
+Comment[de]=%{APPNAME}-Starter
 Comment[es]=Lanzador de %{APPNAME}
 Comment[nl]=%{APPNAME} runner
 Comment[pl]=Uruchamianie %{APPNAME}
