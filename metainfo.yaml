@@ -4,8 +4,8 @@ tier: 3
 type: solution
 platforms:
     - name: All
-portingAid: true
-deprecated: true
+portingAid: false
+deprecated: false
 release: true
 libraries:
  - qmake: KRunner
