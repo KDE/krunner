@@ -20,7 +20,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 include(KDEPackageAppTemplates)
 
-set(KF5_VERSION "5.21.0") # handled by release scripts
+set(KF5_VERSION "5.22.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.21.0") # handled by release scripts
 
 ecm_setup_version(${KF5_VERSION}
