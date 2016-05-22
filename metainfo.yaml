@@ -11,3 +11,7 @@ libraries:
  - qmake: KRunner
    cmake: "KF5::Runner"
 cmakename: KF5Runner
+
+public_lib: true
+group: Frameworks
+subgroup: Porting Aids
