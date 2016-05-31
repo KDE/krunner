@@ -14,4 +14,4 @@ cmakename: KF5Runner
 
 public_lib: true
 group: Frameworks
-subgroup: Porting Aids
+subgroup: Tier 3
