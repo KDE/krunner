@@ -66,6 +66,7 @@ class QueryMatchPrivate : public QSharedData
             text = other.text;
             subtext = other.subtext;
             icon = other.icon;
+            iconName = other.iconName;
             data = other.data;
             mimeType = other.mimeType;
             urls = other.urls;
@@ -86,6 +87,7 @@ class QueryMatchPrivate : public QSharedData
         QString mimeType;
         QList<QUrl> urls;
         QIcon icon;
+        QString iconName;
         QVariant data;
         qreal relevance;
         QAction *selAction;
@@ -206,6 +208,12 @@ void QueryMatch::setIcon(const QIcon &icon)
     d->icon = icon;
 }
 
+void QueryMatch::setIconName(const QString &iconName)
+{
+    QWriteLocker locker(d->lock);
+    d->iconName = iconName;
+}
+
 QVariant QueryMatch::data() const
 {
     QReadLocker locker(d->lock);
@@ -228,6 +236,12 @@ QIcon QueryMatch::icon() const
 {
     QReadLocker locker(d->lock);
     return d->icon;
+}
+
+QString QueryMatch::iconName() const
+{
+    QReadLocker locker(d->lock);
+    return d->iconName;
 }
 
 void QueryMatch::setMimeType(const QString &mimeType)

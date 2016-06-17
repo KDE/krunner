@@ -218,6 +218,8 @@ class KRUNNER_EXPORT QueryMatch
         /**
          * Sets the icon associated with this match
          *
+         * Prefer using setIconName.
+         *
          * @param icon the icon to show along with the match
          */
         void setIcon(const QIcon &icon);
@@ -226,6 +228,20 @@ class KRUNNER_EXPORT QueryMatch
          * @return the icon for this match
          */
         QIcon icon() const;
+
+        /**
+         * Sets the icon name associated with this match
+         *
+         * @param icon the name of the icon to show along with the match
+         * @since 5.24
+         */
+        void setIconName(const QString &iconName);
+
+        /**
+         * @return the name of the icon for this match
+         * @since 5.24
+         */
+        QString iconName() const;
 
         /**
          * Sets the MimeType, if any, associated with this match.
