@@ -30,6 +30,7 @@ Name[sv]=%{APPNAME}
 Name[uk]=%{APPNAME}
 Name[x-test]=xx%{APPNAME}xx
 Name[zh_CN]=%{APPNAME}
+Name[zh_TW]=%{APPNAME}
 Comment=%{APPNAME} runner
 Comment[ca]=Llançador del %{APPNAME}
 Comment[ca@valencia]=Llançador del %{APPNAME}
@@ -61,6 +62,7 @@ Comment[sv]=Körprogram %{APPNAME}
 Comment[uk]=Засіб запуску %{APPNAME}
 Comment[x-test]=xx%{APPNAME} runnerxx
 Comment[zh_CN]=%{APPNAME} 运行器
+Comment[zh_TW]=%{APPNAME} runner
 Icon=
 
 X-KDE-ServiceTypes=Plasma/Runner
