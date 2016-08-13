@@ -207,7 +207,7 @@ class RunnerContextPrivate : public QSharedData
                     }
                 }
                 const bool hasProtocol = !url.scheme().isEmpty();
-                const bool isLocalProtocol = KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
+                const bool isLocalProtocol = hasProtocol && KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
                 if (hasProtocol &&
                     ((!isLocalProtocol && !url.host().isEmpty()) ||
                      (isLocalProtocol && url.scheme() != QLatin1String("file")))) {
