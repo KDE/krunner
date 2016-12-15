@@ -1,6 +1,7 @@
 # KDE Config File
 [General]
 Name=C++
+Name[ast]=C++
 Name[ca]=C++
 Name[ca@valencia]=C++
 Name[cs]=C++
