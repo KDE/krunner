@@ -551,7 +551,7 @@ QueryMatch RunnerContext::match(const QString &id) const
         return *match;
     }
 
-    return QueryMatch(0);
+    return QueryMatch(nullptr);
 }
 
 void RunnerContext::setSingleRunnerQueryMode(bool enabled)

@@ -94,7 +94,7 @@ class FindMatchesJob : public Job
 {
 public:
     FindMatchesJob(Plasma::AbstractRunner *runner,
-                   Plasma::RunnerContext *context, QObject *parent = 0);
+                   Plasma::RunnerContext *context, QObject *parent = nullptr);
     ~FindMatchesJob();
 
     int priority() const Q_DECL_OVERRIDE;

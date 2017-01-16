@@ -202,7 +202,7 @@ void AbstractRunner::clearActions()
 QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
 {
     Q_UNUSED(match)
-    return 0;
+    return nullptr;
 }
 
 bool AbstractRunner::hasRunOptions()
@@ -356,11 +356,11 @@ void AbstractRunner::suspendMatching(bool suspend)
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),
-      blackListed(0),
+      blackListed(nullptr),
       runner(r),
       fastRuns(0),
-      package(0),
-      defaultSyntax(0),
+      package(nullptr),
+      defaultSyntax(nullptr),
       hasRunOptions(false),
       suspendMatching(false)
 {
@@ -369,7 +369,7 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
 AbstractRunnerPrivate::~AbstractRunnerPrivate()
 {
     delete package;
-    package = 0;
+    package = nullptr;
 }
 
 void AbstractRunnerPrivate::init(const KService::Ptr service)

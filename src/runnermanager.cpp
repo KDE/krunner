@@ -62,8 +62,8 @@ public:
 
     RunnerManagerPrivate(RunnerManager *parent)
       : q(parent),
-        deferredRun(0),
-        currentSingleRunner(0),
+        deferredRun(nullptr),
+        currentSingleRunner(nullptr),
         prepped(false),
         allRunnersPrepped(false),
         singleRunnerPrepped(false),
@@ -129,7 +129,7 @@ public:
             delete currentSingleRunner;
         }
 
-        currentSingleRunner = 0;
+        currentSingleRunner = nullptr;
     }
 
     void loadSingleRunner()
@@ -293,10 +293,10 @@ public:
     AbstractRunner *loadInstalledRunner(const KService::Ptr service)
     {
         if (!service) {
-            return 0;
+            return nullptr;
         }
 
-        AbstractRunner *runner = 0;
+        AbstractRunner *runner = nullptr;
 
         const QString api = service->property(QStringLiteral("X-Plasma-API")).toString();
 
@@ -342,7 +342,7 @@ public:
         if (deferredRun.isEnabled() && runJob->runner() == deferredRun.runner()) {
             //qCDebug(KRUNNER) << "job actually done, running now **************";
             QueryMatch tmpRun = deferredRun;
-            deferredRun = QueryMatch(0);
+            deferredRun = QueryMatch(nullptr);
             tmpRun.run(context);
         }
 
@@ -667,7 +667,7 @@ void RunnerManager::run(const QueryMatch &match)
     }
 
     if (d->deferredRun.isValid()) {
-        d->deferredRun = QueryMatch(0);
+        d->deferredRun = QueryMatch(nullptr);
     }
 
     d->context.run(match);
@@ -696,7 +696,7 @@ QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const
         return runner->mimeDataForMatch(match);
     }
 
-    return 0;
+    return nullptr;
 }
 
 KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
@@ -838,7 +838,7 @@ void RunnerManager::reset()
     if (d->deferredRun.isEnabled()) {
         //qCDebug(KRUNNER) << "job actually done, running now **************";
         QueryMatch tmpRun = d->deferredRun;
-        d->deferredRun = QueryMatch(0);
+        d->deferredRun = QueryMatch(nullptr);
         tmpRun.run(d->context);
     }
 

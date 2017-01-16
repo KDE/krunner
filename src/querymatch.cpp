@@ -44,7 +44,7 @@ class QueryMatchPrivate : public QSharedData
               runner(r),
               type(QueryMatch::ExactMatch),
               relevance(.7),
-              selAction(0),
+              selAction(nullptr),
               enabled(true),
               idSetByData(false)
         {

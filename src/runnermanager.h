@@ -51,8 +51,8 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     Q_OBJECT
 
     public:
-        explicit RunnerManager(QObject *parent=0);
-        explicit RunnerManager(KConfigGroup &config, QObject *parent=0);
+        explicit RunnerManager(QObject *parent=nullptr);
+        explicit RunnerManager(KConfigGroup &config, QObject *parent=nullptr);
         ~RunnerManager();
 
         /**

@@ -80,7 +80,7 @@ public:
         Actions
     };
 
-    RunnerModel(QObject *parent = 0);
+    RunnerModel(QObject *parent = nullptr);
     QHash< int, QByteArray > roleNames() const Q_DECL_OVERRIDE;
 
     QString currentQuery() const;

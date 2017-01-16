@@ -61,12 +61,12 @@ class KRUNNER_EXPORT RunnerContext : public QObject
 
         Q_DECLARE_FLAGS(Types, Type)
 
-        explicit RunnerContext(QObject *parent = 0);
+        explicit RunnerContext(QObject *parent = nullptr);
 
         /**
          * Copy constructor
          */
-        RunnerContext(RunnerContext &other, QObject *parent = 0);
+        RunnerContext(RunnerContext &other, QObject *parent = nullptr);
 
         /**
          * Assignment operator

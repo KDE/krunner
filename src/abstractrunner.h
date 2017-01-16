@@ -309,8 +309,8 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         friend class RunnerManager;
         friend class RunnerManagerPrivate;
 
-        explicit AbstractRunner(QObject *parent = 0, const QString &path = QString());
-        explicit AbstractRunner(const KService::Ptr service, QObject *parent = 0);
+        explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
+        explicit AbstractRunner(const KService::Ptr service, QObject *parent = nullptr);
 
         AbstractRunner(QObject *parent, const QVariantList &args);
 

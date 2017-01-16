@@ -30,7 +30,7 @@
 
 RunnerModel::RunnerModel(QObject *parent)
     : QAbstractListModel(parent),
-      m_manager(0),
+      m_manager(nullptr),
       m_startQueryTimer(new QTimer(this)),
       m_runningChangedTimeout(new QTimer(this)),
       m_running(false)

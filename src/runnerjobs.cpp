@@ -124,9 +124,9 @@ void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface* job)
 FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner,
                                Plasma::RunnerContext *context, QObject *)
     : ThreadWeaver::Job(),
-      m_context(*context, 0),
+      m_context(*context, nullptr),
       m_runner(runner),
-      m_timer(0),
+      m_timer(nullptr),
       m_decorator(new ThreadWeaver::QObjectDecorator(this, true))
 {
     QMutexLocker l(mutex()); Q_UNUSED(l);
