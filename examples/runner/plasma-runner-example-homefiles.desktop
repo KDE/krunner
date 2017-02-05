@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Home Files
-Name[ar]=ملفات المنزل
+Name[ar]=ملفّات المنزل
 Name[bs]=Lične datoteke
 Name[ca]=Fitxers personals
 Name[ca@valencia]=Fitxers personals
@@ -43,6 +43,7 @@ Name[x-test]=xxHome Filesxx
 Name[zh_CN]=主文件
 Name[zh_TW]=家目錄檔案
 Comment=Part of a tutorial demonstrating how to create Runner plugins
+Comment[ar]=جزء من درس تعليميّ لإنشاء ملحقات لتطبيق «المشغّل»
 Comment[ast]=Perte d'un tutorial pa demostrar cómo crear complementos de Runner
 Comment[bs]=Dio tutorijala demonstrira kako se kreiraju Runner priključci
 Comment[ca]=Part d'un programa d'aprenentatge que mostra com crear connectors Runner
