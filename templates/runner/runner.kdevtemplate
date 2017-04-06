@@ -66,5 +66,5 @@ Comment[uk]=Шаблон засобу запуску Плазми
 Comment[x-test]=xxPlasma Runner Template. A plasma runner templatexx
 Comment[zh_CN]=Plasma 运行器模板。一个 plasma 运行器模板
 Comment[zh_TW]=Plasma Runner 範本。一個 plasma runner 的範本
-Category=KDE/KRunner
+Category=Plasma/KRunner
 Icon=runner.png
