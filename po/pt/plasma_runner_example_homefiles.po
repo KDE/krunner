@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: plasma_runner_example_homefiles\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:12+0100\n"
+"PO-Revision-Date: 2013-09-05 09:53+0100\n"
+"Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
+"Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: homefilesrunner.cpp:71
+#, kde-format
+msgid "Finds files matching :q: in the %1 folder"
+msgstr "Procura por ficheiros que correspondam a :q: na pasta %1"
+
+#: homefilesrunner.cpp:116
+#, kde-format
+msgid "Open %1"
+msgstr "Abrir o %1"
+
+#: homefilesrunner.cpp:157
+#, kde-format
+msgid "This is just for show"
+msgstr "Isto é apenas para mostrar"
