@@ -70,6 +70,28 @@ install(FILES
    data/servicetypes/plasma-runner.desktop
    DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
+if(BUILD_QCH)
+    ecm_add_qch(
+        KF5Runner_QCH
+        NAME KRunner
+        BASE_NAME KF5Runner
+        VERSION ${KF5_VERSION}
+        ORG_DOMAIN org.kde
+        SOURCES # using only public headers, to cover only public API
+            ${KRunner_HEADERS}
+        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
+        LINK_QCHS
+            Qt5Core_QCH
+        BLANK_MACROS
+            KRUNNER_EXPORT
+            KRUNNER_DEPRECATED
+            KRUNNER_DEPRECATED_EXPORT
+        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        COMPONENT Devel
+    )
+endif()
+
 include(ECMGeneratePriFile)
 ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KRunner)
 install(FILES ${PRI_FILENAME}

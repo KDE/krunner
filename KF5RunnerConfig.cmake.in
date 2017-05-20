@@ -5,4 +5,4 @@ find_dependency(Qt5Core "@REQUIRED_QT_VERSION@")
 find_dependency(KF5Plasma "@KF5_DEP_VERSION@")
 
 include("${CMAKE_CURRENT_LIST_DIR}/KF5RunnerTargets.cmake")
-
+@PACKAGE_INCLUDE_QCHTARGETS@
