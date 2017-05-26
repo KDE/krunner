@@ -47,7 +47,7 @@ class QueryMatch;
 class AbstractRunnerPrivate;
 
 /**
- * @class AbstractRunner plasma/abstractrunner.h <Plasma/AbstractRunner>
+ * @class AbstractRunner abstractrunner.h <KRunner/AbstractRunner>
  *
  * @short An abstract base class for Plasma Runner plugins.
  *

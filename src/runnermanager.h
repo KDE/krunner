@@ -41,7 +41,7 @@ namespace Plasma
     class RunnerManagerPrivate;
 
 /**
- * @class RunnerManager plasma/runnermanager.h <Plasma/RunnerManager>
+ * @class RunnerManager runnermanager.h <KRunner/RunnerManager>
  *
  * @short The RunnerManager class decides what installed runners are runnable,
  *        and their ratings. It is the main proxy to the runners.

@@ -29,7 +29,7 @@ namespace Plasma
 
 class RunnerSyntaxPrivate;
 /**
- * @class RunnerSyntax
+ * @class RunnerSyntax runnersyntax.h <KRunner/RunnerSyntax>
  * @since 4.3
  *
  * Represents a query prototype that the runner accepts. These can be

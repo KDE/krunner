@@ -40,7 +40,7 @@ class AbstractRunner;
 class QueryMatchPrivate;
 
 /**
- * @class QueryMatch plasma/querymatch.h <Plasma/QueryMatch>
+ * @class QueryMatch querymatch.h <KRunner/QueryMatch>
  *
  * @short A match returned by an AbstractRunner in response to a given
  * RunnerContext.
