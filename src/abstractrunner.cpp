@@ -356,7 +356,7 @@ void AbstractRunner::suspendMatching(bool suspend)
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),
-      blackListed(nullptr),
+      blackListed(RunnerContext::None),
       runner(r),
       fastRuns(0),
       package(nullptr),
