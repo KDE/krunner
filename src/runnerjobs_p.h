@@ -116,6 +116,7 @@ private:
 
 class DelayedJobCleaner : public QObject
 {
+    Q_OBJECT
 public:
     DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob> > &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
     ~DelayedJobCleaner();
