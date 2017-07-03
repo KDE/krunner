@@ -209,7 +209,7 @@ public:
             }
 
             if (selected) {
-                AbstractRunner *runner = 0;
+                AbstractRunner *runner = nullptr;
                 if (!loaded) {
                     runner = loadInstalledRunner(description.service());
                 } else {
