@@ -333,7 +333,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         /**
          * Sets the nominal speed of the runner. Only slow runners need
          * to call this within their constructor because the default
-         * speed is NormalSpeed. Runners that use DBUS should call
+         * speed is NormalSpeed. Runners that use D-Bus should call
          * this within their constructors.
          */
         void setSpeed(Speed newSpeed);
