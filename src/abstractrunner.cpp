@@ -201,8 +201,12 @@ void AbstractRunner::clearActions()
 
 QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
 {
-    Q_UNUSED(match)
-    return nullptr;
+        if (match.urls().isEmpty()) {
+        return nullptr;
+    }
+    QMimeData *result = new QMimeData();
+    result->setUrls(match.urls());
+    return result;
 }
 
 bool AbstractRunner::hasRunOptions()
