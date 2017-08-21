@@ -74,7 +74,7 @@ class KRUNNER_EXPORT QueryMatch
          *
          * @param runner the runner this match belongs to
          */
-        explicit QueryMatch(AbstractRunner *runner);
+        explicit QueryMatch(AbstractRunner *runner = nullptr);
 
         /**
          * Copy constructor
@@ -180,7 +180,7 @@ class KRUNNER_EXPORT QueryMatch
         void setId(const QString &id);
 
         /**
-         * @ruetnr a string that can be used as an ID for this match,
+         * @return a string that can be used as an ID for this match,
          * even between different queries. It is based in part
          * on the source of the match (the AbstractRunner) and
          * distinguishing information provided by the runner,

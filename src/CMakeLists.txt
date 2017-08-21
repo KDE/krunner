@@ -1,13 +1,19 @@
 add_subdirectory(declarative)
 
-add_library(KF5Runner
+set (KF5Runner_SRCS
     abstractrunner.cpp
+    dbusrunner.cpp
     runnerjobs.cpp
     querymatch.cpp
     runnercontext.cpp
     runnermanager.cpp
     runnersyntax.cpp
     krunner_debug.cpp)
+set_property(SOURCE "data/org.kde.krunner1.xml" PROPERTY INCLUDE dbusutils_p.h)
+qt5_add_dbus_interface(KF5Runner_SRCS "data/org.kde.krunner1.xml" krunner_iface)
+
+add_library(KF5Runner
+    ${KF5Runner_SRCS})
 
 generate_export_header(KF5Runner BASE_NAME KRunner)
 add_library(KF5::Runner ALIAS KF5Runner)
@@ -21,6 +27,7 @@ target_link_libraries(KF5Runner
         Qt5::Core
         KF5::Plasma # Must be public because abstractrunner.h needs plasma/version.h
     PRIVATE
+        Qt5::DBus
         Qt5::Gui
         Qt5::Widgets
         KF5::ConfigCore
@@ -96,3 +103,8 @@ include(ECMGeneratePriFile)
 ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KRunner)
 install(FILES ${PRI_FILENAME}
         DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+
+install(FILES
+   "data/org.kde.krunner1.xml"
+   DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
+   RENAME kf5_org.kde.krunner1.xml)

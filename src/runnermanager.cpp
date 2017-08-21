@@ -39,6 +39,7 @@
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
 
+#include "dbusrunner_p.h"
 #include "runnerjobs_p.h"
 #include "plasma/pluginloader.h"
 #include <plasma/version.h>
@@ -312,6 +313,8 @@ public:
 #endif
                 }
             }
+        } else if (api == QLatin1String("DBus")){
+            runner = new DBusRunner(service, q);
         } else {
             //qCDebug(KRUNNER) << "got a script runner known as" << api;
             runner = new AbstractRunner(service, q);

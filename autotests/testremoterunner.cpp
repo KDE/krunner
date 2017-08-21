@@ -1,0 +1,80 @@
+/*
+ *   Copyright (C) 2017 David Edmundson <davidedmundson@kde.org>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License version 2 as
+ *   published by the Free Software Foundation
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+#include <QCoreApplication>
+#include <QDBusConnection>
+
+#include <iostream>
+
+#include "testremoterunner.h"
+#include "krunner1adaptor.h"
+
+//Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing
+//Run prints a line to stdout
+
+TestRemoteRunner::TestRemoteRunner()
+{
+    new Krunner1Adaptor(this);
+    qDBusRegisterMetaType<RemoteMatch>();
+    qDBusRegisterMetaType<RemoteMatches>();
+    qDBusRegisterMetaType<RemoteAction>();
+    qDBusRegisterMetaType<RemoteActions>();
+    QDBusConnection::sessionBus().registerService("net.dave");
+    QDBusConnection::sessionBus().registerObject("/dave", this);
+}
+
+RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
+{
+    RemoteMatches ms;
+    if (searchTerm.contains("foo")) {
+        RemoteMatch m;
+        m.id = "id1";
+        m.text = "Match 1";
+        m.iconName = "icon1";
+        m.type = Plasma::QueryMatch::ExactMatch;
+        m.relevance = 0.8;
+        ms << m;
+    }
+    return ms;
+
+}
+
+RemoteActions TestRemoteRunner::Actions()
+{
+    RemoteAction action;
+    action.id = "action1";
+    action.text = "Action 1";
+    action.iconName = "document-browser";
+
+    return RemoteActions({action});
+}
+
+void TestRemoteRunner::Run(const QString &id, const QString &actionId)
+{
+    std::cout << "Running:" << qPrintable(id) << ":" << qPrintable(actionId) << std::endl;
+    std::cout.flush();
+}
+
+int main(int argc, char ** argv)
+{
+    QCoreApplication app(argc, argv);
+    TestRemoteRunner r;
+    app.exec();
+}
+
+#include "testremoterunner.moc"

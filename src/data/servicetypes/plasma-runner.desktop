@@ -59,3 +59,11 @@ Type=QString
 [PropertyDef::X-Plasma-Args]
 Type=QStringList
 
+[PropertyDef::X-Plasma-Api]
+Type=QString
+
+[PropertyDef::X-Plasma-DBusRunner-Service]
+Type=QString
+
+[PropertyDef::X-Plasma-DBusRunner-Path]
+Type=QString
