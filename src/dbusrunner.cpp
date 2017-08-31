@@ -62,6 +62,7 @@ void DBusRunner::requestActions()
     auto watcher = new QDBusPendingCallWatcher(reply);
     connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, watcher]() {
         watcher->deleteLater();
+        clearActions();
         QDBusReply<RemoteActions> reply = *watcher;
         if (!reply.isValid()) {
             return;
