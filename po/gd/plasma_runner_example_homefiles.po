@@ -1,0 +1,35 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# GunChleoc <fios@foramnagaidhlig.net>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:12+0100\n"
+"PO-Revision-Date: 2015-11-04 15:14+0000\n"
+"Last-Translator: Michael Bauer <fios@akerbeltz.org>\n"
+"Language-Team: Fòram na Gàidhlig\n"
+"Language: gd\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : "
+"(n > 2 && n < 20) ? 2 : 3;\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Project-Style: kde\n"
+
+#: homefilesrunner.cpp:71
+#, kde-format
+msgid "Finds files matching :q: in the %1 folder"
+msgstr "Lorg faidhlichean a cho-fhreagras ri :q: sa phasgan %1"
+
+#: homefilesrunner.cpp:116
+#, kde-format
+msgid "Open %1"
+msgstr "Fosgail %1"
+
+#: homefilesrunner.cpp:157
+#, kde-format
+msgid "This is just for show"
+msgstr "Chan e ach taisbeanadh a th' ann"

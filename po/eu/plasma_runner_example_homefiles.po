@@ -1,0 +1,36 @@
+# Translation of plasma_runner_example_homefiles.po to Euskara/Basque (eu).
+# Copyright (C) 2017, Free Software Foundation.
+# This file is distributed under the same license as kde-workspace.
+# KDE Euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>
+#
+# Translators:
+# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: plasma_runner_example_homefiles\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:12+0100\n"
+"PO-Revision-Date: 2017-08-06 00:57+0100\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
+"Language-Team: Basque <kde-i18n-doc@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: homefilesrunner.cpp:71
+#, kde-format
+msgid "Finds files matching :q: in the %1 folder"
+msgstr ":q:-rekin bat datozen fitxategiak aurkitzen ditu %1 karpetan"
+
+#: homefilesrunner.cpp:116
+#, kde-format
+msgid "Open %1"
+msgstr "Ireki %1"
+
+#: homefilesrunner.cpp:157
+#, kde-format
+msgid "This is just for show"
+msgstr "Hau erakusteko baino ez da"
