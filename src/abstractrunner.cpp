@@ -26,7 +26,6 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QTimer>
-#include <QDebug>
 
 #include "krunner_debug.h"
 #include <kplugininfo.h>

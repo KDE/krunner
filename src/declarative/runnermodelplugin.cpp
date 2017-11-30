@@ -20,7 +20,6 @@
 #include "runnermodelplugin.h"
 
 #include <QtQml>
-#include <QDebug>
 
 #include "krunner_debug.h"
 

@@ -22,7 +22,6 @@
 #include <QIcon>
 #include <QAction>
 #include <QTimer>
-#include <QDebug>
 
 #include "krunner_debug.h"
 

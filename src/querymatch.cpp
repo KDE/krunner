@@ -26,7 +26,6 @@
 #include <QStringList>
 #include <QVariant>
 #include <QWeakPointer>
-#include <QDebug>
 
 #include "krunner_debug.h"
 

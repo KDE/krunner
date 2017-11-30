@@ -27,7 +27,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSharedData>
-#include <QDebug>
 
 #include <kconfiggroup.h>
 #include "krunner_debug.h"

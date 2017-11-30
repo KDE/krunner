@@ -25,7 +25,6 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <qstandardpaths.h>
-#include <QDebug>
 #include "krunner_debug.h"
 
 #include <ksharedconfig.h>
