@@ -22,6 +22,7 @@ include(KDEInstallDirs)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 include(KDEPackageAppTemplates)
+include(ECMQtDeclareLoggingCategory)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -85,5 +86,9 @@ install(EXPORT KF5RunnerTargets
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
         DESTINATION "${KF5_INCLUDE_INSTALL_DIR}"
         COMPONENT Devel)
+
+    # contains list of debug categories, for kdebugsettings
+install(FILES krunner.categories DESTINATION ${KDE_INSTALL_CONFDIR})
+
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
