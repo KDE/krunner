@@ -34,18 +34,18 @@ TestRemoteRunner::TestRemoteRunner()
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
-    QDBusConnection::sessionBus().registerService("net.dave");
-    QDBusConnection::sessionBus().registerObject("/dave", this);
+    QDBusConnection::sessionBus().registerService(QStringLiteral("net.dave"));
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this);
 }
 
 RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
 {
     RemoteMatches ms;
-    if (searchTerm.contains("foo")) {
+    if (searchTerm.contains(QLatin1String("foo"))) {
         RemoteMatch m;
-        m.id = "id1";
-        m.text = "Match 1";
-        m.iconName = "icon1";
+        m.id = QStringLiteral("id1");
+        m.text = QStringLiteral("Match 1");
+        m.iconName = QStringLiteral("icon1");
         m.type = Plasma::QueryMatch::ExactMatch;
         m.relevance = 0.8;
         ms << m;
@@ -57,9 +57,9 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
 RemoteActions TestRemoteRunner::Actions()
 {
     RemoteAction action;
-    action.id = "action1";
-    action.text = "Action 1";
-    action.iconName = "document-browser";
+    action.id = QStringLiteral("action1");
+    action.text = QStringLiteral("Action 1");
+    action.iconName = QStringLiteral("document-browser");
 
     return RemoteActions({action});
 }

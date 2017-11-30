@@ -64,8 +64,8 @@ DBusRunnerTest::~DBusRunnerTest()
 void DBusRunnerTest::initTestCase()
 {
     QStandardPaths::setTestModeEnabled(true);
-    QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).mkpath("kservices5");
-    const QString fakeServicePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/kservices5/dbusrunnertest.desktop");
+    QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).mkpath(QStringLiteral("kservices5"));
+    const QString fakeServicePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kservices5/dbusrunnertest.desktop");
     QFile::copy(QFINDTESTDATA("dbusrunnertest.desktop"), fakeServicePath);
     KSycoca::self()->ensureCacheValid();
 }
@@ -73,10 +73,10 @@ void DBusRunnerTest::initTestCase()
 void DBusRunnerTest::testMatch()
 {
     RunnerManager m;
-    auto s = KService::serviceByDesktopPath("dbusrunnertest.desktop");
+    auto s = KService::serviceByDesktopPath(QStringLiteral("dbusrunnertest.desktop"));
     QVERIFY(s);
     m.loadRunner(s);
-    m.launchQuery("foo");
+    m.launchQuery(QStringLiteral("foo"));
 
     QSignalSpy spy(&m, &RunnerManager::matchesChanged);
     QVERIFY(spy.wait());

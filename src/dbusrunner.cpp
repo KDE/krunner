@@ -41,8 +41,8 @@ DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
 
-    QString serviceName = service->property("X-Plasma-DBusRunner-Service").toString();
-    QString path = service->property("X-Plasma-DBusRunner-Path").toString();
+    QString serviceName = service->property(QStringLiteral("X-Plasma-DBusRunner-Service")).toString();
+    QString path = service->property(QStringLiteral("X-Plasma-DBusRunner-Path")).toString();
 
     if (serviceName.isEmpty() || path.isEmpty()) {
         qCWarning(KRUNNER) << "Invalid entry:" << service->name();
@@ -96,9 +96,9 @@ void DBusRunner::match(Plasma::RunnerContext &context)
         m.setRelevance(match.relevance);
 
         //split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
-        m.setUrls(QUrl::fromStringList(match.properties.value("urls").toStringList()));
-        m.setMatchCategory(match.properties.value("category").toString());
-        m.setSubtext(match.properties.value("subtext").toString());
+        m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
+        m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
+        m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
 
         context.addMatch(m);
     }
