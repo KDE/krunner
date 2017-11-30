@@ -3,8 +3,8 @@ project(runnermodel)
 set(runnermodel_SRCS
     runnermodel.cpp
     runnermodelplugin.cpp
-    krunner_debug.cpp
     )
+ecm_qt_declare_logging_category(runnermodel_SRCS HEADER krunner_debug.h IDENTIFIER KRUNNER CATEGORY_NAME org.kde.krunner)
 
 add_library(runnermodelplugin SHARED ${runnermodel_SRCS})
 target_link_libraries(runnermodelplugin
