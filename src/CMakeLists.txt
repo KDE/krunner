@@ -34,7 +34,6 @@ target_link_libraries(KF5Runner
         KF5::Service
         KF5::I18n
         KF5::ThreadWeaver
-        KF5::Solid
         KF5::CoreAddons #KShell
         KF5::KIOCore #KProtocolInfo
 )

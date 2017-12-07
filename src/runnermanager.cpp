@@ -31,9 +31,6 @@
 #include <kplugininfo.h>
 #include <kservicetypetrader.h>
 
-#include <solid/device.h>
-#include <solid/deviceinterface.h>
-
 #include <ThreadWeaver/DebuggingAids>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
@@ -99,20 +96,9 @@ public:
     {
         KConfigGroup config = configGroup();
 
-        //The number of threads used scales with the number of processors.
-        const int numProcs =
-            qMax(Solid::Device::listFromType(Solid::DeviceInterface::Processor).count(), 1);
-        //This entry allows to define a hard upper limit independent of the number of processors.
-        const int maxThreads = config.readEntry("maxThreads", 16);
-        const int numThreads = qMin(maxThreads, 2 + ((numProcs - 1) * 2));
-        //qCDebug(KRUNNER) << "setting up" << numThreads << "threads for" << numProcs << "processors";
-        if (numThreads > Queue::instance()->maximumNumberOfThreads()) {
-            Queue::instance()->setMaximumNumberOfThreads(numThreads);
-        }
         // Limit the number of instances of a single normal speed runner and all of the slow runners
         // to half the number of threads
-        const int cap = qMax(2, numThreads/2);
-        DefaultRunnerPolicy::instance().setCap(cap);
+        DefaultRunnerPolicy::instance().setCap(qMax(2, Queue::instance()->maximumNumberOfThreads() / 2));
 
         enabledCategories = config.readEntry("enabledCategories", QStringList());
         context.restore(config);
