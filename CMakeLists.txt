@@ -46,6 +46,13 @@ find_package(KF5Service ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5Plasma ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5ThreadWeaver ${KF5_DEP_VERSION} REQUIRED)
 
+set(KRunner_AUTOMOC_MACRO_NAMES "K_EXPORT_PLASMA_RUNNER" "K_EXPORT_RUNNER_CONFIG")
+if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
+    # CMake 3.9+ warns about automoc on files without Q_OBJECT, and doesn't know about other macros.
+    # 3.10+ lets us provide more macro names that require automoc.
+    list(APPEND CMAKE_AUTOMOC_MACRO_NAMES ${KRunner_AUTOMOC_MACRO_NAMES})
+endif()
+
 # Subdirectories
 add_subdirectory(src)
 add_subdirectory(autotests)
