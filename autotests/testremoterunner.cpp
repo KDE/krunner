@@ -76,5 +76,3 @@ int main(int argc, char ** argv)
     TestRemoteRunner r;
     app.exec();
 }
-
-#include "testremoterunner.moc"
