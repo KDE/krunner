@@ -22,8 +22,8 @@
 #ifndef PLASMA_RUNNERMANAGER_H
 #define PLASMA_RUNNERMANAGER_H
 
-#include <QtCore/QList>
-#include <QtCore/QObject>
+#include <QList>
+#include <QObject>
 
 #include <kplugininfo.h>
 

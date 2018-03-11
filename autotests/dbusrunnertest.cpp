@@ -18,7 +18,7 @@
 
 #include <QObject>
 #include <QAction>
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include "runnermanager.h"
 #include <QSignalSpy>

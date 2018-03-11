@@ -20,9 +20,9 @@
 #ifndef PLASMA_QUERYMATCH_H
 #define PLASMA_QUERYMATCH_H
 
-#include <QtCore/QList>
-#include <QtCore/QUrl>
-#include <QtCore/QSharedDataPointer>
+#include <QList>
+#include <QUrl>
+#include <QSharedDataPointer>
 
 #include "krunner_export.h"
 

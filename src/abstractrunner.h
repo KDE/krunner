@@ -20,9 +20,9 @@
 #ifndef PLASMA_ABSTRACTRUNNER_H
 #define PLASMA_ABSTRACTRUNNER_H
 
-#include <QtCore/QObject>
-#include <QtCore/QMutex>
-#include <QtCore/QStringList>
+#include <QObject>
+#include <QMutex>
+#include <QStringList>
 #include <QIcon>
 
 #include <kconfiggroup.h>

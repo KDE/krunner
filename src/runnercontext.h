@@ -20,9 +20,9 @@
 #ifndef PLASMA_RUNNERCONTEXT_H
 #define PLASMA_RUNNERCONTEXT_H
 
-#include <QtCore/QList>
-#include <QtCore/QObject>
-#include <QtCore/QSharedDataPointer>
+#include <QList>
+#include <QObject>
+#include <QSharedDataPointer>
 
 #include "krunner_export.h"
 

@@ -20,7 +20,7 @@
 #ifndef PLASMA_RUNNERSYNTAX_H
 #define PLASMA_RUNNERSYNTAX_H
 
-#include <QtCore/QStringList>
+#include <QStringList>
 
 #include "krunner_export.h"
 

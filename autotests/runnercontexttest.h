@@ -19,7 +19,7 @@
 
 #ifndef PACKAGEMETADATATEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest>
 
 #include "runnercontext.h"
 
