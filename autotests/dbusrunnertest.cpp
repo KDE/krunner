@@ -41,9 +41,11 @@ public:
 
 private Q_SLOTS:
     void initTestCase();
+    void cleanupTestCase();
     void testMatch();
 private:
     QProcess *m_process;
+    QStringList m_filesForCleanup;
 };
 
 DBusRunnerTest::DBusRunnerTest()
@@ -67,7 +69,15 @@ void DBusRunnerTest::initTestCase()
     QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).mkpath(QStringLiteral("kservices5"));
     const QString fakeServicePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kservices5/dbusrunnertest.desktop");
     QFile::copy(QFINDTESTDATA("dbusrunnertest.desktop"), fakeServicePath);
+    m_filesForCleanup << fakeServicePath;
     KSycoca::self()->ensureCacheValid();
+}
+
+void DBusRunnerTest::cleanupTestCase()
+{
+    for(const QString path: m_filesForCleanup) {
+        QFile::remove(path);
+    }
 }
 
 void DBusRunnerTest::testMatch()
