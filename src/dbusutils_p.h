@@ -47,7 +47,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, RemoteMatc
     argument >> match.iconName;
     uint type;
     argument >> type;
-    match.type = (Plasma::QueryMatch::Type)type;
+    match.type = static_cast<Plasma::QueryMatch::Type>(type);
     argument >> match.relevance;
     argument >> match.properties;
     argument.endStructure();

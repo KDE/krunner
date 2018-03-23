@@ -455,7 +455,7 @@ bool RunnerContext::removeMatches(const QStringList matchIdList)
 
     LOCK_FOR_READ(d)
     foreach(const QString &matchId, matchIdList) {
-        const QueryMatch* match = d->matchesById.value(matchId, 0);
+        const QueryMatch* match = d->matchesById.value(matchId, nullptr);
         if (match) {
             presentMatchList << match;
             presentMatchIdList << matchId;
@@ -487,7 +487,7 @@ bool RunnerContext::removeMatch(const QString matchId)
         return false;
     }
     LOCK_FOR_READ(d)
-    const QueryMatch* match = d->matchesById.value(matchId, 0);
+    const QueryMatch* match = d->matchesById.value(matchId, nullptr);
     UNLOCK(d)
     if (!match) {
         return false;
@@ -543,7 +543,7 @@ QList<QueryMatch> RunnerContext::matches() const
 QueryMatch RunnerContext::match(const QString &id) const
 {
     LOCK_FOR_READ(d)
-    const QueryMatch *match = d->matchesById.value(id, 0);
+    const QueryMatch *match = d->matchesById.value(id, nullptr);
     UNLOCK(d)
 
     if (match) {

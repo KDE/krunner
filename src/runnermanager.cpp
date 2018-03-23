@@ -553,7 +553,7 @@ AbstractRunner* RunnerManager::runner(const QString &name) const
         d->loadRunners();
     }
 
-    return d->runners.value(name, 0);
+    return d->runners.value(name, nullptr);
 }
 
 AbstractRunner *RunnerManager::singleModeRunner() const

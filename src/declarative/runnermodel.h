@@ -81,7 +81,7 @@ public:
     };
 
     RunnerModel(QObject *parent = nullptr);
-    QHash< int, QByteArray > roleNames() const Q_DECL_OVERRIDE;
+    QHash< int, QByteArray > roleNames() const override;
 
     QString currentQuery() const;
 
@@ -92,9 +92,9 @@ public:
 
     bool isRunning() const;
 
-    int rowCount(const QModelIndex&) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex&) const override;
     int count() const;
-    QVariant data(const QModelIndex&, int) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex&, int) const override;
 
 public Q_SLOTS:
     void scheduleQuery(const QString &query);

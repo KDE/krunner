@@ -111,7 +111,7 @@ QueryMatch::~QueryMatch()
 
 bool QueryMatch::isValid() const
 {
-    return d->runner != 0;
+    return d->runner != nullptr;
 }
 
 QString QueryMatch::id() const

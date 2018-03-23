@@ -47,10 +47,10 @@ public:
 
     static DelayedRunnerPolicy &instance();
 
-    bool canRun(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void free(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void release(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void destructed(ThreadWeaver::JobInterface* job) Q_DECL_OVERRIDE;
+    bool canRun(ThreadWeaver::JobPointer job) override;
+    void free(ThreadWeaver::JobPointer job) override;
+    void release(ThreadWeaver::JobPointer job) override;
+    void destructed(ThreadWeaver::JobInterface* job) override;
 
 private:
     DelayedRunnerPolicy();
@@ -61,7 +61,7 @@ private:
 class DefaultRunnerPolicy : public ThreadWeaver::QueuePolicy
 {
 public:
-    ~DefaultRunnerPolicy();
+    ~DefaultRunnerPolicy() override;
 
     static DefaultRunnerPolicy &instance();
 
@@ -74,10 +74,10 @@ public:
         return m_cap;
     }
 
-    bool canRun(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void free(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void release(ThreadWeaver::JobPointer job) Q_DECL_OVERRIDE;
-    void destructed(ThreadWeaver::JobInterface* job) Q_DECL_OVERRIDE;
+    bool canRun(ThreadWeaver::JobPointer job) override;
+    void free(ThreadWeaver::JobPointer job) override;
+    void release(ThreadWeaver::JobPointer job) override;
+    void destructed(ThreadWeaver::JobInterface* job) override;
 private:
     DefaultRunnerPolicy();
 
@@ -95,9 +95,9 @@ class FindMatchesJob : public Job
 public:
     FindMatchesJob(Plasma::AbstractRunner *runner,
                    Plasma::RunnerContext *context, QObject *parent = nullptr);
-    ~FindMatchesJob();
+    ~FindMatchesJob() override;
 
-    int priority() const Q_DECL_OVERRIDE;
+    int priority() const override;
     Plasma::AbstractRunner* runner() const;
 
     QTimer* delayTimer() const;
@@ -105,7 +105,7 @@ public:
     ThreadWeaver::QObjectDecorator* decorator() const { return m_decorator; }
 
 protected:
-    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) Q_DECL_OVERRIDE;
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) override;
 
 private:
     Plasma::RunnerContext m_context;
