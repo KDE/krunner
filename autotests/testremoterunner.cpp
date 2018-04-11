@@ -27,14 +27,14 @@
 //Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing
 //Run prints a line to stdout
 
-TestRemoteRunner::TestRemoteRunner()
+TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
 {
     new Krunner1Adaptor(this);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
-    QDBusConnection::sessionBus().registerService(QStringLiteral("net.dave"));
+    QDBusConnection::sessionBus().registerService(serviceName);
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this);
 }
 
@@ -73,6 +73,7 @@ void TestRemoteRunner::Run(const QString &id, const QString &actionId)
 int main(int argc, char ** argv)
 {
     QCoreApplication app(argc, argv);
-    TestRemoteRunner r;
+    Q_ASSERT(app.arguments().count() == 2);
+    TestRemoteRunner r(app.arguments()[1]);
     app.exec();
 }

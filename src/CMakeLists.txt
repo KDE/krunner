@@ -10,7 +10,6 @@ set (KF5Runner_SRCS
     runnersyntax.cpp)
 ecm_qt_declare_logging_category(KF5Runner_SRCS HEADER krunner_debug.h IDENTIFIER KRUNNER CATEGORY_NAME org.kde.krunner)
 set_property(SOURCE "data/org.kde.krunner1.xml" PROPERTY INCLUDE dbusutils_p.h)
-qt5_add_dbus_interface(KF5Runner_SRCS "data/org.kde.krunner1.xml" krunner_iface)
 
 add_library(KF5Runner
     ${KF5Runner_SRCS})

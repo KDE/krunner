@@ -7,7 +7,7 @@ class TestRemoteRunner : public QObject
 {
     Q_OBJECT
 public:
-    TestRemoteRunner();
+    TestRemoteRunner(const QString &serviceName);
 
 public Q_SLOTS:
     RemoteActions Actions();

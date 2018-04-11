@@ -22,6 +22,10 @@
 
 #include "dbusutils_p.h"
 class OrgKdeKrunner1Interface;
+#include <QHash>
+#include <QList>
+#include <QSet>
+#include <QMutex>
 
 class DBusRunner : public Plasma::AbstractRunner
 {
@@ -38,5 +42,8 @@ public:
 private:
     void requestActions();
     void setActions(const RemoteActions &remoteActions);
-    OrgKdeKrunner1Interface *m_interface = nullptr;
+    QMutex m_mutex; //needed round any variable also accessed from Match
+    QString m_path;
+    QSet<QString> m_matchingServices;
+    QHash<QString, QList<QAction*> > m_actions;
 };

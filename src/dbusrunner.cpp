@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2017 David Edmundson <davidedmundson@kde.org>
+ *   Copyright (C) 2017,2018 David Edmundson <davidedmundson@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License version 2 as
@@ -24,32 +24,69 @@
 #include <QDBusMessage>
 #include <QDBusError>
 #include <QDBusPendingReply>
+#include <QDBusMetaType>
 #include <QAction>
 #include <QIcon>
 #include <QVariantMap>
+#include <QMutexLocker>
 
 #include <KPluginMetaData>
 
 #include "krunner_debug.h"
-#include "krunner_iface.h"
+#include "dbusutils_p.h"
+
+#define IFACE_NAME "org.kde.krunner1"
 
 DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
     : Plasma::AbstractRunner(service, parent)
+    , m_mutex(QMutex::NonRecursive)
 {
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
 
-    QString serviceName = service->property(QStringLiteral("X-Plasma-DBusRunner-Service")).toString();
-    QString path = service->property(QStringLiteral("X-Plasma-DBusRunner-Path")).toString();
+    QString requestedServiceName = service->property(QStringLiteral("X-Plasma-DBusRunner-Service")).toString();
+    m_path = service->property(QStringLiteral("X-Plasma-DBusRunner-Path")).toString();
 
-    if (serviceName.isEmpty() || path.isEmpty()) {
+    if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
         qCWarning(KRUNNER) << "Invalid entry:" << service->name();
         return;
     }
 
-    m_interface = new OrgKdeKrunner1Interface(serviceName, path, QDBusConnection::sessionBus(), this);
+    if (requestedServiceName.endsWith(QLatin1Char('*'))) {
+        requestedServiceName.chop(1);
+        //find existing matching names
+        auto names = QDBusConnection::sessionBus().interface()->registeredServiceNames();
+        if (names.isValid()) {
+            for(const QString serviceName : names.value()) {
+                if (serviceName.startsWith(requestedServiceName)) {
+                    m_matchingServices << serviceName;
+                }
+            }
+        }
+        //and watch for changes
+        connect(QDBusConnection::sessionBus().interface(), &QDBusConnectionInterface::serviceOwnerChanged,
+            this, [this, requestedServiceName](const QString &serviceName, const QString &oldOwner, const QString &newOwner) {
+                if (!serviceName.startsWith(requestedServiceName)) {
+                    return;
+                }
+                if (!oldOwner.isEmpty() && !newOwner.isEmpty()) {
+                    //changed owner, but service still exists. Don't need to adjust anything
+                    return;
+                }
+                QMutexLocker lock(&m_mutex);
+                if (!newOwner.isEmpty()) {
+                    m_matchingServices.insert(serviceName);
+                }
+                if (!oldOwner.isEmpty()) {
+                    m_matchingServices.remove(serviceName);
+                }
+            });
+    } else {
+        //don't check when not wildcarded, as it could be used with DBus-activation
+        m_matchingServices << requestedServiceName;
+    }
 
     connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);
 }
@@ -58,71 +95,99 @@ DBusRunner::~DBusRunner() = default;
 
 void DBusRunner::requestActions()
 {
-    auto reply = m_interface->Actions();
-    auto watcher = new QDBusPendingCallWatcher(reply);
-    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, watcher]() {
-        watcher->deleteLater();
-        clearActions();
-        QDBusReply<RemoteActions> reply = *watcher;
-        if (!reply.isValid()) {
-            return;
-        }
-        for(const RemoteAction &action: reply.value()) {
-            auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
-            a->setData(action.id);
-        }
-    });
+    clearActions();
+    m_actions.clear();
+
+    //in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
+    //then match together in matchForAction()
+
+    for (const QString &service: m_matchingServices) {
+        auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
+        QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
+
+        auto watcher = new QDBusPendingCallWatcher(reply);
+        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, watcher, service]() {
+            watcher->deleteLater();
+            QDBusReply<RemoteActions> reply = *watcher;
+            if (!reply.isValid()) {
+                return;
+            }
+            for(const RemoteAction &action: reply.value()) {
+                auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
+                a->setData(action.id);
+                m_actions[service].append(a);
+            }
+        });
+    }
 }
 
 void DBusRunner::match(Plasma::RunnerContext &context)
 {
-    if (!m_interface) {
-        return;
+    QSet<QString> services;
+    {
+        QMutexLocker lock(&m_mutex);
+        services = m_matchingServices;
     }
+    //we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
+    QList<QSharedPointer<QDBusPendingCallWatcher>> watchers;
 
-    auto reply = m_interface->Match(context.query());
-    reply.waitForFinished(); //AbstractRunner::match is called in a new thread, may as well block
-    if (reply.isError()) {
-        qCDebug(KRUNNER) << "Error calling" << m_interface->service() << " :" << reply.error().name() << reply.error().message();
-        return;
+    for (const QString service : services) {
+        auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
+        matchMethod.setArguments(QList<QVariant>({context.query()}));
+        QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
+
+        auto watcher = new QDBusPendingCallWatcher(reply);
+        watchers << QSharedPointer<QDBusPendingCallWatcher>(watcher);
+        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, service, &context, reply]() {
+            if (reply.isError()) {
+                qCDebug(KRUNNER) << "Error calling" << service << " :" << reply.error().name() << reply.error().message();
+                return;
+            }
+            for(const RemoteMatch &match: reply.value()) {
+                Plasma::QueryMatch m(this);
+
+                m.setText(match.text);
+                m.setId(match.id);
+                m.setData(service);
+                m.setIconName(match.iconName);
+                m.setType(match.type);
+                m.setRelevance(match.relevance);
+
+                //split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
+                m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
+                m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
+                m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
+
+                context.addMatch(m);
+            };
+        });
     }
-    for(const RemoteMatch &match: reply.value()) {
-        Plasma::QueryMatch m(this);
-
-        m.setText(match.text);
-        m.setData(match.id);
-        m.setIconName(match.iconName);
-        m.setType(match.type);
-        m.setRelevance(match.relevance);
-
-        //split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
-        m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
-        m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
-        m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
-
-        context.addMatch(m);
+    //we're done matching when every service replies
+    for (auto w : watchers) {
+        w->waitForFinished();
     }
 }
 
 QList<QAction*> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
     Q_UNUSED(match)
-    return actions().values();
+    const QString service = match.data().toString();
+    return m_actions.value(service);
 }
 
 void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
 {
     Q_UNUSED(context);
-    if (!m_interface) {
-        return;
-    }
 
     QString actionId;
-    QString matchId = match.data().toString();
+    QString matchId = match.id().mid(id().length() + 1); //QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
+    QString service = match.data().toString();
 
     if (match.selectedAction()) {
         actionId = match.selectedAction()->data().toString();
     }
 
-    m_interface->Run(matchId, actionId); //don't wait for reply before returning to process
+    auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
+    runMethod.setArguments(QList<QVariant>({matchId, actionId}));
+    QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
 }
