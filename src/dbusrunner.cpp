@@ -160,7 +160,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
 
                 context.addMatch(m);
             };
-        });
+        }, Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
     }
     //we're done matching when every service replies
     for (auto w : watchers) {
