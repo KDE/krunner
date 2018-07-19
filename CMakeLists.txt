@@ -55,8 +55,10 @@ endif()
 
 # Subdirectories
 add_subdirectory(src)
-add_subdirectory(autotests)
-add_subdirectory(tests)
+if (BUILD_TESTING)
+    add_subdirectory(autotests)
+    add_subdirectory(tests)
+endif()
 add_subdirectory(templates)
 
 # Create a Config.cmake and a ConfigVersion.cmake file and install them
