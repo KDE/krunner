@@ -18,6 +18,7 @@
  */
 
 #include "abstractrunner.h"
+#include "abstractrunner_p.h"
 
 #include <QAction>
 #include <QHash>
@@ -35,7 +36,6 @@
 #include <Plasma/PluginLoader>
 #include <qstandardpaths.h>
 
-#include "abstractrunner_p.h"
 #include "querymatch.h"
 #include "runnercontext.h"
 

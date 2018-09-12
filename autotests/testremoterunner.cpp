@@ -16,12 +16,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include "testremoterunner.h"
+
 #include <QCoreApplication>
 #include <QDBusConnection>
 
 #include <iostream>
 
-#include "testremoterunner.h"
 #include "krunner1adaptor.h"
 
 //Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing

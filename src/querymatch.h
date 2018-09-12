@@ -157,7 +157,7 @@ class KRUNNER_EXPORT QueryMatch
          * AbstractRunner.
          *
          * When set, it is also used to form
-         * part of the id() for this match. If that is innapropriate
+         * part of the id() for this match. If that is inappropriate
          * as an id, the runner may generate its own id and set that
          * with setId(const QString&) directly after calling setData
          */

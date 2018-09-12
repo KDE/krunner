@@ -136,7 +136,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          *     ... some processing ...
          * }
          *
-         * While not required to be used within runners, it provies a nice way
+         * While not required to be used within runners, it provides a nice way
          * to avoid unnecessary processing in runners that may run for an extended
          * period (as measured in 10s of ms) and therefore improve the user experience. 
          * @since 4.2.3
@@ -209,7 +209,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          *
          * @param id the id of the match to return
          * @return the match associated with this id, or an invalid QueryMatch object
-         *         if the id does not eixst
+         *         if the id does not exist
          */
         QueryMatch match(const QString &id) const;
 

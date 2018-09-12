@@ -249,7 +249,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         void matchSessionComplete();
 
         /**
-         * Launch a query, this will create threads and return inmediately.
+         * Launch a query, this will create threads and return immediately.
          * When the information will be available can be known using the
          * matchesChanged signal.
          *

@@ -114,7 +114,7 @@ void DBusRunnerTest::testMatch()
     QCOMPARE(result.text(), QStringLiteral("Match 1"));
     QCOMPARE(result.iconName(), QStringLiteral("icon1"));
     QCOMPARE(result.type(), Plasma::QueryMatch::ExactMatch);
-    //relevance can't be compared easily becuase RunnerContext meddles with it
+    //relevance can't be compared easily because RunnerContext meddles with it
 
     //verify actions
     auto actions = m.actionsForMatch(result);
