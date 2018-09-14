@@ -691,9 +691,9 @@ KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
 {
     QString constraint;
     if (parentApp.isEmpty()) {
-        constraint.append("not exist [X-KDE-ParentApp]");
+        constraint.append(QStringLiteral("not exist [X-KDE-ParentApp]"));
     } else {
-        constraint.append("[X-KDE-ParentApp] == '").append(parentApp).append("'");
+        constraint.append(QStringLiteral("[X-KDE-ParentApp] == '")).append(parentApp).append(QStringLiteral("'"));
     }
 
     KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);

@@ -190,7 +190,7 @@ class RunnerContextPrivate : public QSharedData
             type = RunnerContext::UnknownType;
             QString path = QDir::cleanPath(KShell::tildeExpand(term));
 
-            int space = path.indexOf(' ');
+            int space = path.indexOf(QLatin1Char(' '));
             if (!QStandardPaths::findExecutable(path.left(space)).isEmpty()) {
                 // it's a shell command if there's a space because that implies
                 // that it has arguments!
@@ -219,7 +219,7 @@ class RunnerContextPrivate : public QSharedData
                     // it's too ambiguous to be sure we're in a filesystem context
                     path = QDir::cleanPath(url.toLocalFile());
                     //qCDebug(KRUNNER)<< "slash check" << path;
-                    if (hasProtocol || ((path.indexOf('/') != -1 || path.indexOf('\\') != -1))) {
+                    if (hasProtocol || ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1))) {
                         QString correctCasePath;
                         if (correctPathCase(path, correctCasePath)) {
                             path = correctCasePath;

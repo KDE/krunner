@@ -195,7 +195,7 @@ void QueryMatch::setId(const QString &id)
     }
 
     if (!id.isEmpty()) {
-        d->id.append('_').append(id);
+        d->id.append(QLatin1Char('_')).append(id);
     }
 
     d->idSetByData = false;

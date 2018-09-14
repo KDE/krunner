@@ -62,7 +62,7 @@ void DBusRunnerTest::initTestCase()
 {
     // Set up a layer in the bin dir so ksycoca finds the Plasma/Runner service type
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
-    const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + "/data:" + defaultDataDirs;
+    const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
     qputenv("XDG_DATA_DIRS", modifiedDataDirs);
 
     QStandardPaths::setTestModeEnabled(true);
@@ -91,7 +91,7 @@ void DBusRunnerTest::cleanupTestCase()
 void DBusRunnerTest::testMatch()
 {
     QProcess process;
-    process.start(QFINDTESTDATA("testremoterunner"), QStringList({"net.krunnertests.dave"}));
+    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
     QVERIFY(process.waitForStarted());
 
     QTest::qSleep(500);
@@ -140,11 +140,11 @@ void DBusRunnerTest::testMatch()
 void DBusRunnerTest::testMulti()
 {
     QProcess process1;
-    process1.start(QFINDTESTDATA("testremoterunner"), QStringList({"net.krunnertests.multi.a1"}));
+    process1.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
     QVERIFY(process1.waitForStarted());
 
     QProcess process2;
-    process2.start(QFINDTESTDATA("testremoterunner"), QStringList({"net.krunnertests.multi.a2"}));
+    process2.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.multi.a2")}));
     QVERIFY(process2.waitForStarted());
 
     QTest::qSleep(500);
@@ -164,8 +164,8 @@ void DBusRunnerTest::testMulti()
     QString first = m.matches().at(0).data().toString();
     QString second = m.matches().at(1).data().toString();
     QVERIFY(first != second);
-    QVERIFY(first == "net.krunnertests.multi.a1" || first == "net.krunnertests.multi.a2");
-    QVERIFY(second == "net.krunnertests.multi.a1" || second == "net.krunnertests.multi.a2");
+    QVERIFY(first == QStringLiteral("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
+    QVERIFY(second == QStringLiteral("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
 
     process1.kill();
     process2.kill();

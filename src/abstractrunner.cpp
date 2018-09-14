@@ -382,7 +382,7 @@ void AbstractRunnerPrivate::init(const KService::Ptr service)
 
 void AbstractRunnerPrivate::init(const QString &path)
 {
-    runnerDescription = KPluginInfo(path + "/metadata.desktop");
+    runnerDescription = KPluginInfo(path + QStringLiteral("/metadata.desktop"));
     const QString api = runnerDescription.property(QStringLiteral("X-Plasma-API")).toString();
 }
 
