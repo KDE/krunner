@@ -57,9 +57,10 @@ DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
     if (requestedServiceName.endsWith(QLatin1Char('*'))) {
         requestedServiceName.chop(1);
         //find existing matching names
-        auto names = QDBusConnection::sessionBus().interface()->registeredServiceNames();
-        if (names.isValid()) {
-            for(const QString serviceName : names.value()) {
+        auto namesReply = QDBusConnection::sessionBus().interface()->registeredServiceNames();
+        if (namesReply.isValid()) {
+            const auto names = namesReply.value();
+            for (const QString& serviceName : names) {
                 if (serviceName.startsWith(requestedServiceName)) {
                     m_matchingServices << serviceName;
                 }
@@ -101,7 +102,7 @@ void DBusRunner::requestActions()
     //in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
     //then match together in matchForAction()
 
-    for (const QString &service: m_matchingServices) {
+    for (const QString &service: qAsConst(m_matchingServices)) {
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
         QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
 
@@ -112,7 +113,8 @@ void DBusRunner::requestActions()
             if (!reply.isValid()) {
                 return;
             }
-            for(const RemoteAction &action: reply.value()) {
+            const auto actions = reply.value();
+            for(const RemoteAction &action: actions) {
                 auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
                 a->setData(action.id);
                 m_actions[service].append(a);
@@ -131,7 +133,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
     //we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
     QList<QSharedPointer<QDBusPendingCallWatcher>> watchers;
 
-    for (const QString service : services) {
+    for (const QString& service : qAsConst(services)) {
         auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
@@ -143,7 +145,8 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                 qCDebug(KRUNNER) << "Error calling" << service << " :" << reply.error().name() << reply.error().message();
                 return;
             }
-            for(const RemoteMatch &match: reply.value()) {
+            const auto matches = reply.value();
+            for(const RemoteMatch &match: matches) {
                 Plasma::QueryMatch m(this);
 
                 m.setText(match.text);
@@ -163,7 +166,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
         }, Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
     }
     //we're done matching when every service replies
-    for (auto w : watchers) {
+    for (auto w : qAsConst(watchers)) {
         w->waitForFinished();
     }
 }
