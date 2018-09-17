@@ -265,7 +265,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         QList<RunnerSyntax> syntaxes() const;
 
         /**
-         * @return the default syntax for the runner or 0 if no default syntax has been defined
+         * @return the default syntax for the runner or @c nullptr if no default syntax has been defined
          *
          * @since 4.4
          */
