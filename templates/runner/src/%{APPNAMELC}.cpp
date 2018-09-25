@@ -23,7 +23,7 @@
 %{APPNAME}::%{APPNAME}(QObject *parent, const QVariantList &args)
     : Plasma::AbstractRunner(parent, args)
 {
-    setObjectName("%{APPNAME}");
+    setObjectName(QStringLiteral("%{APPNAME}"));
 }
 
 %{APPNAME}::~%{APPNAME}()
