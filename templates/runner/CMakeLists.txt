@@ -12,7 +12,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Runner I18n)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
-include(KDECompilerSettings NO_POLICY_SCOPE)
+include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
 add_subdirectory(src)
