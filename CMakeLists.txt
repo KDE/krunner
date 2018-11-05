@@ -52,7 +52,7 @@ if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
     # 3.10+ lets us provide more macro names that require automoc.
     list(APPEND CMAKE_AUTOMOC_MACRO_NAMES ${KRunner_AUTOMOC_MACRO_NAMES})
 endif()
-
+#add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x060000)
 
 # Subdirectories
 add_subdirectory(src)
