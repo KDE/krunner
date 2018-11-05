@@ -29,8 +29,8 @@
 
 using namespace Plasma;
 
-Q_DECLARE_METATYPE(Plasma::QueryMatch);
-Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>);
+Q_DECLARE_METATYPE(Plasma::QueryMatch)
+Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>)
 
 class DBusRunnerTest : public QObject
 {
