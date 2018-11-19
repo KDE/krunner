@@ -200,6 +200,7 @@ public:
                     runner = loadInstalledRunner(description.service());
                 } else {
                     runner = runners.value(runnerName);
+                    runner->reloadConfiguration();
                 }
 
                 if (runner) {
