@@ -60,7 +60,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
     : QObject(parent),
       d(new AbstractRunnerPrivate(this))
 {
-    if (args.count() > 0) {
+    if (!args.isEmpty()) {
         KService::Ptr service = KService::serviceByStorageId(args[0].toString());
         if (service) {
             d->init(service);
