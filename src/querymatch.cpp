@@ -294,7 +294,7 @@ bool QueryMatch::operator<(const QueryMatch &other) const
             return other.isEnabled();
         }
 
-        if (d->relevance != other.d->relevance) {
+        if (!qFuzzyCompare(d->relevance, other.d->relevance)) {
             return d->relevance < other.d->relevance;
         }
 
