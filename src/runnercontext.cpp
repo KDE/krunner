@@ -136,8 +136,8 @@ bool correctPathCase(const QString& path, QString &corrected)
     }
 
     QString correctPath;
-    const unsigned initialComponents = components.size();
-    for (unsigned i = 0; i < initialComponents - 1; i ++) {
+    const int initialComponents = components.size();
+    for (int i = 0; i < initialComponents - 1; i++) {
         const QString tmp = components[0] + QDir::separator() + components[1];
 
         if (!correctLastComponentCase(tmp, correctPath, components.size() > 2 || mustBeDir)) {

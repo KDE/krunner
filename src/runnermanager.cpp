@@ -208,7 +208,7 @@ public:
                     allCategories << categories;
 
                     bool allCategoriesDisabled = true;
-                    Q_FOREACH (const QString &cat, categories) {
+                    for (const QString &cat : categories) {
                         if (enabledCategories.contains(cat)) {
                             allCategoriesDisabled = false;
                             break;
@@ -519,7 +519,8 @@ QStringList RunnerManager::enabledCategories() const
     KConfigGroup config = d->configGroup();
     QStringList list = config.readEntry("enabledCategories", QStringList());
     if (list.isEmpty()) {
-        Q_FOREACH (AbstractRunner* runner, d->runners) {
+        list.reserve(d->runners.count());
+        for (AbstractRunner* runner : qAsConst(d->runners)) {
             list << runner->categories();
         }
     }
