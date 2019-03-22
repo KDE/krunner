@@ -363,7 +363,7 @@ public:
 
         if (searchJobs.isEmpty() && oldSearchJobs.isEmpty()) {
             if (allRunnersPrepped) {
-                foreach (AbstractRunner *runner, runners) {
+                for (AbstractRunner *runner : qAsConst(runners)) {
                     emit runner->teardown();
                 }
 
@@ -717,7 +717,7 @@ void RunnerManager::setupMatchSession()
             d->singleRunnerPrepped = true;
         }
     } else {
-        foreach (AbstractRunner *runner, d->runners) {
+        for (AbstractRunner *runner : qAsConst(d->runners)) {
 #ifdef MEASURE_PREPTIME
             QTime t;
             t.start();
@@ -794,7 +794,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runable = d->runners;
     }
 
-    foreach (Plasma::AbstractRunner *r, runable) {
+    for (Plasma::AbstractRunner *r : qAsConst(runable)) {
         if (r->isMatchingSuspended()) {
             continue;
         }

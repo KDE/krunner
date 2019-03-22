@@ -147,8 +147,8 @@ QVariant RunnerModel::data(const QModelIndex &index, int role) const
     } else if (role == Actions) {
         QVariantList actions;
         Plasma::QueryMatch amatch = m_matches.at(index.row());
-        QList<QAction*> theactions = m_manager->actionsForMatch(amatch);
-        foreach(QAction* action, theactions) {
+        const QList<QAction*> theactions = m_manager->actionsForMatch(amatch);
+        for (QAction* action : theactions) {
             actions += qVariantFromValue<QObject*>(action);
         }
         return actions;

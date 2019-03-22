@@ -395,7 +395,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
     }
 
     LOCK_FOR_WRITE(d)
-    foreach (QueryMatch match, matches) {
+    for (QueryMatch match : matches) {
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
         if (int count = d->launchCounts.value(match.id())) {
@@ -454,7 +454,7 @@ bool RunnerContext::removeMatches(const QStringList matchIdList)
     QList<const QueryMatch*> presentMatchList;
 
     LOCK_FOR_READ(d)
-    foreach(const QString &matchId, matchIdList) {
+    for (const QString &matchId : matchIdList) {
         const QueryMatch* match = d->matchesById.value(matchId, nullptr);
         if (match) {
             presentMatchList << match;
@@ -468,10 +468,10 @@ bool RunnerContext::removeMatches(const QStringList matchIdList)
     }
 
     LOCK_FOR_WRITE(d)
-    foreach(const QueryMatch *match, presentMatchList) {
+    for (const QueryMatch *match : qAsConst(presentMatchList)) {
         d->matches.removeAll(*match);
     }
-    foreach(const QString &matchId, presentMatchIdList) {
+    for (const QString &matchId : qAsConst(presentMatchIdList)) {
         d->matchesById.remove(matchId);
     }
     UNLOCK(d)
@@ -510,7 +510,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     QList<QueryMatch> presentMatchList;
 
     LOCK_FOR_READ(d)
-    foreach(const QueryMatch &match, d->matches) {
+    for(const QueryMatch &match : qAsConst(d->matches)) {
         if (match.runner() == runner) {
             presentMatchList << match;
         }
@@ -522,7 +522,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     }
 
     LOCK_FOR_WRITE(d)
-    foreach (const QueryMatch &match, presentMatchList) {
+    for (const QueryMatch &match : qAsConst(presentMatchList)) {
         d->matchesById.remove(match.id());
         d->matches.removeAll(match);
     }
@@ -568,7 +568,7 @@ void RunnerContext::restore(const KConfigGroup &config)
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
     const QRegExp r(QStringLiteral("(\\d*) (.*)"));
-    foreach (const QString& entry, cfgList) {
+    for (const QString& entry : cfgList) {
         r.indexIn(entry);
         int count = r.cap(1).toInt();
         QString id = r.cap(2);
