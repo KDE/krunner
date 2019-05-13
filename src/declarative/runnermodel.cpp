@@ -149,7 +149,7 @@ QVariant RunnerModel::data(const QModelIndex &index, int role) const
         Plasma::QueryMatch amatch = m_matches.at(index.row());
         const QList<QAction*> theactions = m_manager->actionsForMatch(amatch);
         for (QAction* action : theactions) {
-            actions += qVariantFromValue<QObject*>(action);
+            actions += QVariant::fromValue<QObject*>(action);
         }
         return actions;
     }
