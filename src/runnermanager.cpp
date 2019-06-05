@@ -21,6 +21,7 @@
 
 #include "runnermanager.h"
 
+#include <QElapsedTimer>
 #include <QMutex>
 #include <QTimer>
 #include <QCoreApplication>
@@ -74,6 +75,10 @@ public:
         QObject::connect(&matchChangeTimer, SIGNAL(timeout()), q, SLOT(matchesChanged()));
         QObject::connect(&context, SIGNAL(matchesChanged()), q, SLOT(scheduleMatchesChanged()));
         QObject::connect(&delayTimer, SIGNAL(timeout()), q, SLOT(unblockJobs()));
+
+        // Set up tracking of the last time matchesChanged was signalled
+        lastMatchChangeSignalled.start();
+        QObject::connect(q, &RunnerManager::matchesChanged, q, [&] { lastMatchChangeSignalled.restart(); });
     }
 
     ~RunnerManagerPrivate()
@@ -84,7 +89,12 @@ public:
 
     void scheduleMatchesChanged()
     {
-        matchChangeTimer.start(100);
+        if(lastMatchChangeSignalled.hasExpired(250)) {
+            matchChangeTimer.stop();
+            emit q->matchesChanged(context.matches());
+        } else {
+            matchChangeTimer.start(250 - lastMatchChangeSignalled.elapsed());
+        }
     }
 
     void matchesChanged()
@@ -430,6 +440,7 @@ public:
     RunnerContext context;
     QTimer matchChangeTimer;
     QTimer delayTimer; // Timer to control when to run slow runners
+    QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner*> runners;
     QHash<QString, QString> advertiseSingleRunnerIds;
     AbstractRunner* currentSingleRunner;
