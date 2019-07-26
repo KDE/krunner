@@ -27,7 +27,6 @@
 #include <ThreadWeaver/Job>
 #include <ThreadWeaver/QueuePolicy>
 #include <ThreadWeaver/Queue>
-#include <ThreadWeaver/QObjectDecorator>
 
 #include "abstractrunner.h"
 
@@ -90,8 +89,9 @@ private:
  * FindMatchesJob class
  * Class to run queries in different threads
  */
-class FindMatchesJob : public Job
+class FindMatchesJob : public QObject, public Job
 {
+Q_OBJECT
 public:
     FindMatchesJob(Plasma::AbstractRunner *runner,
                    Plasma::RunnerContext *context, QObject *parent = nullptr);
@@ -102,7 +102,9 @@ public:
 
     QTimer* delayTimer() const;
     void setDelayTimer(QTimer *timer);
-    ThreadWeaver::QObjectDecorator* decorator() const { return m_decorator; }
+
+Q_SIGNALS:
+    void done(ThreadWeaver::JobPointer self);
 
 protected:
     void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) override;
@@ -111,7 +113,6 @@ private:
     Plasma::RunnerContext m_context;
     Plasma::AbstractRunner *m_runner;
     QTimer *m_timer;
-    ThreadWeaver::QObjectDecorator* m_decorator;
 };
 
 class DelayedJobCleaner : public QObject

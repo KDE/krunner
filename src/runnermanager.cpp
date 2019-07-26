@@ -250,7 +250,7 @@ public:
                 while (it != searchJobs.end()) {
                     auto &job = (*it);
                     if (deadRunners.contains(job->runner())) {
-                        QObject::disconnect(job->decorator(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+                        QObject::disconnect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
                         it = searchJobs.erase(it);
                         deadJobs.insert(job);
                     } else {
@@ -422,7 +422,7 @@ public:
     {
         if ((runner->ignoredTypes() & context.type()) == 0) {
             QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-            QObject::connect(job->decorator(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+            QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
             if (runner->speed() == AbstractRunner::SlowSpeed) {
                 job->setDelayTimer(&delayTimer);
             }

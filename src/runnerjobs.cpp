@@ -125,8 +125,7 @@ FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner,
     : ThreadWeaver::Job(),
       m_context(*context, nullptr),
       m_runner(runner),
-      m_timer(nullptr),
-      m_decorator(new ThreadWeaver::QObjectDecorator(this, true))
+      m_timer(nullptr)
 {
     QMutexLocker l(mutex()); Q_UNUSED(l);
     if (runner->speed() == Plasma::AbstractRunner::SlowSpeed) {
@@ -150,13 +149,14 @@ void FindMatchesJob::setDelayTimer(QTimer *timer)
     m_timer = timer;
 }
 
-void FindMatchesJob::run(ThreadWeaver::JobPointer, ThreadWeaver::Thread*)
+void FindMatchesJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread*)
 {
 //     qCDebug(KRUNNER) << "Running match for " << m_runner->objectName()
 //              << " in Thread " << thread()->id() << endl;
     if (m_context.isValid()) {
         m_runner->performMatch(m_context);
     }
+    emit done(self);
 }
 
 int FindMatchesJob::priority() const
@@ -178,7 +178,7 @@ DelayedJobCleaner::DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob> >
     connect(m_weaver, SIGNAL(finished()), this, SLOT(checkIfFinished()));
 
     for (auto it = m_jobs.constBegin(); it != m_jobs.constEnd(); ++it) {
-        connect((*it)->decorator(), &ThreadWeaver::QObjectDecorator::done, this, &DelayedJobCleaner::jobDone);
+        connect(it->data(), &FindMatchesJob::done, this, &DelayedJobCleaner::jobDone);
     }
 }
 
