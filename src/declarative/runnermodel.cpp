@@ -19,7 +19,6 @@
 
 #include "runnermodel.h"
 
-#include <QIcon>
 #include <QAction>
 #include <QTimer>
 

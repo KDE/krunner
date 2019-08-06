@@ -22,7 +22,6 @@
 
 #include "runnermanager.h"
 #include <QSignalSpy>
-#include <QDebug>
 #include <QProcess>
 
 #include <KSycoca>

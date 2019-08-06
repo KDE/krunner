@@ -23,9 +23,7 @@
 #include <QIcon>
 #include <QReadWriteLock>
 #include <QSharedData>
-#include <QStringList>
 #include <QVariant>
-#include <QWeakPointer>
 
 #include "krunner_debug.h"
 

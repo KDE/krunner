@@ -21,7 +21,6 @@
 #define PLASMA_ABSTRACTRUNNER_H
 
 #include <QObject>
-#include <QMutex>
 #include <QStringList>
 #include <QIcon>
 

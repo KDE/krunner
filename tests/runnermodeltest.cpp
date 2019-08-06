@@ -1,6 +1,5 @@
 #include <QAction>
 #include <QApplication>
-#include <QDialog>
 #include <QLineEdit>
 #include <QTreeView>
 #include <QVBoxLayout>

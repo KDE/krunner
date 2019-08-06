@@ -18,19 +18,15 @@
 
 #include "dbusrunner_p.h"
 
-#include <QDBusArgument>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusMessage>
-#include <QDBusError>
 #include <QDBusPendingReply>
 #include <QDBusMetaType>
 #include <QAction>
 #include <QIcon>
-#include <QVariantMap>
 #include <QMutexLocker>
 
-#include <KPluginMetaData>
 
 #include "krunner_debug.h"
 #include "dbusutils_p.h"

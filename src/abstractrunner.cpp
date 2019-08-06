@@ -22,11 +22,8 @@
 
 #include <QAction>
 #include <QHash>
-#include <QMenu>
 #include <QMimeData>
 #include <QMutex>
-#include <QMutexLocker>
-#include <QTimer>
 
 #include "krunner_debug.h"
 #include <kplugininfo.h>

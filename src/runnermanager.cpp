@@ -22,7 +22,6 @@
 #include "runnermanager.h"
 
 #include <QElapsedTimer>
-#include <QMutex>
 #include <QTimer>
 #include <QCoreApplication>
 #include <qstandardpaths.h>
