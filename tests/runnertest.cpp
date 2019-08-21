@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <QCoreApplication>
+#include <QGuiApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDebug>
@@ -28,7 +28,7 @@ using namespace Plasma;
 
 int main(int argc, char **argv)
 {
-    QCoreApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     app.setQuitLockEnabled(false);
 
     QCommandLineParser parser;
