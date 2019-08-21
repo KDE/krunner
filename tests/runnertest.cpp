@@ -29,6 +29,7 @@ using namespace Plasma;
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
+    app.setQuitLockEnabled(false);
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("query"), QStringLiteral("words to query"));
