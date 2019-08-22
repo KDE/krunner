@@ -354,6 +354,7 @@ public:
             emit q->matchesChanged(context.matches());
         }
 
+        teardownRequested = true;
         checkTearDown();
     }
 
@@ -843,6 +844,7 @@ void RunnerManager::reset()
     }
 
     d->context.reset();
+    emit queryFinished();
 }
 
 } // Plasma namespace
