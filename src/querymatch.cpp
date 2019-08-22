@@ -327,7 +327,7 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
 
 void QueryMatch::run(const RunnerContext &context) const
 {
-    //qCDebug(KRUNNER) << "we run the term" << context->query() << "whose type is" << context->mimetype();
+    //qCDebug(KRUNNER) << "we run the term" << context.query() << "whose type is" << d->mimeType;
     if (d->runner) {
         d->runner.data()->run(context, *this);
     }
