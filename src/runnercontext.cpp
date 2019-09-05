@@ -200,8 +200,8 @@ class RunnerContextPrivate : public QSharedData
                 QUrl url = QUrl::fromUserInput(term);
                 // QUrl::fromUserInput assigns http to everything if it cannot match it to
                 // anything else. We do not want that.
-                if (url.scheme() == QStringLiteral("http")) {
-                    if (!term.startsWith(QStringLiteral("http"))) {
+                if (url.scheme() == QLatin1String("http")) {
+                    if (!term.startsWith(QLatin1String("http"))) {
                         url.setScheme(QString());
                     }
                 }

@@ -163,8 +163,8 @@ void DBusRunnerTest::testMulti()
     QString first = m.matches().at(0).data().toString();
     QString second = m.matches().at(1).data().toString();
     QVERIFY(first != second);
-    QVERIFY(first == QStringLiteral("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
-    QVERIFY(second == QStringLiteral("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
+    QVERIFY(first == QLatin1String("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
+    QVERIFY(second == QLatin1String("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
 
     process1.kill();
     process2.kill();

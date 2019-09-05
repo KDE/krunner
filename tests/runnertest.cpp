@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.process(app);
 
-    QString query = parser.positionalArguments().join(QStringLiteral(" "));
+    QString query = parser.positionalArguments().join(QLatin1Char(' '));
     if (query.isEmpty()) {
         parser.showHelp(1);
     }
