@@ -21,6 +21,7 @@
 #include "abstractrunner_p.h"
 
 #include <QAction>
+#include <QElapsedTimer>
 #include <QHash>
 #include <QMimeData>
 #include <QMutex>
@@ -120,8 +121,8 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
         return;
     }
 
-    QTime time;
-    time.restart();
+    QElapsedTimer time;
+    time.start();
 
     //The local copy is already obtained in the job
     match(localContext);
