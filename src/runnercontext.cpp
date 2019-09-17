@@ -207,11 +207,13 @@ class RunnerContextPrivate : public QSharedData
                 }
                 const bool hasProtocol = !url.scheme().isEmpty();
                 const bool isLocalProtocol = hasProtocol && KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
-                if (hasProtocol &&
+                if ((hasProtocol &&
                     ((!isLocalProtocol && !url.host().isEmpty()) ||
-                     (isLocalProtocol && url.scheme() != QLatin1String("file")))) {
+                     (isLocalProtocol && url.scheme() != QLatin1String("file"))))
+                        || term.startsWith(QLatin1String("\\\\"))) {
                     // we either have a network protocol with a host, so we can show matches for it
                     // or we have a non-file url that may be local so a host isn't required
+                    // or we have an UNC path (\\foo\bar)
                     type = RunnerContext::NetworkLocation;
                 } else if (isLocalProtocol) {
                     // at this point in the game, we assume we have a path,
