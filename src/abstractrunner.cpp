@@ -325,7 +325,7 @@ KPluginInfo AbstractRunner::metadata() const
 
 Package AbstractRunner::package() const
 {
-    return d->package ? *d->package : Package();
+    return Package();
 }
 
 
@@ -360,7 +360,6 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
       blackListed(RunnerContext::None),
       runner(r),
       fastRuns(0),
-      package(nullptr),
       defaultSyntax(nullptr),
       hasRunOptions(false),
       suspendMatching(false)
@@ -369,8 +368,6 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
 
 AbstractRunnerPrivate::~AbstractRunnerPrivate()
 {
-    delete package;
-    package = nullptr;
 }
 
 void AbstractRunnerPrivate::init(const KService::Ptr service)

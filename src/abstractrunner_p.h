@@ -44,7 +44,6 @@ public:
     AbstractRunner *runner;
     int fastRuns;
     QReadWriteLock speedLock;
-    Package *package;
     QHash<QString, QAction*> actions;
     QList<RunnerSyntax> syntaxes;
     RunnerSyntax *defaultSyntax;
