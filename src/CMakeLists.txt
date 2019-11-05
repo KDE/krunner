@@ -13,9 +13,15 @@ set_property(SOURCE "data/org.kde.krunner1.xml" PROPERTY INCLUDE dbusutils_p.h)
 
 add_library(KF5Runner
     ${KF5Runner_SRCS})
-
-generate_export_header(KF5Runner BASE_NAME KRunner)
 add_library(KF5::Runner ALIAS KF5Runner)
+ecm_generate_export_header(KF5Runner
+    BASE_NAME KRunner
+    GROUP_BASE_NAME KF
+    VERSION ${KF5_VERSION}
+    DEPRECATED_BASE_VERSION 0
+    DEPRECATION_VERSIONS 5.28
+    EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
+)
 
 target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KRunner>")
 target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BINARY_DIR};${CMAKE_CURRENT_BINARY_DIR}>")

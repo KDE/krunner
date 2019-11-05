@@ -243,6 +243,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         QIcon icon() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 65) // not 5.28 here, this KRUNNER visibility control only added at 5.65
 #if PLASMA_ENABLE_DEPRECATED_SINCE(5, 28) // Plasma::Package is defined with this condition
         /**
          * Accessor for the associated Package object if any.
@@ -253,7 +254,9 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * @return the Package object, which may be invalid
          * @deprecated since 5.28, use KPackage::Package instead, no accessor in this class
          **/
+        KRUNNER_DEPRECATED_VERSION(5, 28, "No longer use, feature removed")
         Package package() const;
+#endif
 #endif
 
         /**

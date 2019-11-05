@@ -31,7 +31,9 @@
 #include <ksharedconfig.h>
 #include <kservicetypetrader.h>
 #include <klocalizedstring.h>
-#include <Plasma/PluginLoader>
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
+#include <Plasma/Package>
+#endif
 #include <qstandardpaths.h>
 
 #include "querymatch.h"
@@ -323,11 +325,12 @@ KPluginInfo AbstractRunner::metadata() const
     return d->runnerDescription;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 Package AbstractRunner::package() const
 {
     return Package();
 }
-
+#endif
 
 void AbstractRunner::init()
 {
