@@ -33,6 +33,7 @@
 #include "runnercontext.h"
 #include "runnersyntax.h"
 #include <plasma_version.h>
+#include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
 
 class QAction;
 class QMimeData;
@@ -242,6 +243,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         QIcon icon() const;
 
+#if PLASMA_ENABLE_DEPRECATED_SINCE(5, 28) // Plasma::Package is defined with this condition
         /**
          * Accessor for the associated Package object if any.
          *
@@ -249,8 +251,10 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * the runner.
          *
          * @return the Package object, which may be invalid
+         * @deprecated since 5.28, use KPackage::Package instead, no accessor in this class
          **/
         Package package() const;
+#endif
 
         /**
          * Signal runner to reload its configuration.
