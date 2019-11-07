@@ -23,8 +23,9 @@ ecm_generate_export_header(KF5Runner
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
+set(KRunner_BUILD_INCLUDE_DIRS ${KRunner_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KRunner>")
-target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BINARY_DIR};${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_INCLUDE_DIRS}>")
 
 
 target_link_libraries(KF5Runner
@@ -101,10 +102,15 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt5Core_QCH
+        INCLUDE_DIRS
+            ${KRunner_BUILD_INCLUDE_DIRS}
         BLANK_MACROS
             KRUNNER_EXPORT
             KRUNNER_DEPRECATED
             KRUNNER_DEPRECATED_EXPORT
+            "KRUNNER_DEPRECATED_VERSION(x, y, t)"
+        PREDEFINED_MACROS
+            "PLASMA_ENABLE_DEPRECATED_SINCE(x, y)=1"
         TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
         QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
         COMPONENT Devel
