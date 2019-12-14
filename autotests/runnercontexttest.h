@@ -20,7 +20,7 @@
 #ifndef RUNNER_CONTEXT_TEST_H
 #define RUNNER_CONTEXT_TEST_H
 
-#include <QtTest>
+#include <QTest>
 
 #include "runnercontext.h"
 
