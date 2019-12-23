@@ -26,6 +26,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QSharedData>
 
 #include <kconfiggroup.h>
@@ -569,11 +570,14 @@ void RunnerContext::restore(const KConfigGroup &config)
 {
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
-    const QRegExp r(QStringLiteral("(\\d*) (.*)"));
+    const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
     for (const QString& entry : cfgList) {
-        r.indexIn(entry);
-        int count = r.cap(1).toInt();
-        QString id = r.cap(2);
+        const QRegularExpressionMatch match = re.match(entry);
+        if (!match.hasMatch()) {
+            continue;
+        }
+        const int count = match.captured(1).toInt();
+        const QString id = match.captured(2);
         d->launchCounts[id] = count;
     }
 }
