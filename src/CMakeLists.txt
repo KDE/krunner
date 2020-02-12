@@ -8,7 +8,13 @@ set (KF5Runner_SRCS
     runnercontext.cpp
     runnermanager.cpp
     runnersyntax.cpp)
-ecm_qt_declare_logging_category(KF5Runner_SRCS HEADER krunner_debug.h IDENTIFIER KRUNNER CATEGORY_NAME org.kde.krunner)
+ecm_qt_declare_logging_category(KF5Runner_SRCS
+    HEADER krunner_debug.h
+    IDENTIFIER KRUNNER
+    CATEGORY_NAME org.kde.krunner
+    DESCRIPTION "KRunner"
+    EXPORT KRUNNER
+)
 set_property(SOURCE "data/org.kde.krunner1.xml" PROPERTY INCLUDE dbusutils_p.h)
 
 add_library(KF5Runner
@@ -89,6 +95,13 @@ add_custom_command(TARGET copy_servicetypes PRE_BUILD COMMAND
     ${CMAKE_CURRENT_SOURCE_DIR}/data/servicetypes/plasma-runner.desktop
     ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
 add_dependencies(KF5Runner copy_servicetypes)
+
+ecm_qt_install_logging_categories(
+    EXPORT KRUNNER
+    FILE krunner.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
+
 
 if(BUILD_QCH)
     ecm_add_qch(

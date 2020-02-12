@@ -101,8 +101,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
         DESTINATION "${KF5_INCLUDE_INSTALL_DIR}"
         COMPONENT Devel)
 
-    # contains list of debug categories, for kdebugsettings
-install(FILES krunner.categories  DESTINATION  ${KDE_INSTALL_LOGGINGCATEGORIESDIR})
-
-
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
