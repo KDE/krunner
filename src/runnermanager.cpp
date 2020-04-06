@@ -299,7 +299,8 @@ public:
         if (api.isEmpty()) {
             QVariantList args;
             args << service->storageId();
-            if (Plasma::isPluginVersionCompatible(KPluginLoader(*service).pluginVersion())) {
+            const quint64 pluginVersion = KPluginLoader(*service).pluginVersion();
+            if (Plasma::isPluginVersionCompatible(pluginVersion)) {
                 QString error;
                 runner = service->createInstance<AbstractRunner>(q, args, &error);
                 if (!runner) {
@@ -307,6 +308,10 @@ public:
                     // qCDebug(KRUNNER) << "Failed to load runner:" << service->name() << ". error reported:" << error;
 #endif
                 }
+            } else {
+                const QString runnerVersion = QStringLiteral("%1.%2.%3").arg(pluginVersion >> 16).arg((pluginVersion >> 8) & 0x00ff).arg(pluginVersion & 0x0000ff);
+                qCWarning(KRUNNER) << "Cannot load runner" << service->name() <<"- versions mismatch: KRunner"
+                    << Plasma::versionString()<< "," << service->name() << runnerVersion;
             }
         } else if (api == QLatin1String("DBus")){
             runner = new DBusRunner(service, q);
