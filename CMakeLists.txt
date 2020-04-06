@@ -23,6 +23,7 @@ include(ECMAddQch)
 include(CMakePackageConfigHelpers)
 include(KDEPackageAppTemplates)
 include(ECMQtDeclareLoggingCategory)
+include(ECMSetupQtPluginMacroNames)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 
@@ -48,12 +49,14 @@ find_package(KF5Service ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5Plasma ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5ThreadWeaver ${KF5_DEP_VERSION} REQUIRED)
 
-set(KRunner_AUTOMOC_MACRO_NAMES "K_EXPORT_PLASMA_RUNNER" "K_EXPORT_RUNNER_CONFIG")
-if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
-    # CMake 3.9+ warns about automoc on files without Q_OBJECT, and doesn't know about other macros.
-    # 3.10+ lets us provide more macro names that require automoc.
-    list(APPEND CMAKE_AUTOMOC_MACRO_NAMES ${KRunner_AUTOMOC_MACRO_NAMES})
-endif()
+ecm_setup_qtplugin_macro_names(
+    JSON_NONE
+        "K_EXPORT_PLASMA_RUNNER"
+        "K_EXPORT_RUNNER_CONFIG"
+    CONFIG_CODE_VARIABLE
+        PACKAGE_SETUP_AUTOMOC_VARIABLES
+)
+
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054400)
 add_definitions(-DPLASMA_DISABLE_DEPRECATED_BEFORE_AND_AT=0x050500) # needed because we use Plasma::Package in the API
