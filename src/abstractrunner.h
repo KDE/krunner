@@ -110,12 +110,11 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * to have a separate class doing all the work like so:
          *
          * \code
-         * void MyFancyAsyncRunner::match( RunnerContext& context )
+         * void MyFancyAsyncRunner::match(RunnerContext &context)
          * {
          *     QEventLoop loop;
-         *     MyAsyncWorker worker( context );
-         *     connect( &worker, SIGNAL(finished()),
-         *              &loop, SLOT(quit()) );
+         *     MyAsyncWorker worker(context);
+         *     connect(&worker, &MyAsyncWorker::finished, &loop, &MyAsyncWorker::quit);
          *     worker.work();
          *     loop.exec();
          * }
