@@ -68,3 +68,8 @@ Type=QString
 
 [PropertyDef::X-Plasma-DBusRunner-Path]
 Type=QString
+
+# Request actions only when the plugin is initialized instead
+# of each match session, default is false
+[PropertyDef::X-Plasma-Request-Actions-Once]
+Type=bool

@@ -24,6 +24,8 @@
 #include "runnermanager.h"
 #include <QSignalSpy>
 #include <QProcess>
+#include <QTime>
+#include <QTimer>
 
 #include <KSycoca>
 
@@ -44,6 +46,7 @@ private Q_SLOTS:
     void cleanupTestCase();
     void testMatch();
     void testMulti();
+    void testRequestActionsOnce();
 private:
     QStringList m_filesForCleanup;
 };
@@ -83,7 +86,7 @@ void DBusRunnerTest::initTestCase()
 
 void DBusRunnerTest::cleanupTestCase()
 {
-    for(const QString path: m_filesForCleanup) {
+    for(const QString &path: qAsConst(m_filesForCleanup)) {
         QFile::remove(path);
     }
 }
@@ -173,7 +176,38 @@ void DBusRunnerTest::testMulti()
     process2.waitForFinished();
 }
 
+void DBusRunnerTest::testRequestActionsOnce()
+{
+    QProcess process;
+    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
+    QVERIFY(process.waitForStarted());
+    QTest::qSleep(500);
 
+    RunnerManager m;
+    auto s = KService::serviceByDesktopPath(QStringLiteral("dbusrunnertest.desktop"));
+    QVERIFY(s);
+    m.loadRunner(s);
+
+    // Wait because dbus signal is async
+    QEventLoop loop;
+    QTimer t;
+    QTimer::connect(&t, &QTimer::timeout, &loop, &QEventLoop::quit);
+    t.start(500);
+    loop.exec();
+
+    // Construct a fake match with necesarry data
+    QueryMatch fakeMatch(m.runner(QStringLiteral("dbusrunnertest")));
+    fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
+    fakeMatch.setData(QStringLiteral("net.krunnertests.dave"));
+
+    // We haven't called the prepare slot, if the implementation works
+    // the actions should alredy be available
+    auto actions = m.actionsForMatch(fakeMatch);
+    QCOMPARE(actions.count(), 1);
+
+    process.kill();
+    process.waitForFinished();
+}
 
 QTEST_MAIN(DBusRunnerTest)
 

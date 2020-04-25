@@ -13,3 +13,4 @@ X-KDE-PluginInfo-EnabledByDefault=true
 X-Plasma-API=DBus
 X-Plasma-DBusRunner-Service=net.krunnertests.dave
 X-Plasma-DBusRunner-Path=/dave
+X-Plasma-Request-Actions-Once=true

@@ -84,8 +84,11 @@ DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
         //don't check when not wildcarded, as it could be used with DBus-activation
         m_matchingServices << requestedServiceName;
     }
-
-    connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);
+    if (service->property(QStringLiteral("X-Plasma-Request-Actions-Once")).toBool()) {
+        requestActions();
+    } else {
+        connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);
+    }
 }
 
 DBusRunner::~DBusRunner() = default;
