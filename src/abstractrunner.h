@@ -146,21 +146,29 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         void performMatch(Plasma::RunnerContext &context);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * If the runner has options that the user can interact with to modify
          * what happens when run or one of the actions created in match
          * is called, the runner should return true
+         * @deprecated Since 5.0, this feature has been defunct
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         bool hasRunOptions();
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * If hasRunOptions() returns true, this method may be called to get
          * a widget displaying the options the user can interact with to modify
          * the behaviour of what happens when a given match is selected.
          *
          * @param widget the parent of the options widgets.
+         * @deprecated Since 5.0, this feature has been defunct
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         virtual void createRunOptions(QWidget *widget);
+#endif
 
         /**
          * Called whenever an exact or possible match associated with this
@@ -330,10 +338,14 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         KConfigGroup config() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * Sets whether or not the runner has options for matches
+         * @deprecated Since 5.0, this feature has been defunct
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         void setHasRunOptions(bool hasRunOptions);
+#endif
 
         /**
          * Sets the nominal speed of the runner. Only slow runners need

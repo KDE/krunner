@@ -287,12 +287,17 @@ class KRUNNER_EXPORT QueryMatch
          */
         void setSelectedAction(QAction *action);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * @return true if this match can be configured before being run
          * @since 4.3
+         * @deprecated Since 5.0, this feature has been defunct
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         bool hasConfigurationInterface() const;
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * If hasConfigurationInterface() returns true, this method may be called to get
          * a widget displaying the options the user can interact with to modify
@@ -300,8 +305,11 @@ class KRUNNER_EXPORT QueryMatch
          *
          * @param widget the parent of the options widgets.
          * @since 4.3
+         * @deprecated Since 5.0, this feature has been defunct
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         void createConfigurationInterface(QWidget *parent);
+#endif
 
     private:
         QSharedDataPointer<QueryMatchPrivate> d;

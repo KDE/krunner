@@ -208,20 +208,26 @@ QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
     return result;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 bool AbstractRunner::hasRunOptions()
 {
     return d->hasRunOptions;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 void AbstractRunner::setHasRunOptions(bool hasRunOptions)
 {
     d->hasRunOptions = hasRunOptions;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 void AbstractRunner::createRunOptions(QWidget *parent)
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(parent)
 }
+#endif
 
 AbstractRunner::Speed AbstractRunner::speed() const
 {

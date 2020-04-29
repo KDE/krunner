@@ -333,17 +333,19 @@ void QueryMatch::run(const RunnerContext &context) const
     }
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 bool QueryMatch::hasConfigurationInterface() const
 {
-    return d->runner && d->runner.data()->hasRunOptions();
+    return false;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 void QueryMatch::createConfigurationInterface(QWidget *parent)
 {
-    if (hasConfigurationInterface()) {
-        d->runner.data()->createRunOptions(parent);
-    }
+    Q_UNUSED(parent)
 }
+#endif
 
 } // Plasma namespace
 
