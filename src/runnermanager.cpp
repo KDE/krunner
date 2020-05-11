@@ -206,7 +206,11 @@ public:
             if (selected) {
                 AbstractRunner *runner = nullptr;
                 if (!loaded) {
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
                     runner = loadInstalledRunner(description.service());
+QT_WARNING_POP
                 } else {
                     runner = runners.value(runnerName);
                     runner->reloadConfiguration();
@@ -546,7 +550,11 @@ QStringList RunnerManager::enabledCategories() const
 
 void RunnerManager::loadRunner(const KService::Ptr service)
 {
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     KPluginInfo description(service);
+QT_WARNING_POP
     const QString runnerName = description.pluginName();
     if (!runnerName.isEmpty() && !d->runners.contains(runnerName)) {
         AbstractRunner *runner = d->loadInstalledRunner(service);
@@ -715,7 +723,11 @@ KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
     }
 
     KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     return KPluginInfo::fromServices(offers);
+QT_WARNING_POP
 }
 
 void RunnerManager::setupMatchSession()

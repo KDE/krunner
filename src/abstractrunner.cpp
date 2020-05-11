@@ -328,7 +328,11 @@ KPluginInfo AbstractRunner::metadata() const
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 Package AbstractRunner::package() const
 {
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     return Package();
+QT_WARNING_POP
 }
 #endif
 
@@ -375,7 +379,11 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 
 void AbstractRunnerPrivate::init(const KService::Ptr service)
 {
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     runnerDescription = KPluginInfo(service);
+QT_WARNING_POP
 }
 
 void AbstractRunnerPrivate::init(const QString &path)
