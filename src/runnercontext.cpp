@@ -198,7 +198,7 @@ class RunnerContextPrivate : public QSharedData
                 type = (space > 0) ? RunnerContext::ShellCommand :
                                      RunnerContext::Executable;
             } else {
-                QUrl url = QUrl::fromUserInput(term);
+                QUrl url = QUrl::fromUserInput(path);
                 // QUrl::fromUserInput assigns http to everything if it cannot match it to
                 // anything else. We do not want that.
                 if (url.scheme() == QLatin1String("http")) {
@@ -206,6 +206,7 @@ class RunnerContextPrivate : public QSharedData
                         url.setScheme(QString());
                     }
                 }
+
                 const bool hasProtocol = !url.scheme().isEmpty();
                 const bool isLocalProtocol = hasProtocol && KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
                 if ((hasProtocol &&
