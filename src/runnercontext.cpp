@@ -198,7 +198,8 @@ class RunnerContextPrivate : public QSharedData
                 type = (space > 0) ? RunnerContext::ShellCommand :
                                      RunnerContext::Executable;
             } else {
-                QUrl url = QUrl::fromUserInput(path);
+                QUrl url = QUrl::fromUserInput(term);
+
                 // QUrl::fromUserInput assigns http to everything if it cannot match it to
                 // anything else. We do not want that.
                 if (url.scheme() == QLatin1String("http")) {
@@ -208,7 +209,7 @@ class RunnerContextPrivate : public QSharedData
                 }
 
                 const bool hasProtocol = !url.scheme().isEmpty();
-                const bool isLocalProtocol = hasProtocol && KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
+                const bool isLocalProtocol = !hasProtocol || KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
                 if ((hasProtocol &&
                     ((!isLocalProtocol && !url.host().isEmpty()) ||
                      (isLocalProtocol && url.scheme() != QLatin1String("file"))))
@@ -221,9 +222,9 @@ class RunnerContextPrivate : public QSharedData
                     // at this point in the game, we assume we have a path,
                     // but if a path doesn't have any slashes
                     // it's too ambiguous to be sure we're in a filesystem context
-                    path = QDir::cleanPath(url.toLocalFile());
+                    path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
                     //qCDebug(KRUNNER)<< "slash check" << path;
-                    if (hasProtocol || ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1))) {
+                    if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
                         QString correctCasePath;
                         if (correctPathCase(path, correctCasePath)) {
                             path = correctCasePath;

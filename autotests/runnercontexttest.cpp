@@ -46,6 +46,8 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("full path executable") << "ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("full path executable with params") << "/bin/ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("protocol-less path") << "/home" << Plasma::RunnerContext::Directory;
+    QTest::newRow("protocol-less tilded") << "~" << Plasma::RunnerContext::Directory;
+    QTest::newRow("protocol-less file starting with tilded") << "~/.bashrc" << Plasma::RunnerContext::File;
     QTest::newRow("invalid protocol-less path") << "/bad/path" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation") << "5*4" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation (float)") << "5.2*4" << Plasma::RunnerContext::UnknownType;
