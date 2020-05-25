@@ -27,6 +27,7 @@
 #include <kconfiggroup.h>
 #include <kservice.h>
 #include <kplugininfo.h>
+#include <kpluginmetadata.h>
 
 #include "krunner_export.h"
 #include "querymatch.h"
@@ -45,6 +46,8 @@ class DataEngine;
 class Package;
 class QueryMatch;
 class AbstractRunnerPrivate;
+
+enum RunnerReturnPluginMetaDataConstant { RunnerReturnPluginMetaData }; // KF6: remove again
 
 /**
  * @class AbstractRunner abstractrunner.h <KRunner/AbstractRunner>
@@ -240,11 +243,35 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
           */
         QString description() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
         /**
          * @return the plugin info for this runner
+         * @deprecated since 5.72, use metaData(Plasma::RunnerReturnPluginMetaDataConstant) instead, see its API docs
          */
+        KRUNNER_DEPRECATED_VERSION(5, 72, "Use metaData(Plasma::RunnerReturnPluginMetaDataConstant) instead, see its API docs")
         KPluginInfo metadata() const;
+#endif
 
+        /**
+         * @return the plugin metadata for this runner
+         *
+         * Overload to get non-deprecated metadata format. Use like this:
+         * @code
+         * KPluginMetaData md = runner->metadata(Plasma::RunnerReturnPluginMetaData);
+         * @endcode
+         * If you disable the deprecated version using the KRUNNER_DISABLE_DEPRECATED_BEFORE_AND_AT macro,
+         * then you can omit Plasma::RunnerReturnPluginMetaDataConstant and use it like this:
+         * @code
+         * KPluginMetaData md = runner->metadata();
+         * @endcode
+         *
+         * @since 5.72
+         */
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
+        KPluginMetaData metadata(RunnerReturnPluginMetaDataConstant) const;
+#else
+        KPluginMetaData metadata(RunnerReturnPluginMetaDataConstant = RunnerReturnPluginMetaData) const;
+#endif
         /**
          * @return the icon for this Runner
          */
@@ -323,7 +350,15 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         friend class RunnerManagerPrivate;
 
         explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
+#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+         /// @deprecated Since 5.72, use AbstractRunner(const KPluginMetaData &, QObject *)
+        KRUNNER_DEPRECATED_VERSION(5, 72, "use AbstractRunner(const KPluginMetaData &, QObject *)")
         explicit AbstractRunner(const KService::Ptr service, QObject *parent = nullptr);
+#endif
+#endif
+        /// @since 5.72
+        explicit AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent = nullptr);
 
         AbstractRunner(QObject *parent, const QVariantList &args);
 
@@ -494,9 +529,45 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
 
 } // Plasma namespace
 
+
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
+// Boilerplate to emit a version-controlled warning about the deprecated macro at leats with GCC
+#if KRUNNER_DEPRECATED_WARNINGS_SINCE >= 0x054800 // 5.72.0
+#   if defined(__GNUC__)
+#       define K_EXPORT_PLASMA_RUNNER_DO_PRAGMA(x) _Pragma (#x)
+#       define K_EXPORT_PLASMA_RUNNER_WARNING(x) K_EXPORT_PLASMA_RUNNER_DO_PRAGMA(message(#x))
+#   else
+#       define K_EXPORT_PLASMA_RUNNER_WARNING(x)
+#   endif
+#else
+#   define K_EXPORT_PLASMA_RUNNER_WARNING(x)
+#endif
+/**
+ * @relates Plasma::AbstractRunner
+ *
+ * Registers a runner plugin.
+ *
+ * @deprecated Since 5.72, use K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) instead
+ */
 #define K_EXPORT_PLASMA_RUNNER( libname, classname )     \
+K_EXPORT_PLASMA_RUNNER_WARNING("Deprecated. Since 5.72, use K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) instead") \
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+#endif
+
+/**
+ * @relates Plasma::AbstractRunner
+ *
+ * Registers a runner plugin with JSON metadata.
+ *
+ * @param classname name of the AbstractRunner derived class.
+ * @param jsonFile name of the JSON file to be compiled into the plugin as metadata
+ *
+ * @since 5.72
+ */
+#define K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) \
+    K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();) \
+    K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 
 /**
  * These plugins are Used by the plugin selector dialog to show

@@ -33,8 +33,8 @@
 
 #define IFACE_NAME "org.kde.krunner1"
 
-DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
-    : Plasma::AbstractRunner(service, parent)
+DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
+    : Plasma::AbstractRunner(pluginMetaData, parent)
     , m_mutex(QMutex::NonRecursive)
 {
     qDBusRegisterMetaType<RemoteMatch>();
@@ -42,11 +42,11 @@ DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
 
-    QString requestedServiceName = service->property(QStringLiteral("X-Plasma-DBusRunner-Service")).toString();
-    m_path = service->property(QStringLiteral("X-Plasma-DBusRunner-Path")).toString();
+    QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
+    m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
 
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
-        qCWarning(KRUNNER) << "Invalid entry:" << service->name();
+        qCWarning(KRUNNER) << "Invalid entry:" << pluginMetaData.name();
         return;
     }
 
@@ -84,7 +84,7 @@ DBusRunner::DBusRunner(const KService::Ptr service, QObject *parent)
         //don't check when not wildcarded, as it could be used with DBus-activation
         m_matchingServices << requestedServiceName;
     }
-    if (service->property(QStringLiteral("X-Plasma-Request-Actions-Once")).toBool()) {
+    if (pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Request-Actions-Once")).toVariant().toBool()) {
         requestActions();
     } else {
         connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);

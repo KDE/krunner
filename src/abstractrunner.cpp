@@ -27,9 +27,7 @@
 #include <QMutex>
 
 #include "krunner_debug.h"
-#include <kplugininfo.h>
 #include <ksharedconfig.h>
-#include <kservicetypetrader.h>
 #include <klocalizedstring.h>
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 #include <Plasma/Package>
@@ -49,22 +47,47 @@ AbstractRunner::AbstractRunner(QObject *parent, const QString &path)
     d->init(path);
 }
 
+AbstractRunner::AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
+    : QObject(parent),
+      d(new AbstractRunnerPrivate(this))
+{
+    d->init(pluginMetaData);
+}
+
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 AbstractRunner::AbstractRunner(const KService::Ptr service, QObject *parent)
     : QObject(parent),
       d(new AbstractRunnerPrivate(this))
 {
     d->init(service);
 }
+#endif
 
 AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
     : QObject(parent),
       d(new AbstractRunnerPrivate(this))
 {
     if (!args.isEmpty()) {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+        // backward-compatible support has metadata only as second argument
+        // which we prefer of course
+        if (args.size() > 1) {
+            const KPluginMetaData metaData = args[1].value<KPluginMetaData>();
+#else
+            const KPluginMetaData metaData = args[0].value<KPluginMetaData>();
+#endif
+            if (metaData.isValid()) {
+                d->init(metaData);
+                return;
+            }
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+        }
+
         KService::Ptr service = KService::serviceByStorageId(args[0].toString());
         if (service) {
             d->init(service);
         }
+#endif
     }
 }
 
@@ -302,7 +325,7 @@ QString AbstractRunner::name() const
 QIcon AbstractRunner::icon() const
 {
     if (d->runnerDescription.isValid()) {
-        return QIcon::fromTheme(d->runnerDescription.icon());
+        return QIcon::fromTheme(d->runnerDescription.iconName());
     }
 
     return QIcon();
@@ -311,7 +334,7 @@ QIcon AbstractRunner::icon() const
 QString AbstractRunner::id() const
 {
     if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.pluginName();
+        return d->runnerDescription.pluginId();
     }
 
     return objectName();
@@ -320,13 +343,20 @@ QString AbstractRunner::id() const
 QString AbstractRunner::description() const
 {
     if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.property(QStringLiteral("Comment")).toString();
+        return d->runnerDescription.description();
     }
 
     return objectName();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72)
 KPluginInfo AbstractRunner::metadata() const
+{
+    return KPluginInfo::fromMetaData(d->runnerDescription);
+}
+#endif
+
+KPluginMetaData AbstractRunner::metadata(RunnerReturnPluginMetaDataConstant) const
 {
     return d->runnerDescription;
 }
@@ -383,19 +413,27 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 {
 }
 
+void AbstractRunnerPrivate::init(const KPluginMetaData &pluginMetaData)
+{
+    runnerDescription = pluginMetaData;
+}
+
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void AbstractRunnerPrivate::init(const KService::Ptr service)
 {
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
 QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
-    runnerDescription = KPluginInfo(service);
+    const KPluginInfo pluginInfo(service);
+    runnerDescription = pluginInfo.isValid() ? pluginInfo.toMetaData() : KPluginMetaData();
 QT_WARNING_POP
 }
+#endif
 
 void AbstractRunnerPrivate::init(const QString &path)
 {
-    runnerDescription = KPluginInfo(path + QStringLiteral("/metadata.desktop"));
-    const QString api = runnerDescription.property(QStringLiteral("X-Plasma-API")).toString();
+    runnerDescription = KPluginMetaData(path + QStringLiteral("/metadata.desktop"));
+    const QString api = runnerDescription.value(QStringLiteral("X-Plasma-API"));
 }
 
 } // Plasma namespace

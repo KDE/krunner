@@ -32,7 +32,7 @@ class DBusRunner : public Plasma::AbstractRunner
     Q_OBJECT
 
 public:
-    explicit DBusRunner(const KService::Ptr service, QObject *parent = nullptr);
+    explicit DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent = nullptr);
     ~DBusRunner() override;
 
     void match(Plasma::RunnerContext &context) override;

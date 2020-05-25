@@ -22,6 +22,8 @@
 
 #include <QReadWriteLock>
 
+#include <KPluginMetaData>
+
 #include "plasma/dataengineconsumer.h"
 
 namespace Plasma
@@ -34,13 +36,16 @@ class AbstractRunnerPrivate : public DataEngineConsumer
 public:
     AbstractRunnerPrivate(AbstractRunner *r);
     ~AbstractRunnerPrivate();
+    void init(const KPluginMetaData &pluginMetaData);
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     void init(const KService::Ptr service);
+#endif
     void init(const QString &path);
 
     AbstractRunner::Priority priority;
     AbstractRunner::Speed speed;
     RunnerContext::Types blackListed;
-    KPluginInfo runnerDescription;
+    KPluginMetaData runnerDescription;
     AbstractRunner *runner;
     int fastRuns;
     QReadWriteLock speedLock;

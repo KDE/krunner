@@ -26,6 +26,7 @@
 #include <QObject>
 
 #include <kplugininfo.h>
+#include <kpluginmetadata.h>
 
 #include "krunner_export.h"
 #include "abstractrunner.h"
@@ -171,6 +172,8 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void setEnabledCategories(const QStringList &categories);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
+#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
         /**
          * Attempts to add the AbstractRunner plugin represented
          * by the KService passed in. Usually one can simply let
@@ -180,8 +183,24 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          *
          * @param service the service to use to load the plugin
          * @since 4.5
+         * @deprecated Since 5.72, use loadRunner(const KPluginMetaData &)
          */
+        KRUNNER_DEPRECATED_VERSION(5, 72, "use loadRunner(const KPluginMetaData &)")
         void loadRunner(const KService::Ptr service);
+#endif
+#endif
+
+        /**
+         * Attempts to add the AbstractRunner plugin represented
+         * by the plugin info passed in. Usually one can simply let
+         * the configuration of plugins handle loading Runner plugins,
+         * but in cases where specific runners should be loaded this
+         * allows for that to take place
+         *
+         * @param pluginMetaData the metaData to use to load the plugin
+         * @since 5.72
+         */
+        void loadRunner(const KPluginMetaData &pluginMetaData);
 
         /**
          * Attempts to add the AbstractRunner from a Plasma::Package on disk.
@@ -220,6 +239,20 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         /**
          * Returns a list of all known Runner implementations
          *
+         * @param parentApp the application to filter runners on. Uses the
+         *                  X-KDE-ParentApp entry (if any) in the plugin metadata.
+         *                  The default value of QString() will result in a
+         *                  list containing only runners not specifically
+         *                  registered to an application.
+         * @return list of metadata of known runners
+         * @since 5.72
+         **/
+        static QVector<KPluginMetaData> runnerMetaDataList(const QString &parentApp = QString());
+
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
+        /**
+         * Returns a list of all known Runner implementations
+         *
          * @param parentApp the application to filter applets on. Uses the
          *                  X-KDE-ParentApp entry (if any) in the plugin info.
          *                  The default value of QString() will result in a
@@ -227,8 +260,11 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          *                  registered to an application.
          * @return list of AbstractRunners
          * @since 4.6
+         * @deprecated since 5.72, use runnerMetaDataList() instead
          **/
+        KRUNNER_DEPRECATED_VERSION(5, 72, "Use runnerMetaDataList() instead")
         static KPluginInfo::List listRunnerInfo(const QString &parentApp = QString());
+#endif
 
     public Q_SLOTS:
         /**

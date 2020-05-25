@@ -38,7 +38,7 @@ void %{APPNAME}::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
     // TODO
 }
 
-K_EXPORT_PLASMA_RUNNER(%{APPNAMELC}, %{APPNAME})
+K_EXPORT_PLASMA_RUNNER_WITH_JSON(%{APPNAME}, "plasma-runner-%{APPNAMELC}.json")
 
-// needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER
+// needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER_WITH_JSON
 #include "%{APPNAMELC}.moc"

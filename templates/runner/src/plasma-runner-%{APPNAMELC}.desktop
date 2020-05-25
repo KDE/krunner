@@ -5,7 +5,7 @@ Icon=
 
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
-X-KDE-Library=krunner_%{APPNAMELC}
+
 X-KDE-PluginInfo-Author=%{AUTHOR}
 X-KDE-PluginInfo-Email=%{EMAIL}
 X-KDE-PluginInfo-Name=%{APPNAMELC}
