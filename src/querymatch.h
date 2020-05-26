@@ -55,8 +55,10 @@ class KRUNNER_EXPORT QueryMatch
             NoMatch = 0,         /**< Null match */
             CompletionMatch = 10, /**< Possible completion for the data of the query */
             PossibleMatch = 30,   /**< Something that may match the query */
-            InformationalMatch = 50, /**< A purely informational, non-actionable match,
-                                       such as the answer to a question or calculation*/
+            InformationalMatch = 50, /**< A purely informational, non-runnable match,
+                                       such as the answer to a question or calculation.
+                                       The data of the match will be converted to a string
+                                       and set in the search field */
             HelperMatch = 70, /**< A match that represents an action not directly related
                                  to activating the given search term, such as a search
                                  in an external tool or a command learning trigger. Helper
