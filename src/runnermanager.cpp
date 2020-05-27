@@ -362,9 +362,6 @@ QT_WARNING_POP
             // ourselves here
             emit q->matchesChanged(context.matches());
         }
-
-        teardownRequested = true;
-        checkTearDown();
     }
 
     void checkTearDown()
