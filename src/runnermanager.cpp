@@ -167,6 +167,7 @@ public:
         KPluginInfo::List offers = RunnerManager::listRunnerInfo();
 
         const bool loadAll = config.readEntry("loadAll", false);
+        const bool noWhiteList = whiteList.isEmpty();
         KConfigGroup pluginConf;
         if (conf.isValid()) {
             pluginConf = KConfigGroup(&conf, "Plugins");
@@ -193,7 +194,7 @@ public:
             description.load(pluginConf);
 
             const bool loaded = runners.contains(runnerName);
-            const bool selected = loadAll || description.isPluginEnabled();
+            const bool selected = loadAll || (description.isPluginEnabled() && (noWhiteList || whiteList.contains(runnerName)));
 
             const bool singleQueryModeEnabled = description.property(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toBool();
 
@@ -462,6 +463,7 @@ QT_WARNING_POP
     bool teardownRequested : 1;
     bool singleMode : 1;
     bool singleRunnerWasLoaded : 1;
+    QStringList whiteList;
 };
 
 /*****************************************************
@@ -503,18 +505,14 @@ void RunnerManager::reloadConfiguration()
     d->loadRunners();
 }
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 void RunnerManager::setAllowedRunners(const QStringList &runners)
 {
-    KConfigGroup config = d->configGroup();
-    config.writeEntry("pluginWhiteList", runners);
-
+    d->whiteList = runners;
     if (!d->runners.isEmpty()) {
         // this has been called with runners already created. so let's do an instant reload
         d->loadRunners();
     }
 }
-#endif
 
 void RunnerManager::setEnabledCategories(const QStringList& categories)
 {

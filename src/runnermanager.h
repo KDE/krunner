@@ -156,18 +156,14 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void reloadConfiguration();
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * Sets a whitelist for the plugins that can be loaded
+         * all other runners are not loaded by the manager object
          *
          * @param plugins the plugin names of allowed runners
          * @since 4.4
-         * @deprecated since 5.71, the whitelist is now ignored when loading the plugins.
-         * The enabled/disabled state is defined in the Plugin group.
          */
-    KRUNNER_DEPRECATED_VERSION(5, 71, "Feature removed")
         void setAllowedRunners(const QStringList &runners);
-#endif
 
         /**
          * Sets the list of categories which matches should be
