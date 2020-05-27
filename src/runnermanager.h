@@ -157,7 +157,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         void reloadConfiguration();
 
         /**
-         * Sets a whitelist for the plugins that can be loaded
+         * Sets a whitelist for the plugins that can be loaded by this manager.
          *
          * @param plugins the plugin names of allowed runners
          * @since 4.4

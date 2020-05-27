@@ -167,7 +167,6 @@ public:
         KPluginInfo::List offers = RunnerManager::listRunnerInfo();
 
         const bool loadAll = config.readEntry("loadAll", false);
-        const QStringList whiteList = config.readEntry("pluginWhiteList", QStringList());
         const bool noWhiteList = whiteList.isEmpty();
         KConfigGroup pluginConf;
         if (conf.isValid()) {
@@ -461,6 +460,7 @@ QT_WARNING_POP
     bool teardownRequested : 1;
     bool singleMode : 1;
     bool singleRunnerWasLoaded : 1;
+    QStringList whiteList;
 };
 
 /*****************************************************
@@ -504,9 +504,7 @@ void RunnerManager::reloadConfiguration()
 
 void RunnerManager::setAllowedRunners(const QStringList &runners)
 {
-    KConfigGroup config = d->configGroup();
-    config.writeEntry("pluginWhiteList", runners);
-
+    d->whiteList = runners;
     if (!d->runners.isEmpty()) {
         // this has been called with runners already created. so let's do an instant reload
         d->loadRunners();
