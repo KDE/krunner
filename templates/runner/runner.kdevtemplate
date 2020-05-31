@@ -2,6 +2,7 @@
 [General]
 Name=C++
 Name[ar]=سي++
+Name[az]=C++
 Name[ca]=C++
 Name[ca@valencia]=C++
 Name[cs]=C++
@@ -43,6 +44,7 @@ Name[zh_CN]=C++
 Name[zh_TW]=C++
 Comment=Plasma Runner Template. A plasma runner template
 Comment[ar]=قالب «مشغّل بلازما». قالب لِ‍«مشغّل بلازما»
+Comment[az]=Plasma başlatma sətri üçün uzantıların şablonu
 Comment[ca]=Plantilla de Runner del Plasma. Una plantilla de «Runner» pel Plasma
 Comment[ca@valencia]=Plantilla de Runner del Plasma. Una plantilla de «Runner» pel Plasma
 Comment[da]=Skabelon til Plasma-runner. En skabelon til en Plasma-runner
