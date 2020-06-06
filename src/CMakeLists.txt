@@ -1,4 +1,10 @@
-add_subdirectory(declarative)
+# TODO: merge QML plugin from Milou into this instead and provide a plugin again officially,
+# named "org.kde.krunner" to follow naming pattern for QML plugins from KF modules
+if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
+   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.0.0)
+    # deprecated plugin org.kde.runnermodel, no users known
+    add_subdirectory(declarative)
+endif()
 
 set (KF5Runner_SRCS
     abstractrunner.cpp
