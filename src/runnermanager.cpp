@@ -361,6 +361,9 @@ QT_WARNING_POP
             // ourselves here
             emit q->matchesChanged(context.matches());
         }
+        if (searchJobs.isEmpty()) {
+            emit q->queryFinished();
+        }
     }
 
     void checkTearDown()
@@ -392,8 +395,6 @@ QT_WARNING_POP
 
                 singleRunnerPrepped = false;
             }
-
-            emit q->queryFinished();
 
             prepped = false;
             teardownRequested = false;
