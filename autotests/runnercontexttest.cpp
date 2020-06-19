@@ -22,7 +22,16 @@
 #include <kprotocolinfo.h>
 #include "runnercontext.h"
 
+#include <QDir>
+
 Q_DECLARE_METATYPE(Plasma::RunnerContext::Type)
+
+static QString getSomeExistingFileInHomeDir()
+{
+    QDir home = QDir::home();
+    const auto files = QDir::home().entryList(QDir::Files|QDir::Hidden);
+    return !files.isEmpty() ? files.first() : QString();
+}
 
 void RunnerContextTest::typeDetection_data()
 {
@@ -47,7 +56,10 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("full path executable with params") << "/bin/ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("protocol-less path") << "/home" << Plasma::RunnerContext::Directory;
     QTest::newRow("protocol-less tilded") << "~" << Plasma::RunnerContext::Directory;
-    QTest::newRow("protocol-less file starting with tilded") << "~/.bashrc" << Plasma::RunnerContext::File;
+    const QString file = getSomeExistingFileInHomeDir();
+    if (!file.isEmpty()) {
+        QTest::newRow("protocol-less file starting with tilded") << QLatin1String("~/")+file << Plasma::RunnerContext::File;
+    }
     QTest::newRow("invalid protocol-less path") << "/bad/path" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation") << "5*4" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation (float)") << "5.2*4" << Plasma::RunnerContext::UnknownType;
