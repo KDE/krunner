@@ -42,6 +42,7 @@
 #include "plasma/pluginloader.h"
 #include <plasma/version.h>
 #include "querymatch.h"
+#include <../krunner_version.h>
 
 using ThreadWeaver::Queue;
 using ThreadWeaver::Job;
@@ -74,6 +75,12 @@ void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> call
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
 {
+    // only start to emit runtime warnings at the time Plasma 5.20 is to be released
+    // because the majority of runner plugins comes from Plasma
+    // and for 5.19 they cannot be ported (have been ported for what will be 5.20 already)
+    // so there would be lots of useless noise in the logs
+#if KRUNNER_VERSION >= QT_VERSION_CHECK(5, 75, 0)
+#pragma message("Remove this build condition and the krunner_version.h include, now that we are becoming KF 5.75")
     if (!pluginInfo.libraryPath().isEmpty()) {
         qCWarning(KRUNNER).nospace() << "KRunner plugin " << pluginInfo.pluginName() << " still uses a .desktop file ("
         << pluginInfo.entryPath() << "). Please port it to JSON metadata.";
@@ -81,6 +88,9 @@ void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
         qCWarning(KRUNNER).nospace() << "KRunner D-Bus plugin " << pluginInfo.pluginName() << " installs the .desktop file ("
         << pluginInfo.entryPath() << ") still in the kservices5 folder. Please install it to ${KDE_INSTALL_DATAROOTDIR}/krunner/dbusplugins.";
     }
+#else
+    Q_UNUSED(pluginInfo);
+#endif
 }
 #endif
 
