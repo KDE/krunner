@@ -39,7 +39,6 @@
 
 #include "dbusrunner_p.h"
 #include "runnerjobs_p.h"
-#include "plasma/pluginloader.h"
 #include <plasma/version.h>
 #include "querymatch.h"
 #include <../krunner_version.h>
