@@ -24,7 +24,7 @@
 
 #include <KPluginMetaData>
 
-#include "plasma/dataengineconsumer.h"
+#include <Plasma/DataEngineConsumer>
 
 namespace Plasma
 {

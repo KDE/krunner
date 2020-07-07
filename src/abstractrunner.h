@@ -24,17 +24,18 @@
 #include <QStringList>
 #include <QIcon>
 
-#include <kconfiggroup.h>
-#include <kservice.h>
-#include <kplugininfo.h>
-#include <kpluginmetadata.h>
+#include <KConfigGroup>
+#include <KService>
+#include <KPluginInfo>
+#include <KPluginMetaData>
+
+#include <plasma_version.h>
+#include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
 
 #include "krunner_export.h"
 #include "querymatch.h"
 #include "runnercontext.h"
 #include "runnersyntax.h"
-#include <plasma_version.h>
-#include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
 
 class QAction;
 class QMimeData;

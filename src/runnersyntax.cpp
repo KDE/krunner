@@ -19,7 +19,7 @@
 
 #include "runnersyntax.h"
 
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 
 namespace Plasma
 {

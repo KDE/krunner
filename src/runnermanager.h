@@ -25,8 +25,8 @@
 #include <QList>
 #include <QObject>
 
-#include <kplugininfo.h>
-#include <kpluginmetadata.h>
+#include <KPluginInfo>
+#include <KPluginMetaData>
 
 #include "krunner_export.h"
 #include "abstractrunner.h"

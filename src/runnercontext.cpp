@@ -22,21 +22,20 @@
 #include <cmath>
 
 #include <QReadWriteLock>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QSharedData>
+#include <QMimeDatabase>
+#include <QStandardPaths>
+#include <QUrl>
 
-#include <kconfiggroup.h>
+#include <KConfigGroup>
+#include <KShell>
+#include <KProtocolInfo>
+
 #include "krunner_debug.h"
-#include <qmimedatabase.h>
-#include <kshell.h>
-#include <qstandardpaths.h>
-#include <qurl.h>
-#include <kprotocolinfo.h>
-
 #include "abstractrunner.h"
 #include "querymatch.h"
 

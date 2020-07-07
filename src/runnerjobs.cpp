@@ -21,8 +21,8 @@
 
 #include <QTimer>
 #include <QMutexLocker>
-#include "krunner_debug.h"
 
+#include "krunner_debug.h"
 #include "runnermanager.h"
 #include "querymatch.h"
 

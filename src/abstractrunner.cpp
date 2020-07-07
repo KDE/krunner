@@ -26,14 +26,13 @@
 #include <QMimeData>
 #include <QMutex>
 
-#include "krunner_debug.h"
-#include <ksharedconfig.h>
-#include <klocalizedstring.h>
+#include <KSharedConfig>
+#include <KLocalizedString>
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 #include <Plasma/Package>
 #endif
-#include <qstandardpaths.h>
 
+#include "krunner_debug.h"
 #include "querymatch.h"
 #include "runnercontext.h"
 

@@ -19,8 +19,9 @@
 
 #include "runnercontexttest.h"
 
-#include <kprotocolinfo.h>
 #include "runnercontext.h"
+
+#include <KProtocolInfo>
 
 #include <QDir>
 

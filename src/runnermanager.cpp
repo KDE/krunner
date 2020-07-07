@@ -26,21 +26,22 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>
-#include "krunner_debug.h"
 
-#include <ksharedconfig.h>
-#include <kplugininfo.h>
-#include <kservicetypetrader.h>
+#include <KSharedConfig>
+#include <KPluginInfo>
+#include <KServiceTypeTrader>
 #include <KPluginMetaData>
 
 #include <ThreadWeaver/DebuggingAids>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
 
+#include <plasma/version.h>
+
 #include "dbusrunner_p.h"
 #include "runnerjobs_p.h"
-#include <plasma/version.h>
 #include "querymatch.h"
+#include "krunner_debug.h"
 #include <../krunner_version.h>
 
 using ThreadWeaver::Queue;
