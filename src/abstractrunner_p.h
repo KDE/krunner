@@ -24,14 +24,19 @@
 
 #include <KPluginMetaData>
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 73)
 #include <Plasma/DataEngineConsumer>
+#endif
 
 namespace Plasma
 {
 
 class AbstractRunner;
 
-class AbstractRunnerPrivate : public DataEngineConsumer
+class AbstractRunnerPrivate
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 73)
+    : public DataEngineConsumer
+#endif
 {
 public:
     AbstractRunnerPrivate(AbstractRunner *r);

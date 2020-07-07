@@ -489,6 +489,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         void setSyntaxes(const QList<RunnerSyntax> &syns);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 73)
         /**
          * Loads the given DataEngine
          *
@@ -507,8 +508,11 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          *         could not be loaded
          *
          * @since 4.4
+         * @deprecated Since 5.73, DataEngines are deprecated, use e.g. a shared library to provide the data instead.
          */
+        KRUNNER_DEPRECATED_VERSION(5, 73, "DataEngines are deprecated, use e.g. a shared library to provide the data instead.")
         Q_INVOKABLE DataEngine *dataEngine(const QString &name) const;
+#endif
 
         /**
          * Reimplement this slot to run any initialization routines on first load.

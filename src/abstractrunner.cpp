@@ -376,10 +376,12 @@ void AbstractRunner::init()
     reloadConfiguration();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 73)
 DataEngine *AbstractRunner::dataEngine(const QString &name) const
 {
     return d->dataEngine(name);
 }
+#endif
 
 bool AbstractRunner::isMatchingSuspended() const
 {
