@@ -17,7 +17,8 @@ set (KF5Runner_SRCS
 ecm_qt_declare_logging_category(KF5Runner_SRCS
     HEADER krunner_debug.h
     IDENTIFIER KRUNNER
-    CATEGORY_NAME org.kde.krunner
+    CATEGORY_NAME kf.runner
+    OLD_CATEGORY_NAMES org.kde.krunner
     DESCRIPTION "KRunner"
     EXPORT KRUNNER
 )
