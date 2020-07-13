@@ -160,7 +160,7 @@ public:
 
     KConfigGroup configGroup()
     {
-        return conf.isValid() ? conf : KConfigGroup(KSharedConfig::openConfig(), "PlasmaRunnerManager");
+        return conf.isValid() ? conf : KConfigGroup(KSharedConfig::openConfig(configFile), "PlasmaRunnerManager");
     }
 
     void clearSingleRunner()
@@ -245,7 +245,7 @@ QT_WARNING_POP
         if (conf.isValid()) {
             pluginConf = KConfigGroup(&conf, "Plugins");
         } else {
-            pluginConf = KConfigGroup(KSharedConfig::openConfig(), "Plugins");
+            pluginConf = KConfigGroup(KSharedConfig::openConfig(configFile), "Plugins");
         }
 
         advertiseSingleRunnerIds.clear();
@@ -540,6 +540,7 @@ QT_WARNING_POP
     bool singleMode : 1;
     bool singleRunnerWasLoaded : 1;
     QStringList whiteList;
+    QString configFile;
 };
 
 /*****************************************************
@@ -547,9 +548,15 @@ QT_WARNING_POP
 *
 *****************************************************/
 RunnerManager::RunnerManager(QObject *parent)
+    : RunnerManager(QString(), parent)
+{
+}
+
+RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     : QObject(parent),
       d(new RunnerManagerPrivate(this))
 {
+    d->configFile = configFile;
     d->loadConfiguration();
     //ThreadWeaver::setDebugLevel(true, 4);
 }

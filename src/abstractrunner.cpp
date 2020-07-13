@@ -102,7 +102,7 @@ KConfigGroup AbstractRunner::config() const
         group = QStringLiteral("UnnamedRunner");
     }
 
-    KConfigGroup runners(KSharedConfig::openConfig(), "Runners");
+    KConfigGroup runners(KSharedConfig::openConfig(QStringLiteral("krunnerrc")), "Runners");
     return KConfigGroup(&runners, group);
 }
 
