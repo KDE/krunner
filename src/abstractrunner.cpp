@@ -244,10 +244,12 @@ void AbstractRunner::setHasRunOptions(bool hasRunOptions)
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
 void AbstractRunner::createRunOptions(QWidget *parent)
 {
     Q_UNUSED(parent)
 }
+#endif
 
 AbstractRunner::Speed AbstractRunner::speed() const
 {
