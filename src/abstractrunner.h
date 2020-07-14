@@ -161,7 +161,6 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         bool hasRunOptions();
 #endif
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
         /**
          * If hasRunOptions() returns true, this method may be called to get
          * a widget displaying the options the user can interact with to modify
@@ -172,7 +171,6 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         KRUNNER_DEPRECATED_VERSION_BELATED(5, 71,  5, 0, "No longer use, feature removed")
         virtual void createRunOptions(QWidget *widget);
-#endif
 
         /**
          * Called whenever an exact or possible match associated with this
