@@ -126,12 +126,6 @@ public:
         QObject::connect(q, &RunnerManager::matchesChanged, q, [&] { lastMatchChangeSignalled.restart(); });
     }
 
-    ~RunnerManagerPrivate()
-    {
-        KConfigGroup config = configGroup();
-        context.save(config);
-    }
-
     void scheduleMatchesChanged()
     {
         if(lastMatchChangeSignalled.hasExpired(250)) {
@@ -869,6 +863,10 @@ void RunnerManager::matchSessionComplete()
 
     d->teardownRequested = true;
     d->checkTearDown();
+    // We save the context config after each session, just like the history entries
+    // BUG: 424505
+    KConfigGroup config = d->configGroup();
+    d->context.save(config);
 }
 
 void RunnerManager::launchQuery(const QString &term)
