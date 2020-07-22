@@ -270,6 +270,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         /**
          * If you call this method the manager will create a KConfigWatcher
          * which reload its runners or the runner configuration when the settings in the KCM are edited.
+         * @since 5.73
          * @see reloadConfiguration
          */
         void enableKNotifyPluginWatcher();
