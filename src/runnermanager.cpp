@@ -31,6 +31,7 @@
 #include <KPluginInfo>
 #include <KServiceTypeTrader>
 #include <KPluginMetaData>
+#include <KConfigWatcher>
 
 #include <ThreadWeaver/DebuggingAids>
 #include <ThreadWeaver/Queue>
@@ -541,6 +542,7 @@ QT_WARNING_POP
     bool singleRunnerWasLoaded : 1;
     QStringList whiteList;
     QString configFile;
+    KConfigWatcher::Ptr watcher;
 };
 
 /*****************************************************
@@ -985,6 +987,33 @@ void RunnerManager::reset()
 
     d->context.reset();
     emit queryFinished();
+}
+
+void RunnerManager::enableKNotifyPluginWatcher()
+{
+    if (!d->watcher) {
+        d->watcher = KConfigWatcher::create(KSharedConfig::openConfig(d->configGroup().config()->name()));
+        connect(d->watcher.data(), &KConfigWatcher::configChanged, this, [this](const KConfigGroup &group, const QByteArrayList &changedNames) {
+            const QString groupName = group.name();
+            if (groupName == QLatin1String("Plugins")) {
+                reloadConfiguration();
+            } else if (groupName == QLatin1String("Runners")) {
+                for (auto *runner : qAsConst(d->runners)) {
+                    // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
+                    if (changedNames.contains(runner->metadata().pluginName().toLocal8Bit())) {
+                        runner->reloadConfiguration();
+                    }
+                }
+            } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")){
+                for (auto *runner : qAsConst(d->runners)) {
+                    // If the same config group has been modified which gets created in AbstractRunner::config()
+                    if (groupName == runner->id()) {
+                        runner->reloadConfiguration();
+                    }
+                }
+            }
+        });
+    }
 }
 
 } // Plasma namespace

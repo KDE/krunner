@@ -267,6 +267,13 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         static KPluginInfo::List listRunnerInfo(const QString &parentApp = QString());
 #endif
 
+        /**
+         * If you call this method the manager will create a KConfigWatcher
+         * which reload its runners or the runner configuration when the settings in the KCM are edited.
+         * @see reloadConfiguration
+         */
+        void enableKNotifyPluginWatcher();
+
     public Q_SLOTS:
         /**
          * Call this method when the runners should be prepared for a query session.
