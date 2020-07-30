@@ -21,7 +21,6 @@
 #include <KRunner/AbstractRunner>
 
 #include "dbusutils_p.h"
-class OrgKdeKrunner1Interface;
 #include <QHash>
 #include <QList>
 #include <QSet>
