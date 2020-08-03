@@ -49,7 +49,6 @@ bool DelayedRunnerPolicy::canRun(ThreadWeaver::JobPointer job)
     QSharedPointer<FindMatchesJob> aJob(job.dynamicCast<FindMatchesJob>());
     if (QTimer *t = aJob->delayTimer()) {
         // If the timer is active, the required delay has not been reached
-        //qCDebug(KRUNNER) << "delayed timer" << aJob->runner()->name() << !t->isActive();
         return !t->isActive(); // DATA RACE!  (with QTimer start/stop from runnermanager.cpp)
     }
 
@@ -151,8 +150,6 @@ void FindMatchesJob::setDelayTimer(QTimer *timer)
 
 void FindMatchesJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread*)
 {
-//     qCDebug(KRUNNER) << "Running match for " << m_runner->objectName()
-//              << " in Thread " << thread()->id() << endl;
     if (m_context.isValid()) {
         m_runner->performMatch(m_context);
     }

@@ -59,45 +59,30 @@ Returns true on success and false on error, in case of error, correctCasePath is
 */
 bool correctLastComponentCase(const QString &path, QString &correctCasePath, const bool mustBeDir)
 {
-    //qCDebug(KRUNNER) << "Correcting " << path;
-
     // If the file already exists then no need to search for it.
     if (QFile::exists(path)) {
         correctCasePath = path;
-        //qCDebug(KRUNNER) << "Correct path is" << correctCasePath;
         return true;
     }
 
     const QFileInfo pathInfo(path);
 
     const QDir fileDir = pathInfo.dir();
-    //qCDebug(KRUNNER) << "Directory is" << fileDir;
 
     const QString filename = pathInfo.fileName();
-    //qCDebug(KRUNNER) << "Filename is" << filename;
-
-    //qCDebug(KRUNNER) << "searching for a" << (mustBeDir ? "directory" : "directory/file");
 
     const QStringList matchingFilenames = fileDir.entryList(QStringList(filename),
                                           mustBeDir ? QDir::Dirs : QDir::NoFilter);
 
     if (matchingFilenames.empty()) {
-        //qCDebug(KRUNNER) << "No matches found!!\n";
         return false;
     } else {
-        /*if (matchingFilenames.size() > 1) {
-#ifndef NDEBUG
-            // qCDebug(KRUNNER) << "Found multiple matches!!\n";
-#endif
-        }*/
-
         if (fileDir.path().endsWith(QDir::separator())) {
             correctCasePath = fileDir.path() + matchingFilenames[0];
         } else {
             correctCasePath = fileDir.path() + QDir::separator() + matchingFilenames[0];
         }
 
-        //qCDebug(KRUNNER) << "Correct path is" << correctCasePath;
         return true;
     }
 }
@@ -125,8 +110,6 @@ bool correctPathCase(const QString& path, QString &corrected)
 
     const bool mustBeDir = components.back().isEmpty();
 
-    //qCDebug(KRUNNER) << "Components are" << components;
-
     if (mustBeDir) {
         components.pop_back();
     }
@@ -141,7 +124,6 @@ bool correctPathCase(const QString& path, QString &corrected)
         const QString tmp = components[0] + QDir::separator() + components[1];
 
         if (!correctLastComponentCase(tmp, correctPath, components.size() > 2 || mustBeDir)) {
-            //qCDebug(KRUNNER) << "search was not successful";
             return false;
         }
 
@@ -171,7 +153,6 @@ class RunnerContextPrivate : public QSharedData
               q(p.q),
               singleRunnerQueryMode(false)
         {
-            //qCDebug(KRUNNER) << "¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿boo yeah" << type;
         }
 
         ~RunnerContextPrivate()
@@ -222,14 +203,11 @@ class RunnerContextPrivate : public QSharedData
                     // but if a path doesn't have any slashes
                     // it's too ambiguous to be sure we're in a filesystem context
                     path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
-                    //qCDebug(KRUNNER)<< "slash check" << path;
                     if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
                         QString correctCasePath;
                         if (correctPathCase(path, correctCasePath)) {
                             path = correctCasePath;
                             QFileInfo info(path);
-                            //qCDebug(KRUNNER)<< "correct cas epath is" << correctCasePath << info.isSymLink() <<
-                            //    info.isDir() << info.isFile();
 
                             if (info.isSymLink()) {
                                 path = info.canonicalFilePath();
@@ -250,8 +228,6 @@ class RunnerContextPrivate : public QSharedData
                     }
                 }
             }
-
-            //qCDebug(KRUNNER) << "term2type" << term << type;
         }
 
         void invalidate()
@@ -339,7 +315,6 @@ void RunnerContext::reset()
     d->mimeType.clear();
     d->type = UnknownType;
     d->singleRunnerQueryMode = false;
-    //qCDebug(KRUNNER) << "match count" << d->matches.count();
 }
 
 void RunnerContext::setQuery(const QString &term)
@@ -407,15 +382,9 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         }
 
         d->matches.append(match);
-#ifndef NDEBUG
-        if (d->matchesById.contains(match.id())) {
-            // qCDebug(KRUNNER) << "Duplicate match id " << match.id() << "from" << match.runner()->name();
-        }
-#endif
         d->matchesById.insert(match.id(), &d->matches.at(d->matches.size() - 1));
     }
     UNLOCK(d);
-    //qCDebug(KRUNNER)<< "add matches";
     // A copied searchContext may share the d pointer,
     // we always want to sent the signal of the object that created
     // the d pointer
@@ -442,7 +411,6 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     d->matches.append(m);
     d->matchesById.insert(m.id(), &d->matches.at(d->matches.size() - 1));
     UNLOCK(d);
-    //qCDebug(KRUNNER)<< "added match" << match->text();
     emit d->q->matchesChanged();
 
     return true;

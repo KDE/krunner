@@ -158,9 +158,6 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
     if (!slowed && runtime > reasonableRunTime) {
         // we punish runners that return too slowly, even if they don't bring
         // back matches
-#ifndef NDEBUG
-        // qCDebug(KRUNNER) << id() << "runner is too slow, putting it on the back burner.";
-#endif
         d->fastRuns = 0;
         setSpeed(SlowSpeed);
     }
@@ -171,9 +168,6 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
         if (d->fastRuns > 2) {
             // we reward slowed runners who bring back matches fast enough
             // 3 times in a row
-#ifndef NDEBUG
-            // qCDebug(KRUNNER) << id() << "runner is faster than we thought, kicking it up a notch";
-#endif
             setSpeed(NormalSpeed);
         }
     }

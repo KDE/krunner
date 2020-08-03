@@ -353,9 +353,7 @@ QT_WARNING_POP
             clearSingleRunner();
         }
 
-#ifndef NDEBUG
-        // qCDebug(KRUNNER) << "All runners loaded, total:" << runners.count();
-#endif
+        qCDebug(KRUNNER) << "All runners loaded, total:" << runners.count();
     }
 
     AbstractRunner *loadInstalledRunner(const KPluginMetaData &pluginMetaData)
@@ -381,11 +379,6 @@ QT_WARNING_POP
                         QVariant::fromValue(pluginMetaData),
                     };
                     runner = factory->create<AbstractRunner>(q, args);
-                    if (!runner) {
-#ifndef NDEBUG
-                        // qCDebug(KRUNNER) << "Failed to load runner:" << pluginInfo.name() << ". error reported:" << pluginLoader.errorString();
-#endif
-                    }
                 } else {
                     qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":"
                         << pluginLoader.errorString() << " (library path was:" << pluginMetaData.fileName() << ")";
@@ -398,14 +391,10 @@ QT_WARNING_POP
         } else if (api == QLatin1String("DBus")){
             runner = new DBusRunner(pluginMetaData, q);
         } else {
-            //qCDebug(KRUNNER) << "got a script runner known as" << api;
             runner = new AbstractRunner(pluginMetaData, q);
         }
 
         if (runner) {
-#ifndef NDEBUG
-            // qCDebug(KRUNNER) << "================= loading runner:" << pluginInfo.name() << "=================";
-#endif
             QObject::connect(runner, SIGNAL(matchingSuspended(bool)), q, SLOT(runnerMatchingSuspended(bool)));
             runner->init();
             if (prepped) {
@@ -425,7 +414,6 @@ QT_WARNING_POP
         }
 
         if (deferredRun.isEnabled() && runJob->runner() == deferredRun.runner()) {
-            //qCDebug(KRUNNER) << "job actually done, running now **************";
             QueryMatch tmpRun = deferredRun;
             deferredRun = QueryMatch(nullptr);
             tmpRun.run(context);
@@ -447,8 +435,6 @@ QT_WARNING_POP
 
     void checkTearDown()
     {
-        //qCDebug(KRUNNER) << prepped << teardownRequested << searchJobs.count() << oldSearchJobs.count();
-
         if (!prepped || !teardownRequested) {
             return;
         }
@@ -762,9 +748,6 @@ void RunnerManager::run(const QueryMatch &match)
 
     for (auto it = d->searchJobs.constBegin(); it != d->searchJobs.constEnd(); ++it) {
         if ((*it)->runner() == runner && !(*it)->isFinished()) {
-#ifndef NDEBUG
-            // qCDebug(KRUNNER) << "deferred run";
-#endif
             d->deferredRun = match;
             return;
         }
@@ -871,16 +854,7 @@ void RunnerManager::setupMatchSession()
         }
     } else {
         for (AbstractRunner *runner : qAsConst(d->runners)) {
-#ifdef MEASURE_PREPTIME
-            QTime t;
-            t.start();
-#endif
             emit runner->prepare();
-#ifdef MEASURE_PREPTIME
-#ifndef NDEBUG
-            // qCDebug(KRUNNER) << t.elapsed() << runner->name();
-#endif
-#endif
         }
 
         d->allRunnersPrepped = true;
@@ -933,7 +907,6 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     }
 
     reset();
-//    qCDebug(KRUNNER) << "runners searching for" << term << "on" << runnerName;
     d->context.setQuery(term);
     d->context.setEnabledCategories(d->enabledCategories);
 
@@ -979,7 +952,6 @@ void RunnerManager::reset()
     d->searchJobs.clear();
 
     if (d->deferredRun.isEnabled()) {
-        //qCDebug(KRUNNER) << "job actually done, running now **************";
         QueryMatch tmpRun = d->deferredRun;
         d->deferredRun = QueryMatch(nullptr);
         tmpRun.run(d->context);
