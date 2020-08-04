@@ -152,8 +152,9 @@ void DBusRunnerTest::testMatch()
     QVERIFY(spy.wait());
 
     //verify matches
-    QCOMPARE(m.matches().count(), 1);
-    auto result = m.matches().first();
+    const auto matches = m.matches();
+    QCOMPARE(matches.count(), 1);
+    auto result = matches.first();
 
     //see testremoterunner.cpp
     QCOMPARE(result.id(), QStringLiteral("dbusrunnertest_id1")); //note the runner name is prepended

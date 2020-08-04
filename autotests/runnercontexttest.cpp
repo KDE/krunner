@@ -29,7 +29,6 @@ Q_DECLARE_METATYPE(Plasma::RunnerContext::Type)
 
 static QString getSomeExistingFileInHomeDir()
 {
-    QDir home = QDir::home();
     const auto files = QDir::home().entryList(QDir::Files|QDir::Hidden);
     return !files.isEmpty() ? files.first() : QString();
 }

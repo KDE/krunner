@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     });
     QObject::connect(&manager, &RunnerManager::queryFinished, [&]() {
         qDebug() << "Found matches:";
-        for (const auto& match : matches) {
+        for (const auto& match : qAsConst(matches)) {
             qDebug() << match.matchCategory() << match.text();
         }
         app.quit();

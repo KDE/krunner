@@ -428,7 +428,6 @@ QT_WARNING_POP
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginMetaData(path + QStringLiteral("/metadata.desktop"));
-    const QString api = runnerDescription.value(QStringLiteral("X-Plasma-API"));
 }
 
 } // Plasma namespace

@@ -74,7 +74,8 @@ void TestRemoteRunner::Run(const QString &id, const QString &actionId)
 int main(int argc, char ** argv)
 {
     QCoreApplication app(argc, argv);
-    Q_ASSERT(app.arguments().count() == 2);
-    TestRemoteRunner r(app.arguments()[1]);
+    const auto arguments = app.arguments();
+    Q_ASSERT(arguments.count() == 2);
+    TestRemoteRunner r(arguments[1]);
     app.exec();
 }
