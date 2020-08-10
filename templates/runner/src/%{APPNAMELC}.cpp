@@ -1,7 +1,7 @@
 /*
-   SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
+    SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
 
-   SPDX-License-Identifier: LGPL-2.1-or-later
+    SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
 #include "%{APPNAMELC}.h"
