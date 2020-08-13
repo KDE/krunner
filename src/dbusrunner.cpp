@@ -77,6 +77,17 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     } else {
         connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);
     }
+
+    // Load the runner syntaxes
+    const QStringList syntaxes = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntaxes")).toVariant().toStringList();
+    const QStringList syntaxDescriptions = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions"))
+                                            .toVariant().toStringList();
+    const int descriptionCount = syntaxDescriptions.count();
+    for (int i = 0; i < syntaxes.count(); ++i) {
+        const QString &query = syntaxes.at(i) ;
+        const QString description = i < descriptionCount ? syntaxDescriptions.at(i) : QString();
+        addSyntax(Plasma::RunnerSyntax(query, description));
+    }
 }
 
 DBusRunner::~DBusRunner() = default;

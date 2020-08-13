@@ -74,3 +74,11 @@ Type=QString
 # of each match session, default is false
 [PropertyDef::X-Plasma-Request-Actions-Once]
 Type=bool
+
+# List of supported syntaxes by this runner, see Plasma::RunnerSyntax
+[PropertyDef::X-Plasma-Runner-Syntaxes]
+Type=QStringList
+
+# Description for the syntaxes
+[PropertyDef::X-Plasma-Runner-Syntax-Descriptions]
+Type=QStringList
