@@ -249,8 +249,8 @@ class KRUNNER_EXPORT RunnerContext : public QObject
         QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
 
-}
+Q_DECLARE_OPERATORS_FOR_FLAGS(RunnerContext::Types)
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Plasma::RunnerContext::Types)
+}
 
 #endif
