@@ -1,0 +1,4 @@
+[General]
+Name=Python KRunner Plugin
+Comment=Template for a KRunner Python Plugin using D-Bus
+Category=Plasma/KRunner
