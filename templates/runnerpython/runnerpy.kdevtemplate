@@ -1,4 +1,20 @@
 [General]
 Name=Python KRunner Plugin
+Name[ca]=Connector Python del KRunner
+Name[es]=Complemento en Python para KRunner
+Name[nl]=Python KRunner-plug-in
+Name[pt]='Plugin' do KRunner em Python
+Name[pt_BR]=Plugin Python do KRunner
+Name[sv]=Python-insticksprogram för Kör program
+Name[uk]=Додаток до KRunner мовою Python
+Name[x-test]=xxPython KRunner Pluginxx
 Comment=Template for a KRunner Python Plugin using D-Bus
+Comment[ca]=Plantilla per a un connector Python del KRunner usant D-Bus
+Comment[es]=Plantilla para un complemento en Python para KRunner que usa D-Bus
+Comment[nl]=Sjabloon voor een Python-plug-in van KRunner met gebruik van D-Bus
+Comment[pt]=Modelo para um 'Plugin' em Python do KRunner que usa o D-Bus
+Comment[pt_BR]=Modelo para um plugin Python do KRunner usando o D-Bus
+Comment[sv]=Mall för ett Python-insticksprogram för Kör program med användning av D-Bus
+Comment[uk]=Шаблон для додатка Python KRunner з використанням D-Bus
+Comment[x-test]=xxTemplate for a KRunner Python Plugin using D-Busxx
 Category=Plasma/KRunner
