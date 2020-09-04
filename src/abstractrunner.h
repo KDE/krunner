@@ -581,13 +581,16 @@ K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
     K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();) \
     K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 75)
 /**
  * These plugins are Used by the plugin selector dialog to show
  * configuration options specific to this runner. These options
  * must be runner global and not pertain to a specific match.
+ * @deprecated Since 5.0, use K_PLUGIN_FACTORY directly
  */
 #define K_EXPORT_RUNNER_CONFIG( name, classname )     \
 K_PLUGIN_FACTORY(ConfigFactory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+#endif
 
 #endif
