@@ -2,8 +2,10 @@
 Name=Python KRunner Plugin
 Name[az]=Python KRunner qoşması
 Name[ca]=Connector Python del KRunner
+Name[cs]=Modul KRunneru pr Python
 Name[es]=Complemento en Python para KRunner
 Name[nl]=Python KRunner-plug-in
+Name[pa]=ਪਾਈਥਨ ਕੇਰਨਰ ਪਲੱਗਇਨ
 Name[pt]='Plugin' do KRunner em Python
 Name[pt_BR]=Plugin Python do KRunner
 Name[sk]=Zásuvný modul Python pre KRunner
