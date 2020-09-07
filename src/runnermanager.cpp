@@ -34,8 +34,6 @@
 using ThreadWeaver::Queue;
 using ThreadWeaver::Job;
 
-//#define MEASURE_PREPTIME
-
 namespace Plasma
 {
 
