@@ -171,9 +171,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
 
 QList<QAction*> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
-    Q_UNUSED(match)
-    const QString service = match.data().toString();
-    return m_actions.value(service);
+    return m_actions.value(match.data().toString());
 }
 
 void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
@@ -181,8 +179,8 @@ void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
     Q_UNUSED(context);
 
     QString actionId;
-    QString matchId = match.id().mid(id().length() + 1); //QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
-    QString service = match.data().toString();
+    const QString matchId = match.id().mid(id().length() + 1); //QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
+    const QString service = match.data().toString();
 
     if (match.selectedAction()) {
         actionId = match.selectedAction()->data().toString();
