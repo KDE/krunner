@@ -109,6 +109,7 @@ void DBusRunner::requestActions()
             watcher->deleteLater();
             QDBusReply<RemoteActions> reply = *watcher;
             if (!reply.isValid()) {
+                qCDebug(KRUNNER) << "Error requestion actions; calling" << service << " :" << reply.error().name() << reply.error().message();
                 return;
             }
             const auto actions = reply.value();
@@ -140,7 +141,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
         watchers << QSharedPointer<QDBusPendingCallWatcher>(watcher);
         connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, service, &context, reply]() {
             if (reply.isError()) {
-                qCDebug(KRUNNER) << "Error calling" << service << " :" << reply.error().name() << reply.error().message();
+                qCDebug(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
                 return;
             }
             const auto matches = reply.value();
