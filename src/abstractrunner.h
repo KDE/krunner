@@ -317,7 +317,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * @return minLetterCount property
          * @since 5.75
          */
-        int minLetterCount();
+        int minLetterCount() const;
 
         /**
          * Set the minLetterCount property

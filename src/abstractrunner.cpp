@@ -379,7 +379,7 @@ void AbstractRunner::suspendMatching(bool suspend)
     emit matchingSuspended(suspend);
 }
 
-int AbstractRunner::minLetterCount()
+int AbstractRunner::minLetterCount() const
 {
     return d->minLetterCount;
 }
