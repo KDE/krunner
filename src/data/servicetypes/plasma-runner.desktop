@@ -83,3 +83,9 @@ Type=QStringList
 # Description for the syntaxes
 [PropertyDef::X-Plasma-Runner-Syntax-Descriptions]
 Type=QStringList
+
+# Minimum letter count, if the query is shorter than this number the match method will not be called
+# unless the runner is called in the single runner mode
+# This value defaults to 0
+[PropertyDef::X-Plasma-Runner-Min-Letter-Count]
+Type=int

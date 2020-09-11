@@ -46,6 +46,7 @@ public:
     RunnerSyntax *defaultSyntax;
     bool hasRunOptions : 1;
     bool suspendMatching : 1;
+    int minLetterCount = 0;
 };
 
 } // namespace Plasma

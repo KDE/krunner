@@ -893,8 +893,14 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runable = d->runners;
     }
 
+    const int queryLetterCount = term.count();
     for (Plasma::AbstractRunner *r : qAsConst(runable)) {
         if (r->isMatchingSuspended()) {
+            continue;
+        }
+        // The runners can set the min letter count as a property, this way we don't
+        // have to spawn threads just for the runner to reject the query, because it is too short
+        if (!d->singleMode && queryLetterCount < r->minLetterCount()) {
             continue;
         }
 

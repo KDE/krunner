@@ -58,6 +58,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
     Q_PROPERTY(QString description READ description)
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QIcon icon READ icon)
+    Q_PROPERTY(int minLetterCount READ minLetterCount WRITE setMinLetterCount)
     public:
         /** Specifies a nominal speed for the runner */
         enum Speed {
@@ -305,6 +306,25 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * @since 4.6
          */
         bool isMatchingSuspended() const;
+
+        /**
+         * This is the minimum letter count for the query. If the query is shorter than this value
+         * and KRunner is not in the singleRunnerMode, the performMatch and consequently match method is not called.
+         * This can be set using the X-Plasma-Runner-Min-Letter-Count property or the setMinLetterCount method.
+         * @see setMinLetterCount
+         * @see match
+         * @see performMatch
+         * @return minLetterCount property
+         * @since 5.75
+         */
+        int minLetterCount();
+
+        /**
+         * Set the minLetterCount property
+         * @param count
+         * @since 5.75
+         */
+        void setMinLetterCount(int count);
 
     Q_SIGNALS:
         /**

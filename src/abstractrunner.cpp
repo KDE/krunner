@@ -379,6 +379,16 @@ void AbstractRunner::suspendMatching(bool suspend)
     emit matchingSuspended(suspend);
 }
 
+int AbstractRunner::minLetterCount()
+{
+    return d->minLetterCount;
+}
+
+void AbstractRunner::setMinLetterCount(int count)
+{
+    d->minLetterCount = count;
+}
+
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),
@@ -398,6 +408,10 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 void AbstractRunnerPrivate::init(const KPluginMetaData &pluginMetaData)
 {
     runnerDescription = pluginMetaData;
+
+    if (runnerDescription.isValid()) {
+        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
+    }
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
@@ -409,12 +423,18 @@ QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     const KPluginInfo pluginInfo(service);
     runnerDescription = pluginInfo.isValid() ? pluginInfo.toMetaData() : KPluginMetaData();
 QT_WARNING_POP
+    if (runnerDescription.isValid()) {
+        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
+    }
 }
 #endif
 
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginMetaData(path + QStringLiteral("/metadata.desktop"));
+    if (runnerDescription.isValid()) {
+        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
+    }
 }
 
 } // Plasma namespace
