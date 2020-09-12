@@ -105,7 +105,7 @@ public:
     {
         if(lastMatchChangeSignalled.hasExpired(250)) {
             matchChangeTimer.stop();
-            emit q->matchesChanged(context.matches());
+            Q_EMIT q->matchesChanged(context.matches());
         } else {
             matchChangeTimer.start(250 - lastMatchChangeSignalled.elapsed());
         }
@@ -113,7 +113,7 @@ public:
 
     void matchesChanged()
     {
-        emit q->matchesChanged(context.matches());
+        Q_EMIT q->matchesChanged(context.matches());
     }
 
     void loadConfiguration()
@@ -198,7 +198,7 @@ QT_WARNING_POP
             currentSingleRunner = loadInstalledRunner(pluginMetaData);
 
             if (currentSingleRunner) {
-                emit currentSingleRunner->prepare();
+                Q_EMIT currentSingleRunner->prepare();
                 singleRunnerWasLoaded = true;
             }
         }
@@ -367,7 +367,7 @@ QT_WARNING_POP
             QObject::connect(runner, SIGNAL(matchingSuspended(bool)), q, SLOT(runnerMatchingSuspended(bool)));
             runner->init();
             if (prepped) {
-                emit runner->prepare();
+                Q_EMIT runner->prepare();
             }
         }
 
@@ -395,10 +395,10 @@ QT_WARNING_POP
             // we finished our run, and there are no valid matches, and so no
             // signal will have been sent out. so we need to emit the signal
             // ourselves here
-            emit q->matchesChanged(context.matches());
+            Q_EMIT q->matchesChanged(context.matches());
         }
         if (searchJobs.isEmpty()) {
-            emit q->queryFinished();
+            Q_EMIT q->queryFinished();
         }
     }
 
@@ -416,7 +416,7 @@ QT_WARNING_POP
         if (searchJobs.isEmpty() && oldSearchJobs.isEmpty()) {
             if (allRunnersPrepped) {
                 for (AbstractRunner *runner : qAsConst(runners)) {
-                    emit runner->teardown();
+                    Q_EMIT runner->teardown();
                 }
 
                 allRunnersPrepped = false;
@@ -424,7 +424,7 @@ QT_WARNING_POP
 
             if (singleRunnerPrepped) {
                 if (currentSingleRunner) {
-                    emit currentSingleRunner->teardown();
+                    Q_EMIT currentSingleRunner->teardown();
                 }
 
                 singleRunnerPrepped = false;
@@ -818,12 +818,12 @@ void RunnerManager::setupMatchSession()
     d->prepped = true;
     if (d->singleMode) {
         if (d->currentSingleRunner) {
-            emit d->currentSingleRunner->prepare();
+            Q_EMIT d->currentSingleRunner->prepare();
             d->singleRunnerPrepped = true;
         }
     } else {
         for (AbstractRunner *runner : qAsConst(d->runners)) {
-            emit runner->prepare();
+            Q_EMIT runner->prepare();
         }
 
         d->allRunnersPrepped = true;
@@ -937,7 +937,7 @@ void RunnerManager::reset()
     }
 
     d->context.reset();
-    emit queryFinished();
+    Q_EMIT queryFinished();
 }
 
 void RunnerManager::enableKNotifyPluginWatcher()

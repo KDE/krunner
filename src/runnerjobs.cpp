@@ -140,7 +140,7 @@ void FindMatchesJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread*)
     if (m_context.isValid()) {
         m_runner->performMatch(m_context);
     }
-    emit done(self);
+    Q_EMIT done(self);
 }
 
 int FindMatchesJob::priority() const

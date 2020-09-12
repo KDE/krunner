@@ -90,7 +90,7 @@ void RunnerModel::setRunners(const QStringList &allowedRunners)
     } else {
         m_singleRunnerId.clear();
     }
-    emit runnersChanged();
+    Q_EMIT runnersChanged();
 }
 
 void RunnerModel::run(int index)
@@ -168,9 +168,9 @@ void RunnerModel::startQuery()
 
     if (createManager() || m_pendingQuery != m_manager->query()) {
         m_manager->launchQuery(m_pendingQuery, m_singleRunnerId);
-        emit queryChanged();
+        Q_EMIT queryChanged();
         m_running = true;
-        emit runningChanged(true);
+        Q_EMIT runningChanged(true);
     }
 }
 
@@ -214,7 +214,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
             beginInsertRows(QModelIndex(), oldCount, newCount-1);
             m_matches = matches;
             endInsertRows();
-            emit countChanged();
+            Q_EMIT countChanged();
         }
     } else {
         fullReset = true;
@@ -224,7 +224,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
         beginResetModel();
         m_matches = matches;
         endResetModel();
-        emit countChanged();
+        Q_EMIT countChanged();
     }
     m_runningChangedTimeout->start(3000);
 }
@@ -232,7 +232,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
 void RunnerModel::queryHasFinished()
 {
     m_running = false;
-    emit runningChanged(false);
+    Q_EMIT runningChanged(false);
 }
 
 

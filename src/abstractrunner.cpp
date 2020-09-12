@@ -376,7 +376,7 @@ void AbstractRunner::suspendMatching(bool suspend)
     }
 
     d->suspendMatching = suspend;
-    emit matchingSuspended(suspend);
+    Q_EMIT matchingSuspended(suspend);
 }
 
 int AbstractRunner::minLetterCount() const

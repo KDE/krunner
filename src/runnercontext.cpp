@@ -295,7 +295,7 @@ void RunnerContext::reset()
     if (!d->matches.isEmpty()) {
         d->matchesById.clear();
         d->matches.clear();
-        emit matchesChanged();
+        Q_EMIT matchesChanged();
     }
 
     d->term.clear();
@@ -375,7 +375,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
     // A copied searchContext may share the d pointer,
     // we always want to sent the signal of the object that created
     // the d pointer
-    emit d->q->matchesChanged();
+    Q_EMIT d->q->matchesChanged();
 
     return true;
 }
@@ -398,7 +398,7 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     d->matches.append(m);
     d->matchesById.insert(m.id(), &d->matches.at(d->matches.size() - 1));
     UNLOCK(d);
-    emit d->q->matchesChanged();
+    Q_EMIT d->q->matchesChanged();
 
     return true;
 }
@@ -435,7 +435,7 @@ bool RunnerContext::removeMatches(const QStringList matchIdList)
     }
     UNLOCK(d)
 
-    emit d->q->matchesChanged();
+    Q_EMIT d->q->matchesChanged();
 
     return true;
 }
@@ -455,7 +455,7 @@ bool RunnerContext::removeMatch(const QString matchId)
     d->matches.removeAll(*match);
     d->matchesById.remove(matchId);
     UNLOCK(d)
-    emit d->q->matchesChanged();
+    Q_EMIT d->q->matchesChanged();
 
     return true;
 }
@@ -487,7 +487,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     }
     UNLOCK(d)
 
-    emit d->q->matchesChanged();
+    Q_EMIT d->q->matchesChanged();
     return true;
 }
 
