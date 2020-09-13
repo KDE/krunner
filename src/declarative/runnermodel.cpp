@@ -22,11 +22,11 @@ RunnerModel::RunnerModel(QObject *parent)
 {
     m_startQueryTimer->setSingleShot(true);
     m_startQueryTimer->setInterval(10);
-    connect(m_startQueryTimer, SIGNAL(timeout()), this, SLOT(startQuery()));
+    connect(m_startQueryTimer, &QTimer::timeout, this, &RunnerModel::startQuery);
 
     //FIXME: HACK: some runners stay in a running but finished state, not possible to say if it's actually over
     m_runningChangedTimeout->setSingleShot(true);
-    connect(m_runningChangedTimeout, SIGNAL(timeout()), this, SLOT(queryHasFinished()));
+    connect(m_runningChangedTimeout, &QTimer::timeout, this, &RunnerModel::queryHasFinished);
 }
 
 QHash<int, QByteArray> RunnerModel::roleNames() const
@@ -178,10 +178,10 @@ bool RunnerModel::createManager()
 {
     if (!m_manager) {
         m_manager = new Plasma::RunnerManager(this);
-        connect(m_manager, SIGNAL(matchesChanged(QList<Plasma::QueryMatch>)),
-                this, SLOT(matchesChanged(QList<Plasma::QueryMatch>)));
-        connect(m_manager, SIGNAL(queryFinished()),
-                this, SLOT(queryHasFinished()));
+        connect(m_manager, &Plasma::RunnerManager::matchesChanged,
+                this, &RunnerModel::matchesChanged);
+        connect(m_manager, &Plasma::RunnerManager::queryFinished,
+                this, &RunnerModel::queryHasFinished);
 
         if (!m_pendingRunnersList.isEmpty()) {
             setRunners(m_pendingRunnersList);

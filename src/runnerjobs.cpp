@@ -159,7 +159,7 @@ DelayedJobCleaner::DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob> >
       m_jobs(jobs),
       m_runners(runners)
 {
-    connect(m_weaver, SIGNAL(finished()), this, SLOT(checkIfFinished()));
+    connect(m_weaver, &ThreadWeaver::QueueSignals::finished, this, &DelayedJobCleaner::checkIfFinished);
 
     for (auto it = m_jobs.constBegin(); it != m_jobs.constEnd(); ++it) {
         connect(it->data(), &FindMatchesJob::done, this, &DelayedJobCleaner::jobDone);
