@@ -103,14 +103,14 @@ private Q_SLOTS:
     void queryHasFinished();
 
 private:
-    Plasma::RunnerManager *m_manager;
+    Plasma::RunnerManager *m_manager = nullptr;
     QList<Plasma::QueryMatch> m_matches;
     QStringList m_pendingRunnersList;
     QString m_singleRunnerId;
     QString m_pendingQuery;
-    QTimer *m_startQueryTimer;
-    QTimer *m_runningChangedTimeout;
-    bool m_running;
+    QTimer *const m_startQueryTimer;
+    QTimer *const m_runningChangedTimeout;
+    bool m_running = false;
 };
 
 #endif

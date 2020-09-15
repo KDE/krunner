@@ -475,7 +475,7 @@ QT_WARNING_POP
     // Delay in ms before slow runners are allowed to run
     static const int slowRunDelay = 400;
 
-    RunnerManager *q;
+    RunnerManager *const q;
     QueryMatch deferredRun;
     RunnerContext context;
     QTimer matchChangeTimer;

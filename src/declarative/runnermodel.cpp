@@ -15,10 +15,8 @@
 
 RunnerModel::RunnerModel(QObject *parent)
     : QAbstractListModel(parent),
-      m_manager(nullptr),
       m_startQueryTimer(new QTimer(this)),
-      m_runningChangedTimeout(new QTimer(this)),
-      m_running(false)
+      m_runningChangedTimeout(new QTimer(this))
 {
     m_startQueryTimer->setSingleShot(true);
     m_startQueryTimer->setInterval(10);
