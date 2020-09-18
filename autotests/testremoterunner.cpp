@@ -37,6 +37,7 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
         m.iconName = QStringLiteral("icon1");
         m.type = Plasma::QueryMatch::ExactMatch;
         m.relevance = 0.8;
+        m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
         ms << m;
     }
     return ms;
@@ -50,7 +51,12 @@ RemoteActions TestRemoteRunner::Actions()
     action.text = QStringLiteral("Action 1");
     action.iconName = QStringLiteral("document-browser");
 
-    return RemoteActions({action});
+    RemoteAction action2;
+    action2.id = QStringLiteral("action2");
+    action2.text = QStringLiteral("Action 2");
+    action2.iconName = QStringLiteral("document-browser");
+
+    return RemoteActions({action, action2});
 }
 
 void TestRemoteRunner::Run(const QString &id, const QString &actionId)

@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2017, 2018 David Edmundson <davidedmundson@kde.org>
+    SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -150,7 +151,6 @@ void DBusRunner::match(Plasma::RunnerContext &context)
 
                 m.setText(match.text);
                 m.setId(match.id);
-                m.setData(service);
                 m.setIconName(match.iconName);
                 m.setType(match.type);
                 m.setRelevance(match.relevance);
@@ -159,6 +159,11 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                 m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
                 m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
                 m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
+                if (match.properties.contains(QStringLiteral("actions"))) {
+                    m.setData(QVariantList({service, match.properties.value(QStringLiteral("actions"))}));
+                } else {
+                    m.setData(QVariantList({service}));
+                }
 
                 context.addMatch(m);
             };
@@ -172,7 +177,20 @@ void DBusRunner::match(Plasma::RunnerContext &context)
 
 QList<QAction*> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
-    return m_actions.value(match.data().toString());
+    const QVariantList data = match.data().toList();
+    if (data.count() > 1) {
+        const QStringList actionIds = data.at(1).toStringList();
+        const QList<QAction *> actionList = m_actions.value(data.constFirst().toString());
+        QList<QAction *> requestedActions;
+        for (QAction *action : actionList) {
+            if (actionIds.contains(action->data().toString())) {
+                requestedActions << action;
+            }
+        }
+        return requestedActions;
+    } else {
+        return m_actions.value(data.constFirst().toString());
+    }
 }
 
 void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
@@ -181,7 +199,7 @@ void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
 
     QString actionId;
     const QString matchId = match.id().mid(id().length() + 1); //QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
-    const QString service = match.data().toString();
+    const QString service = match.data().toList().constFirst().toString();
 
     if (match.selectedAction()) {
         actionId = match.selectedAction()->data().toString();

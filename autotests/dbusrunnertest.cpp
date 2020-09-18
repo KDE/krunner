@@ -220,8 +220,8 @@ void DBusRunnerTest::testMulti()
     //verify matches, must be one from each
     QCOMPARE(m.matches().count(), 2);
 
-    QString first = m.matches().at(0).data().toString();
-    QString second = m.matches().at(1).data().toString();
+    const QString first = m.matches().at(0).data().toList().constFirst().toString();
+    const QString second = m.matches().at(1).data().toList().constFirst().toString();
     QVERIFY(first != second);
     QVERIFY(first == QLatin1String("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
     QVERIFY(second == QLatin1String("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
@@ -278,12 +278,15 @@ void DBusRunnerTest::testRequestActionsOnce()
     // Construct a fake match with necesarry data
     QueryMatch fakeMatch(m.runner(QStringLiteral("dbusrunnertest")));
     fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
-    fakeMatch.setData(QStringLiteral("net.krunnertests.dave"));
+    fakeMatch.setData(QVariantList({
+                                       QStringLiteral("net.krunnertests.dave"),
+                                       QStringList({QStringLiteral("action1"), QStringLiteral("action2")})
+                                   }));
 
     // We haven't called the prepare slot, if the implementation works
     // the actions should alredy be available
     auto actions = m.actionsForMatch(fakeMatch);
-    QCOMPARE(actions.count(), 1);
+    QCOMPARE(actions.count(), 2);
 
     process.kill();
     process.waitForFinished();

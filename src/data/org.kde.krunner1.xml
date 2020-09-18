@@ -47,6 +47,13 @@
          - Type (see PlasmaQuery::Type)
          - Relevance
          - Properties (VariantMap)
+            - Urls (StringList)
+            - Category
+            - Subtext
+            - Action Ids (StringList). In case you don't want to display any actions set this to an empty list.
+              Otherwise all the actions will be shown for compatibility with the previous versions of the D-Bus API.
+              When the actions ony need to be fetched once you can set the X-Plasma-Request-Actions-Once property of
+              the service file to true.
       -->
       <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="RemoteMatches"/>
       <arg name="matches" type="a(sssuda{sv})" direction="out"/>
