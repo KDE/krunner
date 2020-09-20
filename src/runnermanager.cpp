@@ -250,7 +250,6 @@ QT_WARNING_POP
                     runner = loadInstalledRunner(description);
                 } else {
                     runner = runners.value(runnerName);
-                    runner->reloadConfiguration();
                 }
 
                 if (runner) {
