@@ -162,9 +162,7 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
 
 QList<QAction*> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
-    Q_UNUSED(match)
-    QList<QAction*> ret;
-    return ret;
+    return match.isValid() ? match.actions() : QList<QAction *>();
 }
 
 QAction* AbstractRunner::addAction(const QString &id, const QIcon &icon, const QString &text)

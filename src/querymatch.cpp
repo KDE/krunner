@@ -54,6 +54,7 @@ class QueryMatchPrivate : public QSharedData
             data = other.data;
             mimeType = other.mimeType;
             urls = other.urls;
+            actions = other.actions;
         }
 
         ~QueryMatchPrivate()
@@ -77,6 +78,7 @@ class QueryMatchPrivate : public QSharedData
         QAction *selAction;
         bool enabled : 1;
         bool idSetByData : 1;
+        QList<QAction *> actions;
 };
 
 QueryMatch::QueryMatch(AbstractRunner *runner)
@@ -329,6 +331,24 @@ bool QueryMatch::hasConfigurationInterface() const
 void QueryMatch::createConfigurationInterface(QWidget *parent)
 {
     Q_UNUSED(parent)
+}
+
+void QueryMatch::setActions(const QList<QAction *> &actions)
+{
+    QWriteLocker locker(d->lock);
+    d->actions = actions;
+}
+
+void QueryMatch::addAction(QAction *action)
+{
+    QWriteLocker locker(d->lock);
+    d->actions << action;
+}
+
+QList<QAction *> QueryMatch::actions() const
+{
+    QReadLocker locker(d->lock);
+    return d->actions;
 }
 #endif
 

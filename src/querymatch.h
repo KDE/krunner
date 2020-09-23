@@ -267,6 +267,28 @@ class KRUNNER_EXPORT QueryMatch
         bool isEnabled() const;
 
         /**
+         * Set the actions for this match.
+         * This method allows you to set the actions inside of the AbstractRunner::match() method
+         * and the default implementation of AbstractRunner::actionsForMatch() will return these.
+         * @since 5.75
+         */
+        void setActions(const QList<QAction *> &actions);
+
+        /**
+         * Adds an action to this match
+         * @since 5.75
+         * @see setActions
+         */
+        void addAction(QAction *actions);
+
+        /**
+         * List of actions set for this match
+         * @return actions
+         * @since 5.75
+         */
+        QList<QAction *> actions() const;
+
+        /**
          * The current action.
          */
         QAction* selectedAction() const;
