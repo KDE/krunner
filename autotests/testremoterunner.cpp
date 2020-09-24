@@ -30,6 +30,7 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
 RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
 {
     RemoteMatches ms;
+    std::cout << "Matching:" << qPrintable(searchTerm) << std::endl;
     if (searchTerm.contains(QLatin1String("foo"))) {
         RemoteMatch m;
         m.id = QStringLiteral("id1");

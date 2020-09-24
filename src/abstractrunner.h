@@ -26,6 +26,7 @@
 
 class QAction;
 class QMimeData;
+class QRegularExpression;
 
 namespace Plasma
 {
@@ -59,6 +60,8 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QIcon icon READ icon)
     Q_PROPERTY(int minLetterCount READ minLetterCount WRITE setMinLetterCount)
+    Q_PROPERTY(QRegularExpression matchRegex READ matchRegex WRITE setMatchRegex)
+
     public:
         /** Specifies a nominal speed for the runner */
         enum Speed {
@@ -325,6 +328,41 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * @since 5.75
          */
         void setMinLetterCount(int count);
+
+        /**
+         * If this regex is set with a not empty pattern it must match the query in
+         * order for the performMatch/match being called.
+         * Just like the minLetterCount property this check is ignored when the runner is in the singleRunnerMode.
+         * In case both the regex and the letter count is set the letter count is checked first.
+         * @return matchRegex property
+         * @see hasMatchRegex
+         * @since 5.75
+         */
+        QRegularExpression matchRegex() const;
+
+        /**
+         * Set the matchRegex property
+         * @param regex
+         * @since 5.75
+         */
+        void setMatchRegex(const QRegularExpression &regex);
+
+        /**
+         * Constructs internally a regex which requires the query to start with the trigger words.
+         * Multiple words are concatenated with or, for instance: "^word1|word2|word3".
+         * The trigger words are internally escaped.
+         * Also the minLetterCount is set to the shortest word in the list.
+         * @since 5.75
+         * @see matchRegex
+         */
+        void setTriggerWords(const QStringList &triggerWords);
+
+        /**
+         * If the runner has a valid regex and non empty regex
+         * @return hasMatchRegex
+         * @since 5.75
+         */
+        bool hasMatchRegex() const;
 
     Q_SIGNALS:
         /**

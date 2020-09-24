@@ -44,6 +44,8 @@ private Q_SLOTS:
 #endif
     void testMatch();
     void testMulti();
+    void testFilterProperties();
+    void testFilterProperties_data();
     void testRequestActionsOnce();
 #if WITH_KSERVICE
     void testMatch_data();
@@ -161,12 +163,12 @@ void DBusRunnerTest::testMatch()
     QSignalSpy processSpy(&process, &QProcess::readyRead);
     m.run(result);
     processSpy.wait();
-    QCOMPARE(process.readAllStandardOutput().trimmed(), QByteArray("Running:id1:"));
+    QCOMPARE(process.readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:"));
 
     result.setSelectedAction(action);
     m.run(result);
     processSpy.wait();
-    QCOMPARE(process.readAllStandardOutput().trimmed(), QByteArray("Running:id1:action1"));
+    QCOMPARE(process.readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:action1"));
 
     process.kill();
     process.waitForFinished();
@@ -288,6 +290,43 @@ void DBusRunnerTest::testRequestActionsOnce()
     auto actions = m.actionsForMatch(fakeMatch);
     QCOMPARE(actions.count(), 2);
 
+    process.kill();
+    process.waitForFinished();
+}
+
+void DBusRunnerTest::testFilterProperties_data()
+{
+    QTest::addColumn<QString>("rejectedQuery");
+    QTest::addColumn<QString>("acceptedQuery");
+
+    QTest::newRow("min-letter-count") << "fo" << "foo";
+    QTest::newRow("match-regex") << "barfoo" << "foobar";
+}
+
+void DBusRunnerTest::testFilterProperties()
+{
+    QFETCH(QString, rejectedQuery);
+    QFETCH(QString, acceptedQuery);
+    QProcess process;
+    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
+    QVERIFY(process.waitForStarted());
+
+    QTest::qSleep(500);
+
+    RunnerManager m;
+    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
+    QVERIFY(md.isValid());
+    m.loadRunner(md);
+    m.launchQuery(rejectedQuery);
+    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
+    QVERIFY(spy.wait());
+    // Match method was not called, because the min letter count is 3
+    QVERIFY(process.readAllStandardOutput().isEmpty());
+
+    m.launchQuery(acceptedQuery);
+    QSignalSpy spy2(&m, &RunnerManager::matchesChanged);
+    QVERIFY(spy2.wait());
+    QCOMPARE(process.readAllStandardOutput().trimmed(), QString(QStringLiteral("Matching:") + acceptedQuery).toLocal8Bit());
     process.kill();
     process.waitForFinished();
 }

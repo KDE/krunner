@@ -13,6 +13,7 @@
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDir>
+#include <QRegularExpression>
 
 #include <KSharedConfig>
 #include <KPluginInfo>
@@ -902,8 +903,20 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         if (!d->singleMode && queryLetterCount < r->minLetterCount()) {
             continue;
         }
+        // If the runner has one ore more trigger words it can set the matchRegex to prevent
+        // thread spawning if the pattern does not match
+        if (!d->singleMode && r->hasMatchRegex() && !r->matchRegex().match(term).hasMatch()) {
+            continue;
+        }
 
         d->startJob(r);
+    }
+    // In the unlikely case that no runner gets queried we have to emit the signals here
+    if (d->searchJobs.isEmpty()) {
+        QTimer::singleShot(0, this,  [this](){
+            Q_EMIT matchesChanged({});
+            Q_EMIT queryFinished();
+        });
     }
 
     // Start timer to unblock slow runners

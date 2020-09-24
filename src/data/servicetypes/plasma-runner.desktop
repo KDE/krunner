@@ -89,3 +89,9 @@ Type=QStringList
 # This value defaults to 0
 [PropertyDef::X-Plasma-Runner-Min-Letter-Count]
 Type=int
+
+# If this regex is set with a not empty pattern it must match the query in order for the performMatch/match being called
+# It does not differentiate between the single and normal runner mode
+# In case both the regex and the letter count is set the letter count is checked first
+[PropertyDef::X-Plasma-Runner-Match-Regex]
+Type=QString

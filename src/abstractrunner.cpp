@@ -387,6 +387,43 @@ void AbstractRunner::setMinLetterCount(int count)
     d->minLetterCount = count;
 }
 
+QRegularExpression AbstractRunner::matchRegex() const
+{
+    return d->matchRegex;
+}
+
+void AbstractRunner::setMatchRegex(const QRegularExpression &regex)
+{
+    d->matchRegex = regex;
+    d->hasMatchRegex = regex.isValid() && !regex.pattern().isEmpty();
+}
+
+void AbstractRunner::setTriggerWords(const QStringList &triggerWords)
+{
+    int minTriggerWordLetters = 0;
+    QString constructedRegex = QStringLiteral("^");
+    for (const QString &triggerWord : triggerWords) {
+        // We want to link them with an or
+        if (constructedRegex.length() > 1) {
+            constructedRegex += QLatin1Char('|');
+        }
+        constructedRegex += QRegularExpression::escape(triggerWord);
+        if (minTriggerWordLetters == 0 || triggerWord.length() < minTriggerWordLetters) {
+            minTriggerWordLetters = triggerWord.length();
+        }
+    }
+    // If we can reject the query because of the length we don't need the regex
+    setMinLetterCount(minTriggerWordLetters);
+    QRegularExpression regex(constructedRegex);
+    regex.optimize();
+    setMatchRegex(regex);
+}
+
+bool AbstractRunner::hasMatchRegex() const
+{
+    return d->hasMatchRegex;
+}
+
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),
@@ -403,13 +440,22 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 {
 }
 
+void AbstractRunnerPrivate::init()
+{
+    if (runnerDescription.isValid()) {
+        const auto rawData = runnerDescription.rawData();
+        minLetterCount = rawData.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
+        if (rawData.contains(QStringLiteral("X-Plasma-Runner-Match-Regex"))) {
+            matchRegex = QRegularExpression(rawData.value(QStringLiteral("X-Plasma-Runner-Match-Regex")).toString());
+            hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
+        }
+    }
+}
+
 void AbstractRunnerPrivate::init(const KPluginMetaData &pluginMetaData)
 {
     runnerDescription = pluginMetaData;
-
-    if (runnerDescription.isValid()) {
-        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
-    }
+    init();
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
@@ -421,18 +467,14 @@ QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     const KPluginInfo pluginInfo(service);
     runnerDescription = pluginInfo.isValid() ? pluginInfo.toMetaData() : KPluginMetaData();
 QT_WARNING_POP
-    if (runnerDescription.isValid()) {
-        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
-    }
+    init();
 }
 #endif
 
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginMetaData(path + QStringLiteral("/metadata.desktop"));
-    if (runnerDescription.isValid()) {
-        minLetterCount = runnerDescription.rawData().value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
-    }
+    init();
 }
 
 } // Plasma namespace

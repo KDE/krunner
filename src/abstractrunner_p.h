@@ -8,6 +8,7 @@
 #define ABSTRACTRUNNER_P_H
 
 #include <QReadWriteLock>
+#include <QRegularExpression>
 
 #include <KPluginMetaData>
 
@@ -28,6 +29,7 @@ class AbstractRunnerPrivate
 public:
     AbstractRunnerPrivate(AbstractRunner *r);
     ~AbstractRunnerPrivate();
+    void init();
     void init(const KPluginMetaData &pluginMetaData);
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     void init(const KService::Ptr service);
@@ -47,6 +49,8 @@ public:
     bool hasRunOptions : 1;
     bool suspendMatching : 1;
     int minLetterCount = 0;
+    QRegularExpression matchRegex;
+    bool hasMatchRegex = false;
 };
 
 } // namespace Plasma
