@@ -861,15 +861,6 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         return;
     }
 
-    if (term.isEmpty()) {
-        if (d->singleMode && d->currentSingleRunner->defaultSyntax()) {
-            term = d->currentSingleRunner->defaultSyntax()->exampleQueries().first().remove(QLatin1String(":q:"));
-        } else {
-            reset();
-            return;
-        }
-    }
-
     if (d->context.query() == term) {
         // we already are searching for this!
         return;
