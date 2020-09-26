@@ -332,6 +332,7 @@ void QueryMatch::createConfigurationInterface(QWidget *parent)
 {
     Q_UNUSED(parent)
 }
+#endif
 
 void QueryMatch::setActions(const QList<QAction *> &actions)
 {
@@ -350,7 +351,6 @@ QList<QAction *> QueryMatch::actions() const
     QReadLocker locker(d->lock);
     return d->actions;
 }
-#endif
 
 } // Plasma namespace
 
