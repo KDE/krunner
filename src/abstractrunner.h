@@ -500,6 +500,59 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         void clearActions();
 
         /**
+         * Create and add a match with the given parameters.
+         * @param id
+         * @param text
+         * @param iconName
+         * @param relevance
+         * @param data
+         * @param type
+         * @since 5.76
+         */
+        QueryMatch addMatch(const QString &id,
+                      const QString &text,
+                      const QString &iconName,
+                      qreal relevance,
+                      const QVariant &data,
+                      Plasma::QueryMatch::Type type = Plasma::QueryMatch::PossibleMatch);
+
+        /**
+         * Add a match. This can be alter fetched using
+         * @param id
+         * @param match
+         * @since 5.76
+         */
+        void addMatch(const QString &id, const Plasma::QueryMatch &match);
+
+        /**
+         * Removes match with the given id.
+         * @param id
+         * @since 5.76
+         */
+        void removeMatch(const QString &id);
+
+        /**
+         * Clears all matches.
+         * @since 5.76
+         */
+        void clearMatches();
+
+        /**
+         * Get match with the given id.
+         * @param id
+         * @return QueryMatch
+         * @since 5.76
+         */
+        QueryMatch getMatch(const QString &id);
+
+        /**
+         * QHash of all the matches that are set for this runner.
+         * @return QHash<QString, Plasma::QueryMatch>
+         * @since 5.76
+         */
+        QHash<QString, Plasma::QueryMatch> matches() const;
+
+        /**
          * Adds a registered syntax that this runner understands. This is used to
          * display to the user what this runner can understand and how it can be
          * used.
