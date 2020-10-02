@@ -296,12 +296,16 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         QList<RunnerSyntax> syntaxes() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * @return the default syntax for the runner or @c nullptr if no default syntax has been defined
          *
          * @since 4.4
+         * @deprecated Since 5.76, feature is unused.
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "No longer use, feature is unused")
         RunnerSyntax *defaultSyntax() const;
+#endif
 
         /**
          * @return true if the runner is currently busy with non-interuptable work, signaling that
@@ -509,6 +513,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         void addSyntax(const RunnerSyntax &syntax);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Set @p syntax as the default syntax for the runner; the default syntax will be
          * substituted to the empty query in single runner mode. This is also used to
@@ -522,8 +527,11 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          *
          * @param syntax the syntax to register and to set as default
          * @since 4.4
+         * @deprecated Since 5.76, feature is unused. Use addSyntax() instead.
          **/
+        KRUNNER_DEPRECATED_VERSION(5, 76, "Feature unused, use addSyntax() instead")
         void setDefaultSyntax(const RunnerSyntax &syntax);
+#endif
 
         /**
          * Sets the list of syntaxes; passing in an empty list effectively clears

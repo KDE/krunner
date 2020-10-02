@@ -102,11 +102,13 @@ void AbstractRunner::addSyntax(const RunnerSyntax &syntax)
     d->syntaxes.append(syntax);
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void AbstractRunner::setDefaultSyntax(const RunnerSyntax &syntax)
 {
     d->syntaxes.append(syntax);
     d->defaultSyntax = &(d->syntaxes.last());
 }
+#endif
 
 void AbstractRunner::setSyntaxes(const QList<RunnerSyntax> &syntaxes)
 {
@@ -118,10 +120,12 @@ QList<RunnerSyntax> AbstractRunner::syntaxes() const
     return d->syntaxes;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 RunnerSyntax *AbstractRunner::defaultSyntax() const
 {
     return d->defaultSyntax;
 }
+#endif
 
 void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
 {
