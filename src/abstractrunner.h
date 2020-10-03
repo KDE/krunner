@@ -500,24 +500,16 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         void clearActions();
 
         /**
-         * Create and add a match with the given parameters.
-         * @param id
-         * @param text
-         * @param iconName
-         * @param relevance
-         * @param data
-         * @param type
+         * Add a match. This can be alter fetched using the getMatch method.
+         * As a key the id of the match is used. But in case the id was indirectly specified when setting the data the
+         * data as a string can be used to retrieve this entry.
+         * @param match
          * @since 5.76
          */
-        QueryMatch addMatch(const QString &id,
-                      const QString &text,
-                      const QString &iconName,
-                      qreal relevance,
-                      const QVariant &data,
-                      Plasma::QueryMatch::Type type = Plasma::QueryMatch::PossibleMatch);
+        void addMatch(const Plasma::QueryMatch &match);
 
         /**
-         * Add a match. This can be alter fetched using
+         * Add a match. This can be alter fetched using getMatch(id)
          * @param id
          * @param match
          * @since 5.76
@@ -543,7 +535,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * @return QueryMatch
          * @since 5.76
          */
-        QueryMatch getMatch(const QString &id);
+        QueryMatch getMatch(const QString &id) const;
 
         /**
          * QHash of all the matches that are set for this runner.
