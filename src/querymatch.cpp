@@ -352,5 +352,10 @@ QList<QAction *> QueryMatch::actions() const
     return d->actions;
 }
 
+bool QueryMatch::idIsDetByData() const
+{
+    QWriteLocker locker(d->lock);
+    return d->idSetByData;
+}
 } // Plasma namespace
 
