@@ -223,6 +223,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          */
         bool singleRunnerQueryMode() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Sets the launch counts for the associated match ids
          *
@@ -232,14 +233,25 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          * by sorting items according to relevance.
          *
          * @param config the config group where launch data was stored
+         * @deprecated Since 5.76, The launch counts are now directly set and only read inside of this class.
+         * Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager
          */
-        void restore(const KConfigGroup &config);
+    KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set and only read inside of this class."
+                                      "Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager")
+    void restore(const KConfigGroup &config);
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * @param config the config group where launch data should be stored
+         * @deprecated Since 5.76, The launch counts are now directly set and only read inside of this class.
+         * Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set and only read inside of this class.")
         void save(KConfigGroup &config);
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Run a match using the information from this context
          *
@@ -248,7 +260,9 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          *
          * @param match the match to run
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set and only read inside of this class.")
         void run(const QueryMatch &match);
+#endif
 
         void setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts);
 

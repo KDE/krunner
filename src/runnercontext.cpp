@@ -388,7 +388,6 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     QueryMatch m(match); // match must be non-const to modify relevance
 
     LOCK_FOR_WRITE(d)
-qWarning()<< d->launchCounts;
     if (match.runner()) {
         int count = d->launchCounts.value(match.runner()->id()).value(match.id());
         m.setRelevance(m.relevance() + 0.05 * count);
@@ -521,17 +520,26 @@ bool RunnerContext::singleRunnerQueryMode() const
     return d->singleRunnerQueryMode;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerContext::restore(const KConfigGroup &config)
 {
+    Q_UNUSED(config)
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerContext::save(KConfigGroup &config)
 {
+    Q_UNUSED(config)
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerContext::run(const QueryMatch &match)
 {
+    Q_UNUSED(match)
 }
+#endif
 
 void RunnerContext::setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts)
 {

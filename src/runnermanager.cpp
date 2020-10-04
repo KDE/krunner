@@ -138,7 +138,7 @@ public:
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         enabledCategories = config.readEntry("enabledCategories", QStringList());
 #endif
-        context.restore(config);
+        context.setLaunchCounts(launchCounts);
     }
 
     KConfigGroup configGroup()
@@ -747,8 +747,6 @@ void RunnerManager::run(const QueryMatch &match)
     if (d->deferredRun.isValid()) {
         d->deferredRun = QueryMatch(nullptr);
     }
-
-    d->context.run(match);
 }
 
 QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
@@ -860,10 +858,6 @@ void RunnerManager::matchSessionComplete()
 
     d->teardownRequested = true;
     d->checkTearDown();
-    // We save the context config after each session, just like the history entries
-    // BUG: 424505
-    KConfigGroup config = d->configGroup();
-    d->context.save(config);
 }
 
 void RunnerManager::launchQuery(const QString &term)
@@ -1026,7 +1020,6 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
         d->launchCounts.insert(group, launchCountsEntry);
         d->context.setLaunchCounts(d->launchCounts);
     }
-    d->context.setLaunchCounts(d->launchCounts);
     runnerManagerCfg.sync();
 }
 
