@@ -26,10 +26,6 @@
 #include "abstractrunner.h"
 #include "querymatch.h"
 
-//#define LOCK_FOR_READ(d) if (d->policy == Shared) { d->lock.lockForRead(); }
-//#define LOCK_FOR_WRITE(d) if (d->policy == Shared) { d->lock.lockForWrite(); }
-//#define UNLOCK(d) if (d->policy == Shared) { d->lock.unlock(); }
-
 #define LOCK_FOR_READ(d) d->lock.lockForRead();
 #define LOCK_FOR_WRITE(d) d->lock.lockForWrite();
 #define UNLOCK(d) d->lock.unlock();
