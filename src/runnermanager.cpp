@@ -996,7 +996,18 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
     }
     KConfigGroup runnerManagerCfg = d->configGroup();
     if (d->historyPolicy & HistoryPolicy::History) {
-        d->history.append(context.query());
+        const QString item = context.query();
+        // Mimic shell behavior of not storing lines starting with a space
+        if (!item.isEmpty() && !item.at(0).isSpace()) {
+            // Avoid removing the same item from the front and prepending it again
+            if (d->history.isEmpty() || d->history.constFirst() != item) {
+                d->history.removeOne(item);
+                d->history.prepend(item);
+            }
+        }
+        while (d->history.count() > 50) {
+            d->history.removeLast();
+        }
         runnerManagerCfg.writeEntry("history", d->history);
     }
         if (!match.isValid() || !match.runner()) {
