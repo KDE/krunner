@@ -747,6 +747,7 @@ void RunnerManager::run(const QueryMatch &match)
     if (d->deferredRun.isValid()) {
         d->deferredRun = QueryMatch(nullptr);
     }
+    match.run(d->context);
 }
 
 QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
@@ -1024,17 +1025,6 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
         d->context.setLaunchCounts(d->launchCounts);
     }
     runnerManagerCfg.sync();
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
-    qWarning() << d->historyPolicy;
 }
 
 QStringList RunnerManager::getHistory() const
