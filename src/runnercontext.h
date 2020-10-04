@@ -250,6 +250,8 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          */
         void run(const QueryMatch &match);
 
+        void setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts);
+
     Q_SIGNALS:
         void matchesChanged();
 

@@ -120,6 +120,16 @@ public:
     void loadConfiguration()
     {
         KConfigGroup config = configGroup();
+        launchCounts.clear();
+        const QStringList groups = config.groupList();
+        for (const auto &group : groups) {
+            KConfigGroup runnerHistory = config.group(group);
+            QMap<QString, QString> entryMap = runnerHistory.entryMap();
+            QHash<QString, int> matchesLaunchCounts;
+            for (auto it = entryMap.begin(), end = entryMap.end(); it != end; it++) {
+                matchesLaunchCounts.insert(it.key(), it.value().toInt());
+            }
+        }
 
         // Limit the number of instances of a single normal speed runner and all of the slow runners
         // to half the number of threads
@@ -504,6 +514,7 @@ QT_WARNING_POP
     KConfigWatcher::Ptr watcher;
     QStringList history;
     RunnerManager::HistoryPolicy historyPolicy = RunnerManager::HistoryPolicy::Enabled;
+    QHash<QString, QHash<QString, int>> launchCounts;
 };
 
 /*****************************************************
@@ -999,9 +1010,23 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
         }
         const QString group = match.runner()->id();
         KConfigGroup runnerHistory = runnerManagerCfg.group(group);
-        runnerHistory.writeEntry("launchCount", runnerHistory.readEntry("launchCount", 0) + 1);
-        runnerHistory.writeEntry(match.id(), runnerHistory.readEntry(match.id(), 0) + 1);
+
+        // We also want to keep our map in sync
+        auto launchCountsEntry = d->launchCounts.value(group);
+        const int newRunnerLaunchCount = launchCountsEntry.value(QStringLiteral("launchCount")) + 1;
+        launchCountsEntry.insert(QStringLiteral("launchCount"), newRunnerLaunchCount);
+        runnerHistory.writeEntry("launchCount", newRunnerLaunchCount);
+
+        // Just to be sure our runners don't screw this up
+        if (match.id() != QLatin1String("launchCount")) {
+            const int newMatchLaunchCount = launchCountsEntry.value(match.id()) + 1;
+            launchCountsEntry.insert(match.id(), newRunnerLaunchCount);
+            runnerHistory.writeEntry(match.id(), newMatchLaunchCount);
+        }
+        d->launchCounts.insert(group, launchCountsEntry);
+        d->context.setLaunchCounts(d->launchCounts);
     }
+    d->context.setLaunchCounts(d->launchCounts);
     runnerManagerCfg.sync();
 }
 
@@ -1014,6 +1039,7 @@ void RunnerManager::setHistoryPolicy(RunnerManager::HistoryPolicy policy)
 {
     d->historyPolicy = policy;
 }
+
 RunnerManager::HistoryPolicy RunnerManager::historyPolicy()
 {
     return d->historyPolicy;

@@ -217,7 +217,7 @@ class RunnerContextPrivate : public QSharedData
         QReadWriteLock lock;
         QList<QueryMatch> matches;
         QMap<QString, const QueryMatch*> matchesById;
-        QHash<QString, int> launchCounts;
+        QHash<QString, QHash<QString, int>> launchCounts;
         QString term;
         QString mimeType;
         QStringList enabledCategories;
@@ -360,7 +360,9 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
     for (QueryMatch match : matches) {
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
-        if (int count = d->launchCounts.value(match.id())) {
+
+        if (match.runner()) {
+            int count = d->launchCounts.value(match.runner()->id()).value(match.id());
             match.setRelevance(match.relevance() + 0.5 * (1-exp(-count*0.3)));
         }
 
@@ -386,8 +388,9 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     QueryMatch m(match); // match must be non-const to modify relevance
 
     LOCK_FOR_WRITE(d)
-
-    if (int count = d->launchCounts.value(m.id())) {
+qWarning()<< d->launchCounts;
+    if (match.runner()) {
+        int count = d->launchCounts.value(match.runner()->id()).value(match.id());
         m.setRelevance(m.relevance() + 0.05 * count);
     }
 
@@ -520,38 +523,19 @@ bool RunnerContext::singleRunnerQueryMode() const
 
 void RunnerContext::restore(const KConfigGroup &config)
 {
-    const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
-
-    const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
-    for (const QString& entry : cfgList) {
-        const QRegularExpressionMatch match = re.match(entry);
-        if (!match.hasMatch()) {
-            continue;
-        }
-        const int count = match.captured(1).toInt();
-        const QString id = match.captured(2);
-        d->launchCounts[id] = count;
-    }
 }
 
 void RunnerContext::save(KConfigGroup &config)
 {
-    QStringList countList;
-
-    typedef QHash<QString, int>::const_iterator Iterator;
-    Iterator end = d->launchCounts.constEnd();
-    for (Iterator i = d->launchCounts.constBegin(); i != end; ++i) {
-        countList << QStringLiteral("%2 %1").arg(i.key()).arg(i.value());
-    }
-
-    config.writeEntry("LaunchCounts", countList);
-    config.sync();
 }
 
 void RunnerContext::run(const QueryMatch &match)
 {
-    ++d->launchCounts[match.id()];
-    match.run(*this);
+}
+
+void RunnerContext::setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts)
+{
+    d->launchCounts = launchCounts;
 }
 
 } // Plasma namespace
