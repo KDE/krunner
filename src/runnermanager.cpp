@@ -503,6 +503,7 @@ QT_WARNING_POP
     QString configFile;
     KConfigWatcher::Ptr watcher;
     QStringList history;
+    RunnerManager::HistoryPolicy historyPolicy = RunnerManager::HistoryPolicy::Enabled;
 };
 
 /*****************************************************
@@ -984,22 +985,38 @@ void RunnerManager::enableKNotifyPluginWatcher()
 
 void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
 {
-    KConfigGroup runnerManagerCfg = d->configGroup();
-    d->history.append(context.query());
-    runnerManagerCfg.writeEntry("history", d->history);
-    if (!match.isValid() || !match.runner()) {
+    if (d->historyPolicy == HistoryPolicy::Disabled) {
         return;
     }
-    const QString group = match.runner()->id();
-    KConfigGroup runnerHistory = runnerManagerCfg.group(group);
-    runnerHistory.writeEntry("launchCount", runnerHistory.readEntry("launchCount", 0) + 1);
-    runnerHistory.writeEntry(match.id(), runnerHistory.readEntry(match.id(), 0) + 1);
+    KConfigGroup runnerManagerCfg = d->configGroup();
+    if (d->historyPolicy & HistoryPolicy::History) {
+        d->history.append(context.query());
+        runnerManagerCfg.writeEntry("history", d->history);
+    }
+    if (d->historyPolicy & HistoryPolicy::LaunchCounts) {
+        if (!match.isValid() || !match.runner()) {
+            return;
+        }
+        const QString group = match.runner()->id();
+        KConfigGroup runnerHistory = runnerManagerCfg.group(group);
+        runnerHistory.writeEntry("launchCount", runnerHistory.readEntry("launchCount", 0) + 1);
+        runnerHistory.writeEntry(match.id(), runnerHistory.readEntry(match.id(), 0) + 1);
+    }
     runnerManagerCfg.sync();
 }
 
 QStringList RunnerManager::getHistory() const
 {
     return d->history;
+}
+
+void RunnerManager::setHistoryPolicy(RunnerManager::HistoryPolicy policy)
+{
+    d->historyPolicy = policy;
+}
+RunnerManager::HistoryPolicy RunnerManager::historyPolicy()
+{
+    return d->historyPolicy;
 }
 
 } // Plasma namespace

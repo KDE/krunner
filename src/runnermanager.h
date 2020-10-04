@@ -44,6 +44,14 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         explicit RunnerManager(KConfigGroup &config, QObject *parent=nullptr);
         ~RunnerManager();
 
+        enum HistoryPolicy {
+            Disabled = 0,
+            History = 1,
+            LaunchCounts = 2,
+            Enabled = History | LaunchCounts
+        };
+        Q_DECLARE_FLAGS(HistoryPloicy, HistoryPolicy)
+
         /**
          * Finds and returns a loaded runner or NULL
          * @param pluginName the name of the runner plugin
@@ -270,9 +278,32 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void enableKNotifyPluginWatcher();
 
+        /**
+         * Sets the history policy used the this RunnerManager instance.
+         * @param policy
+         */
+        void setHistoryPolicy(HistoryPolicy policy);
+
+        /**
+         * Returns the history policy used the this RunnerManager instance.
+         * @return HistoryPolicy
+         */
+        HistoryPolicy historyPolicy();
+
+        /**
+         * Add this match to the history and save the launchcount
+         * @param context
+         * @param match
+         */
         void addMatchToHistory(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match);
 
+        /**
+         * Get the history for
+         * @return history
+         */
         QStringList getHistory() const;
+
+        // TODO API for suggestions, for example paths
 
     public Q_SLOTS:
         /**
