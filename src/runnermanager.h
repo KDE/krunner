@@ -47,10 +47,11 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         enum HistoryPolicy {
             Disabled = 0,
             History = 1,
-            LaunchCounts = 2,
-            Enabled = History | LaunchCounts
+            RunnerLaunchCounts = 2,
+            MatchLaunchCounts = 4,
+            Enabled = History | RunnerLaunchCounts | MatchLaunchCounts
         };
-        Q_DECLARE_FLAGS(HistoryPloicy, HistoryPolicy)
+        Q_DECLARE_FLAGS(HistoryPolicies, HistoryPolicy)
 
         /**
          * Finds and returns a loaded runner or NULL
@@ -282,13 +283,13 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          * Sets the history policy used the this RunnerManager instance.
          * @param policy
          */
-        void setHistoryPolicy(HistoryPolicy policy);
+        void setHistoryPolicies(HistoryPolicies policies);
 
         /**
          * Returns the history policy used the this RunnerManager instance.
-         * @return HistoryPolicy
+         * @return HistoryPolicies
          */
-        HistoryPolicy historyPolicy();
+        HistoryPolicies historyPolicies();
 
         /**
          * Add this match to the history and save the launchcount

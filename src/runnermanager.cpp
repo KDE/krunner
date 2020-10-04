@@ -513,7 +513,7 @@ QT_WARNING_POP
     QString configFile;
     KConfigWatcher::Ptr watcher;
     QStringList history;
-    RunnerManager::HistoryPolicy historyPolicy = RunnerManager::HistoryPolicy::Enabled;
+    RunnerManager::HistoryPolicies historyPolicy = RunnerManager::HistoryPolicy::Enabled;
     QHash<QString, QHash<QString, int>> launchCounts;
 };
 
@@ -998,29 +998,43 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
         d->history.append(context.query());
         runnerManagerCfg.writeEntry("history", d->history);
     }
-    if (d->historyPolicy & HistoryPolicy::LaunchCounts) {
         if (!match.isValid() || !match.runner()) {
+            runnerManagerCfg.sync();
             return;
         }
         const QString group = match.runner()->id();
         KConfigGroup runnerHistory = runnerManagerCfg.group(group);
 
+    auto launchCountsEntry = d->launchCounts.value(group);
+    if (d->historyPolicy & HistoryPolicy::RunnerLaunchCounts) {
         // We also want to keep our map in sync
-        auto launchCountsEntry = d->launchCounts.value(group);
         const int newRunnerLaunchCount = launchCountsEntry.value(QStringLiteral("launchCount")) + 1;
         launchCountsEntry.insert(QStringLiteral("launchCount"), newRunnerLaunchCount);
         runnerHistory.writeEntry("launchCount", newRunnerLaunchCount);
+    }
 
+    if (d->historyPolicy & HistoryPolicy::RunnerLaunchCounts) {
         // Just to be sure our runners don't screw this up
         if (match.id() != QLatin1String("launchCount")) {
             const int newMatchLaunchCount = launchCountsEntry.value(match.id()) + 1;
-            launchCountsEntry.insert(match.id(), newRunnerLaunchCount);
+            launchCountsEntry.insert(match.id(), newMatchLaunchCount);
             runnerHistory.writeEntry(match.id(), newMatchLaunchCount);
         }
         d->launchCounts.insert(group, launchCountsEntry);
         d->context.setLaunchCounts(d->launchCounts);
     }
     runnerManagerCfg.sync();
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
+    qWarning() << d->historyPolicy;
 }
 
 QStringList RunnerManager::getHistory() const
@@ -1028,12 +1042,12 @@ QStringList RunnerManager::getHistory() const
     return d->history;
 }
 
-void RunnerManager::setHistoryPolicy(RunnerManager::HistoryPolicy policy)
+void RunnerManager::setHistoryPolicies(HistoryPolicies policies)
 {
-    d->historyPolicy = policy;
+    d->historyPolicy = policies;
 }
 
-RunnerManager::HistoryPolicy RunnerManager::historyPolicy()
+RunnerManager::HistoryPolicies RunnerManager::historyPolicies()
 {
     return d->historyPolicy;
 }
