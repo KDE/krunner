@@ -502,6 +502,7 @@ QT_WARNING_POP
     QStringList whiteList;
     QString configFile;
     KConfigWatcher::Ptr watcher;
+    QStringList history;
 };
 
 /*****************************************************
@@ -720,6 +721,7 @@ void RunnerManager::run(const QueryMatch &match)
         return;
     }
 
+    addMatchToHistory(d->context, match);
     //TODO: this function is not const as it may be used for learning
     AbstractRunner *runner = match.runner();
 
@@ -978,6 +980,26 @@ void RunnerManager::enableKNotifyPluginWatcher()
             }
         });
     }
+}
+
+void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
+{
+    KConfigGroup runnerManagerCfg = d->configGroup();
+    d->history.append(context.query());
+    runnerManagerCfg.writeEntry("history", d->history);
+    if (!match.isValid() || !match.runner()) {
+        return;
+    }
+    const QString group = match.runner()->id();
+    KConfigGroup runnerHistory = runnerManagerCfg.group(group);
+    runnerHistory.writeEntry("launchCount", runnerHistory.readEntry("launchCount", 0) + 1);
+    runnerHistory.writeEntry(match.id(), runnerHistory.readEntry(match.id(), 0) + 1);
+    runnerManagerCfg.sync();
+}
+
+QStringList RunnerManager::getHistory() const
+{
+    return d->history;
 }
 
 } // Plasma namespace

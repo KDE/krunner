@@ -270,6 +270,10 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void enableKNotifyPluginWatcher();
 
+        void addMatchToHistory(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match);
+
+        QStringList getHistory() const;
+
     public Q_SLOTS:
         /**
          * Call this method when the runners should be prepared for a query session.
