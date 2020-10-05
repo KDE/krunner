@@ -428,6 +428,40 @@ bool AbstractRunner::hasMatchRegex() const
     return d->hasMatchRegex;
 }
 
+void AbstractRunner::addMatch(const QueryMatch &match)
+{
+    if (match.idIsDetByData()) {
+        d->matches.insert(match.data().toString(), match);
+    } else {
+        d->matches.insert(match.id(), match);
+    }
+}
+
+void AbstractRunner::addMatch(const QString &id, const QueryMatch &match)
+{
+    d->matches.insert(id, match);
+}
+
+void AbstractRunner::removeMatch(const QString &id)
+{
+    d->matches.remove(id);
+}
+
+void AbstractRunner::clearMatches()
+{
+    d->matches.clear();
+}
+
+QueryMatch AbstractRunner::getMatch(const QString &id) const
+{
+    return d->matches.value(id);
+}
+
+QHash<QString, Plasma::QueryMatch> AbstractRunner::matches() const
+{
+    return d->matches;
+}
+
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority),
       speed(AbstractRunner::NormalSpeed),

@@ -44,6 +44,7 @@ public:
     int fastRuns;
     QReadWriteLock speedLock;
     QHash<QString, QAction*> actions;
+    QHash<QString, QueryMatch> matches;
     QList<RunnerSyntax> syntaxes;
     RunnerSyntax *defaultSyntax;
     bool hasRunOptions : 1;

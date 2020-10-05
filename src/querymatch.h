@@ -179,6 +179,13 @@ class KRUNNER_EXPORT QueryMatch
         QString id() const;
 
         /**
+         * If the ID is indirectly set by setting the data.
+         * @return idIsDetByData
+         * @since 5.76
+         */
+        bool idIsDetByData() const;
+
+        /**
          * Sets the main title text for this match; should be short
          * enough to fit nicely on one line in a user interface
          *
