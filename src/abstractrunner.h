@@ -503,6 +503,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          * Add a match. This can be alter fetched using the getMatch method.
          * As a key the id of the match is used. But in case the id was indirectly specified when setting the data the
          * data as a string can be used to retrieve this entry.
+         * @see QueryMatch::idIsDetByData()
          * @param match
          * @since 5.76
          */
