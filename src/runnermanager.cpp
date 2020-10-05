@@ -129,6 +129,7 @@ public:
             for (auto it = entryMap.begin(), end = entryMap.end(); it != end; it++) {
                 matchesLaunchCounts.insert(it.key(), it.value().toInt());
             }
+            launchCounts.insert(group, matchesLaunchCounts);
         }
 
         // Limit the number of instances of a single normal speed runner and all of the slow runners
@@ -513,7 +514,7 @@ QT_WARNING_POP
     QString configFile;
     KConfigWatcher::Ptr watcher;
     QStringList history;
-    RunnerManager::HistoryPolicies historyPolicy = RunnerManager::HistoryPolicy::Enabled;
+    RunnerManager::HistoryPolicies historyPolicy = RunnerManager::HistoryPolicy::LaunchCounts;
     QHash<QString, QHash<QString, int>> launchCounts;
 };
 

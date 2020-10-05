@@ -49,6 +49,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
             History = 1,
             RunnerLaunchCounts = 2,
             MatchLaunchCounts = 4,
+            LaunchCounts = RunnerLaunchCounts | MatchLaunchCounts,
             Enabled = History | RunnerLaunchCounts | MatchLaunchCounts
         };
         Q_DECLARE_FLAGS(HistoryPolicies, HistoryPolicy)
