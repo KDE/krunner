@@ -117,9 +117,36 @@ public:
         Q_EMIT q->matchesChanged(context.matches());
     }
 
+    void migrateOldLaunchCounts()
+    {
+        KConfigGroup config = configGroup();
+        const QRegularExpression re(QStringLiteral("(\\d*) (([^_]+)_.+)"));
+        const auto cfgList = config.readEntry("LaunchCounts", QStringList());
+        for (const QString& entry : cfgList) {
+            const QRegularExpressionMatch match = re.match(entry);
+            if (!match.hasMatch()) {
+                continue;
+            }
+            const int count = match.captured(1).toInt();
+            const QString id = match.captured(2);
+            // We can't know for sure, but most runners don't manualy set the ID
+            const QString runnerIdGuess = match.captured(3);
+            // Just to be sure our runners don't screw this up
+            if (id != QLatin1String("launchCount")) {
+                KConfigGroup runnerGroup = config.group(runnerIdGuess);
+                runnerGroup.writeEntry("launchCount", runnerGroup.readEntry("launchCount", 0) + count);
+                runnerGroup.writeEntry(id, count);
+            }
+        }
+        config.sync();
+    }
+
     void loadConfiguration()
     {
         KConfigGroup config = configGroup();
+        if (config.hasKey("LaunchCounts")) {
+            migrateOldLaunchCounts();
+        }
         launchCounts.clear();
         const QStringList groups = config.groupList();
         for (const auto &group : groups) {
