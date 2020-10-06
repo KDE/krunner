@@ -132,10 +132,6 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
     static const int reasonableRunTime = 1500;
     static const int fastEnoughTime = 250;
 
-    if (d->suspendMatching) {
-        return;
-    }
-
     QElapsedTimer time;
     time.start();
 
