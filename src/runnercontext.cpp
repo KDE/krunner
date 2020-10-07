@@ -26,10 +26,6 @@
 #include "abstractrunner.h"
 #include "querymatch.h"
 
-//#define LOCK_FOR_READ(d) if (d->policy == Shared) { d->lock.lockForRead(); }
-//#define LOCK_FOR_WRITE(d) if (d->policy == Shared) { d->lock.lockForWrite(); }
-//#define UNLOCK(d) if (d->policy == Shared) { d->lock.unlock(); }
-
 #define LOCK_FOR_READ(d) d->lock.lockForRead();
 #define LOCK_FOR_WRITE(d) d->lock.lockForWrite();
 #define UNLOCK(d) d->lock.unlock();
@@ -53,11 +49,8 @@ bool correctLastComponentCase(const QString &path, QString &correctCasePath, con
     }
 
     const QFileInfo pathInfo(path);
-
     const QDir fileDir = pathInfo.dir();
-
     const QString filename = pathInfo.fileName();
-
     const QStringList matchingFilenames = fileDir.entryList(QStringList(filename),
                                           mustBeDir ? QDir::Dirs : QDir::NoFilter);
 
@@ -96,7 +89,6 @@ bool correctPathCase(const QString& path, QString &corrected)
     }
 
     const bool mustBeDir = components.back().isEmpty();
-
     if (mustBeDir) {
         components.pop_back();
     }
