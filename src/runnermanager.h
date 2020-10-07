@@ -153,12 +153,16 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void setAllowedRunners(const QStringList &runners);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Sets the list of categories which matches should be
          * returned for. It also internally tries not to execute the
          * runners which do not fall in this category.
+         * @deprecated Since 5.76, feature is unused and not supported by most runners
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
         void setEnabledCategories(const QStringList &categories);
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
@@ -207,10 +211,14 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         QStringList allowedRunners() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * @return the list of enabled categories
+         * @deprecated Since 5.76, feature is unused and not supported by most runners
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
         QStringList enabledCategories() const;
+#endif
 
         /**
          * @return mime data of the specified match

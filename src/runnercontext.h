@@ -87,19 +87,27 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          */
         Type type() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * A list of categories of which results should be returned.
          * This list is typically populated from the AbstractRunner::categories
          * function.
+         * @deprecated Since 5.76, feature is unused and not supported by most runners
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
         QStringList enabledCategories() const;
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Sets the list of enabled categories. Runners can use this list
          * to optimize themselves by only returning results from the enabled
          * categories
+         * @deprecated Since 5.76, feature is unused and not supported by most runners
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
         void setEnabledCategories(const QStringList &categories);
+#endif
 
         /**
          * The mimetype that the search term refers to, if discoverable.

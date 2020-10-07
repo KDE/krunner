@@ -277,15 +277,19 @@ void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::Quer
     Q_UNUSED(action);
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList AbstractRunner::categories() const
 {
     return QStringList() << name();
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QIcon AbstractRunner::categoryIcon(const QString&) const
 {
     return icon();
 }
+#endif
 
 void AbstractRunner::match(Plasma::RunnerContext &)
 {

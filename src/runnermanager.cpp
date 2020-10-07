@@ -125,7 +125,9 @@ public:
         // to half the number of threads
         DefaultRunnerPolicy::instance().setCap(qMax(2, Queue::instance()->maximumNumberOfThreads() / 2));
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         enabledCategories = config.readEntry("enabledCategories", QStringList());
+#endif
         context.restore(config);
     }
 
@@ -254,16 +256,18 @@ QT_WARNING_POP
                 }
 
                 if (runner) {
+                    bool allCategoriesDisabled = true;
+                    #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
                     const QStringList categories = runner->categories();
                     allCategories << categories;
 
-                    bool allCategoriesDisabled = true;
                     for (const QString &cat : categories) {
                         if (enabledCategories.contains(cat)) {
                             allCategoriesDisabled = false;
                             break;
                         }
                     }
+                    #endif
 
                     if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
                         qCDebug(KRUNNER) << "Loaded:" << runnerName;
@@ -554,6 +558,7 @@ void RunnerManager::setAllowedRunners(const QStringList &runners)
     }
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerManager::setEnabledCategories(const QStringList& categories)
 {
     KConfigGroup config = d->configGroup();
@@ -565,6 +570,7 @@ void RunnerManager::setEnabledCategories(const QStringList& categories)
         d->loadRunners();
     }
 }
+#endif
 
 QStringList RunnerManager::allowedRunners() const
 {
@@ -572,6 +578,7 @@ QStringList RunnerManager::allowedRunners() const
     return config.readEntry("pluginWhiteList", QStringList());
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList RunnerManager::enabledCategories() const
 {
     KConfigGroup config = d->configGroup();
@@ -585,6 +592,7 @@ QStringList RunnerManager::enabledCategories() const
 
     return list;
 }
+#endif
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void RunnerManager::loadRunner(const KService::Ptr service)
@@ -872,7 +880,9 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 
     reset();
     d->context.setQuery(term);
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
     d->context.setEnabledCategories(d->enabledCategories);
+#endif
 
     QHash<QString, AbstractRunner*> runable;
 

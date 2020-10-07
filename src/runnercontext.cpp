@@ -323,16 +323,20 @@ QString RunnerContext::query() const
     // and setQuery(QString) calls reset()
     return d->term;
 }
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 
 void RunnerContext::setEnabledCategories(const QStringList& categories)
 {
     d->enabledCategories = categories;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList RunnerContext::enabledCategories() const
 {
     return d->enabledCategories;
 }
+#endif
 
 RunnerContext::Type RunnerContext::type() const
 {

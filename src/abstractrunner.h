@@ -175,6 +175,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         virtual void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match);
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         /**
          * Return a list of categories that this runner provides. By default
          * this list just contains the runners name. It is used by the runner manager
@@ -183,17 +184,24 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          *
          * This list of categories is also used to provide a better way to
          * configure the runner instead of the typical on / off switch.
+         * @deprecated Since 5.76, feature is unused. You can still set the category property in the QueryMatch
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "Feature is unused")
         virtual QStringList categories() const;
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         /**
          * Returns the icon which accurately describes the category \p category.
          * This is meant to be used in a configuration dialog when showing
          * all the categories.
          *
          * By default this returns the icon of the AbstractRunner
+         * * @deprecated Since 5.0, feature removed
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 76,  5, 0, "No longer use, feature removed")
         virtual QIcon categoryIcon(const QString& category) const;
+#endif
 
         /**
          * The nominal speed of the runner.
