@@ -236,7 +236,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          * @deprecated Since 5.76, The launch counts are now directly set and only read inside of this class.
          * Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager
          */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set by the RunnerManagerand only read inside of this class.")
+    KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set by the RunnerManager and only read inside of this class.")
     void restore(const KConfigGroup &config);
 #endif
 

@@ -1038,16 +1038,16 @@ void RunnerManager::addMatchToHistory(const Plasma::RunnerContext &context, cons
         }
         runnerManagerCfg.writeEntry("history", d->history);
     }
-        if (!match.isValid() || !match.runner()) {
-            runnerManagerCfg.sync();
-            return;
-        }
-        const QString group = match.runner()->id();
-        KConfigGroup runnerHistory = runnerManagerCfg.group(group);
+    if (!match.isValid() || !match.runner()) {
+        runnerManagerCfg.sync();
+        return;
+    }
+    const QString group = match.runner()->id();
+    KConfigGroup runnerHistory = runnerManagerCfg.group(group);
 
     auto launchCountsEntry = d->launchCounts.value(group);
     if (d->historyPolicy & HistoryPolicy::RunnerLaunchCounts) {
-        // We also want to keep our map in sync
+        // We also want to keep our map in sync, that is more performant than reparsing the entire config
         const int newRunnerLaunchCount = launchCountsEntry.value(QStringLiteral("launchCount")) + 1;
         launchCountsEntry.insert(QStringLiteral("launchCount"), newRunnerLaunchCount);
         runnerHistory.writeEntry("launchCount", newRunnerLaunchCount);
