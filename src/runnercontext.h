@@ -236,8 +236,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          * @deprecated Since 5.76, The launch counts are now directly set and only read inside of this class.
          * Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager
          */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set and only read inside of this class."
-                                      "Use setLaunchCounts() if you want to load a different value than the default one set by the RunnerManager")
+    KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set by the RunnerManagerand only read inside of this class.")
     void restore(const KConfigGroup &config);
 #endif
 
@@ -264,12 +263,14 @@ class KRUNNER_EXPORT RunnerContext : public QObject
         void run(const QueryMatch &match);
 #endif
 
-        void setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts);
-
     Q_SIGNALS:
         void matchesChanged();
 
     private:
+        friend class RunnerManager;
+        friend class RunnerManagerPrivate;
+        void setLaunchCounts(const QHash<QString, QHash<QString, int>> &launchCounts);
+
         QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
 
