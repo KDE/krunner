@@ -41,7 +41,13 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     public:
         explicit RunnerManager(QObject *parent=nullptr);
         explicit RunnerManager(const QString &configFile, QObject *parent=nullptr);
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
+        /**
+         * @deprecated Since 5.76, use "RunnerManager(const QString &configFile, QObject *parent)" instead.
+         */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "use RunnerManager(const QString &configFile, QObject *parent) instead")
         explicit RunnerManager(KConfigGroup &config, QObject *parent=nullptr);
+#endif
         ~RunnerManager();
 
         /**

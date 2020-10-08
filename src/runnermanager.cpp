@@ -521,6 +521,7 @@ RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     d->loadConfiguration();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
     : QObject(parent),
       d(new RunnerManagerPrivate(this))
@@ -528,6 +529,7 @@ RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
     d->conf = KConfigGroup(&c, "PlasmaRunnerManager");
     d->loadConfiguration();
 }
+#endif
 
 RunnerManager::~RunnerManager()
 {
