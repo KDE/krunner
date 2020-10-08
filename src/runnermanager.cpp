@@ -519,18 +519,14 @@ RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
 {
     d->configFile = configFile;
     d->loadConfiguration();
-    //ThreadWeaver::setDebugLevel(true, 4);
 }
 
 RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
     : QObject(parent),
       d(new RunnerManagerPrivate(this))
 {
-    // Should this be really needed? Maybe d->loadConfiguration(c) would make
-    // more sense.
     d->conf = KConfigGroup(&c, "PlasmaRunnerManager");
     d->loadConfiguration();
-    //ThreadWeaver::setDebugLevel(true, 4);
 }
 
 RunnerManager::~RunnerManager()
