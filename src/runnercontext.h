@@ -258,8 +258,9 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          * launched to sort future matches according to user habits
          *
          * @param match the match to run
+         * @deprecated Since 5.76, The RunnerManager now directly runs the match and updates the launch counts
          */
-        KRUNNER_DEPRECATED_VERSION(5, 76, "The launch counts are now directly set and only read inside of this class.")
+        KRUNNER_DEPRECATED_VERSION(5, 76, "The RunnerManager now directly runs the match and updates the launch counts")
         void run(const QueryMatch &match);
 #endif
 
