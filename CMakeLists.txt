@@ -60,7 +60,7 @@ ecm_setup_qtplugin_macro_names(
 )
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
-add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054900)
+add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054B00)
 add_definitions(-DPLASMA_DISABLE_DEPRECATED_BEFORE_AND_AT=0x050500) # needed because we use Plasma::Package in the API
 add_definitions(-DQT_NO_FOREACH -DQT_NO_KEYWORDS)
 
