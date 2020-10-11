@@ -48,6 +48,9 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("invalid protocol-less path") << "/bad/path" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation") << "5*4" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation (float)") << "5.2*4" << Plasma::RunnerContext::UnknownType;
+    // These are not real file paths, see BUG 342876
+    QTest::newRow("Invalid casing dir path") << "/UsR" << Plasma::RunnerContext::UnknownType;
+    QTest::newRow("Invalid casing file path") << "/bin/TruE" << Plasma::RunnerContext::UnknownType;
 }
 
 void RunnerContextTest::typeDetection()

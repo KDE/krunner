@@ -33,87 +33,6 @@
 namespace Plasma
 {
 
-/*
-Corrects the case of the last component in a path (e.g. /usr/liB -> /usr/lib)
-path: The path to be processed.
-correctCasePath: The corrected-case path
-mustBeDir: Tells whether the last component is a folder or doesn't matter
-Returns true on success and false on error, in case of error, correctCasePath is not modified
-*/
-bool correctLastComponentCase(const QString &path, QString &correctCasePath, const bool mustBeDir)
-{
-    // If the file already exists then no need to search for it.
-    if (QFile::exists(path)) {
-        correctCasePath = path;
-        return true;
-    }
-
-    const QFileInfo pathInfo(path);
-    const QDir fileDir = pathInfo.dir();
-    const QString filename = pathInfo.fileName();
-    const QStringList matchingFilenames = fileDir.entryList(QStringList(filename),
-                                          mustBeDir ? QDir::Dirs : QDir::NoFilter);
-
-    if (matchingFilenames.empty()) {
-        return false;
-    } else {
-        if (fileDir.path().endsWith(QDir::separator())) {
-            correctCasePath = fileDir.path() + matchingFilenames[0];
-        } else {
-            correctCasePath = fileDir.path() + QDir::separator() + matchingFilenames[0];
-        }
-
-        return true;
-    }
-}
-
-/*
-Corrects the case of a path (e.g. /uSr/loCAL/bIN -> /usr/local/bin)
-path: The path to be processed.
-corrected: The corrected-case path
-Returns true on success and false on error, in case of error, corrected is not modified
-*/
-bool correctPathCase(const QString& path, QString &corrected)
-{
-    // early exit check
-    if (QFile::exists(path)) {
-        corrected = path;
-        return true;
-    }
-
-    // path components
-    QStringList components = QString(path).split(QDir::separator());
-
-    if (components.size() < 1) {
-        return false;
-    }
-
-    const bool mustBeDir = components.back().isEmpty();
-    if (mustBeDir) {
-        components.pop_back();
-    }
-
-    if (components.isEmpty()) {
-        return true;
-    }
-
-    QString correctPath;
-    const int initialComponents = components.size();
-    for (int i = 0; i < initialComponents - 1; i++) {
-        const QString tmp = components[0] + QDir::separator() + components[1];
-
-        if (!correctLastComponentCase(tmp, correctPath, components.size() > 2 || mustBeDir)) {
-            return false;
-        }
-
-        components.removeFirst();
-        components[0] = correctPath;
-    }
-
-    corrected = correctPath;
-    return true;
-}
-
 class RunnerContextPrivate : public QSharedData
 {
     public:
@@ -183,25 +102,20 @@ class RunnerContextPrivate : public QSharedData
                     // it's too ambiguous to be sure we're in a filesystem context
                     path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
                     if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
-                        QString correctCasePath;
-                        if (correctPathCase(path, correctCasePath)) {
-                            path = correctCasePath;
-                            QFileInfo info(path);
-
-                            if (info.isSymLink()) {
-                                path = info.canonicalFilePath();
-                                info = QFileInfo(path);
-                            }
-                            if (info.isDir()) {
-                                type = RunnerContext::Directory;
-                                mimeType = QStringLiteral("inode/folder");
-                            } else if (info.isFile()) {
-                                type = RunnerContext::File;
-                                QMimeDatabase db;
-                                QMimeType mime = db.mimeTypeForFile(path);
-                                if (!mime.isDefault()) {
-                                    mimeType = mime.name();
-                                }
+                        QFileInfo info(path);
+                        if (info.isSymLink()) {
+                            path = info.canonicalFilePath();
+                            info = QFileInfo(path);
+                        }
+                        if (info.isDir()) {
+                            type = RunnerContext::Directory;
+                            mimeType = QStringLiteral("inode/folder");
+                        } else if (info.isFile()) {
+                            type = RunnerContext::File;
+                            QMimeDatabase db;
+                            QMimeType mime = db.mimeTypeForFile(path);
+                            if (!mime.isDefault()) {
+                                mimeType = mime.name();
                             }
                         }
                     }
