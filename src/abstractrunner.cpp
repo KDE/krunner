@@ -20,8 +20,6 @@
 #endif
 
 #include "krunner_debug.h"
-#include "querymatch.h"
-#include "runnercontext.h"
 
 namespace Plasma
 {

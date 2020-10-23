@@ -16,7 +16,6 @@
 #include <QRegularExpression>
 
 #include <KSharedConfig>
-#include <KPluginInfo>
 #include <KServiceTypeTrader>
 #include <KPluginMetaData>
 #include <KConfigWatcher>

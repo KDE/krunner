@@ -6,7 +6,6 @@
 
 #include "runnercontexttest.h"
 
-#include "runnercontext.h"
 
 #include <KProtocolInfo>
 
