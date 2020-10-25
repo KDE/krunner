@@ -6,7 +6,6 @@
 
 #include "runnercontexttest.h"
 
-
 #include <KProtocolInfo>
 
 #include <QDir>
