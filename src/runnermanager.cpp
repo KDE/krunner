@@ -881,18 +881,18 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     d->context.setEnabledCategories(d->enabledCategories);
 #endif
 
-    QHash<QString, AbstractRunner*> runable;
+    QHash<QString, AbstractRunner*> runnable;
 
     //if the name is not empty we will launch only the specified runner
     if (d->singleMode) {
-        runable.insert(QString(), d->currentSingleRunner);
+        runnable.insert(QString(), d->currentSingleRunner);
         d->context.setSingleRunnerQueryMode(true);
     } else {
-        runable = d->runners;
+        runnable = d->runners;
     }
 
     const int queryLetterCount = term.count();
-    for (Plasma::AbstractRunner *r : qAsConst(runable)) {
+    for (Plasma::AbstractRunner *r : qAsConst(runnable)) {
         if (r->isMatchingSuspended()) {
             continue;
         }
