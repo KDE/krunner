@@ -259,15 +259,19 @@ void AbstractRunner::setPriority(Priority priority)
     d->priority = priority;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 RunnerContext::Types AbstractRunner::ignoredTypes() const
 {
     return d->blackListed;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void AbstractRunner::setIgnoredTypes(RunnerContext::Types types)
 {
     d->blackListed = types;
 }
+#endif
 
 void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::QueryMatch &action)
 {

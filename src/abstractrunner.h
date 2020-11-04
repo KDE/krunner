@@ -215,18 +215,40 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
          */
         Priority priority() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Returns the OR'ed value of all the Information types (as defined in RunnerContext::Type)
          * this runner is not interested in.
          * @return OR'ed value of black listed types
+         * @deprecated This feature is deprecated
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is deprecated")
         RunnerContext::Types ignoredTypes() const;
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
-         * Sets the types this runner will ignore
+         * Sets the types this runner will ignore. If the value from RunnerContext::type() is contained in the ignored types
+         * the match() method won't be called. This way there is no unnecessary thread spawned. The same RunnerContext from
+         * which the type gets read is later passed into the match(Plasma::RunnerContext &context) method call.
          * @param types OR'ed listed of ignored types
+         * @deprecated feature is deprecated. Consider using the minLetterCount and matchRegex properties instead. These
+         * properties also prevent thread spawning, but can be used far more precise.
+         * If you want to have this kind of optimization for older KRunner versions you could wrap this
+         * inside of an version if statement:
+         * @code
+             #if KRUNNER_VERSION < QT_VERSION_CHECK(5, 76, 0)
+             //set ignore types
+             #endif
+         * @endcode
+         * The minLetterCount and matchRegex can be set with a similar version check or added to the desktop file.
+         * If an older KRunner version loads such a desktop file these unknown properties are just ignored.
+         * @see minLetterCount
+         * @see matchRegex
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is deprecated. Consider using the minLetterCount and matchRegex properties instead")
         void setIgnoredTypes(RunnerContext::Types types);
+#endif
 
         /**
           * @return the user visible engine name for the Runner

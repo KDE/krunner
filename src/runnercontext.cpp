@@ -57,6 +57,7 @@ class RunnerContextPrivate : public QSharedData
         {
         }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         /**
          * Determines type of query
                     &&
@@ -122,6 +123,7 @@ class RunnerContextPrivate : public QSharedData
                 }
             }
         }
+#endif
 
         void invalidate()
         {
@@ -219,7 +221,9 @@ void RunnerContext::setQuery(const QString &term)
     }
 
     d->term = term;
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
     d->determineType();
+#endif
 }
 
 QString RunnerContext::query() const
@@ -244,15 +248,19 @@ QStringList RunnerContext::enabledCategories() const
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 RunnerContext::Type RunnerContext::type() const
 {
     return d->type;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QString RunnerContext::mimeType() const
 {
     return d->mimeType;
 }
+#endif
 
 bool RunnerContext::isValid() const
 {

@@ -464,7 +464,11 @@ QT_WARNING_POP
 
     void startJob(AbstractRunner *runner)
     {
-        if ((runner->ignoredTypes() & context.type()) == 0) {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
+        if ((runner->ignoredTypes() & context.type()) != 0) {
+            return;
+        }
+#endif
             QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
             QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
             if (runner->speed() == AbstractRunner::SlowSpeed) {
@@ -472,7 +476,6 @@ QT_WARNING_POP
             }
             Queue::instance()->enqueue(job);
             searchJobs.insert(job);
-        }
     }
 
     // Delay in ms before slow runners are allowed to run

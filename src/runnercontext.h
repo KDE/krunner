@@ -81,11 +81,15 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          */
         QString query() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * The type of item the search term might refer to.
          * @see Type
+         * @deprecated feature is deprecated. Do the checks manually inside of the match logic
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is deprecated. Do the checks manually inside of the match logic")
         Type type() const;
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
@@ -109,14 +113,19 @@ class KRUNNER_EXPORT RunnerContext : public QObject
         void setEnabledCategories(const QStringList &categories);
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * The mimetype that the search term refers to, if discoverable.
          *
          * @return QString() if the mimetype can not be determined, otherwise
          *         the mimetype of the object being referred to by the search
          *         string.
+         * @deprecated feature is unused, determine the mime type manually if needed
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused, determine the mime type manually if needed")
         QString mimeType() const;
+#endif
+
 
         /**
          * @returns true if this context is no longer valid and therefore
