@@ -15,9 +15,16 @@ class RunnerSyntaxPrivate
 {
 public:
     RunnerSyntaxPrivate(const QString &s, const QString &d)
-        : description(d)
+        : description(d),
+        termDescription(i18n("search term"))
     {
-        exampleQueries.append(s);
+        addExampleQuery(s);
+    }
+
+    void addExampleQuery(const QString &s)
+    {
+        const QString termDesc(QLatin1Char('<') + termDescription + QLatin1Char('>'));
+        exampleQueries.append(QString(s).replace(QStringLiteral(":q:"), termDesc));
     }
 
     QStringList exampleQueries;
@@ -48,7 +55,7 @@ RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
 
 void RunnerSyntax::addExampleQuery(const QString &exampleQuery)
 {
-    d->exampleQueries.append(exampleQuery);
+    d->addExampleQuery(exampleQuery);
 }
 
 QStringList RunnerSyntax::exampleQueries() const
@@ -56,6 +63,7 @@ QStringList RunnerSyntax::exampleQueries() const
     return d->exampleQueries;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList RunnerSyntax::exampleQueriesWithTermDescription() const
 {
     QStringList queries;
@@ -66,32 +74,39 @@ QStringList RunnerSyntax::exampleQueriesWithTermDescription() const
 
     return queries;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerSyntax::setDescription(const QString &description)
 {
     d->description = description;
 }
+#endif
 
 QString RunnerSyntax::description() const
 {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
     QString description = d->description;
     description.replace(QLatin1String(":q:"), QLatin1Char('<') + searchTermDescription() + QLatin1Char('>'));
     return description;
+#else
+    return d->description;
+#endif
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerSyntax::setSearchTermDescription(const QString &description)
 {
     d->termDescription = description;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QString RunnerSyntax::searchTermDescription() const
 {
-    if (d->termDescription.isEmpty()) {
-        return i18n("search term");
-    }
-
     return d->termDescription;
 }
+#endif
 
 } // Plasma namespace
 

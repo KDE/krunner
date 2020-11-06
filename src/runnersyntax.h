@@ -22,7 +22,21 @@ class RunnerSyntaxPrivate;
  * Represents a query prototype that the runner accepts. These can be
  * created and registered with AbstractRunner::addSyntax(Syntax &) to
  * allow applications to show to the user what the runner is currently
- * capable of doing
+ * capable of doing.
+ *
+ * Lets say the runner has a trigger word and then the user can type anything after that. In that case you could use
+ * ":q:" as a placeholder, which will get expanded to i18n("search term") and be put in brackets.
+ * @code
+   Plasma::RunnerSyntax syntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
+   addSyntax(syntax);
+ * @endcode
+ *
+ * But if the query the user has to enter is sth. specific like a program,
+ * url or file you should use a custom placeholder to make it easier to understand.
+ * @code
+   Plasma::RunnerSyntax syntax(QStringLiteral("sometriggereword <%1>").arg(i18n("program name"))), i18n("Description for this syntax"));
+   addSyntax(syntax);
+ * @endcode
  */
 class KRUNNER_EXPORT RunnerSyntax
 {
@@ -30,12 +44,9 @@ class KRUNNER_EXPORT RunnerSyntax
         /**
          * Constructs a simple syntax object
          *
-         * @param exampleQuery an example of the query, with :q: placed wherever
-         *                   search term text might appear. e.g. if the runner
-         *                   accepts "keyword some random text" then the value
-         *                   of this parameter should be "keyword :q:"
-         * @param descrition A description of what the described syntax does from
-         *                 the user's point of view.
+         * @param exampleQuery See the class description for examples and placeholder conventions.
+         * @param description A description of what the described syntax does from
+         *                    the user's point of view.
          */
         RunnerSyntax(const QString &exampleQuery, const QString &description);
 
@@ -57,10 +68,7 @@ class KRUNNER_EXPORT RunnerSyntax
          * This allows the runner to show these relationships by grouping the
          * example queries into one Syntax object
          *
-         * @param exampleQuery an example of the query, with :q: placed wherever
-         *                   search term text might appear. e.g. if the runner
-         *                   accepts "keyword some random text" then the value
-         *                   of this parameter should be "keyword :q:"
+         * @param exampleQuery See the class description for examples and placeholder conventions.
          */
         void addExampleQuery(const QString &exampleQuery);
 
@@ -69,12 +77,17 @@ class KRUNNER_EXPORT RunnerSyntax
          */
         QStringList exampleQueries() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * @return the example queries associated with this Syntax object, with
          * the searchTermDescription replacing instances of :q:. Used for showing
          * the queries in the user interface.
+         * @deprecated Since 5.76, the description should be directly set when creating the example query.
+         * To display the queries in the user interface. Use exampleQueries() instead.
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "The descriptions should be directly set when creating the example query. Use exampleQueries() instead.")
         QStringList exampleQueriesWithTermDescription() const;
+#endif
 
         /**
          * Sets the description for the syntax, describing what it does from
@@ -88,19 +101,27 @@ class KRUNNER_EXPORT RunnerSyntax
          */
         QString description() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * Sets the text that should be used to replace instances of :q:
          * in the text. By default this is the generic phrase "search term".
          * If the syntax expects a specific kind of input, it may be defined
          * here. A syntax used by a runner that changes the brightness of the display 
          * may set this to "brightness" for instance.
+         * @deprecated Since 5.76, set the description directly when creating the example query. Use <my query description> instead of :q: when creating the string
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "Set the description directly when creating the example query. Use <my query description> instead of :q: when creating the string")
         void setSearchTermDescription(const QString &description);
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
         /**
          * @return a description of the search term for this syntax
+         * @deprecated Since 5.76, the desciption should be directly set when creating the example query.
          */
+        KRUNNER_DEPRECATED_VERSION(5, 76, "Feature is obsolete, the search term description should be set inside of the example query directly")
         QString searchTermDescription() const;
+#endif
 
     private:
         RunnerSyntaxPrivate *const d;
