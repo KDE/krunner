@@ -130,9 +130,22 @@ class RunnerContextPrivate : public QSharedData
             q = &s_dummyContext;
         }
 
+        QueryMatch* findMatchById(const QString &id)
+        {
+            QueryMatch *match = nullptr;
+            lock.lockForRead();
+            for (auto &matchEntry : matches) {
+                if (matchEntry.id() == id) {
+                    match = &matchEntry;
+                    break;
+                }
+            }
+            lock.unlock();
+            return match;
+        }
+
         QReadWriteLock lock;
         QList<QueryMatch> matches;
-        QMap<QString, const QueryMatch*> matchesById;
         QHash<QString, int> launchCounts;
         QString term;
         QString mimeType;
@@ -201,7 +214,6 @@ void RunnerContext::reset()
     // ref count was 1 (e.g. only the RunnerContext is using
     // the dptr) then we won't get a copy made
     if (!d->matches.isEmpty()) {
-        d->matchesById.clear();
         d->matches.clear();
         Q_EMIT matchesChanged();
     }
@@ -287,7 +299,6 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         }
 
         d->matches.append(match);
-        d->matchesById.insert(match.id(), &d->matches.at(d->matches.size() - 1));
     }
     UNLOCK(d);
     // A copied searchContext may share the d pointer,
@@ -314,7 +325,6 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     }
 
     d->matches.append(m);
-    d->matchesById.insert(m.id(), &d->matches.at(d->matches.size() - 1));
     UNLOCK(d);
     Q_EMIT d->q->matchesChanged();
 
@@ -323,39 +333,14 @@ bool RunnerContext::addMatch(const QueryMatch &match)
 
 bool RunnerContext::removeMatches(const QStringList matchIdList)
 {
-    if (!isValid()) {
-        return false;
-    }
-
-    QStringList presentMatchIdList;
-    QList<const QueryMatch*> presentMatchList;
-
-    LOCK_FOR_READ(d)
-    for (const QString &matchId : matchIdList) {
-        const QueryMatch* match = d->matchesById.value(matchId, nullptr);
-        if (match) {
-            presentMatchList << match;
-            presentMatchIdList << matchId;
+    bool success = false;
+    for (const QString &id : matchIdList) {
+        if (removeMatch(id)) {
+            success = true;
         }
     }
-    UNLOCK(d)
 
-    if (presentMatchIdList.isEmpty()) {
-        return false;
-    }
-
-    LOCK_FOR_WRITE(d)
-    for (const QueryMatch *match : qAsConst(presentMatchList)) {
-        d->matches.removeAll(*match);
-    }
-    for (const QString &matchId : qAsConst(presentMatchIdList)) {
-        d->matchesById.remove(matchId);
-    }
-    UNLOCK(d)
-
-    Q_EMIT d->q->matchesChanged();
-
-    return true;
+    return success;
 }
 
 bool RunnerContext::removeMatch(const QString matchId)
@@ -364,14 +349,13 @@ bool RunnerContext::removeMatch(const QString matchId)
         return false;
     }
     LOCK_FOR_READ(d)
-    const QueryMatch* match = d->matchesById.value(matchId, nullptr);
+    const QueryMatch* match = d->findMatchById(matchId);
     UNLOCK(d)
     if (!match) {
         return false;
     }
     LOCK_FOR_WRITE(d)
     d->matches.removeAll(*match);
-    d->matchesById.remove(matchId);
     UNLOCK(d)
     Q_EMIT d->q->matchesChanged();
 
@@ -400,7 +384,6 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
 
     LOCK_FOR_WRITE(d)
     for (const QueryMatch &match : qAsConst(presentMatchList)) {
-        d->matchesById.remove(match.id());
         d->matches.removeAll(match);
     }
     UNLOCK(d)
@@ -420,14 +403,9 @@ QList<QueryMatch> RunnerContext::matches() const
 QueryMatch RunnerContext::match(const QString &id) const
 {
     LOCK_FOR_READ(d)
-    const QueryMatch *match = d->matchesById.value(id, nullptr);
+    const QueryMatch *match = d->findMatchById(id);
     UNLOCK(d)
-
-    if (match) {
-        return *match;
-    }
-
-    return QueryMatch(nullptr);
+    return match ? *match : QueryMatch(nullptr);
 }
 
 void RunnerContext::setSingleRunnerQueryMode(bool enabled)
