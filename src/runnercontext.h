@@ -43,7 +43,7 @@ class KRUNNER_EXPORT RunnerContext : public QObject
             Executable = 16,
             ShellCommand = 32,
             Help = 64,
-            FileSystem = Directory | File | Executable | ShellCommand
+            FileSystem = Directory | File | Executable | ShellCommand,
         };
 
         Q_DECLARE_FLAGS(Types, Type)

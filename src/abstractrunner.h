@@ -66,7 +66,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         /** Specifies a nominal speed for the runner */
         enum Speed {
             SlowSpeed,
-            NormalSpeed
+            NormalSpeed,
         };
 
         /** Specifies a priority for the runner */
@@ -75,7 +75,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
             LowPriority,
             NormalPriority,
             HighPriority,
-            HighestPriority
+            HighestPriority,
         };
 
         /** An ordered list of runners */

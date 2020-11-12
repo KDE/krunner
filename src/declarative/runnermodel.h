@@ -64,7 +64,7 @@ public:
         Enabled,
         RunnerId,
         RunnerName,
-        Actions
+        Actions,
     };
 
     RunnerModel(QObject *parent = nullptr);

@@ -54,7 +54,7 @@ class KRUNNER_EXPORT QueryMatch
                                  while typing. They must be explicitly selected to
                                  be activated, but unlike InformationalMatch cause
                                  an action to be triggered. */
-            ExactMatch = 100 /**< An exact match to the query */
+            ExactMatch = 100, /**< An exact match to the query */
         };
 
         /**
