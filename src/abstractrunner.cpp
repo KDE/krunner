@@ -47,6 +47,16 @@ AbstractRunner::AbstractRunner(const KService::Ptr service, QObject *parent)
 }
 #endif
 
+AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
+    : QObject(parent),
+      d(new AbstractRunnerPrivate(this))
+{
+    Q_UNUSED(args)
+
+    d->init(pluginMetaData);
+}
+
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
     : QObject(parent),
       d(new AbstractRunnerPrivate(this))
@@ -74,6 +84,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
 #endif
     }
 }
+#endif
 
 AbstractRunner::~AbstractRunner()
 {

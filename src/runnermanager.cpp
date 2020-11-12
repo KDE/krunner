@@ -345,10 +345,12 @@ QT_WARNING_POP
                 KPluginFactory *factory = pluginLoader.factory();
                 if (factory) {
                     const QVariantList args {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
                         pluginMetaData.metaDataFileName(),
 #endif
                         QVariant::fromValue(pluginMetaData),
+#endif
                     };
                     runner = factory->create<AbstractRunner>(q, args);
                 } else {

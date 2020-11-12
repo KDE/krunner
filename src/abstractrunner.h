@@ -439,8 +439,13 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
 #endif
         /// @since 5.72
         explicit AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent = nullptr);
-
+        /// @since 5.77
+        AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
+         /// @deprecated Since 5.77, use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)
+        KRUNNER_DEPRECATED_VERSION(5, 77, "use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)")
         AbstractRunner(QObject *parent, const QVariantList &args);
+#endif
 
         /**
          * Sets whether or not the runner is available for match requests. Useful to
