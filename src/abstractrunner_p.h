@@ -34,8 +34,9 @@ public:
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     void init(const KService::Ptr service);
 #endif
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
     void init(const QString &path);
-
+#endif
     AbstractRunner::Priority priority;
     AbstractRunner::Speed speed;
     RunnerContext::Types blackListed;

@@ -200,6 +200,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void loadRunner(const KPluginMetaData &pluginMetaData);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
         /**
          * Attempts to add the AbstractRunner from a Plasma::Package on disk.
          * Usually one can simply let the configuration of plugins
@@ -208,8 +209,11 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          *
          * @param path the path to a Runner package to load
          * @since 4.5
+         * @deprecated Since 5.0, the KPackage support was removed in Plasma 5.0
          */
+        KRUNNER_DEPRECATED_VERSION_BELATED(5, 77, 5, 0,  "the KPackage support was removed in Plasma 5.0")
         void loadRunner(const QString &path);
+#endif
 
         /**
          * @return the list of allowed plugins

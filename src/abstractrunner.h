@@ -429,7 +429,13 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
         friend class RunnerManager;
         friend class RunnerManagerPrivate;
 
-        explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
+    KRUNNER_DEPRECATED_VERSION(5, 77, "use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)")
+    explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
+#else
+    explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString()) = delete;
+#endif
+
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
          /// @deprecated Since 5.72, use AbstractRunner(const KPluginMetaData &, QObject *)

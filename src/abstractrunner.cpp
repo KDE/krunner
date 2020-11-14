@@ -24,12 +24,14 @@
 namespace Plasma
 {
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 AbstractRunner::AbstractRunner(QObject *parent, const QString &path)
     : QObject(parent),
       d(new AbstractRunnerPrivate(this))
 {
     d->init(path);
 }
+#endif
 
 AbstractRunner::AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     : QObject(parent),
@@ -488,11 +490,13 @@ QT_WARNING_POP
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 void AbstractRunnerPrivate::init(const QString &path)
 {
     runnerDescription = KPluginMetaData(path + QStringLiteral("/metadata.desktop"));
     init();
 }
+#endif
 
 } // Plasma namespace
 

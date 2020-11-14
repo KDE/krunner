@@ -614,6 +614,7 @@ void RunnerManager::loadRunner(const KPluginMetaData &pluginMetaData)
     }
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 void RunnerManager::loadRunner(const QString &path)
 {
     if (!d->runners.contains(path)) {
@@ -622,6 +623,7 @@ void RunnerManager::loadRunner(const QString &path)
         d->runners.insert(path, runner);
     }
 }
+#endif
 
 AbstractRunner* RunnerManager::runner(const QString &name) const
 {
