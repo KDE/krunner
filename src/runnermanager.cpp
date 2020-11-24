@@ -751,12 +751,7 @@ QMimeData * RunnerManager::mimeDataForMatch(const QString &id) const
 
 QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const
 {
-    AbstractRunner *runner = match.runner();
-    if (runner) {
-        return runner->mimeDataForMatch(match);
-    }
-
-    return nullptr;
+    return match.isValid() ? match.runner()->mimeDataForMatch(match) : nullptr;
 }
 
 QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parentApp)
