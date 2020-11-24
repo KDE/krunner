@@ -159,8 +159,7 @@ public:
             clearSingleRunner();
         }
 
-        AbstractRunner *loadedRunner = q->runner(singleModeRunnerId);
-        if (loadedRunner) {
+        if (AbstractRunner *loadedRunner = q->runner(singleModeRunnerId)) {
             singleRunnerWasLoaded = false;
             currentSingleRunner = loadedRunner;
             return;
@@ -342,8 +341,7 @@ QT_WARNING_POP
             KPluginLoader pluginLoader(pluginMetaData.fileName());
             const quint64 pluginVersion = pluginLoader.pluginVersion();
             if (Plasma::isPluginVersionCompatible(pluginVersion)) {
-                KPluginFactory *factory = pluginLoader.factory();
-                if (factory) {
+                if (KPluginFactory *factory = pluginLoader.factory()) {
                     const QVariantList args {
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
@@ -457,9 +455,7 @@ QT_WARNING_POP
             return;
         }
 
-        AbstractRunner *runner = qobject_cast<AbstractRunner *>(q->sender());
-
-        if (runner) {
+        if (auto *runner = qobject_cast<AbstractRunner *>(q->sender())) {
             startJob(runner);
         }
     }
@@ -612,8 +608,7 @@ void RunnerManager::loadRunner(const KPluginMetaData &pluginMetaData)
 {
     const QString runnerName = pluginMetaData.pluginId();
     if (!runnerName.isEmpty() && !d->runners.contains(runnerName)) {
-        AbstractRunner *runner = d->loadInstalledRunner(pluginMetaData);
-        if (runner) {
+        if (AbstractRunner *runner = d->loadInstalledRunner(pluginMetaData)) {
             d->runners.insert(runnerName, runner);
         }
     }
@@ -741,8 +736,7 @@ void RunnerManager::run(const QueryMatch &match)
 
 QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
 {
-    AbstractRunner *runner = match.runner();
-    if (runner) {
+    if (AbstractRunner *runner = match.runner()) {
         return runner->actionsForMatch(match);
     }
 
