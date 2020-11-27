@@ -1,0 +1,50 @@
+#include <QStandardPaths>
+#include <KPluginLoader>
+#include <KPluginMetaData>
+#include <KRunner/RunnerManager>
+
+#include <QTest>
+#include <QSignalSpy>
+#include <clocale>
+
+namespace
+{
+class @CLASS_NAME@ : public QObject
+{
+public:
+    Plasma::RunnerManager *manager = nullptr;
+    Plasma::AbstractRunner *runner = nullptr;
+    const QString pluginId = QStringLiteral("@PLUGIN_ID@");
+
+    void initProperties()
+    {
+        QStandardPaths::setTestModeEnabled(true);
+        setlocale(LC_ALL, "C.utf8");
+
+        auto pluginMetaDatas =
+            KPluginLoader::findPluginsById(QStringLiteral("@PLUGIN_BUILD_DIR@"), pluginId);
+        QCOMPARE(pluginMetaDatas.count(), 1);
+        KPluginMetaData runnerMetadata = pluginMetaDatas.first();
+
+        // Set internal variables
+        delete manager;
+        delete runner;
+        manager = new Plasma::RunnerManager();
+        manager->setAllowedRunners({QStringLiteral("@RUNNER_ID@")});
+        manager->loadRunner(runnerMetadata);
+        QCOMPARE(manager->runners().count(), 1);
+        runner = manager->runners().constFirst();
+
+        // Just make sure all went well
+        QVERIFY(manager);
+        QVERIFY(runner);
+    }
+
+    void doQuery(const QString &query, const QString &runnerName = QString())
+    {
+        QSignalSpy spy(manager, &Plasma::RunnerManager::queryFinished);
+        manager->launchQuery(query, runnerName);
+        QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
+    }
+};
+}

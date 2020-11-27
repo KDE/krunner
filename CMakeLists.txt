@@ -107,6 +107,13 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
         DESTINATION "${KF5_INCLUDE_INSTALL_DIR}"
         COMPONENT Devel)
 
+install(FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/KF5KRunnerMacros.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/abstractrunnertest.h.in"
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        COMPONENT Devel
+        )
+
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
 # add clang-format target for all our real source files
