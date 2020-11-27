@@ -1,0 +1,51 @@
+/*
+    SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
+    SPDX-License-Identifier: LGPL-2.0-or-later
+*/
+
+#include <QStandardPaths>
+#include <KPluginLoader>
+#include <KPluginMetaData>
+#include <KRunner/RunnerManager>
+#include <KRunner/AbstractRunner>
+
+#include <QTest>
+#include <QSignalSpy>
+
+namespace
+{
+class AbstractRunnerTest : public QObject
+{
+public:
+    std::unique_ptr<Plasma::RunnerManager> manager = nullptr;
+    std::unique_ptr<Plasma::AbstractRunner> runner = nullptr;
+    const QString pluginId = QStringLiteral("@PLUGIN_ID@");
+
+    void initProperties()
+    {
+        QStandardPaths::setTestModeEnabled(true);
+        setenv("LC_ALL", "C.utf-8", 1);
+
+        auto pluginMetaDatas = KPluginLoader::findPluginsById(QStringLiteral("@PLUGIN_BUILD_DIR@"), pluginId);
+        QCOMPARE(pluginMetaDatas.count(), 1);
+        KPluginMetaData runnerMetadata = pluginMetaDatas.first();
+
+        // Set internal variables
+        manager.reset(new Plasma::RunnerManager());
+        manager->setAllowedRunners({pluginId});
+        manager->loadRunner(runnerMetadata);
+        QCOMPARE(manager->runners().count(), 1);
+        runner.reset(manager->runners().constFirst());
+
+        // Just make sure all went well
+        QVERIFY(runner);
+    }
+
+    void doQuery(const QString &query, const QString &runnerName = QString())
+    {
+        QSignalSpy spy(manager.get(), &Plasma::RunnerManager::queryFinished);
+        manager->launchQuery(query, runnerName);
+        QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
+    }
+};
+}
