@@ -50,6 +50,16 @@ find_package(KF5Service ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5Plasma ${KF5_DEP_VERSION} REQUIRED)
 find_package(KF5ThreadWeaver ${KF5_DEP_VERSION} REQUIRED)
 
+find_package(KF5Activities ${KF5_DEP_VERSION})
+set_package_properties(KF5Activities PROPERTIES
+        DESCRIPTION "Library for Activities"
+        PURPOSE "Required for activities support (optional)"
+        TYPE OPTIONAL
+        )
+if(KF5Activities_FOUND)
+    set(HAVE_KACTIVITIES TRUE)
+endif()
+
 ecm_setup_qtplugin_macro_names(
     JSON_NONE
         "K_EXPORT_PLASMA_RUNNER"

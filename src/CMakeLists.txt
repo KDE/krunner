@@ -6,6 +6,8 @@ if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
     add_subdirectory(declarative)
 endif()
 
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 set (KF5Runner_SRCS
     abstractrunner.cpp
     dbusrunner.cpp
@@ -56,6 +58,9 @@ target_link_libraries(KF5Runner
         KF5::CoreAddons #KShell
         KF5::KIOCore #KProtocolInfo
 )
+if(HAVE_KACTIVITIES)
+    target_link_libraries(KF5Runner PRIVATE KF5::Activities)
+endif()
 
 set_target_properties(KF5Runner
     PROPERTIES VERSION ${KRUNNER_VERSION_STRING}

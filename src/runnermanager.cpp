@@ -20,6 +20,12 @@
 #include <KPluginMetaData>
 #include <KConfigWatcher>
 
+
+#include "config.h"
+#ifdef HAVE_KACTIVITIES
+#include <KActivities/Consumer>
+#endif
+
 #include <ThreadWeaver/DebuggingAids>
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
@@ -127,6 +133,23 @@ public:
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         enabledCategories = config.readEntry("enabledCategories", QStringList());
 #endif
+#ifdef HAVE_KACTIVITIES
+        // Wait for consumer to be ready
+        QObject::connect(&activitiesConsumer, &KActivities::Consumer::serviceStatusChanged, &activitiesConsumer,
+            [this](KActivities::Consumer::ServiceStatus status) {
+            if (status == KActivities::Consumer::Running) {
+                deleteHistoryOfDeletedActivities();
+            }
+        });
+#endif
+        const KConfigGroup generalConfig(KSharedConfig::openConfig(configFile), "General");
+        const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
+        if (historyEnabled != _historyEnabled) {
+            historyEnabled = _historyEnabled;
+            Q_EMIT q->historyEnabledChanged();
+        }
+        activityAware = generalConfig.readEntry("ActivityAware", true);
+        retainPriorSearch = generalConfig.readEntry("RetainPriorSearch", true);
         context.restore(config);
     }
 
@@ -476,6 +499,69 @@ QT_WARNING_POP
             searchJobs.insert(job);
     }
 
+    inline QString getActivityKey()
+    {
+#ifdef HAVE_KACTIVITIES
+        return activityAware ? activitiesConsumer.currentActivity() : nulluuid;
+#else
+        return nulluuid;
+#endif
+    }
+
+    void addToHistory()
+    {
+        const QString term = context.query();
+        // We want to imitate the shall behavior
+        if (!historyEnabled || term.isEmpty() || untrimmedTerm.startsWith(QLatin1Char(' '))) {
+            return;
+        }
+        QStringList historyEntries = readHistoryForCurrentActivity();
+        // Avoid removing the same item from the front and prepending it again
+        if (!historyEntries.isEmpty() && historyEntries.constFirst() == term) {
+            return;
+        }
+
+        historyEntries.removeOne(term);
+        historyEntries.prepend(term);
+
+        while (historyEntries.count() > 50) { // we don't want to store more than 50 entries
+            historyEntries.removeLast();
+        }
+        writeActivityHistory(historyEntries);
+    }
+
+    void writeActivityHistory(const QStringList &historyEntries)
+    {
+        KConfigGroup config = configGroup();
+        config.group("History").writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
+        config.sync();
+    }
+
+#ifdef HAVE_KACTIVITIES
+    void deleteHistoryOfDeletedActivities()
+    {
+        KConfigGroup historyGroup = configGroup().group("History");
+        QStringList historyEntries = historyGroup.keyList();
+        historyEntries.removeOne(nulluuid);
+
+        // Check if history still exists
+        const QStringList activities = activitiesConsumer.activities();
+        for (const auto &a : activities) {
+            historyEntries.removeOne(a);
+        }
+
+        for (const QString &deletedActivity : qAsConst(historyEntries)) {
+            historyGroup.deleteEntry(deletedActivity);
+        }
+        historyGroup.sync();
+    }
+#endif
+
+    inline QStringList readHistoryForCurrentActivity()
+    {
+        return configGroup().group("History").readEntry(getActivityKey(), QStringList());
+    }
+
     // Delay in ms before slow runners are allowed to run
     static const int slowRunDelay = 400;
 
@@ -499,9 +585,18 @@ QT_WARNING_POP
     bool teardownRequested : 1;
     bool singleMode : 1;
     bool singleRunnerWasLoaded : 1;
+    bool activityAware :1;
+    bool historyEnabled :1;
+    bool retainPriorSearch :1;
     QStringList whiteList;
     QString configFile;
     KConfigWatcher::Ptr watcher;
+    QHash<QString, QString> priorSearch;
+    QString untrimmedTerm;
+    QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
+#ifdef HAVE_KACTIVITIES
+    const KActivities::Consumer activitiesConsumer;
+#endif
 };
 
 /*****************************************************
@@ -736,6 +831,20 @@ void RunnerManager::run(const QueryMatch &match)
     d->context.run(match);
 }
 
+bool RunnerManager::runMatch(const QueryMatch &match)
+{
+    d->addToHistory();
+    if (match.type() == Plasma::QueryMatch::InformationalMatch) {
+        const QString info = match.data().toString();
+        if (!info.isEmpty()) {
+            Q_EMIT setSearchTerm(info, info.length());
+            return false;
+        }
+    }
+    d->context.run(match);
+    return true;
+}
+
 QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
 {
     if (AbstractRunner *runner = match.runner()) {
@@ -854,6 +963,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 {
     setupMatchSession();
     QString term = untrimmedTerm.trimmed();
+    d->untrimmedTerm = untrimmedTerm;
 
     setSingleModeRunnerId(runnerName);
     setSingleMode(d->currentSingleRunner);
@@ -922,6 +1032,31 @@ QString RunnerManager::query() const
     return d->context.query();
 }
 
+QStringList RunnerManager::history() const
+{
+    return d->readHistoryForCurrentActivity();
+}
+
+void RunnerManager::removeFromHistory(int index)
+{
+    QStringList changedHistory = history();
+    if (index < changedHistory.length()) {
+        changedHistory.removeAt(index);
+        d->writeActivityHistory(changedHistory);
+    }
+}
+
+QString RunnerManager::getHistorySuggestion(const QString &typedQuery) const
+{
+    const QStringList historyList = history();
+    for (const QString &entry : historyList) {
+        if (entry.startsWith(typedQuery, Qt::CaseInsensitive)) {
+            return entry;
+        }
+    }
+    return QString();
+}
+
 void RunnerManager::reset()
 {
     // If ThreadWeaver is idle, it is safe to clear previous jobs
@@ -971,6 +1106,26 @@ void RunnerManager::enableKNotifyPluginWatcher()
             }
         });
     }
+}
+
+QString RunnerManager::priorSearch() const
+{
+    return d->priorSearch.value(d->getActivityKey());
+}
+
+void RunnerManager::setPriorSearch(const QString &search)
+{
+    d->priorSearch.insert(d->getActivityKey(), search);
+}
+
+bool RunnerManager::historyEnabled()
+{
+    return d->historyEnabled;
+}
+
+bool RunnerManager::retainPriorSearch()
+{
+    return d->retainPriorSearch;
 }
 
 } // Plasma namespace

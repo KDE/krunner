@@ -37,6 +37,10 @@ namespace Plasma
 class KRUNNER_EXPORT RunnerManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool retainPriorSearch READ retainPriorSearch)
+    Q_PROPERTY(QString priorSearch READ priorSearch WRITE setPriorSearch)
+    Q_PROPERTY(QStringList history READ history)
+    Q_PROPERTY(bool historyEnabled READ historyEnabled NOTIFY historyEnabledChanged)
 
     public:
         explicit RunnerManager(QObject *parent=nullptr);
@@ -137,6 +141,15 @@ class KRUNNER_EXPORT RunnerManager : public QObject
         void run(const QString &id);
 
         /**
+         * Runs a given match. This also respects the extra handling for the InformationalMatch.
+         * This also handles the history automatically
+         * @param match the match to be executed
+         * @return if the RunnerWindow should close
+         * @since 5.78
+         */
+        bool runMatch(const QueryMatch &match);
+
+        /**
          * Retrieves the list of actions, if any, for a match
          */
         QList<QAction*> actionsForMatch(const QueryMatch &match);
@@ -145,6 +158,54 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          * @return the current query term
          */
         QString query() const;
+
+        /**
+         * @return History of this runner for the current activity. If the RunnerManager is not history
+         * aware the global entries will be returned.
+         * @since 5.78
+         */
+        QStringList history() const;
+
+        /**
+         * Delete the given index from the history.
+         * @param historyEntry
+         * @since 5.78
+         */
+        Q_INVOKABLE void removeFromHistory(int index);
+
+        /**
+         * Get the suggested history entry for the typed query. If no entry is found an empty string is returned.
+         * @param typedQuery
+         * @return completion for typedQuery
+         * @since 5.78
+         */
+        Q_INVOKABLE QString getHistorySuggestion(const QString &typedQuery) const;
+
+        /**
+         * Get the suggested prior search for this runner.
+         * Just like the history this value can be activity specific, depending on the build/config.
+         * @return priorSearch
+         * @since 5.78
+         */
+        QString priorSearch() const;
+
+        /**
+         * Set the prior search for this runner. Setting an empty string will clear this value.
+         * @since 5.78
+         */
+        void setPriorSearch(const QString &search);
+
+        /**
+         * If the prior search should be restored when KRunner is reopened
+         * @since 5.78
+         */
+        bool retainPriorSearch();
+
+        /**
+         * If history completion is enabled, the default value is true.
+         * @since 5.78
+         */
+        bool historyEnabled();
 
         /**
          * Causes a reload of the current configuration
@@ -330,6 +391,20 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          * @since 4.5
          */
         void queryFinished();
+
+        /**
+         * Put the given search term in the KRunner search field
+         * @param term The term that should be displayed
+         * @param cursorPosition Where the cursor should be positioned
+         * @since 5.78
+         */
+        void setSearchTerm(const QString &term, int cursorPosition);
+
+        /**
+         * @see @p historyEnabled
+         * @since 5.78
+         */
+        void historyEnabledChanged();
 
     private:
         Q_PRIVATE_SLOT(d, void scheduleMatchesChanged())
