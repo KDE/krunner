@@ -14,6 +14,11 @@ using namespace Plasma;
 
 class Runner: public AbstractRunner
 {
+public:
+    Runner()
+        : AbstractRunner(nullptr, KPluginMetaData(QStringLiteral("metadata.desktop")), QVariantList())
+    {
+    }
 };
 namespace
 {
