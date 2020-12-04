@@ -124,14 +124,12 @@ public:
 
     void loadConfiguration()
     {
-        KConfigGroup config = configGroup();
-
         // Limit the number of instances of a single normal speed runner and all of the slow runners
         // to half the number of threads
         DefaultRunnerPolicy::instance().setCap(qMax(2, Queue::instance()->maximumNumberOfThreads() / 2));
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-        enabledCategories = config.readEntry("enabledCategories", QStringList());
+        enabledCategories = stateData.readEntry("enabledCategories", QStringList());
 #endif
 #ifdef HAVE_KACTIVITIES
         // Wait for consumer to be ready
@@ -142,7 +140,7 @@ public:
             }
         });
 #endif
-        const KConfigGroup generalConfig(KSharedConfig::openConfig(configFile), "General");
+        const KConfigGroup generalConfig = configPrt->group("General");
         const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
         if (historyEnabled != _historyEnabled) {
             historyEnabled = _historyEnabled;
@@ -150,12 +148,7 @@ public:
         }
         activityAware = generalConfig.readEntry("ActivityAware", true);
         retainPriorSearch = generalConfig.readEntry("RetainPriorSearch", true);
-        context.restore(config);
-    }
-
-    KConfigGroup configGroup()
-    {
-        return conf.isValid() ? conf : KConfigGroup(KSharedConfig::openConfig(configFile), "PlasmaRunnerManager");
+        context.restore(stateData);
     }
 
     void clearSingleRunner()
@@ -230,17 +223,11 @@ QT_WARNING_POP
 
     void loadRunners()
     {
-        KConfigGroup config = configGroup();
         QVector<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
 
-        const bool loadAll = config.readEntry("loadAll", false);
+        const bool loadAll = stateData.readEntry("loadAll", false);
         const bool noWhiteList = whiteList.isEmpty();
-        KConfigGroup pluginConf;
-        if (conf.isValid()) {
-            pluginConf = KConfigGroup(&conf, "Plugins");
-        } else {
-            pluginConf = KConfigGroup(KSharedConfig::openConfig(configFile), "Plugins");
-        }
+        KConfigGroup pluginConf = configPrt->group("Plugins");
 
         advertiseSingleRunnerIds.clear();
 
@@ -532,15 +519,14 @@ QT_WARNING_POP
 
     void writeActivityHistory(const QStringList &historyEntries)
     {
-        KConfigGroup config = configGroup();
-        config.group("History").writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
-        config.sync();
+        stateData.group("History").writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
+        stateData.sync();
     }
 
 #ifdef HAVE_KACTIVITIES
     void deleteHistoryOfDeletedActivities()
     {
-        KConfigGroup historyGroup = configGroup().group("History");
+        KConfigGroup historyGroup = stateData.group("History");
         QStringList historyEntries = historyGroup.keyList();
         historyEntries.removeOne(nulluuid);
 
@@ -559,7 +545,7 @@ QT_WARNING_POP
 
     inline QStringList readHistoryForCurrentActivity()
     {
-        return configGroup().group("History").readEntry(getActivityKey(), QStringList());
+        return stateData.group("History").readEntry(getActivityKey(), QStringList());
     }
 
     // Delay in ms before slow runners are allowed to run
@@ -576,7 +562,6 @@ QT_WARNING_POP
     AbstractRunner* currentSingleRunner;
     QSet<QSharedPointer<FindMatchesJob> > searchJobs;
     QSet<QSharedPointer<FindMatchesJob> > oldSearchJobs;
-    KConfigGroup conf;
     QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped : 1;
@@ -594,6 +579,8 @@ QT_WARNING_POP
     QHash<QString, QString> priorSearch;
     QString untrimmedTerm;
     QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
+    KSharedConfigPtr configPrt;
+    KConfigGroup stateData;
 #ifdef HAVE_KACTIVITIES
     const KActivities::Consumer activitiesConsumer;
 #endif
@@ -612,7 +599,15 @@ RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     : QObject(parent),
       d(new RunnerManagerPrivate(this))
 {
-    d->configFile = configFile;
+    d->configPrt = KSharedConfig::openConfig(configFile);
+    // If the old config group still exists the migration script wasn't executed
+    // so we keep using this location
+    if (d->configPrt->hasGroup("PlasmaRunnerManager")) {
+        d->stateData = d->configPrt->group("PlasmaRunnerManager");
+    } else {
+        d->stateData = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals,
+                                                 QStandardPaths::GenericDataLocation)->group("PlasmaRunnerManager");
+    }
     d->loadConfiguration();
 }
 
@@ -621,7 +616,8 @@ RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
     : QObject(parent),
       d(new RunnerManagerPrivate(this))
 {
-    d->conf = KConfigGroup(&c, "PlasmaRunnerManager");
+    d->configPrt = KSharedConfig::openConfig();
+    d->stateData = KConfigGroup(&c, "PlasmaRunnerManager");
     d->loadConfiguration();
 }
 #endif
@@ -637,7 +633,8 @@ RunnerManager::~RunnerManager()
 
 void RunnerManager::reloadConfiguration()
 {
-    KSharedConfig::openConfig()->reparseConfiguration();
+    d->configPrt->reparseConfiguration();
+    d->stateData.config()->reparseConfiguration();
     d->loadConfiguration();
     d->loadRunners();
 }
@@ -654,9 +651,7 @@ void RunnerManager::setAllowedRunners(const QStringList &runners)
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void RunnerManager::setEnabledCategories(const QStringList& categories)
 {
-    KConfigGroup config = d->configGroup();
-    config.writeEntry("enabledCategories", categories);
-
+    d->stateData.writeEntry("enabledCategories", categories);
     d->enabledCategories = categories;
 
     if (!d->runners.isEmpty()) {
@@ -667,15 +662,13 @@ void RunnerManager::setEnabledCategories(const QStringList& categories)
 
 QStringList RunnerManager::allowedRunners() const
 {
-    KConfigGroup config = d->configGroup();
-    return config.readEntry("pluginWhiteList", QStringList());
+    return d->stateData.readEntry("pluginWhiteList", QStringList());
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList RunnerManager::enabledCategories() const
 {
-    KConfigGroup config = d->configGroup();
-    QStringList list = config.readEntry("enabledCategories", QStringList());
+    QStringList list = d->stateData.readEntry("enabledCategories", QStringList());
     if (list.isEmpty()) {
         list.reserve(d->runners.count());
         for (AbstractRunner* runner : qAsConst(d->runners)) {
@@ -950,8 +943,7 @@ void RunnerManager::matchSessionComplete()
     d->checkTearDown();
     // We save the context config after each session, just like the history entries
     // BUG: 424505
-    KConfigGroup config = d->configGroup();
-    d->context.save(config);
+    d->context.save(d->stateData);
 }
 
 void RunnerManager::launchQuery(const QString &term)
@@ -1084,7 +1076,7 @@ void RunnerManager::reset()
 void RunnerManager::enableKNotifyPluginWatcher()
 {
     if (!d->watcher) {
-        d->watcher = KConfigWatcher::create(KSharedConfig::openConfig(d->configGroup().config()->name()));
+        d->watcher = KConfigWatcher::create(d->configPrt);
         connect(d->watcher.data(), &KConfigWatcher::configChanged, this, [this](const KConfigGroup &group, const QByteArrayList &changedNames) {
             const QString groupName = group.name();
             if (groupName == QLatin1String("Plugins")) {
