@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     layout->addWidget(view);
 
     QAction *quit = new QAction(widget);
-    quit->setShortcut(Qt::CTRL + Qt::Key_Q);
+    quit->setShortcut(Qt::CTRL | Qt::Key_Q);
     QObject::connect(quit, SIGNAL(triggered()), &app, SLOT(quit()));
 
     widget->addAction(quit);
