@@ -10,6 +10,7 @@
 
 #include "dbusutils_p.h"
 #include <QHash>
+#include <QImage>
 #include <QList>
 #include <QSet>
 #include <QMutex>
@@ -29,6 +30,7 @@ public:
 private:
     void requestActions();
     void setActions(const RemoteActions &remoteActions);
+    static QImage decodeImage(const RemoteImage &remoteImage);
     QMutex m_mutex; //needed round any variable also accessed from Match
     QString m_path;
     QSet<QString> m_matchingServices;

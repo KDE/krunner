@@ -54,6 +54,9 @@
               Otherwise all the actions will be shown for compatibility with the previous versions of the D-Bus API.
               When the actions ony need to be fetched once you can set the X-Plasma-Request-Actions-Once property of
               the service file to true.
+            - icon-data (iiibiiay). Custom icon pixmap. Icon name should be preferred, if available.
+              Format is the same as org.freedesktop.Notifications icon-data, in order: width, height, row stride,
+              has alpha, bits per sample, number of channels, pixmap data.
       -->
       <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="RemoteMatches"/>
       <arg name="matches" type="a(sssuda{sv})" direction="out"/>

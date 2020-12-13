@@ -1,6 +1,7 @@
 /*
     SPDX-FileCopyrightText: 2017, 2018 David Edmundson <davidedmundson@kde.org>
     SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
+    SPDX-FileCopyrightText: 2020 Kai Uwe Broulik <kde@broulik.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -30,6 +31,7 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
+    qDBusRegisterMetaType<RemoteImage>();
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
@@ -165,6 +167,25 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                     m.setData(QVariantList({service}));
                 }
 
+                const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
+                if (iconData.isValid()) {
+                    const auto iconDataArgument = iconData.value<QDBusArgument>();
+                    if (iconDataArgument.currentType() == QDBusArgument::StructureType
+                            && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
+                        const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
+                        const QImage decodedImage = decodeImage(remoteImage);
+                        if (!decodedImage.isNull()) {
+                            const QPixmap pix = QPixmap::fromImage(decodedImage);
+                            QIcon icon(pix);
+                            m.setIcon(icon);
+                            // iconName normally takes precedence
+                            m.setIconName(QString());
+                        }
+                    } else {
+                        qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
+                    }
+                }
+
                 context.addMatch(m);
             };
         }, Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
@@ -208,4 +229,63 @@ void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
     auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
     runMethod.setArguments(QList<QVariant>({matchId, actionId}));
     QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+}
+
+QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)
+{
+    auto copyLineRGB32 = [](QRgb *dst, const char *src, int width)
+    {
+        const char* end = src + width * 3;
+        for (; src != end; ++dst, src += 3) {
+            *dst = qRgb(src[0], src[1], src[2]);
+        }
+    };
+
+    auto copyLineARGB32 = [](QRgb *dst, const char *src, int width)
+    {
+        const char* end = src + width * 4;
+        for (; src != end; ++dst, src += 4) {
+            *dst = qRgba(src[0], src[1], src[2], src[3]);
+        }
+    };
+
+    if (remoteImage.width <= 0 || remoteImage.width >= 2048
+            || remoteImage.height <= 0 || remoteImage.height >= 2048
+            || remoteImage.rowStride <= 0) {
+        qCWarning(KRUNNER) << "Invalid image metadata (width:" << remoteImage.width
+                           << "height:" << remoteImage.height
+                           << "rowStride:" << remoteImage.rowStride << ")";
+        return QImage();
+    }
+
+    QImage::Format format = QImage::Format_Invalid;
+    void (*copyFn)(QRgb *, const char *, int) = nullptr;
+    if (remoteImage.bitsPerSample == 8) {
+        if (remoteImage.channels == 4) {
+            format = QImage::Format_ARGB32;
+            copyFn = copyLineARGB32;
+        } else if (remoteImage.channels == 3) {
+            format = QImage::Format_RGB32;
+            copyFn = copyLineRGB32;
+        }
+    }
+    if (format == QImage::Format_Invalid) {
+        qCWarning(KRUNNER) << "Unsupported image format (hasAlpha:" << remoteImage.hasAlpha
+                           << "bitsPerSample:" << remoteImage.bitsPerSample << "channels:" << remoteImage.channels << ")";
+        return QImage();
+    }
+
+    QImage image(remoteImage.width, remoteImage.height, format);
+    const QByteArray pixels = remoteImage.data;
+    const char *ptr = pixels.data();
+    const char *end = ptr + pixels.length();
+    for (int y = 0; y < remoteImage.height; ++y, ptr += remoteImage.rowStride) {
+        if (Q_UNLIKELY(ptr + remoteImage.channels * remoteImage.width > end)) {
+            qCWarning(KRUNNER) << "Image data is incomplete. y:" << y << "height:" << remoteImage.height;
+            break;
+        }
+        copyFn(reinterpret_cast<QRgb *>(image.scanLine(y)), ptr, remoteImage.width);
+    }
+
+    return image;
 }
