@@ -37,6 +37,8 @@ public:
     DBusRunnerTest();
     ~DBusRunnerTest();
 
+    const QString dbusRunnerBinary = QStringLiteral(DBUS_RUNNER_BINARY);
+
 private Q_SLOTS:
     void initTestCase();
 #if WITH_KSERVICE
@@ -68,6 +70,7 @@ DBusRunnerTest::~DBusRunnerTest()
 
 void DBusRunnerTest::initTestCase()
 {
+    QVERIFY(QFileInfo::exists(dbusRunnerBinary));
     // Set up a layer in the bin dir so ksycoca & KPluginMetaData find the Plasma/Runner service type
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
     const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
@@ -117,7 +120,7 @@ void DBusRunnerTest::testMatch()
 #endif
 
     QProcess process;
-    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
+    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
     QVERIFY(process.waitForStarted());
 
     QTest::qSleep(500);
@@ -191,11 +194,11 @@ void DBusRunnerTest::testMulti()
 #endif
 
     QProcess process1;
-    process1.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
+    process1.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
     QVERIFY(process1.waitForStarted());
 
     QProcess process2;
-    process2.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.multi.a2")}));
+    process2.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a2")}));
     QVERIFY(process2.waitForStarted());
 
     QTest::qSleep(500);
@@ -251,7 +254,7 @@ void DBusRunnerTest::testRequestActionsOnce()
 #endif
 
     QProcess process;
-    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
+    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
     QVERIFY(process.waitForStarted());
     QTest::qSleep(500);
 
@@ -308,7 +311,7 @@ void DBusRunnerTest::testFilterProperties()
     QFETCH(QString, rejectedQuery);
     QFETCH(QString, acceptedQuery);
     QProcess process;
-    process.start(QFINDTESTDATA("testremoterunner"), QStringList({QStringLiteral("net.krunnertests.dave")}));
+    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
     QVERIFY(process.waitForStarted());
 
     QTest::qSleep(500);

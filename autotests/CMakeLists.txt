@@ -15,6 +15,7 @@ ecm_add_tests(
    dbusrunnertest.cpp
    LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
 )
+target_compile_definitions(dbusrunnertest PUBLIC -DDBUS_RUNNER_BINARY="${CMAKE_BINARY_DIR}/bin/testremoterunner")
 
 ecm_add_tests(
         runnermatchmethodstest.cpp
