@@ -49,6 +49,7 @@ private Q_SLOTS:
     void testFilterProperties();
     void testFilterProperties_data();
     void testRequestActionsOnce();
+    void testDBusRunnerSyntaxIntegration();
 #if WITH_KSERVICE
     void testMatch_data();
     void testMulti_data();
@@ -332,6 +333,23 @@ void DBusRunnerTest::testFilterProperties()
     QCOMPARE(process.readAllStandardOutput().trimmed(), QString(QStringLiteral("Matching:") + acceptedQuery).toLocal8Bit());
     process.kill();
     process.waitForFinished();
+}
+
+void DBusRunnerTest::testDBusRunnerSyntaxIntegration()
+{
+    RunnerManager m;
+    KPluginMetaData md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
+    QVERIFY(md.isValid());
+    m.loadRunner(md);
+    const QList<RunnerSyntax> syntaxes = m.runner(md.pluginId())->syntaxes();
+    QCOMPARE(syntaxes.size(), 2);
+
+    QCOMPARE(syntaxes.at(0).exampleQueries().size(), 1);
+    QCOMPARE(syntaxes.at(0).exampleQueries().constFirst(), QStringLiteral("syntax1"));
+    QCOMPARE(syntaxes.at(0).description(), QStringLiteral("description1"));
+    QCOMPARE(syntaxes.at(1).exampleQueries().size(), 1);
+    QCOMPARE(syntaxes.at(1).exampleQueries().constFirst(), QStringLiteral("syntax2"));
+    QCOMPARE(syntaxes.at(1).description(), QStringLiteral("description2"));
 }
 
 QTEST_MAIN(DBusRunnerTest)
