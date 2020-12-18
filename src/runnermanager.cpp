@@ -602,8 +602,9 @@ RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     d->configPrt = KSharedConfig::openConfig(configFile);
     // If the old config group still exists the migration script wasn't executed
     // so we keep using this location
-    if (d->configPrt->hasGroup("PlasmaRunnerManager")) {
-        d->stateData = d->configPrt->group("PlasmaRunnerManager");
+    KConfigGroup oldStateDataGroup = d->configPrt->group("PlasmaRunnerManager");
+    if (oldStateDataGroup.exists() && !oldStateDataGroup.readEntry("migrated", false)) {
+        d->stateData = oldStateDataGroup;
     } else {
         d->stateData = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals,
                                                  QStandardPaths::GenericDataLocation)->group("PlasmaRunnerManager");
