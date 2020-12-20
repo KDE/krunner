@@ -105,6 +105,7 @@ configure_package_config_file(
 install(FILES
             "${CMAKE_CURRENT_BINARY_DIR}/KF5RunnerConfig.cmake"
             "${CMAKE_CURRENT_BINARY_DIR}/KF5RunnerConfigVersion.cmake"
+            "${CMAKE_CURRENT_SOURCE_DIR}/KF5KRunnerMacros.cmake"
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel)
 

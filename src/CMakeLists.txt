@@ -15,7 +15,8 @@ set (KF5Runner_SRCS
     querymatch.cpp
     runnercontext.cpp
     runnermanager.cpp
-    runnersyntax.cpp)
+    runnersyntax.cpp
+    abstractrunnertest.h)
 ecm_qt_declare_logging_category(KF5Runner_SRCS
     HEADER krunner_debug.h
     IDENTIFIER KRUNNER
@@ -75,6 +76,7 @@ ecm_generate_headers(KRunner_CamelCase_HEADERS
     RunnerManager
     RunnerSyntax
     QueryMatch
+    AbstractRunnerTest
 
     PREFIX KRunner
     REQUIRED_HEADERS KRunner_HEADERS
