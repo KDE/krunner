@@ -25,8 +25,8 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
     qDBusRegisterMetaType<RemoteImage>();
-    QDBusConnection::sessionBus().registerService(serviceName);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this);
+    Q_ASSERT(QDBusConnection::sessionBus().registerService(serviceName));
+    Q_ASSERT(QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this));
 }
 
 
