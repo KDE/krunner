@@ -8,6 +8,7 @@
 
 #include <QCoreApplication>
 #include <QDBusConnection>
+#include <QImage>
 
 #include <iostream>
 
@@ -23,8 +24,25 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
+    qDBusRegisterMetaType<RemoteImage>();
     QDBusConnection::sessionBus().registerService(serviceName);
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this);
+}
+
+
+static RemoteImage serializeImage(const QImage &image)
+{
+    QImage convertedImage = image.convertToFormat(QImage::Format_RGBA8888);
+    RemoteImage remoteImage;
+    remoteImage.width = convertedImage.width();
+    remoteImage.height = convertedImage.height();
+    remoteImage.rowStride = convertedImage.bytesPerLine();
+    remoteImage.hasAlpha = true,
+    remoteImage.bitsPerSample = 8;
+    remoteImage.channels = 4,
+    remoteImage.data = QByteArray(reinterpret_cast<const char *>(convertedImage.constBits()),
+                convertedImage.sizeInBytes());
+    return remoteImage;
 }
 
 RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
@@ -39,6 +57,19 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
         m.type = Plasma::QueryMatch::ExactMatch;
         m.relevance = 0.8;
         m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
+        ms << m;
+    }
+
+    if (searchTerm == QLatin1String("customIcon")) {
+        RemoteMatch m;
+        m.id = QStringLiteral("id2");
+        m.text = QStringLiteral("Match 1");
+        m.type = Plasma::QueryMatch::ExactMatch;
+        m.relevance = 0.8;
+        QImage icon(10, 10, QImage::Format_RGBA8888);
+        icon.fill(Qt::blue);
+        m.properties[QStringLiteral("icon-data")] = QVariant::fromValue(serializeImage(icon));
+
         ms << m;
     }
     return ms;

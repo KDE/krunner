@@ -50,6 +50,7 @@ private Q_SLOTS:
     void testFilterProperties_data();
     void testRequestActionsOnce();
     void testDBusRunnerSyntaxIntegration();
+    void testIconData();
 #if WITH_KSERVICE
     void testMatch_data();
     void testMulti_data();
@@ -350,6 +351,39 @@ void DBusRunnerTest::testDBusRunnerSyntaxIntegration()
     QCOMPARE(syntaxes.at(1).exampleQueries().size(), 1);
     QCOMPARE(syntaxes.at(1).exampleQueries().constFirst(), QStringLiteral("syntax2"));
     QCOMPARE(syntaxes.at(1).description(), QStringLiteral("description2"));
+}
+
+void DBusRunnerTest::testIconData()
+{
+    QProcess process;
+    // we use the "multi" runner, as the regular one has additional regexp fields in the metadata
+    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
+    QVERIFY(process.waitForStarted());
+
+    QTest::qSleep(500);
+
+
+    RunnerManager m;
+    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"), {QStringLiteral("plasma-runner.desktop")});
+    QVERIFY(md.isValid());
+    m.loadRunner(md);
+
+    m.launchQuery(QStringLiteral("customIcon"));
+    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
+    QVERIFY(spy.wait());
+
+    const auto matches = m.matches();
+    QCOMPARE(matches.count(), 1);
+    auto result = matches.first();
+
+    QImage expectedIcon(10, 10, QImage::Format_RGBA8888);
+    expectedIcon.fill(Qt::blue);
+
+    QCOMPARE(result.icon().availableSizes().first(), QSize(10, 10));
+    QCOMPARE(result.icon().pixmap(QSize(10, 10)), QPixmap::fromImage(expectedIcon));
+
+    process.kill();
+    process.waitForFinished();
 }
 
 QTEST_MAIN(DBusRunnerTest)
