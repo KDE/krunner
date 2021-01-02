@@ -489,10 +489,12 @@ QT_WARNING_POP
     inline QString getActivityKey()
     {
 #ifdef HAVE_KACTIVITIES
-        return activityAware ? activitiesConsumer.currentActivity() : nulluuid;
-#else
-        return nulluuid;
+        if (activityAware) {
+            const QString currentActivity =  activitiesConsumer.currentActivity();
+            return currentActivity.isEmpty() ? nulluuid : currentActivity;
+        }
 #endif
+        return nulluuid;
     }
 
     void addToHistory()
