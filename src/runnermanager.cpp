@@ -92,8 +92,7 @@ public:
         allRunnersPrepped(false),
         singleRunnerPrepped(false),
         teardownRequested(false),
-        singleMode(false),
-        singleRunnerWasLoaded(false)
+        singleMode(false)
     {
         matchChangeTimer.setSingleShot(true);
         delayTimer.setSingleShot(true);
@@ -151,74 +150,21 @@ public:
         context.restore(stateData);
     }
 
-    void clearSingleRunner()
-    {
-        if (singleRunnerWasLoaded) {
-            delete currentSingleRunner;
-        }
-
-        currentSingleRunner = nullptr;
-    }
-
     void loadSingleRunner()
     {
+        // In case we are not in the single runner mode of we do not have an id
         if (!singleMode || singleModeRunnerId.isEmpty()) {
-            clearSingleRunner();
+            currentSingleRunner = nullptr;
             return;
         }
 
-        if (currentSingleRunner) {
-            if (currentSingleRunner->id() == singleModeRunnerId) {
-                return;
-            }
-
-            clearSingleRunner();
-        }
-
-        if (AbstractRunner *loadedRunner = q->runner(singleModeRunnerId)) {
-            singleRunnerWasLoaded = false;
-            currentSingleRunner = loadedRunner;
+        if (currentSingleRunner && currentSingleRunner->id() == singleModeRunnerId) {
             return;
         }
-
-        KPluginMetaData pluginMetaData;
-        // binary plugins
-        const auto plugins = KPluginLoader::findPluginsById(QStringLiteral("kf5/krunner"), singleModeRunnerId);
-        if (!plugins.isEmpty()) {
-            pluginMetaData = plugins[0];
-        } else {
-            // get D-Bus plugins
-            forEachDBusPlugin([&](const KPluginMetaData &md, bool *cancel) {
-                if (md.pluginId() == singleModeRunnerId) {
-                    pluginMetaData = md;
-                    *cancel = true;
-                }
-            });
+        if (runners.isEmpty()) {
+            loadRunners();
         }
-
-#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
-        // also search for deprecated kservice-based KRunner plugins metadata
-        if (!pluginMetaData.isValid()) {
-            const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), QStringLiteral("[X-KDE-PluginInfo-Name] == '%1'").arg(singleModeRunnerId));
-            if (!offers.isEmpty()) {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
-                const KPluginInfo pluginInfo(offers[0]);
-                warnAboutDeprecatedMetaData(pluginInfo);
-                pluginMetaData = pluginInfo.toMetaData();
-QT_WARNING_POP
-            }
-        }
-#endif
-        if (pluginMetaData.isValid()) {
-            currentSingleRunner = loadInstalledRunner(pluginMetaData);
-
-            if (currentSingleRunner) {
-                Q_EMIT currentSingleRunner->prepare();
-                singleRunnerWasLoaded = true;
-            }
-        }
+        currentSingleRunner = q->runner(singleModeRunnerId);
     }
 
     void loadRunners()
@@ -329,10 +275,8 @@ QT_WARNING_POP
             }
         }
 
-        if (!singleRunnerWasLoaded) {
-            // in case we deleted it up above
-            clearSingleRunner();
-        }
+        // in case we deleted it up above, just to be sure we do not have a dangeling pointer
+        currentSingleRunner = nullptr;
 
         qCDebug(KRUNNER) << "All runners loaded, total:" << runners.count();
     }
@@ -571,7 +515,6 @@ QT_WARNING_POP
     bool singleRunnerPrepped : 1;
     bool teardownRequested : 1;
     bool singleMode : 1;
-    bool singleRunnerWasLoaded : 1;
     bool activityAware :1;
     bool historyEnabled :1;
     bool retainPriorSearch :1;
