@@ -797,10 +797,12 @@ QList<QueryMatch> RunnerManager::matches() const
     return d->context.matches();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 void RunnerManager::run(const QString &matchId)
 {
     run(d->context.match(matchId));
 }
+#endif
 
 void RunnerManager::run(const QueryMatch &match)
 {
@@ -848,10 +850,12 @@ QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
     return QList<QAction*>();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 QMimeData * RunnerManager::mimeDataForMatch(const QString &id) const
 {
     return mimeDataForMatch(d->context.match(id));
 }
+#endif
 
 
 QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const

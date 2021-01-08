@@ -134,11 +134,15 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         void run(const QueryMatch &match);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
         /**
          * Runs a given match
          * @param id the id of the match to run
+         * @deprecated Since 5.79, use run(const QueryMatch &match) instead
          */
+        KRUNNER_DEPRECATED_VERSION(5, 79, "Use run(const QueryMatch &match) instead")
         void run(const QString &id);
+#endif
 
         /**
          * Runs a given match. This also respects the extra handling for the InformationalMatch.
@@ -297,11 +301,15 @@ class KRUNNER_EXPORT RunnerManager : public QObject
          */
         QMimeData * mimeDataForMatch(const QueryMatch &match) const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
         /**
          * @return mime data of the specified match
          * @since 4.5
+         * @deprecated Since 5.79, use mimeDataForMatch(const QueryMatch &match) instead
          */
+        KRUNNER_DEPRECATED_VERSION(5, 79, "Use mimeDataForMatch(const QueryMatch &match) instead")
         QMimeData * mimeDataForMatch(const QString &matchId) const;
+#endif
 
         /**
          * Returns a list of all known Runner implementations

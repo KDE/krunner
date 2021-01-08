@@ -208,14 +208,18 @@ class KRUNNER_EXPORT RunnerContext : public QObject
          */
         QList<QueryMatch> matches() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
         /**
          * Retrieves a match by id.
          *
          * @param id the id of the match to return
          * @return the match associated with this id, or an invalid QueryMatch object
          *         if the id does not exist
+         * @deprecated Since 5.79, deprecated due to lack of usage. Instead filter the matches manually based on the id
          */
+        KRUNNER_DEPRECATED_VERSION(5, 79, "Deprecated due to lack of usage, instead filter the matches manually based on the id")
         QueryMatch match(const QString &id) const;
+     #endif
 
         /**
          * Sets single runner query mode. Note that a call to reset() will

@@ -400,6 +400,7 @@ QList<QueryMatch> RunnerContext::matches() const
     return matches;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 QueryMatch RunnerContext::match(const QString &id) const
 {
     LOCK_FOR_READ(d)
@@ -407,6 +408,7 @@ QueryMatch RunnerContext::match(const QString &id) const
     UNLOCK(d)
     return match ? *match : QueryMatch(nullptr);
 }
+#endif
 
 void RunnerContext::setSingleRunnerQueryMode(bool enabled)
 {

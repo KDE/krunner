@@ -47,8 +47,10 @@ private Q_SLOTS:
     void testRemoveMatch();
     void testRemoveMatchMulti();
     void testRemoveMatchByRunner();
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
     void testGetMatchById();
     void testNonExistentMatchIds();
+#endif
 };
 
 RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
@@ -127,6 +129,7 @@ void RunnerContextMatchMethodsTest::testRemoveMatchMulti()
     QCOMPARE(ctx->matches().constFirst(), m3);
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 void RunnerContextMatchMethodsTest::testGetMatchById()
 {
     QueryMatch m1 = createMatch(QStringLiteral("m1"), runner1);
@@ -138,7 +141,9 @@ void RunnerContextMatchMethodsTest::testGetMatchById()
     // ID gets internally concatenated with runner id
     QCOMPARE(ctx->match(QStringLiteral("metadata_m1")), m1);
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 void RunnerContextMatchMethodsTest::testNonExistentMatchIds()
 {
     QueryMatch m1 = createMatch(QStringLiteral("m1"));
@@ -151,6 +156,7 @@ void RunnerContextMatchMethodsTest::testNonExistentMatchIds()
     QVERIFY(!ctx->match(QStringLiteral("does_not_exist")).isValid());
     QCOMPARE(ctx->match(QStringLiteral("does_not_exist")).runner(), nullptr);
 }
+#endif
 
 QTEST_MAIN(RunnerContextMatchMethodsTest)
 
