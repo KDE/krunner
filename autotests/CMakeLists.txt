@@ -27,5 +27,6 @@ target_link_libraries(testremoterunner
     Qt5::DBus
     KF5::Runner
 )
-set(remote_runner_bin "$<TARGET_FILE:testremoterunner>")
-target_compile_definitions(dbusrunnertest PUBLIC -DDBUS_RUNNER_BINARY="${remote_runner_bin}")
+
+include(../KF5KRunnerMacros.cmake)
+configure_krunner_test(dbusrunnertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")

@@ -25,25 +25,23 @@
 #include <KSycoca>
 #endif
 
+#include "abstractrunnertest.h"
+
 using namespace Plasma;
 
 Q_DECLARE_METATYPE(Plasma::QueryMatch)
 Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>)
 
-class DBusRunnerTest : public QObject
+class DBusRunnerTest : public AbstractRunnerTest
 {
     Q_OBJECT
 public:
     DBusRunnerTest();
     ~DBusRunnerTest();
 
-    const QString dbusRunnerBinary = QStringLiteral(DBUS_RUNNER_BINARY);
-
 private Q_SLOTS:
     void initTestCase();
-#if WITH_KSERVICE
-    void cleanupTestCase();
-#endif
+    void cleanup();
     void testMatch();
     void testMulti();
     void testFilterProperties();
@@ -52,16 +50,12 @@ private Q_SLOTS:
     void testDBusRunnerSyntaxIntegration();
     void testIconData();
 #if WITH_KSERVICE
-    void testMatch_data();
     void testMulti_data();
-    void testRequestActionsOnce_data();
-private:
-    QStringList m_filesForCleanup;
 #endif
 };
 
 DBusRunnerTest::DBusRunnerTest()
-    : QObject()
+    : AbstractRunnerTest()
 {
     qRegisterMetaType<QList<Plasma::QueryMatch> >();
 }
@@ -72,82 +66,28 @@ DBusRunnerTest::~DBusRunnerTest()
 
 void DBusRunnerTest::initTestCase()
 {
-    QVERIFY(QFileInfo::exists(dbusRunnerBinary));
     // Set up a layer in the bin dir so ksycoca & KPluginMetaData find the Plasma/Runner service type
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
     const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
     qputenv("XDG_DATA_DIRS", modifiedDataDirs);
 
     QStandardPaths::setTestModeEnabled(true);
-#if WITH_KSERVICE
-    QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)).mkpath(QStringLiteral("kservices5"));
-    {
-        const QString fakeServicePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kservices5/dbusrunnertest.desktop");
-        QFile::copy(QFINDTESTDATA("dbusrunnertest.desktop"), fakeServicePath);
-        m_filesForCleanup << fakeServicePath;
-
-    }
-    {
-        const QString fakeServicePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/kservices5/dbusrunnertestmulti.desktop");
-        QFile::copy(QFINDTESTDATA("dbusrunnertestmulti.desktop"), fakeServicePath);
-        m_filesForCleanup << fakeServicePath;
-    }
-    KSycoca::self()->ensureCacheValid();
-#endif
 }
 
-#if WITH_KSERVICE
-void DBusRunnerTest::cleanupTestCase()
+void DBusRunnerTest::cleanup()
 {
-    for(const QString &path: qAsConst(m_filesForCleanup)) {
-        QFile::remove(path);
-    }
+    // Make sure kill the running processes after each test
+    killRunningDBusProcesses();
 }
-#endif
-
-#if WITH_KSERVICE
-void DBusRunnerTest::testMatch_data()
-{
-    QTest::addColumn<bool>("useKService");
-
-    QTest::newRow("deprecated") << true;
-    QTest::newRow("non-deprecated") << false;
-}
-#endif
 
 void DBusRunnerTest::testMatch()
 {
-#if WITH_KSERVICE
-    QFETCH(bool, useKService);
-#endif
-
-    QProcess process;
-    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
-    QVERIFY(process.waitForStarted());
-
-    QTest::qSleep(500);
-
-    RunnerManager m;
-#if WITH_KSERVICE
-    if (useKService) {
-        auto s = KService::serviceByDesktopPath(QStringLiteral("dbusrunnertest.desktop"));
-        QVERIFY(s);
-        m.loadRunner(s);
-    } else {
-#endif
-        auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
-        QVERIFY(md.isValid());
-        m.loadRunner(md);
-#if WITH_KSERVICE
-    }
-#endif
-    m.launchQuery(QStringLiteral("foo"));
-
-    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
-    QVERIFY(spy.wait());
+    QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    initProperties();
+    launchQuery(QStringLiteral("foo"));
 
     //verify matches
-    const auto matches = m.matches();
+    const QList<QueryMatch> matches = manager->matches();
     QCOMPARE(matches.count(), 1);
     auto result = matches.first();
 
@@ -159,24 +99,20 @@ void DBusRunnerTest::testMatch()
     //relevance can't be compared easily because RunnerContext meddles with it
 
     //verify actions
-    auto actions = m.actionsForMatch(result);
-    QCOMPARE(actions.count(), 1);
-    auto action = actions.first();
+    QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(result).count(), 1, 10000);
+    auto action = manager->actionsForMatch(result).constFirst();
 
     QCOMPARE(action->text(), QStringLiteral("Action 1"));
 
-    QSignalSpy processSpy(&process, &QProcess::readyRead);
-    m.run(result);
+    QSignalSpy processSpy(process, &QProcess::readyRead);
+    manager->run(result);
     processSpy.wait();
-    QCOMPARE(process.readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:"));
+    QCOMPARE(process->readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:"));
 
     result.setSelectedAction(action);
-    m.run(result);
+    manager->run(result);
     processSpy.wait();
-    QCOMPARE(process.readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:action1"));
-
-    process.kill();
-    process.waitForFinished();
+    QCOMPARE(process->readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:action1"));
 }
 
 #if WITH_KSERVICE
@@ -194,109 +130,53 @@ void DBusRunnerTest::testMulti()
 #if WITH_KSERVICE
     QFETCH(bool, useKService);
 #endif
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
+    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
 
-    QProcess process1;
-    process1.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
-    QVERIFY(process1.waitForStarted());
-
-    QProcess process2;
-    process2.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a2")}));
-    QVERIFY(process2.waitForStarted());
-
-    QTest::qSleep(500);
-
-    RunnerManager m;
 #if WITH_KSERVICE
     if (useKService) {
-        auto s = KService::serviceByDesktopPath(QStringLiteral("dbusrunnertestmulti.desktop"));
+        KService::Ptr s(new KService(QFINDTESTDATA("dbusrunnertestmulti.desktop")));
         QVERIFY(s);
-        m.loadRunner(s);
+        manager->loadRunner(s);
     } else {
 #endif
         auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"), {QStringLiteral("plasma-runner.desktop")});
         QVERIFY(md.isValid());
-        m.loadRunner(md);
+        manager->loadRunner(md);
 #if WITH_KSERVICE
     }
 #endif
-    m.launchQuery(QStringLiteral("foo"));
-
-    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
-    QVERIFY(spy.wait());
+    launchQuery(QStringLiteral("foo"));
 
     //verify matches, must be one from each
-    QCOMPARE(m.matches().count(), 2);
+    const QList<QueryMatch> matches = manager->matches();
+    QCOMPARE(matches.count(), 2);
 
-    const QString first = m.matches().at(0).data().toList().constFirst().toString();
-    const QString second = m.matches().at(1).data().toList().constFirst().toString();
+    const QString first = matches.at(0).data().toList().constFirst().toString();
+    const QString second = matches.at(1).data().toList().constFirst().toString();
     QVERIFY(first != second);
     QVERIFY(first == QLatin1String("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
     QVERIFY(second == QLatin1String("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
-
-    process1.kill();
-    process2.kill();
-    process1.waitForFinished();
-    process2.waitForFinished();
 }
-
-#if WITH_KSERVICE
-void DBusRunnerTest::testRequestActionsOnce_data()
-{
-    QTest::addColumn<bool>("useKService");
-
-    QTest::newRow("deprecated") << true;
-    QTest::newRow("non-deprecated") << false;
-}
-#endif
 
 void DBusRunnerTest::testRequestActionsOnce()
 {
-#if WITH_KSERVICE
-    QFETCH(bool, useKService);
-#endif
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    initProperties();
 
-    QProcess process;
-    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
-    QVERIFY(process.waitForStarted());
-    QTest::qSleep(500);
-
-    RunnerManager m;
-#if WITH_KSERVICE
-    if (useKService) {
-        auto s = KService::serviceByDesktopPath(QStringLiteral("dbusrunnertest.desktop"));
-        QVERIFY(s);
-        m.loadRunner(s);
-    } else {
-#endif
-        auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
-        QVERIFY(md.isValid());
-        m.loadRunner(md);
-#if WITH_KSERVICE
-    }
-#endif
-
-    // Wait because dbus signal is async
-    QEventLoop loop;
-    QTimer t;
-    QTimer::connect(&t, &QTimer::timeout, &loop, &QEventLoop::quit);
-    t.start(500);
-    loop.exec();
-
-    // Construct a fake match with necesarry data
-    QueryMatch fakeMatch(m.runner(QStringLiteral("dbusrunnertest")));
+    // Construct a fake match with necessary data
+    QueryMatch fakeMatch(runner);
     fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
     fakeMatch.setData(QVariantList({
                                        QStringLiteral("net.krunnertests.dave"),
                                        QStringList({QStringLiteral("action1"), QStringLiteral("action2")})
                                    }));
 
-    // We haven't called the prepare slot, if the implementation works
-    // the actions should alredy be available
-    auto actions = m.actionsForMatch(fakeMatch);
-    QCOMPARE(actions.count(), 2);
-
-    process.kill();
-    process.waitForFinished();
+    // We haven't called the prepare slot or launched a query, if the implementation works
+    // the actions should already be available
+    // We need to retry this, because the DBus call to fetch the actions is async
+    QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(fakeMatch).count(), 2, 2500);
 }
 
 void DBusRunnerTest::testFilterProperties_data()
@@ -312,37 +192,22 @@ void DBusRunnerTest::testFilterProperties()
 {
     QFETCH(QString, rejectedQuery);
     QFETCH(QString, acceptedQuery);
-    QProcess process;
-    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.dave")}));
-    QVERIFY(process.waitForStarted());
+    QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    initProperties();
 
-    QTest::qSleep(500);
-
-    RunnerManager m;
-    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
-    QVERIFY(md.isValid());
-    m.loadRunner(md);
-    m.launchQuery(rejectedQuery);
-    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
-    QVERIFY(spy.wait());
-    // Match method was not called, because the min letter count is 3
-    QVERIFY(process.readAllStandardOutput().isEmpty());
-
-    m.launchQuery(acceptedQuery);
-    QSignalSpy spy2(&m, &RunnerManager::matchesChanged);
-    QVERIFY(spy2.wait());
-    QCOMPARE(process.readAllStandardOutput().trimmed(), QString(QStringLiteral("Matching:") + acceptedQuery).toLocal8Bit());
-    process.kill();
-    process.waitForFinished();
+    launchQuery(rejectedQuery);
+    // Match method was not called, because of the min letter count or match regex property
+    QVERIFY(process->readAllStandardOutput().isEmpty());
+    // accepted query fits those constraints
+    launchQuery(acceptedQuery);
+    QCOMPARE(process->readAllStandardOutput().trimmed(), QString(QStringLiteral("Matching:") + acceptedQuery).toLocal8Bit());
 }
 
 void DBusRunnerTest::testDBusRunnerSyntaxIntegration()
 {
-    RunnerManager m;
-    KPluginMetaData md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertest.desktop"), {QStringLiteral("plasma-runner.desktop")});
-    QVERIFY(md.isValid());
-    m.loadRunner(md);
-    const QList<RunnerSyntax> syntaxes = m.runner(md.pluginId())->syntaxes();
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    initProperties();
+    const QList<RunnerSyntax> syntaxes = runner->syntaxes();
     QCOMPARE(syntaxes.size(), 2);
 
     QCOMPARE(syntaxes.at(0).exampleQueries().size(), 1);
@@ -355,24 +220,12 @@ void DBusRunnerTest::testDBusRunnerSyntaxIntegration()
 
 void DBusRunnerTest::testIconData()
 {
-    QProcess process;
-    // we use the "multi" runner, as the regular one has additional regexp fields in the metadata
-    process.start(dbusRunnerBinary, QStringList({QStringLiteral("net.krunnertests.multi.a1")}));
-    QVERIFY(process.waitForStarted());
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    initProperties();
 
-    QTest::qSleep(500);
+    launchQuery(QStringLiteral("fooCostomIcon"));
 
-
-    RunnerManager m;
-    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"), {QStringLiteral("plasma-runner.desktop")});
-    QVERIFY(md.isValid());
-    m.loadRunner(md);
-
-    m.launchQuery(QStringLiteral("customIcon"));
-    QSignalSpy spy(&m, &RunnerManager::matchesChanged);
-    QVERIFY(spy.wait());
-
-    const auto matches = m.matches();
+    const auto matches = manager->matches();
     QCOMPARE(matches.count(), 1);
     auto result = matches.first();
 
@@ -381,12 +234,8 @@ void DBusRunnerTest::testIconData()
 
     QCOMPARE(result.icon().availableSizes().first(), QSize(10, 10));
     QCOMPARE(result.icon().pixmap(QSize(10, 10)), QPixmap::fromImage(expectedIcon));
-
-    process.kill();
-    process.waitForFinished();
 }
 
 QTEST_MAIN(DBusRunnerTest)
-
 
 #include "dbusrunnertest.moc"

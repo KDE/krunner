@@ -49,18 +49,7 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
 {
     RemoteMatches ms;
     std::cout << "Matching:" << qPrintable(searchTerm) << std::endl;
-    if (searchTerm.contains(QLatin1String("foo"))) {
-        RemoteMatch m;
-        m.id = QStringLiteral("id1");
-        m.text = QStringLiteral("Match 1");
-        m.iconName = QStringLiteral("icon1");
-        m.type = Plasma::QueryMatch::ExactMatch;
-        m.relevance = 0.8;
-        m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
-        ms << m;
-    }
-
-    if (searchTerm == QLatin1String("customIcon")) {
+    if (searchTerm == QLatin1String("fooCostomIcon")) {
         RemoteMatch m;
         m.id = QStringLiteral("id2");
         m.text = QStringLiteral("Match 1");
@@ -70,6 +59,15 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
         icon.fill(Qt::blue);
         m.properties[QStringLiteral("icon-data")] = QVariant::fromValue(serializeImage(icon));
 
+        ms << m;
+    } else if (searchTerm.contains(QLatin1String("foo"))) {
+        RemoteMatch m;
+        m.id = QStringLiteral("id1");
+        m.text = QStringLiteral("Match 1");
+        m.iconName = QStringLiteral("icon1");
+        m.type = Plasma::QueryMatch::ExactMatch;
+        m.relevance = 0.8;
+        m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
         ms << m;
     }
     return ms;

@@ -79,6 +79,7 @@ public:
      */
     QProcess *startDBusRunnerProcess(const QStringList &args = {}, const QString waitForService = QString())
     {
+        setenv("LC_ALL", "C.utf-8", 1);
         QProcess *process = new QProcess();
         auto md = KPluginMetaData::fromDesktopFile(QStringLiteral(KRUNNER_TEST_DESKTOP_FILE), {QStringLiteral("plasma-runner.desktop")});
         QString serviceToWatch = waitForService;
