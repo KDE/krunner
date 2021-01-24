@@ -832,7 +832,7 @@ void RunnerManager::run(const QueryMatch &match)
 bool RunnerManager::runMatch(const QueryMatch &match)
 {
     d->addToHistory();
-    if (match.type() == Plasma::QueryMatch::InformationalMatch) {
+    if (match.type() == Plasma::QueryMatch::InformationalMatch && !match.selectedAction()) {
         const QString info = match.data().toString();
         if (!info.isEmpty()) {
             Q_EMIT setSearchTerm(info, info.length());
