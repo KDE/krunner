@@ -32,7 +32,7 @@ add_library(KF5::Runner ALIAS KF5Runner)
 ecm_generate_export_header(KF5Runner
     BASE_NAME KRunner
     GROUP_BASE_NAME KF
-    VERSION ${KF5_VERSION}
+    VERSION ${KF_VERSION}
     DEPRECATED_BASE_VERSION 0
     DEPRECATION_VERSIONS 5.28 5.71 5.72 5.73 5.76 5.77 5.79
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
@@ -120,7 +120,7 @@ if(BUILD_QCH)
         KF5Runner_QCH
         NAME KRunner
         BASE_NAME KF5Runner
-        VERSION ${KF5_VERSION}
+        VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
             ${KRunner_HEADERS}

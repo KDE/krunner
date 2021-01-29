@@ -2,7 +2,7 @@
 
 include(CMakeFindDependencyMacro)
 find_dependency(Qt5Core "@REQUIRED_QT_VERSION@")
-find_dependency(KF5Plasma "@KF5_DEP_VERSION@")
+find_dependency(KF5Plasma "@KF_DEP_VERSION@")
 
 @PACKAGE_SETUP_AUTOMOC_VARIABLES@
 
