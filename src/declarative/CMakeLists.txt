@@ -20,6 +20,6 @@ target_link_libraries(runnermodelplugin
         KF5Runner
 )
 
-install(TARGETS runnermodelplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/runnermodel)
-install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/runnermodel)
+install(TARGETS runnermodelplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/runnermodel)
+install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/runnermodel)
 

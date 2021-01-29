@@ -39,7 +39,7 @@ ecm_generate_export_header(KF5Runner
 )
 
 set(KRunner_BUILD_INCLUDE_DIRS ${KRunner_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KRunner>")
+target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner>")
 target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_INCLUDE_DIRS}>")
 
 
@@ -87,18 +87,18 @@ install(TARGETS KF5Runner
         ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES ${KRunner_CamelCase_HEADERS}
-        DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KRunner/KRunner
+        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner/KRunner
         COMPONENT Devel)
 
 install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/krunner_export.h
             ${KRunner_HEADERS}
-        DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KRunner/krunner
+        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner/krunner
         COMPONENT Devel)
 
 install(FILES
    data/servicetypes/plasma-runner.desktop
-   DESTINATION ${SERVICETYPES_INSTALL_DIR})
+   DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
 
 add_custom_target(copy_servicetypes)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
@@ -145,7 +145,7 @@ if(BUILD_QCH)
 endif()
 
 include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/KRunner)
+ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner)
 install(FILES ${PRI_FILENAME}
         DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
 
