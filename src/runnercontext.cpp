@@ -292,12 +292,6 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
 
     LOCK_FOR_WRITE(d)
     for (QueryMatch match : matches) {
-        // Give previously launched matches a slight boost in relevance
-        // The boost smoothly saturates to 0.5;
-        if (int count = d->launchCounts.value(match.id())) {
-            match.setRelevance(match.relevance() + 0.5 * (1-exp(-count*0.3)));
-        }
-
         d->matches.append(match);
     }
     UNLOCK(d);
@@ -319,10 +313,6 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     QueryMatch m(match); // match must be non-const to modify relevance
 
     LOCK_FOR_WRITE(d)
-
-    if (int count = d->launchCounts.value(m.id())) {
-        m.setRelevance(m.relevance() + 0.05 * count);
-    }
 
     d->matches.append(m);
     UNLOCK(d);
