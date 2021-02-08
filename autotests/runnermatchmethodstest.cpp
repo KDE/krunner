@@ -10,6 +10,7 @@
 
 #include <QAction>
 #include <QObject>
+#include <QStandardPaths>
 #include <QTest>
 
 using namespace Plasma;
@@ -43,6 +44,7 @@ private Q_SLOTS:
     void testRemoveMatchMulti();
     void testRemoveMatchByRunner();
 #endif
+    void testDuplicateIds();
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
     void testGetMatchById();
     void testNonExistentMatchIds();
@@ -54,6 +56,16 @@ RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
     , runner1(new FakeRunner())
     , runner2(new FakeRunner())
 {
+    QStandardPaths::setTestModeEnabled(true);
+    const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
+    const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
+    qputenv("XDG_DATA_DIRS", modifiedDataDirs);
+    KPluginMetaData data1 = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("metadatafile1.desktop"));
+    KPluginMetaData data2 = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("metadatafile2.desktop"));
+    QVERIFY(data1.isValid());
+    QVERIFY(data2.isValid());
+    runner1 = new FakeRunner(data1);
+    runner2 = new FakeRunner(data2);
 }
 
 RunnerContextMatchMethodsTest::~RunnerContextMatchMethodsTest()
@@ -140,7 +152,7 @@ void RunnerContextMatchMethodsTest::testGetMatchById()
     QCOMPARE(ctx->matches().count(), 3);
     QCOMPARE(ctx->match(m1.id()), m1);
     // ID gets internally concatenated with runner id
-    QCOMPARE(ctx->match(QStringLiteral("metadata_m1")), m1);
+    QCOMPARE(ctx->match(QStringLiteral("m1")), m1);
 }
 #endif
 
@@ -157,6 +169,29 @@ void RunnerContextMatchMethodsTest::testNonExistentMatchIds()
     QVERIFY(!ctx->match(QStringLiteral("does_not_exist")).isValid());
     QCOMPARE(ctx->match(QStringLiteral("does_not_exist")).runner(), nullptr);
 }
+
+void RunnerContextMatchMethodsTest::testDuplicateIds()
+{
+    const QueryMatch match1 = createMatch(QStringLiteral("id1"), runner1);
+    QVERIFY(ctx->addMatch(match1));
+    const QueryMatch match2 = createMatch(QStringLiteral("id1"), runner2);
+    QVERIFY(ctx->addMatch(match2));
+    const QueryMatch match3 = createMatch(QStringLiteral("id2"), runner1);
+    QVERIFY(ctx->addMatch(match3));
+    const QueryMatch match4 = createMatch(QStringLiteral("id3"), runner2);
+    QVERIFY(ctx->addMatch(match4));
+    const QueryMatch match5 = createMatch(QStringLiteral("id3"), runner2);
+    QVERIFY(ctx->addMatch(match5));
+
+    const QList<QueryMatch> matches = ctx->matches();
+    QCOMPARE(matches.size(), 3);
+    // match2 should have replaced match1
+    QCOMPARE(matches.at(0), match2);
+    QCOMPARE(matches.at(1), match3);
+    // match4 should not have been replaced, the runner does not have the weak property set
+    QCOMPARE(matches.at(2), match4);
+}
+
 #endif
 
 QTEST_MAIN(RunnerContextMatchMethodsTest)

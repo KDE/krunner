@@ -172,14 +172,16 @@ void QueryMatch::setData(const QVariant &data)
 void QueryMatch::setId(const QString &id)
 {
     QWriteLocker locker(d->lock);
-    if (d->runner) {
-        d->id = d->runner.data()->id();
+    if (d->runner && d->runner->hasUniqueResults()) {
+        d->id = id;
+    } else {
+        if (d->runner) {
+            d->id = d->runner.data()->id();
+        }
+        if (!id.isEmpty()) {
+            d->id.append(QLatin1Char('_')).append(id);
+        }
     }
-
-    if (!id.isEmpty()) {
-        d->id.append(QLatin1Char('_')).append(id);
-    }
-
     d->idSetByData = false;
 }
 

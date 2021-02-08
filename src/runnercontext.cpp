@@ -140,6 +140,27 @@ public:
     }
 #endif
 
+    void addMatch(const QueryMatch &match)
+    {
+        if (match.runner() && match.runner()->hasUniqueResults()) {
+            if (uniqueIds.contains(match.id())) {
+                const QueryMatch &existentMatch = uniqueIds.value(match.id());
+                if (existentMatch.runner() && existentMatch.runner()->hasWeakResults()) {
+                    // There is an existing match with the same ID and we are allowed to replace it
+                    matches.removeOne(existentMatch);
+                    matches.append(match);
+                }
+            } else {
+                // There is no existing match with the same id
+                uniqueIds.insert(match.id(), match);
+                matches.append(match);
+            }
+        } else {
+            // Runner has the unique results property not set
+            matches.append(match);
+        }
+    }
+
     QReadWriteLock lock;
     QList<QueryMatch> matches;
     QHash<QString, int> launchCounts;
@@ -150,6 +171,7 @@ public:
     RunnerContext *q;
     static RunnerContext s_dummyContext;
     bool singleRunnerQueryMode = false;
+    QMap<QString, QueryMatch> uniqueIds;
 };
 
 RunnerContext RunnerContextPrivate::s_dummyContext;
@@ -216,6 +238,7 @@ void RunnerContext::reset()
 
     d->term.clear();
     d->mimeType.clear();
+    d->uniqueIds.clear();
     d->type = UnknownType;
     d->singleRunnerQueryMode = false;
 }
@@ -293,8 +316,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         if (int count = d->launchCounts.value(match.id())) {
             match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
         }
-
-        d->matches.append(match);
+        d->addMatch(match);
     }
     UNLOCK(d);
     // A copied searchContext may share the d pointer,
@@ -319,8 +341,7 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     if (int count = d->launchCounts.value(m.id())) {
         m.setRelevance(m.relevance() + 0.05 * count);
     }
-
-    d->matches.append(m);
+    d->addMatch(match);
     UNLOCK(d);
     Q_EMIT d->q->matchesChanged();
 

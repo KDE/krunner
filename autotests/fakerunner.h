@@ -10,8 +10,8 @@ using namespace Plasma;
 class FakeRunner : public AbstractRunner
 {
 public:
-    FakeRunner()
-        : AbstractRunner(nullptr, KPluginMetaData(QStringLiteral("metadata.desktop")), QVariantList())
+    FakeRunner(const KPluginMetaData &metadata = KPluginMetaData(QStringLiteral("metadata.desktop")))
+        : AbstractRunner(nullptr, metadata, QVariantList())
     {
     }
 };

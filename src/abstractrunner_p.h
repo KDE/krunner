@@ -53,6 +53,8 @@ public:
     int minLetterCount = 0;
     QRegularExpression matchRegex;
     bool hasMatchRegex = false;
+    bool hasUniqueResults = false;
+    bool hasWeakResults = false;
 };
 
 } // namespace Plasma

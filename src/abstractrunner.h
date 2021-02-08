@@ -641,6 +641,11 @@ protected:
 
 private:
     AbstractRunnerPrivate *const d;
+    bool hasUniqueResults();
+    bool hasWeakResults();
+    friend class RunnerContext;
+    friend class RunnerContextPrivate;
+    friend class QueryMatch;
 };
 
 } // Plasma namespace

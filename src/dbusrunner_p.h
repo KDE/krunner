@@ -35,4 +35,5 @@ private:
     QString m_path;
     QSet<QString> m_matchingServices;
     QHash<QString, QList<QAction *>> m_actions;
+    bool m_hasUniqueResults = false;
 };

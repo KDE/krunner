@@ -95,3 +95,12 @@ Type=int
 # In case both the regex and the letter count is set the letter count is checked first
 [PropertyDef::X-Plasma-Runner-Match-Regex]
 Type=QString
+
+# If this property is set to true the RunnerContext will check if a match with the same Id already exists
+# if yes it is not added. This also removed the <runnername>_ prefix from the match id.
+[PropertyDef::X-Plasma-Runner-Unique-Results]
+Type=bool
+
+# If a runner has produced a match with the same id the match will be removed in favor of the other runner's match
+[PropertyDef::X-Plasma-Runner-Weak-Results]
+Type=bool

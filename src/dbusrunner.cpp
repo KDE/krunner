@@ -34,6 +34,7 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
+    m_hasUniqueResults = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Unique-Results")).toBool();
 
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
         qCWarning(KRUNNER) << "Invalid entry:" << pluginMetaData.name();
@@ -156,7 +157,6 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                     Plasma::QueryMatch m(this);
 
                     m.setText(match.text);
-                    m.setId(match.id);
                     m.setIconName(match.iconName);
                     m.setType(match.type);
                     m.setRelevance(match.relevance);
@@ -170,6 +170,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                     } else {
                         m.setData(QVariantList({service}));
                     }
+                    m.setId(match.id);
 
                     const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
                     if (iconData.isValid()) {
@@ -224,7 +225,12 @@ void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
     Q_UNUSED(context);
 
     QString actionId;
-    const QString matchId = match.id().mid(id().length() + 1); // QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
+    QString matchId;
+    if (m_hasUniqueResults) {
+        matchId = match.id();
+    } else {
+        matchId = match.id().mid(id().length() + 1); // QueryMatch::setId mangles the match ID with runnerID + '_'. This unmangles it
+    }
     const QString service = match.data().toList().constFirst().toString();
 
     if (match.selectedAction()) {

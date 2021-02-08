@@ -112,6 +112,16 @@ void AbstractRunner::addSyntax(const RunnerSyntax &syntax)
     d->syntaxes.append(syntax);
 }
 
+bool AbstractRunner::hasUniqueResults()
+{
+    return d->hasUniqueResults;
+}
+
+bool AbstractRunner::hasWeakResults()
+{
+    return d->hasWeakResults;
+}
+
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 void AbstractRunner::setDefaultSyntax(const RunnerSyntax &syntax)
 {
@@ -475,6 +485,8 @@ void AbstractRunnerPrivate::init()
             matchRegex = QRegularExpression(rawData.value(QStringLiteral("X-Plasma-Runner-Match-Regex")).toString());
             hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
         }
+        hasUniqueResults = rawData.value(QStringLiteral("X-Plasma-Runner-Unique-Results")).toBool();
+        hasWeakResults = rawData.value(QStringLiteral("X-Plasma-Runner-Weak-Results")).toBool();
     }
 }
 
