@@ -24,3 +24,4 @@ CMakeLists.txt.user*
 cmake-build-debug*
 .idea
 .vscode
+/compile_commands.json
