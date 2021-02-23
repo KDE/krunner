@@ -628,7 +628,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
 
 } // Plasma namespace
 
-
+// clang-format off
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
 // Boilerplate to emit a version-controlled warning about the deprecated macro at leats with GCC
 #if KRUNNER_DEPRECATED_WARNINGS_SINCE >= 0x054800 // 5.72.0
@@ -679,5 +679,6 @@ K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 K_PLUGIN_FACTORY(ConfigFactory, registerPlugin<classname>();) \
 K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
 #endif
+// clang-format on
 
 #endif
