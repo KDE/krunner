@@ -14,8 +14,8 @@
 
 #include "krunner1adaptor.h"
 
-//Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing
-//Run prints a line to stdout
+// Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing
+// Run prints a line to stdout
 
 TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
 {
@@ -29,7 +29,6 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
     Q_ASSERT(QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this));
 }
 
-
 static RemoteImage serializeImage(const QImage &image)
 {
     QImage convertedImage = image.convertToFormat(QImage::Format_RGBA8888);
@@ -37,15 +36,12 @@ static RemoteImage serializeImage(const QImage &image)
     remoteImage.width = convertedImage.width();
     remoteImage.height = convertedImage.height();
     remoteImage.rowStride = convertedImage.bytesPerLine();
-    remoteImage.hasAlpha = true,
-    remoteImage.bitsPerSample = 8;
-    remoteImage.channels = 4,
-    remoteImage.data = QByteArray(reinterpret_cast<const char *>(convertedImage.constBits()),
-                convertedImage.sizeInBytes());
+    remoteImage.hasAlpha = true, remoteImage.bitsPerSample = 8;
+    remoteImage.channels = 4, remoteImage.data = QByteArray(reinterpret_cast<const char *>(convertedImage.constBits()), convertedImage.sizeInBytes());
     return remoteImage;
 }
 
-RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
+RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
 {
     RemoteMatches ms;
     std::cout << "Matching:" << qPrintable(searchTerm) << std::endl;
@@ -71,7 +67,6 @@ RemoteMatches TestRemoteRunner::Match(const QString& searchTerm)
         ms << m;
     }
     return ms;
-
 }
 
 RemoteActions TestRemoteRunner::Actions()
@@ -95,7 +90,7 @@ void TestRemoteRunner::Run(const QString &id, const QString &actionId)
     std::cout.flush();
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
     const auto arguments = app.arguments();

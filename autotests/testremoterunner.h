@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QObject>
 #include "../src/dbusutils_p.h"
+#include <QObject>
 
 class TestRemoteRunner : public QObject
 {

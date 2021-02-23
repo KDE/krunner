@@ -14,7 +14,7 @@ Q_DECLARE_METATYPE(Plasma::RunnerContext::Type)
 
 static QString getSomeExistingFileInHomeDir()
 {
-    const auto files = QDir::home().entryList(QDir::Files|QDir::Hidden);
+    const auto files = QDir::home().entryList(QDir::Files | QDir::Hidden);
     return !files.isEmpty() ? files.first() : QString();
 }
 
@@ -24,8 +24,8 @@ void RunnerContextTest::typeDetection_data()
     QTest::addColumn<Plasma::RunnerContext::Type>("type");
 
     if (KProtocolInfo::isKnownProtocol(QStringLiteral("man"))) {
-      QTest::newRow("man page listing") << "man:/" << Plasma::RunnerContext::NetworkLocation;
-      QTest::newRow("ls man page listing") << "man://ls" << Plasma::RunnerContext::NetworkLocation;
+        QTest::newRow("man page listing") << "man:/" << Plasma::RunnerContext::NetworkLocation;
+        QTest::newRow("ls man page listing") << "man://ls" << Plasma::RunnerContext::NetworkLocation;
     }
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
@@ -43,7 +43,7 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("protocol-less tilded") << "~" << Plasma::RunnerContext::Directory;
     const QString file = getSomeExistingFileInHomeDir();
     if (!file.isEmpty()) {
-        QTest::newRow("protocol-less file starting with tilded") << QLatin1String("~/")+file << Plasma::RunnerContext::File;
+        QTest::newRow("protocol-less file starting with tilded") << QLatin1String("~/") + file << Plasma::RunnerContext::File;
     }
     QTest::newRow("invalid protocol-less path") << "/bad/path" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("calculation") << "5*4" << Plasma::RunnerContext::UnknownType;

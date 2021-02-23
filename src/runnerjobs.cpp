@@ -6,26 +6,28 @@
 
 #include "runnerjobs_p.h"
 
-#include <QTimer>
 #include <QMutexLocker>
+#include <QTimer>
 
 #include "krunner_debug.h"
-#include "runnermanager.h"
 #include "querymatch.h"
+#include "runnermanager.h"
 
 using ThreadWeaver::Job;
 using ThreadWeaver::Queue;
 
-namespace Plasma {
-
+namespace Plasma
+{
 DelayedRunnerPolicy::DelayedRunnerPolicy()
     : QueuePolicy()
-{}
+{
+}
 
 DelayedRunnerPolicy::~DelayedRunnerPolicy()
-{}
+{
+}
 
-DelayedRunnerPolicy& DelayedRunnerPolicy::instance()
+DelayedRunnerPolicy &DelayedRunnerPolicy::instance()
 {
     static DelayedRunnerPolicy policy;
     return policy;
@@ -52,20 +54,22 @@ void DelayedRunnerPolicy::release(ThreadWeaver::JobPointer job)
     free(job);
 }
 
-void DelayedRunnerPolicy::destructed(ThreadWeaver::JobInterface* job)
+void DelayedRunnerPolicy::destructed(ThreadWeaver::JobInterface *job)
 {
     Q_UNUSED(job)
 }
 
 DefaultRunnerPolicy::DefaultRunnerPolicy()
-    : QueuePolicy(),
-      m_cap(2)
-{}
+    : QueuePolicy()
+    , m_cap(2)
+{
+}
 
 DefaultRunnerPolicy::~DefaultRunnerPolicy()
-{}
+{
+}
 
-DefaultRunnerPolicy& DefaultRunnerPolicy::instance()
+DefaultRunnerPolicy &DefaultRunnerPolicy::instance()
 {
     static DefaultRunnerPolicy policy;
     return policy;
@@ -97,7 +101,7 @@ void DefaultRunnerPolicy::release(ThreadWeaver::JobPointer job)
     free(job);
 }
 
-void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface* job)
+void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface *job)
 {
     Q_UNUSED(job)
 }
@@ -106,14 +110,14 @@ void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface* job)
 // Jobs
 ////////////////////
 
-FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner,
-                               Plasma::RunnerContext *context, QObject *)
-    : ThreadWeaver::Job(),
-      m_context(*context, nullptr),
-      m_runner(runner),
-      m_timer(nullptr)
+FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerContext *context, QObject *)
+    : ThreadWeaver::Job()
+    , m_context(*context, nullptr)
+    , m_runner(runner)
+    , m_timer(nullptr)
 {
-    QMutexLocker l(mutex()); Q_UNUSED(l);
+    QMutexLocker l(mutex());
+    Q_UNUSED(l);
     if (runner->speed() == Plasma::AbstractRunner::SlowSpeed) {
         assignQueuePolicy(&DelayedRunnerPolicy::instance());
     } else {
@@ -125,7 +129,7 @@ FindMatchesJob::~FindMatchesJob()
 {
 }
 
-QTimer* FindMatchesJob::delayTimer() const
+QTimer *FindMatchesJob::delayTimer() const
 {
     return m_timer;
 }
@@ -135,7 +139,7 @@ void FindMatchesJob::setDelayTimer(QTimer *timer)
     m_timer = timer;
 }
 
-void FindMatchesJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread*)
+void FindMatchesJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *)
 {
     if (m_context.isValid()) {
         m_runner->performMatch(m_context);
@@ -148,16 +152,16 @@ int FindMatchesJob::priority() const
     return m_runner->priority();
 }
 
-Plasma::AbstractRunner* FindMatchesJob::runner() const
+Plasma::AbstractRunner *FindMatchesJob::runner() const
 {
     return m_runner;
 }
 
-DelayedJobCleaner::DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob> > &jobs, const QSet<AbstractRunner *> &runners)
-    : QObject(Queue::instance()),
-      m_weaver(Queue::instance()),
-      m_jobs(jobs),
-      m_runners(runners)
+DelayedJobCleaner::DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob>> &jobs, const QSet<AbstractRunner *> &runners)
+    : QObject(Queue::instance())
+    , m_weaver(Queue::instance())
+    , m_jobs(jobs)
+    , m_runners(runners)
 {
     connect(m_weaver, &ThreadWeaver::QueueSignals::finished, this, &DelayedJobCleaner::checkIfFinished);
 
@@ -194,6 +198,4 @@ void DelayedJobCleaner::checkIfFinished()
     }
 }
 
-
 } // Plasma namespace
-

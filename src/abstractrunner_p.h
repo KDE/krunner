@@ -18,7 +18,6 @@
 
 namespace Plasma
 {
-
 class AbstractRunner;
 
 class AbstractRunnerPrivate
@@ -44,7 +43,7 @@ public:
     AbstractRunner *runner;
     int fastRuns;
     QReadWriteLock speedLock;
-    QHash<QString, QAction*> actions;
+    QHash<QString, QAction *> actions;
     QList<RunnerSyntax> syntaxes;
     RunnerSyntax *defaultSyntax;
     bool hasRunOptions : 1;
@@ -56,5 +55,3 @@ public:
 
 } // namespace Plasma
 #endif
-
-

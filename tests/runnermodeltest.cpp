@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     QVBoxLayout *layout = new QVBoxLayout(widget);
 
     RunnerModel *runnerModel = new RunnerModel(widget);
-//     new ModelTest(runnerModel, widget);
+    //     new ModelTest(runnerModel, widget);
 
     QLineEdit *input = new QLineEdit(widget);
     QObject::connect(input, &QLineEdit::textChanged, runnerModel, &RunnerModel::scheduleQuery);

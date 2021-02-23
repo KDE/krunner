@@ -14,8 +14,8 @@
 
 namespace Plasma
 {
-    class RunnerManager;
-    class QueryMatch;
+class RunnerManager;
+class QueryMatch;
 } // namespace Plasma
 
 class QTimer;
@@ -68,7 +68,7 @@ public:
     };
 
     RunnerModel(QObject *parent = nullptr);
-    QHash< int, QByteArray > roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     QString currentQuery() const;
 
@@ -79,9 +79,9 @@ public:
 
     bool isRunning() const;
 
-    int rowCount(const QModelIndex&) const override;
+    int rowCount(const QModelIndex &) const override;
     int count() const;
-    QVariant data(const QModelIndex&, int) const override;
+    QVariant data(const QModelIndex &, int) const override;
 
 public Q_SLOTS:
     void scheduleQuery(const QString &query);

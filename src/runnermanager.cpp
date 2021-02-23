@@ -8,18 +8,17 @@
 
 #include "runnermanager.h"
 
-#include <QElapsedTimer>
-#include <QTimer>
 #include <QCoreApplication>
-#include <QStandardPaths>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QRegularExpression>
+#include <QStandardPaths>
+#include <QTimer>
 
-#include <KSharedConfig>
-#include <KServiceTypeTrader>
-#include <KPluginMetaData>
 #include <KConfigWatcher>
-
+#include <KPluginMetaData>
+#include <KServiceTypeTrader>
+#include <KSharedConfig>
 
 #include "config.h"
 #ifdef HAVE_KACTIVITIES
@@ -33,19 +32,19 @@
 #include <plasma/version.h>
 
 #include "dbusrunner_p.h"
-#include "runnerjobs_p.h"
-#include "querymatch.h"
 #include "krunner_debug.h"
+#include "querymatch.h"
+#include "runnerjobs_p.h"
 
-using ThreadWeaver::Queue;
 using ThreadWeaver::Job;
+using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-
 void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> callback)
 {
-    const QStringList dBusPlugindirs = QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
+    const QStringList dBusPlugindirs =
+        QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
     const QStringList serviceTypeFiles(QStringLiteral("plasma-runner.desktop"));
     for (const QString &dir : dBusPlugindirs) {
         const QStringList desktopFiles = QDir(dir).entryList(QStringList(QStringLiteral("*.desktop")));
@@ -67,32 +66,31 @@ void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> call
 void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
 {
     if (!pluginInfo.libraryPath().isEmpty()) {
-        qCWarning(KRUNNER).nospace() << "KRunner plugin " << pluginInfo.pluginName() << " still uses a .desktop file ("
-        << pluginInfo.entryPath() << "). Please port it to JSON metadata.";
+        qCWarning(KRUNNER).nospace() << "KRunner plugin " << pluginInfo.pluginName() << " still uses a .desktop file (" << pluginInfo.entryPath()
+                                     << "). Please port it to JSON metadata.";
     } else {
-        qCWarning(KRUNNER).nospace() << "KRunner D-Bus plugin " << pluginInfo.pluginName() << " installs the .desktop file ("
-        << pluginInfo.entryPath() << ") still in the kservices5 folder. Please install it to ${KDE_INSTALL_DATAROOTDIR}/krunner/dbusplugins.";
+        qCWarning(KRUNNER).nospace() << "KRunner D-Bus plugin " << pluginInfo.pluginName() << " installs the .desktop file (" << pluginInfo.entryPath()
+                                     << ") still in the kservices5 folder. Please install it to ${KDE_INSTALL_DATAROOTDIR}/krunner/dbusplugins.";
     }
 }
 #endif
 
 /*****************************************************
-*  RunnerManager::Private class
-*
-*****************************************************/
+ *  RunnerManager::Private class
+ *
+ *****************************************************/
 class RunnerManagerPrivate
 {
 public:
-
     RunnerManagerPrivate(RunnerManager *parent)
-      : q(parent),
-        deferredRun(nullptr),
-        currentSingleRunner(nullptr),
-        prepped(false),
-        allRunnersPrepped(false),
-        singleRunnerPrepped(false),
-        teardownRequested(false),
-        singleMode(false)
+        : q(parent)
+        , deferredRun(nullptr)
+        , currentSingleRunner(nullptr)
+        , prepped(false)
+        , allRunnersPrepped(false)
+        , singleRunnerPrepped(false)
+        , teardownRequested(false)
+        , singleMode(false)
     {
         matchChangeTimer.setSingleShot(true);
         delayTimer.setSingleShot(true);
@@ -103,12 +101,14 @@ public:
 
         // Set up tracking of the last time matchesChanged was signalled
         lastMatchChangeSignalled.start();
-        QObject::connect(q, &RunnerManager::matchesChanged, q, [&] { lastMatchChangeSignalled.restart(); });
+        QObject::connect(q, &RunnerManager::matchesChanged, q, [&] {
+            lastMatchChangeSignalled.restart();
+        });
     }
 
     void scheduleMatchesChanged()
     {
-        if(lastMatchChangeSignalled.hasExpired(250)) {
+        if (lastMatchChangeSignalled.hasExpired(250)) {
             matchChangeTimer.stop();
             Q_EMIT q->matchesChanged(context.matches());
         } else {
@@ -132,12 +132,14 @@ public:
 #endif
 #ifdef HAVE_KACTIVITIES
         // Wait for consumer to be ready
-        QObject::connect(&activitiesConsumer, &KActivities::Consumer::serviceStatusChanged, &activitiesConsumer,
-            [this](KActivities::Consumer::ServiceStatus status) {
-            if (status == KActivities::Consumer::Running) {
-                deleteHistoryOfDeletedActivities();
-            }
-        });
+        QObject::connect(&activitiesConsumer,
+                         &KActivities::Consumer::serviceStatusChanged,
+                         &activitiesConsumer,
+                         [this](KActivities::Consumer::ServiceStatus status) {
+                             if (status == KActivities::Consumer::Running) {
+                                 deleteHistoryOfDeletedActivities();
+                             }
+                         });
 #endif
         const KConfigGroup generalConfig = configPrt->group("General");
         const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
@@ -211,7 +213,7 @@ public:
 
                 if (runner) {
                     bool allCategoriesDisabled = true;
-                    #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
                     const QStringList categories = runner->categories();
                     allCategories << categories;
 
@@ -221,7 +223,7 @@ public:
                             break;
                         }
                     }
-                    #endif
+#endif
 
                     if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
                         qCDebug(KRUNNER) << "Loaded:" << runnerName;
@@ -233,7 +235,7 @@ public:
                     }
                 }
             } else if (loaded) {
-                //Remove runner
+                // Remove runner
                 deadRunners.insert(runners.take(runnerName));
                 qCDebug(KRUNNER) << "Plugin disabled. Removing runner: " << runnerName;
             }
@@ -244,29 +246,29 @@ public:
         }
 
         if (!deadRunners.isEmpty()) {
-                QSet<QSharedPointer<FindMatchesJob> > deadJobs;
-                auto it = searchJobs.begin();
-                while (it != searchJobs.end()) {
-                    auto &job = (*it);
-                    if (deadRunners.contains(job->runner())) {
-                        QObject::disconnect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
-                        it = searchJobs.erase(it);
-                        deadJobs.insert(job);
-                    } else {
-                        it++;
-                    }
+            QSet<QSharedPointer<FindMatchesJob>> deadJobs;
+            auto it = searchJobs.begin();
+            while (it != searchJobs.end()) {
+                auto &job = (*it);
+                if (deadRunners.contains(job->runner())) {
+                    QObject::disconnect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+                    it = searchJobs.erase(it);
+                    deadJobs.insert(job);
+                } else {
+                    it++;
                 }
+            }
 
-                it = oldSearchJobs.begin();
-                while (it != oldSearchJobs.end()) {
-                    auto &job = (*it);
-                    if (deadRunners.contains(job->runner())) {
-                        it = oldSearchJobs.erase(it);
-                        deadJobs.insert(job);
-                    } else {
-                        it++;
-                    }
+            it = oldSearchJobs.begin();
+            while (it != oldSearchJobs.end()) {
+                auto &job = (*it);
+                if (deadRunners.contains(job->runner())) {
+                    it = oldSearchJobs.erase(it);
+                    deadJobs.insert(job);
+                } else {
+                    it++;
                 }
+            }
 
             if (deadJobs.isEmpty()) {
                 qDeleteAll(deadRunners);
@@ -296,25 +298,27 @@ public:
             const quint64 pluginVersion = pluginLoader.pluginVersion();
             if (Plasma::isPluginVersionCompatible(pluginVersion)) {
                 if (KPluginFactory *factory = pluginLoader.factory()) {
-                    const QVariantList args {
+                    const QVariantList args
+                    {
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
                         pluginMetaData.metaDataFileName(),
 #endif
-                        QVariant::fromValue(pluginMetaData),
+                            QVariant::fromValue(pluginMetaData),
 #endif
                     };
                     runner = factory->create<AbstractRunner>(q, args);
                 } else {
-                    qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":"
-                        << pluginLoader.errorString() << " (library path was:" << pluginMetaData.fileName() << ")";
+                    qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << pluginLoader.errorString()
+                                                 << " (library path was:" << pluginMetaData.fileName() << ")";
                 }
             } else {
-                const QString runnerVersion = QStringLiteral("%1.%2.%3").arg(pluginVersion >> 16).arg((pluginVersion >> 8) & 0x00ff).arg(pluginVersion & 0x0000ff);
-                qCWarning(KRUNNER) << "Cannot load runner" << pluginMetaData.name() <<"- versions mismatch: KRunner"
-                    << Plasma::versionString()<< "," << pluginMetaData.name() << runnerVersion;
+                const QString runnerVersion =
+                    QStringLiteral("%1.%2.%3").arg(pluginVersion >> 16).arg((pluginVersion >> 8) & 0x00ff).arg(pluginVersion & 0x0000ff);
+                qCWarning(KRUNNER) << "Cannot load runner" << pluginMetaData.name() << "- versions mismatch: KRunner" << Plasma::versionString() << ","
+                                   << pluginMetaData.name() << runnerVersion;
             }
-        } else if (api == QLatin1String("DBus")){
+        } else if (api == QLatin1String("DBus")) {
             runner = new DBusRunner(pluginMetaData, q);
         } else {
             runner = new AbstractRunner(pluginMetaData, q);
@@ -421,20 +425,20 @@ public:
             return;
         }
 #endif
-            QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-            QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
-            if (runner->speed() == AbstractRunner::SlowSpeed) {
-                job->setDelayTimer(&delayTimer);
-            }
-            Queue::instance()->enqueue(job);
-            searchJobs.insert(job);
+        QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
+        QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+        if (runner->speed() == AbstractRunner::SlowSpeed) {
+            job->setDelayTimer(&delayTimer);
+        }
+        Queue::instance()->enqueue(job);
+        searchJobs.insert(job);
     }
 
     inline QString getActivityKey()
     {
 #ifdef HAVE_KACTIVITIES
         if (activityAware) {
-            const QString currentActivity =  activitiesConsumer.currentActivity();
+            const QString currentActivity = activitiesConsumer.currentActivity();
             return currentActivity.isEmpty() ? nulluuid : currentActivity;
         }
 #endif
@@ -503,11 +507,11 @@ public:
     QTimer matchChangeTimer;
     QTimer delayTimer; // Timer to control when to run slow runners
     QElapsedTimer lastMatchChangeSignalled;
-    QHash<QString, AbstractRunner*> runners;
+    QHash<QString, AbstractRunner *> runners;
     QHash<QString, QString> advertiseSingleRunnerIds;
-    AbstractRunner* currentSingleRunner;
-    QSet<QSharedPointer<FindMatchesJob> > searchJobs;
-    QSet<QSharedPointer<FindMatchesJob> > oldSearchJobs;
+    AbstractRunner *currentSingleRunner;
+    QSet<QSharedPointer<FindMatchesJob>> searchJobs;
+    QSet<QSharedPointer<FindMatchesJob>> oldSearchJobs;
     QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped : 1;
@@ -515,9 +519,9 @@ public:
     bool singleRunnerPrepped : 1;
     bool teardownRequested : 1;
     bool singleMode : 1;
-    bool activityAware :1;
-    bool historyEnabled :1;
-    bool retainPriorSearch :1;
+    bool activityAware : 1;
+    bool historyEnabled : 1;
+    bool retainPriorSearch : 1;
     QStringList whiteList;
     QString configFile;
     KConfigWatcher::Ptr watcher;
@@ -532,17 +536,17 @@ public:
 };
 
 /*****************************************************
-*  RunnerManager::Public class
-*
-*****************************************************/
+ *  RunnerManager::Public class
+ *
+ *****************************************************/
 RunnerManager::RunnerManager(QObject *parent)
     : RunnerManager(QString(), parent)
 {
 }
 
 RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
-    : QObject(parent),
-      d(new RunnerManagerPrivate(this))
+    : QObject(parent)
+    , d(new RunnerManagerPrivate(this))
 {
     d->configPrt = KSharedConfig::openConfig(configFile);
     // If the old config group still exists the migration script wasn't executed
@@ -551,16 +555,16 @@ RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     if (oldStateDataGroup.exists() && !oldStateDataGroup.readEntry("migrated", false)) {
         d->stateData = oldStateDataGroup;
     } else {
-        d->stateData = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals,
-                                                 QStandardPaths::GenericDataLocation)->group("PlasmaRunnerManager");
+        d->stateData =
+            KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)->group("PlasmaRunnerManager");
     }
     d->loadConfiguration();
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
-    : QObject(parent),
-      d(new RunnerManagerPrivate(this))
+    : QObject(parent)
+    , d(new RunnerManagerPrivate(this))
 {
     d->configPrt = KSharedConfig::openConfig();
     d->stateData = KConfigGroup(&c, "PlasmaRunnerManager");
@@ -595,7 +599,7 @@ void RunnerManager::setAllowedRunners(const QStringList &runners)
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-void RunnerManager::setEnabledCategories(const QStringList& categories)
+void RunnerManager::setEnabledCategories(const QStringList &categories)
 {
     d->stateData.writeEntry("enabledCategories", categories);
     d->enabledCategories = categories;
@@ -617,7 +621,7 @@ QStringList RunnerManager::enabledCategories() const
     QStringList list = d->stateData.readEntry("enabledCategories", QStringList());
     if (list.isEmpty()) {
         list.reserve(d->runners.count());
-        for (AbstractRunner* runner : qAsConst(d->runners)) {
+        for (AbstractRunner *runner : qAsConst(d->runners)) {
             list << runner->categories();
         }
     }
@@ -629,11 +633,11 @@ QStringList RunnerManager::enabledCategories() const
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void RunnerManager::loadRunner(const KService::Ptr service)
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     KPluginInfo description(service);
-QT_WARNING_POP
+    QT_WARNING_POP
     loadRunner(description.toMetaData());
 }
 #endif
@@ -659,7 +663,7 @@ void RunnerManager::loadRunner(const QString &path)
 }
 #endif
 
-AbstractRunner* RunnerManager::runner(const QString &name) const
+AbstractRunner *RunnerManager::runner(const QString &name) const
 {
     if (d->runners.isEmpty()) {
         d->loadRunners();
@@ -694,7 +698,6 @@ void RunnerManager::setSingleMode(bool singleMode)
     if (d->singleMode == singleMode) {
         return;
     }
-
 
     Plasma::AbstractRunner *prevSingleRunner = d->currentSingleRunner;
     d->singleMode = singleMode;
@@ -731,12 +734,12 @@ QString RunnerManager::runnerName(const QString &id) const
     }
 }
 
-RunnerContext* RunnerManager::searchContext() const
+RunnerContext *RunnerManager::searchContext() const
 {
     return &d->context;
 }
 
-//Reordering is here so data is not reordered till strictly needed
+// Reordering is here so data is not reordered till strictly needed
 QList<QueryMatch> RunnerManager::matches() const
 {
     return d->context.matches();
@@ -755,7 +758,7 @@ void RunnerManager::run(const QueryMatch &match)
         return;
     }
 
-    //TODO: this function is not const as it may be used for learning
+    // TODO: this function is not const as it may be used for learning
     AbstractRunner *runner = match.runner();
 
     for (auto it = d->searchJobs.constBegin(); it != d->searchJobs.constEnd(); ++it) {
@@ -786,24 +789,23 @@ bool RunnerManager::runMatch(const QueryMatch &match)
     return true;
 }
 
-QList<QAction*> RunnerManager::actionsForMatch(const QueryMatch &match)
+QList<QAction *> RunnerManager::actionsForMatch(const QueryMatch &match)
 {
     if (AbstractRunner *runner = match.runner()) {
         return runner->actionsForMatch(match);
     }
 
-    return QList<QAction*>();
+    return QList<QAction *>();
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
-QMimeData * RunnerManager::mimeDataForMatch(const QString &id) const
+QMimeData *RunnerManager::mimeDataForMatch(const QString &id) const
 {
     return mimeDataForMatch(d->context.match(id));
 }
 #endif
 
-
-QMimeData * RunnerManager::mimeDataForMatch(const QueryMatch &match) const
+QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
 {
     return match.isValid() ? match.runner()->mimeDataForMatch(match) : nullptr;
 }
@@ -831,16 +833,15 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
 
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     // also search for deprecated kservice-based KRunner plugins metadata
-    const QString constraint = parentApp.isEmpty() ?
-        QStringLiteral("not exist [X-KDE-ParentApp] or [X-KDE-ParentApp] == ''") :
-        QStringLiteral("[X-KDE-ParentApp] == '") + parentApp + QLatin1Char('\'');
+    const QString constraint = parentApp.isEmpty() ? QStringLiteral("not exist [X-KDE-ParentApp] or [X-KDE-ParentApp] == ''")
+                                                   : QStringLiteral("[X-KDE-ParentApp] == '") + parentApp + QLatin1Char('\'');
 
     const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     const KPluginInfo::List backwardCompatPluginInfos = KPluginInfo::fromServices(offers);
-QT_WARNING_POP
+    QT_WARNING_POP
 
     for (const KPluginInfo &pluginInfo : backwardCompatPluginInfos) {
         if (!knownRunnerIds.contains(pluginInfo.pluginName())) {
@@ -929,9 +930,9 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     d->context.setEnabledCategories(d->enabledCategories);
 #endif
 
-    QHash<QString, AbstractRunner*> runnable;
+    QHash<QString, AbstractRunner *> runnable;
 
-    //if the name is not empty we will launch only the specified runner
+    // if the name is not empty we will launch only the specified runner
     if (d->singleMode) {
         runnable.insert(QString(), d->currentSingleRunner);
         d->context.setSingleRunnerQueryMode(true);
@@ -959,7 +960,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     }
     // In the unlikely case that no runner gets queried we have to emit the signals here
     if (d->searchJobs.isEmpty()) {
-        QTimer::singleShot(0, this,  [this](){
+        QTimer::singleShot(0, this, [this]() {
             Q_EMIT matchesChanged({});
             Q_EMIT queryFinished();
         });
@@ -1038,7 +1039,7 @@ void RunnerManager::enableKNotifyPluginWatcher()
                         runner->reloadConfiguration();
                     }
                 }
-            } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")){
+            } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")) {
                 for (auto *runner : qAsConst(d->runners)) {
                     // If the same config group has been modified which gets created in AbstractRunner::config()
                     if (groupName == runner->id()) {
@@ -1071,6 +1072,5 @@ bool RunnerManager::retainPriorSearch()
 }
 
 } // Plasma namespace
-
 
 #include "moc_runnermanager.cpp"

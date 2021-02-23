@@ -24,12 +24,10 @@ void RunnerModelPlugin::registerTypes(const char *uri)
     // QueryMatch would need to get a Q_GAGDET added just for this
     // As this plugin is deprecated, this is not worth it,
     // so we just disable the deprecation warning
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     qmlRegisterInterface<Plasma::QueryMatch>("QueryMatch");
-QT_WARNING_POP
+    QT_WARNING_POP
     qRegisterMetaType<Plasma::QueryMatch *>("QueryMatch");
 }
-
-

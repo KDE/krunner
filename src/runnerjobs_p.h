@@ -12,8 +12,8 @@
 #include <QSet>
 
 #include <ThreadWeaver/Job>
-#include <ThreadWeaver/QueuePolicy>
 #include <ThreadWeaver/Queue>
+#include <ThreadWeaver/QueuePolicy>
 
 #include "abstractrunner.h"
 
@@ -21,7 +21,8 @@ using ThreadWeaver::Job;
 
 class QTimer;
 
-namespace Plasma {
+namespace Plasma
+{
 // Queue policies
 
 // QueuePolicy that only allows a job to be executed after
@@ -36,7 +37,7 @@ public:
     bool canRun(ThreadWeaver::JobPointer job) override;
     void free(ThreadWeaver::JobPointer job) override;
     void release(ThreadWeaver::JobPointer job) override;
-    void destructed(ThreadWeaver::JobInterface* job) override;
+    void destructed(ThreadWeaver::JobInterface *job) override;
 
 private:
     DelayedRunnerPolicy();
@@ -63,7 +64,8 @@ public:
     bool canRun(ThreadWeaver::JobPointer job) override;
     void free(ThreadWeaver::JobPointer job) override;
     void release(ThreadWeaver::JobPointer job) override;
-    void destructed(ThreadWeaver::JobInterface* job) override;
+    void destructed(ThreadWeaver::JobInterface *job) override;
+
 private:
     DefaultRunnerPolicy();
 
@@ -78,23 +80,22 @@ private:
  */
 class FindMatchesJob : public QObject, public Job
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    FindMatchesJob(Plasma::AbstractRunner *runner,
-                   Plasma::RunnerContext *context, QObject *parent = nullptr);
+    FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerContext *context, QObject *parent = nullptr);
     ~FindMatchesJob() override;
 
     int priority() const override;
-    Plasma::AbstractRunner* runner() const;
+    Plasma::AbstractRunner *runner() const;
 
-    QTimer* delayTimer() const;
+    QTimer *delayTimer() const;
     void setDelayTimer(QTimer *timer);
 
 Q_SIGNALS:
     void done(ThreadWeaver::JobPointer self);
 
 protected:
-    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread* thread) override;
+    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override;
 
 private:
     Plasma::RunnerContext m_context;
@@ -106,7 +107,7 @@ class DelayedJobCleaner : public QObject
 {
     Q_OBJECT
 public:
-    DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob> > &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
+    DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob>> &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
     ~DelayedJobCleaner();
 
 private Q_SLOTS:
@@ -115,7 +116,7 @@ private Q_SLOTS:
 
 private:
     ThreadWeaver::Queue *m_weaver;
-    QSet<QSharedPointer<FindMatchesJob> > m_jobs;
+    QSet<QSharedPointer<FindMatchesJob>> m_jobs;
     QSet<AbstractRunner *> m_runners;
 };
 

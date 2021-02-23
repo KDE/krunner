@@ -6,13 +6,13 @@
 
 #include "runnermanager.h"
 
-#include <QObject>
 #include <QAction>
+#include <QObject>
 #include <QTest>
 
 using namespace Plasma;
 
-class Runner: public AbstractRunner
+class Runner : public AbstractRunner
 {
 public:
     Runner()
@@ -30,9 +30,9 @@ inline QueryMatch createMatch(const QString &id, Runner *r = nullptr)
 }
 }
 
-class RunnerContextMatchMethodsTest: public QObject
+class RunnerContextMatchMethodsTest : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     RunnerContextMatchMethodsTest();
     ~RunnerContextMatchMethodsTest();
@@ -54,9 +54,9 @@ private Q_SLOTS:
 };
 
 RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
-    : QObject(),
-      runner1(new Runner()),
-      runner2(new Runner())
+    : QObject()
+    , runner1(new Runner())
+    , runner2(new Runner())
 {
 }
 
@@ -159,6 +159,5 @@ void RunnerContextMatchMethodsTest::testNonExistentMatchIds()
 #endif
 
 QTEST_MAIN(RunnerContextMatchMethodsTest)
-
 
 #include "runnermatchmethodstest.moc"

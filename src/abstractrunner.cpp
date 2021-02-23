@@ -13,8 +13,8 @@
 #include <QMimeData>
 #include <QMutex>
 
-#include <KSharedConfig>
 #include <KLocalizedString>
+#include <KSharedConfig>
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 #include <Plasma/Package>
 #endif
@@ -23,35 +23,34 @@
 
 namespace Plasma
 {
-
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 AbstractRunner::AbstractRunner(QObject *parent, const QString &path)
-    : QObject(parent),
-      d(new AbstractRunnerPrivate(this))
+    : QObject(parent)
+    , d(new AbstractRunnerPrivate(this))
 {
     d->init(path);
 }
 #endif
 
 AbstractRunner::AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
-    : QObject(parent),
-      d(new AbstractRunnerPrivate(this))
+    : QObject(parent)
+    , d(new AbstractRunnerPrivate(this))
 {
     d->init(pluginMetaData);
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 AbstractRunner::AbstractRunner(const KService::Ptr service, QObject *parent)
-    : QObject(parent),
-      d(new AbstractRunnerPrivate(this))
+    : QObject(parent)
+    , d(new AbstractRunnerPrivate(this))
 {
     d->init(service);
 }
 #endif
 
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
-    : QObject(parent),
-      d(new AbstractRunnerPrivate(this))
+    : QObject(parent)
+    , d(new AbstractRunnerPrivate(this))
 {
     Q_UNUSED(args)
 
@@ -60,8 +59,8 @@ AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMet
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
-    : QObject(parent),
-      d(new AbstractRunnerPrivate(this))
+    : QObject(parent)
+    , d(new AbstractRunnerPrivate(this))
 {
     if (!args.isEmpty()) {
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
@@ -70,7 +69,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
         if (args.size() > 1) {
             const KPluginMetaData metaData = args[1].value<KPluginMetaData>();
 #else
-            const KPluginMetaData metaData = args[0].value<KPluginMetaData>();
+        const KPluginMetaData metaData = args[0].value<KPluginMetaData>();
 #endif
             if (metaData.isValid()) {
                 d->init(metaData);
@@ -146,7 +145,7 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
     QElapsedTimer time;
     time.start();
 
-    //The local copy is already obtained in the job
+    // The local copy is already obtained in the job
     match(localContext);
 
     // automatically rate limit runners that become slooow
@@ -171,12 +170,12 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
     }
 }
 
-QList<QAction*> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
+QList<QAction *> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
     return match.isValid() ? match.actions() : QList<QAction *>();
 }
 
-QAction* AbstractRunner::addAction(const QString &id, const QIcon &icon, const QString &text)
+QAction *AbstractRunner::addAction(const QString &id, const QIcon &icon, const QString &text)
 {
     QAction *a = new QAction(icon, text, this);
     d->actions.insert(id, a);
@@ -194,12 +193,12 @@ void AbstractRunner::removeAction(const QString &id)
     delete a;
 }
 
-QAction* AbstractRunner::action(const QString &id) const
+QAction *AbstractRunner::action(const QString &id) const
 {
     return d->actions.value(id);
 }
 
-QHash<QString, QAction*> AbstractRunner::actions() const
+QHash<QString, QAction *> AbstractRunner::actions() const
 {
     return d->actions;
 }
@@ -300,7 +299,7 @@ QStringList AbstractRunner::categories() const
 #endif
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-QIcon AbstractRunner::categoryIcon(const QString&) const
+QIcon AbstractRunner::categoryIcon(const QString &) const
 {
     return icon();
 }
@@ -361,11 +360,11 @@ KPluginMetaData AbstractRunner::metadata(RunnerReturnPluginMetaDataConstant) con
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
 Package AbstractRunner::package() const
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     return Package();
-QT_WARNING_POP
+    QT_WARNING_POP
 }
 #endif
 
@@ -444,14 +443,14 @@ bool AbstractRunner::hasMatchRegex() const
 }
 
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
-    : priority(AbstractRunner::NormalPriority),
-      speed(AbstractRunner::NormalSpeed),
-      blackListed(RunnerContext::None),
-      runner(r),
-      fastRuns(0),
-      defaultSyntax(nullptr),
-      hasRunOptions(false),
-      suspendMatching(false)
+    : priority(AbstractRunner::NormalPriority)
+    , speed(AbstractRunner::NormalSpeed)
+    , blackListed(RunnerContext::None)
+    , runner(r)
+    , fastRuns(0)
+    , defaultSyntax(nullptr)
+    , hasRunOptions(false)
+    , suspendMatching(false)
 {
 }
 
@@ -480,12 +479,12 @@ void AbstractRunnerPrivate::init(const KPluginMetaData &pluginMetaData)
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void AbstractRunnerPrivate::init(const KService::Ptr service)
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
     const KPluginInfo pluginInfo(service);
     runnerDescription = pluginInfo.isValid() ? pluginInfo.toMetaData() : KPluginMetaData();
-QT_WARNING_POP
+    QT_WARNING_POP
     init();
 }
 #endif
@@ -499,6 +498,5 @@ void AbstractRunnerPrivate::init(const QString &path)
 #endif
 
 } // Plasma namespace
-
 
 #include "moc_abstractrunner.cpp"

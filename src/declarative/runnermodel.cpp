@@ -14,15 +14,15 @@
 #include <KRunner/RunnerManager>
 
 RunnerModel::RunnerModel(QObject *parent)
-    : QAbstractListModel(parent),
-      m_startQueryTimer(new QTimer(this)),
-      m_runningChangedTimeout(new QTimer(this))
+    : QAbstractListModel(parent)
+    , m_startQueryTimer(new QTimer(this))
+    , m_runningChangedTimeout(new QTimer(this))
 {
     m_startQueryTimer->setSingleShot(true);
     m_startQueryTimer->setInterval(10);
     connect(m_startQueryTimer, &QTimer::timeout, this, &RunnerModel::startQuery);
 
-    //FIXME: HACK: some runners stay in a running but finished state, not possible to say if it's actually over
+    // FIXME: HACK: some runners stay in a running but finished state, not possible to say if it's actually over
     m_runningChangedTimeout->setSingleShot(true);
     connect(m_runningChangedTimeout, &QTimer::timeout, this, &RunnerModel::queryHasFinished);
 }
@@ -46,7 +46,7 @@ QHash<int, QByteArray> RunnerModel::roleNames() const
     return roles;
 }
 
-int RunnerModel::rowCount(const QModelIndex& index) const
+int RunnerModel::rowCount(const QModelIndex &index) const
 {
     return index.isValid() ? 0 : m_matches.count();
 }
@@ -63,7 +63,7 @@ QStringList RunnerModel::runners() const
 
 void RunnerModel::setRunners(const QStringList &allowedRunners)
 {
-    //use sets to ensure comparison is order-independent
+    // use sets to ensure comparison is order-independent
     const auto runners = this->runners();
     if (QSet<QString>(allowedRunners.begin(), allowedRunners.end()) == QSet<QString>(runners.begin(), runners.end())) {
         return;
@@ -71,7 +71,7 @@ void RunnerModel::setRunners(const QStringList &allowedRunners)
     if (m_manager) {
         m_manager->setAllowedRunners(allowedRunners);
 
-        //automagically enter single runner mode if there's only 1 allowed runner
+        // automagically enter single runner mode if there's only 1 allowed runner
         m_manager->setSingleMode(allowedRunners.count() == 1);
     } else {
         m_pendingRunnersList = allowedRunners;
@@ -101,8 +101,7 @@ bool RunnerModel::isRunning() const
 
 QVariant RunnerModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.parent().isValid() ||
-        index.column() > 0 || index.row() < 0 || index.row() >= m_matches.count()) {
+    if (!index.isValid() || index.parent().isValid() || index.column() > 0 || index.row() < 0 || index.row() >= m_matches.count()) {
         // index requested must be valid, but we have no child items!
         return QVariant();
     }
@@ -130,9 +129,9 @@ QVariant RunnerModel::data(const QModelIndex &index, int role) const
     } else if (role == Actions) {
         QVariantList actions;
         Plasma::QueryMatch amatch = m_matches.at(index.row());
-        const QList<QAction*> theactions = m_manager->actionsForMatch(amatch);
-        for (QAction* action : theactions) {
-            actions += QVariant::fromValue<QObject*>(action);
+        const QList<QAction *> theactions = m_manager->actionsForMatch(amatch);
+        for (QAction *action : theactions) {
+            actions += QVariant::fromValue<QObject *>(action);
         }
         return actions;
     }
@@ -172,16 +171,14 @@ bool RunnerModel::createManager()
 {
     if (!m_manager) {
         m_manager = new Plasma::RunnerManager(this);
-        connect(m_manager, &Plasma::RunnerManager::matchesChanged,
-                this, &RunnerModel::matchesChanged);
-        connect(m_manager, &Plasma::RunnerManager::queryFinished,
-                this, &RunnerModel::queryHasFinished);
+        connect(m_manager, &Plasma::RunnerManager::matchesChanged, this, &RunnerModel::matchesChanged);
+        connect(m_manager, &Plasma::RunnerManager::queryFinished, this, &RunnerModel::queryHasFinished);
 
         if (!m_pendingRunnersList.isEmpty()) {
             setRunners(m_pendingRunnersList);
             m_pendingRunnersList.clear();
         }
-        //connect(m_manager, SIGNAL(queryFinished()), this, SLOT(queryFinished()));
+        // connect(m_manager, SIGNAL(queryFinished()), this, SLOT(queryFinished()));
         return true;
     }
 
@@ -205,7 +202,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
         }
         if (!fullReset) {
             // Not a full reset, inserting rows
-            beginInsertRows(QModelIndex(), oldCount, newCount-1);
+            beginInsertRows(QModelIndex(), oldCount, newCount - 1);
             m_matches = matches;
             endInsertRows();
             Q_EMIT countChanged();
@@ -228,5 +225,3 @@ void RunnerModel::queryHasFinished()
     m_running = false;
     Q_EMIT runningChanged(false);
 }
-
-

@@ -3,17 +3,17 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#include <QStandardPaths>
 #include <KPluginLoader>
 #include <KPluginMetaData>
-#include <KRunner/RunnerManager>
 #include <KRunner/AbstractRunner>
+#include <KRunner/RunnerManager>
+#include <QStandardPaths>
 
-#include <QTest>
 #include <QSignalSpy>
+#include <QTest>
 #if KRUNNER_DBUS_RUNNER_TESTING
-#include <QDBusServiceWatcher>
 #include <QDBusConnection>
+#include <QDBusServiceWatcher>
 #endif
 
 namespace
@@ -39,8 +39,7 @@ public:
         manager.reset(new Plasma::RunnerManager());
 
 #if KRUNNER_DBUS_RUNNER_TESTING
-        auto md = KPluginMetaData::fromDesktopFile(QStringLiteral(KRUNNER_TEST_DESKTOP_FILE),
-                                                   {QStringLiteral("plasma-runner.desktop")});
+        auto md = KPluginMetaData::fromDesktopFile(QStringLiteral(KRUNNER_TEST_DESKTOP_FILE), {QStringLiteral("plasma-runner.desktop")});
         QVERIFY(md.isValid());
         manager->loadRunner(md);
 #else
@@ -110,6 +109,7 @@ public:
         qDeleteAll(m_runningProcesses);
         m_runningProcesses.clear();
     }
+
 private:
     QList<QProcess *> m_runningProcesses;
 #endif

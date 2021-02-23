@@ -18,67 +18,66 @@
 
 namespace Plasma
 {
-
 class QueryMatchPrivate : public QSharedData
 {
-    public:
-        QueryMatchPrivate(AbstractRunner *r)
-            : QSharedData(),
-              lock(new QReadWriteLock(QReadWriteLock::Recursive)),
-              runner(r),
-              type(QueryMatch::ExactMatch),
-              relevance(.7),
-              selAction(nullptr),
-              enabled(true),
-              idSetByData(false)
-        {
-        }
+public:
+    QueryMatchPrivate(AbstractRunner *r)
+        : QSharedData()
+        , lock(new QReadWriteLock(QReadWriteLock::Recursive))
+        , runner(r)
+        , type(QueryMatch::ExactMatch)
+        , relevance(.7)
+        , selAction(nullptr)
+        , enabled(true)
+        , idSetByData(false)
+    {
+    }
 
-        QueryMatchPrivate(const QueryMatchPrivate &other)
-            : QSharedData(other),
-              lock(new QReadWriteLock(QReadWriteLock::Recursive))
-        {
-            QReadLocker l(other.lock);
-            runner = other.runner;
-            type = other.type;
-            relevance = other.relevance;
-            selAction = other.selAction;
-            enabled = other.enabled;
-            idSetByData = other.idSetByData;
-            matchCategory = other.matchCategory;
-            id = other.id;
-            text = other.text;
-            subtext = other.subtext;
-            icon = other.icon;
-            iconName = other.iconName;
-            data = other.data;
-            mimeType = other.mimeType;
-            urls = other.urls;
-            actions = other.actions;
-        }
+    QueryMatchPrivate(const QueryMatchPrivate &other)
+        : QSharedData(other)
+        , lock(new QReadWriteLock(QReadWriteLock::Recursive))
+    {
+        QReadLocker l(other.lock);
+        runner = other.runner;
+        type = other.type;
+        relevance = other.relevance;
+        selAction = other.selAction;
+        enabled = other.enabled;
+        idSetByData = other.idSetByData;
+        matchCategory = other.matchCategory;
+        id = other.id;
+        text = other.text;
+        subtext = other.subtext;
+        icon = other.icon;
+        iconName = other.iconName;
+        data = other.data;
+        mimeType = other.mimeType;
+        urls = other.urls;
+        actions = other.actions;
+    }
 
-        ~QueryMatchPrivate()
-        {
-            delete lock;
-        }
+    ~QueryMatchPrivate()
+    {
+        delete lock;
+    }
 
-        QReadWriteLock *lock;
-        QPointer<AbstractRunner> runner;
-        QueryMatch::Type type;
-        QString matchCategory;
-        QString id;
-        QString text;
-        QString subtext;
-        QString mimeType;
-        QList<QUrl> urls;
-        QIcon icon;
-        QString iconName;
-        QVariant data;
-        qreal relevance;
-        QAction *selAction;
-        bool enabled : 1;
-        bool idSetByData : 1;
-        QList<QAction *> actions;
+    QReadWriteLock *lock;
+    QPointer<AbstractRunner> runner;
+    QueryMatch::Type type;
+    QString matchCategory;
+    QString id;
+    QString text;
+    QString subtext;
+    QString mimeType;
+    QList<QUrl> urls;
+    QIcon icon;
+    QString iconName;
+    QVariant data;
+    qreal relevance;
+    QAction *selAction;
+    bool enabled : 1;
+    bool idSetByData : 1;
+    QList<QAction *> actions;
 };
 
 QueryMatch::QueryMatch(AbstractRunner *runner)
@@ -142,7 +141,7 @@ qreal QueryMatch::relevance() const
     return d->relevance;
 }
 
-AbstractRunner* QueryMatch::runner() const
+AbstractRunner *QueryMatch::runner() const
 {
     return d->runner.data();
 }
@@ -159,7 +158,7 @@ void QueryMatch::setSubtext(const QString &subtext)
     d->subtext = subtext;
 }
 
-void QueryMatch::setData(const QVariant & data)
+void QueryMatch::setData(const QVariant &data)
 {
     QWriteLocker locker(d->lock);
     d->data = data;
@@ -263,7 +262,7 @@ bool QueryMatch::isEnabled() const
     return d->enabled && d->runner;
 }
 
-QAction* QueryMatch::selectedAction() const
+QAction *QueryMatch::selectedAction() const
 {
     return d->selAction;
 }
@@ -353,4 +352,3 @@ QList<QAction *> QueryMatch::actions() const
 }
 
 } // Plasma namespace
-

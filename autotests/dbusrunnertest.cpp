@@ -12,12 +12,12 @@
 #define WITH_KSERVICE 0
 #endif
 
-#include <QObject>
 #include <QAction>
-#include <QTest>
-#include <QStandardPaths>
-#include <QSignalSpy>
+#include <QObject>
 #include <QProcess>
+#include <QSignalSpy>
+#include <QStandardPaths>
+#include <QTest>
 #include <QTime>
 #include <QTimer>
 
@@ -57,7 +57,7 @@ private Q_SLOTS:
 DBusRunnerTest::DBusRunnerTest()
     : AbstractRunnerTest()
 {
-    qRegisterMetaType<QList<Plasma::QueryMatch> >();
+    qRegisterMetaType<QList<Plasma::QueryMatch>>();
 }
 
 DBusRunnerTest::~DBusRunnerTest()
@@ -86,19 +86,19 @@ void DBusRunnerTest::testMatch()
     initProperties();
     launchQuery(QStringLiteral("foo"));
 
-    //verify matches
+    // verify matches
     const QList<QueryMatch> matches = manager->matches();
     QCOMPARE(matches.count(), 1);
     auto result = matches.first();
 
-    //see testremoterunner.cpp
-    QCOMPARE(result.id(), QStringLiteral("dbusrunnertest_id1")); //note the runner name is prepended
+    // see testremoterunner.cpp
+    QCOMPARE(result.id(), QStringLiteral("dbusrunnertest_id1")); // note the runner name is prepended
     QCOMPARE(result.text(), QStringLiteral("Match 1"));
     QCOMPARE(result.iconName(), QStringLiteral("icon1"));
     QCOMPARE(result.type(), Plasma::QueryMatch::ExactMatch);
-    //relevance can't be compared easily because RunnerContext meddles with it
+    // relevance can't be compared easily because RunnerContext meddles with it
 
-    //verify actions
+    // verify actions
     QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(result).count(), 1, 10000);
     auto action = manager->actionsForMatch(result).constFirst();
 
@@ -149,7 +149,7 @@ void DBusRunnerTest::testMulti()
 #endif
     launchQuery(QStringLiteral("foo"));
 
-    //verify matches, must be one from each
+    // verify matches, must be one from each
     const QList<QueryMatch> matches = manager->matches();
     QCOMPARE(matches.count(), 2);
 
@@ -168,10 +168,7 @@ void DBusRunnerTest::testRequestActionsOnce()
     // Construct a fake match with necessary data
     QueryMatch fakeMatch(runner);
     fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
-    fakeMatch.setData(QVariantList({
-                                       QStringLiteral("net.krunnertests.dave"),
-                                       QStringList({QStringLiteral("action1"), QStringLiteral("action2")})
-                                   }));
+    fakeMatch.setData(QVariantList({QStringLiteral("net.krunnertests.dave"), QStringList({QStringLiteral("action1"), QStringLiteral("action2")})}));
 
     // We haven't called the prepare slot or launched a query, if the implementation works
     // the actions should already be available
@@ -184,8 +181,10 @@ void DBusRunnerTest::testFilterProperties_data()
     QTest::addColumn<QString>("rejectedQuery");
     QTest::addColumn<QString>("acceptedQuery");
 
-    QTest::newRow("min-letter-count") << "fo" << "foo";
-    QTest::newRow("match-regex") << "barfoo" << "foobar";
+    QTest::newRow("min-letter-count") << "fo"
+                                      << "foo";
+    QTest::newRow("match-regex") << "barfoo"
+                                 << "foobar";
 }
 
 void DBusRunnerTest::testFilterProperties()

@@ -10,13 +10,12 @@
 
 namespace Plasma
 {
-
 class RunnerSyntaxPrivate
 {
 public:
     RunnerSyntaxPrivate(const QString &s, const QString &d)
-        : description(d),
-        termDescription(i18n("search term"))
+        : description(d)
+        , termDescription(i18n("search term"))
     {
         addExampleQuery(s);
     }
@@ -109,4 +108,3 @@ QString RunnerSyntax::searchTermDescription() const
 #endif
 
 } // Plasma namespace
-

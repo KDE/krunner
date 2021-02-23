@@ -8,22 +8,22 @@
 
 #include <cmath>
 
-#include <QReadWriteLock>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QMimeDatabase>
+#include <QReadWriteLock>
 #include <QRegularExpression>
 #include <QSharedData>
-#include <QMimeDatabase>
 #include <QStandardPaths>
 #include <QUrl>
 
 #include <KConfigGroup>
-#include <KShell>
 #include <KProtocolInfo>
+#include <KShell>
 
-#include "krunner_debug.h"
 #include "abstractrunner.h"
+#include "krunner_debug.h"
 #include "querymatch.h"
 
 #define LOCK_FOR_READ(d) d->lock.lockForRead();
@@ -32,139 +32,135 @@
 
 namespace Plasma
 {
-
 class RunnerContextPrivate : public QSharedData
 {
-    public:
-        RunnerContextPrivate(RunnerContext *context)
-            : QSharedData(),
-              type(RunnerContext::UnknownType),
-              q(context),
-              singleRunnerQueryMode(false)
-        {
-        }
+public:
+    RunnerContextPrivate(RunnerContext *context)
+        : QSharedData()
+        , type(RunnerContext::UnknownType)
+        , q(context)
+        , singleRunnerQueryMode(false)
+    {
+    }
 
-        RunnerContextPrivate(const RunnerContextPrivate &p)
-            : QSharedData(),
-              launchCounts(p.launchCounts),
-              type(RunnerContext::None),
-              q(p.q),
-              singleRunnerQueryMode(false)
-        {
-        }
+    RunnerContextPrivate(const RunnerContextPrivate &p)
+        : QSharedData()
+        , launchCounts(p.launchCounts)
+        , type(RunnerContext::None)
+        , q(p.q)
+        , singleRunnerQueryMode(false)
+    {
+    }
 
-        ~RunnerContextPrivate()
-        {
-        }
+    ~RunnerContextPrivate()
+    {
+    }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-        /**
-         * Determines type of query
-                    &&
-         */
-        void determineType()
-        {
-            // NOTE! this method must NEVER be called from
-            // code that may be running in multiple threads
-            // with the same data.
-            type = RunnerContext::UnknownType;
-            QString path = QDir::cleanPath(KShell::tildeExpand(term));
+    /**
+     * Determines type of query
+                &&
+     */
+    void determineType()
+    {
+        // NOTE! this method must NEVER be called from
+        // code that may be running in multiple threads
+        // with the same data.
+        type = RunnerContext::UnknownType;
+        QString path = QDir::cleanPath(KShell::tildeExpand(term));
 
-            int space = path.indexOf(QLatin1Char(' '));
-            if (!QStandardPaths::findExecutable(path.left(space)).isEmpty()) {
-                // it's a shell command if there's a space because that implies
-                // that it has arguments!
-                type = (space > 0) ? RunnerContext::ShellCommand :
-                                     RunnerContext::Executable;
-            } else {
-                QUrl url = QUrl::fromUserInput(term);
+        int space = path.indexOf(QLatin1Char(' '));
+        if (!QStandardPaths::findExecutable(path.left(space)).isEmpty()) {
+            // it's a shell command if there's a space because that implies
+            // that it has arguments!
+            type = (space > 0) ? RunnerContext::ShellCommand : RunnerContext::Executable;
+        } else {
+            QUrl url = QUrl::fromUserInput(term);
 
-                // QUrl::fromUserInput assigns http to everything if it cannot match it to
-                // anything else. We do not want that.
-                if (url.scheme() == QLatin1String("http")) {
-                    if (!term.startsWith(QLatin1String("http"))) {
-                        url.setScheme(QString());
-                    }
+            // QUrl::fromUserInput assigns http to everything if it cannot match it to
+            // anything else. We do not want that.
+            if (url.scheme() == QLatin1String("http")) {
+                if (!term.startsWith(QLatin1String("http"))) {
+                    url.setScheme(QString());
                 }
+            }
 
-                const bool hasProtocol = !url.scheme().isEmpty();
-                const bool isLocalProtocol = !hasProtocol || KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
-                if ((hasProtocol &&
-                    ((!isLocalProtocol && !url.host().isEmpty()) ||
-                     (isLocalProtocol && url.scheme() != QLatin1String("file"))))
-                        || term.startsWith(QLatin1String("\\\\"))) {
-                    // we either have a network protocol with a host, so we can show matches for it
-                    // or we have a non-file url that may be local so a host isn't required
-                    // or we have an UNC path (\\foo\bar)
-                    type = RunnerContext::NetworkLocation;
-                } else if (isLocalProtocol) {
-                    // at this point in the game, we assume we have a path,
-                    // but if a path doesn't have any slashes
-                    // it's too ambiguous to be sure we're in a filesystem context
-                    path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
-                    if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
-                        QFileInfo info(path);
-                        if (info.isSymLink()) {
-                            path = info.canonicalFilePath();
-                            info = QFileInfo(path);
-                        }
-                        if (info.isDir()) {
-                            type = RunnerContext::Directory;
-                            mimeType = QStringLiteral("inode/folder");
-                        } else if (info.isFile()) {
-                            type = RunnerContext::File;
-                            QMimeDatabase db;
-                            QMimeType mime = db.mimeTypeForFile(path);
-                            if (!mime.isDefault()) {
-                                mimeType = mime.name();
-                            }
+            const bool hasProtocol = !url.scheme().isEmpty();
+            const bool isLocalProtocol = !hasProtocol || KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
+            if ((hasProtocol && ((!isLocalProtocol && !url.host().isEmpty()) || (isLocalProtocol && url.scheme() != QLatin1String("file"))))
+                || term.startsWith(QLatin1String("\\\\"))) {
+                // we either have a network protocol with a host, so we can show matches for it
+                // or we have a non-file url that may be local so a host isn't required
+                // or we have an UNC path (\\foo\bar)
+                type = RunnerContext::NetworkLocation;
+            } else if (isLocalProtocol) {
+                // at this point in the game, we assume we have a path,
+                // but if a path doesn't have any slashes
+                // it's too ambiguous to be sure we're in a filesystem context
+                path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
+                if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
+                    QFileInfo info(path);
+                    if (info.isSymLink()) {
+                        path = info.canonicalFilePath();
+                        info = QFileInfo(path);
+                    }
+                    if (info.isDir()) {
+                        type = RunnerContext::Directory;
+                        mimeType = QStringLiteral("inode/folder");
+                    } else if (info.isFile()) {
+                        type = RunnerContext::File;
+                        QMimeDatabase db;
+                        QMimeType mime = db.mimeTypeForFile(path);
+                        if (!mime.isDefault()) {
+                            mimeType = mime.name();
                         }
                     }
                 }
             }
         }
+    }
 #endif
 
-        void invalidate()
-        {
-            q = &s_dummyContext;
-        }
+    void invalidate()
+    {
+        q = &s_dummyContext;
+    }
 
-        QueryMatch* findMatchById(const QString &id)
-        {
-            QueryMatch *match = nullptr;
-            lock.lockForRead();
-            for (auto &matchEntry : matches) {
-                if (matchEntry.id() == id) {
-                    match = &matchEntry;
-                    break;
-                }
+    QueryMatch *findMatchById(const QString &id)
+    {
+        QueryMatch *match = nullptr;
+        lock.lockForRead();
+        for (auto &matchEntry : matches) {
+            if (matchEntry.id() == id) {
+                match = &matchEntry;
+                break;
             }
-            lock.unlock();
-            return match;
         }
+        lock.unlock();
+        return match;
+    }
 
-        QReadWriteLock lock;
-        QList<QueryMatch> matches;
-        QHash<QString, int> launchCounts;
-        QString term;
-        QString mimeType;
-        QStringList enabledCategories;
-        RunnerContext::Type type;
-        RunnerContext * q;
-        static RunnerContext s_dummyContext;
-        bool singleRunnerQueryMode;
+    QReadWriteLock lock;
+    QList<QueryMatch> matches;
+    QHash<QString, int> launchCounts;
+    QString term;
+    QString mimeType;
+    QStringList enabledCategories;
+    RunnerContext::Type type;
+    RunnerContext *q;
+    static RunnerContext s_dummyContext;
+    bool singleRunnerQueryMode;
 };
 
 RunnerContext RunnerContextPrivate::s_dummyContext;
 
 RunnerContext::RunnerContext(QObject *parent)
-    : QObject(parent),
-      d(new RunnerContextPrivate(this))
+    : QObject(parent)
+    , d(new RunnerContextPrivate(this))
 {
 }
 
-//copy ctor
+// copy ctor
 RunnerContext::RunnerContext(RunnerContext &other, QObject *parent)
     : QObject(parent)
 {
@@ -247,7 +243,7 @@ QString RunnerContext::query() const
 }
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 
-void RunnerContext::setEnabledCategories(const QStringList& categories)
+void RunnerContext::setEnabledCategories(const QStringList &categories)
 {
     d->enabledCategories = categories;
 }
@@ -286,7 +282,7 @@ bool RunnerContext::isValid() const
 bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
 {
     if (matches.isEmpty() || !isValid()) {
-       //Bail out if the query is empty or the qptr is dirty
+        // Bail out if the query is empty or the qptr is dirty
         return false;
     }
 
@@ -295,7 +291,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
         if (int count = d->launchCounts.value(match.id())) {
-            match.setRelevance(match.relevance() + 0.5 * (1-exp(-count*0.3)));
+            match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
         }
 
         d->matches.append(match);
@@ -349,7 +345,7 @@ bool RunnerContext::removeMatch(const QString matchId)
         return false;
     }
     LOCK_FOR_READ(d)
-    const QueryMatch* match = d->findMatchById(matchId);
+    const QueryMatch *match = d->findMatchById(matchId);
     UNLOCK(d)
     if (!match) {
         return false;
@@ -371,7 +367,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     QList<QueryMatch> presentMatchList;
 
     LOCK_FOR_READ(d)
-    for(const QueryMatch &match : qAsConst(d->matches)) {
+    for (const QueryMatch &match : qAsConst(d->matches)) {
         if (match.runner() == runner) {
             presentMatchList << match;
         }
@@ -425,7 +421,7 @@ void RunnerContext::restore(const KConfigGroup &config)
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
     const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
-    for (const QString& entry : cfgList) {
+    for (const QString &entry : cfgList) {
         const QRegularExpressionMatch match = re.match(entry);
         if (!match.hasMatch()) {
             continue;
@@ -457,6 +453,5 @@ void RunnerContext::run(const QueryMatch &match)
 }
 
 } // Plasma namespace
-
 
 #include "moc_runnercontext.cpp"
