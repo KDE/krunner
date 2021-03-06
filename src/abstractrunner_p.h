@@ -37,7 +37,9 @@ public:
     void init(const QString &path);
 #endif
     AbstractRunner::Priority priority;
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
     AbstractRunner::Speed speed;
+#endif
     RunnerContext::Types blackListed;
     KPluginMetaData runnerDescription;
     AbstractRunner *runner;

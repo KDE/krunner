@@ -427,9 +427,12 @@ public:
 #endif
         QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
         QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
         if (runner->speed() == AbstractRunner::SlowSpeed) {
             job->setDelayTimer(&delayTimer);
         }
+#endif
         Queue::instance()->enqueue(job);
         searchJobs.insert(job);
     }

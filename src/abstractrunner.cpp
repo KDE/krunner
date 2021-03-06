@@ -137,6 +137,7 @@ RunnerSyntax *AbstractRunner::defaultSyntax() const
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
 {
     static const int reasonableRunTime = 1500;
@@ -169,6 +170,7 @@ void AbstractRunner::performMatch(Plasma::RunnerContext &localContext)
         }
     }
 }
+#endif
 
 QList<QAction *> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
 {
@@ -240,6 +242,7 @@ void AbstractRunner::createRunOptions(QWidget *parent)
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 AbstractRunner::Speed AbstractRunner::speed() const
 {
     // the only time the read lock will fail is if we were slow are going to speed up
@@ -253,13 +256,16 @@ AbstractRunner::Speed AbstractRunner::speed() const
     d->speedLock.unlock();
     return s;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 void AbstractRunner::setSpeed(Speed speed)
 {
     d->speedLock.lockForWrite();
     d->speed = speed;
     d->speedLock.unlock();
 }
+#endif
 
 AbstractRunner::Priority AbstractRunner::priority() const
 {
@@ -444,7 +450,9 @@ bool AbstractRunner::hasMatchRegex() const
 
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority)
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
     , speed(AbstractRunner::NormalSpeed)
+#endif
     , blackListed(RunnerContext::None)
     , runner(r)
     , fastRuns(0)

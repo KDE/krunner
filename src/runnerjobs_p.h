@@ -23,6 +23,7 @@ class QTimer;
 
 namespace Plasma
 {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 // Queue policies
 
 // QueuePolicy that only allows a job to be executed after
@@ -43,6 +44,7 @@ private:
     DelayedRunnerPolicy();
     QMutex m_mutex;
 };
+#endif
 
 // QueuePolicy that limits the instances of a particular runner
 class DefaultRunnerPolicy : public ThreadWeaver::QueuePolicy
@@ -88,8 +90,16 @@ public:
     int priority() const override;
     Plasma::AbstractRunner *runner() const;
 
-    QTimer *delayTimer() const;
-    void setDelayTimer(QTimer *timer);
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
+    QTimer *delayTimer() const
+    {
+        return m_timer;
+    }
+    void setDelayTimer(QTimer *timer)
+    {
+        m_timer = timer;
+    }
+#endif
 
 Q_SIGNALS:
     void done(ThreadWeaver::JobPointer self);
@@ -100,7 +110,9 @@ protected:
 private:
     Plasma::RunnerContext m_context;
     Plasma::AbstractRunner *m_runner;
-    QTimer *m_timer;
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
+    QTimer *m_timer = nullptr;
+#endif
 };
 
 class DelayedJobCleaner : public QObject

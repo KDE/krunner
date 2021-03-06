@@ -62,11 +62,13 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
     Q_PROPERTY(QRegularExpression matchRegex READ matchRegex WRITE setMatchRegex)
 
 public:
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /** Specifies a nominal speed for the runner */
     enum Speed {
         SlowSpeed,
         NormalSpeed,
     };
+#endif
 
     /** Specifies a priority for the runner */
     enum Priority {
@@ -85,7 +87,7 @@ public:
     /**
      * This is the main query method. It should trigger creation of
      * QueryMatch instances through RunnerContext::addMatch and
-     * RunnerContext::addMatches. It is called internally by performMatch().
+     * RunnerContext::addMatches.
      *
      * If the runner can run precisely the requested term (RunnerContext::query()),
      * it should create an exact match by setting the type to RunnerContext::ExactMatch.
@@ -133,12 +135,18 @@ public:
      */
     virtual void match(Plasma::RunnerContext &context);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * Triggers a call to match. This will call match() internally.
      *
      * @param context the search context used in executing this match.
+     * @deprecated Since 5.81, use match(Plasma::RunnerContext &context) instead.
+     * This method contains logic to delay slow runners, which is now deprecated. Consequently you
+     * should call match(Plasma::RunnerContext &context) directly.
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "use match(Plasma::RunnerContext &context) instead")
     void performMatch(Plasma::RunnerContext &context);
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
     /**
@@ -202,11 +210,14 @@ public:
     virtual QIcon categoryIcon(const QString &category) const;
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * The nominal speed of the runner.
      * @see setSpeed
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "the concept of delayed runners is deprecated, see method docs of setSpeed(Speed) for details")
     Speed speed() const;
+#endif
 
     /**
      * The priority of the runner.
@@ -472,13 +483,20 @@ protected:
     void setHasRunOptions(bool hasRunOptions);
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * Sets the nominal speed of the runner. Only slow runners need
      * to call this within their constructor because the default
      * speed is NormalSpeed. Runners that use D-Bus should call
      * this within their constructors.
+     * @deprecated Since 5.81, the concept of delayed runners is deprecated.
+     * If you have resource or memory intensive tasks consider porting the runner to a D-Bus runner.
+     * Otherwise you can set the priority of the runner to LowPriority and implement the wait using a QTimer and an
+     * event loop. It is important to check if the RunnerContext is still valid after the waiting interval.
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "the concept of delayed runners is deprecated, see method docs for porting instructions")
     void setSpeed(Speed newSpeed);
+#endif
 
     /**
      * Sets the priority of the runner. Lower priority runners are executed
