@@ -126,6 +126,7 @@ public:
         q = &s_dummyContext;
     }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
     QueryMatch *findMatchById(const QString &id)
     {
         QueryMatch *match = nullptr;
@@ -139,6 +140,7 @@ public:
         lock.unlock();
         return match;
     }
+#endif
 
     QReadWriteLock lock;
     QList<QueryMatch> matches;
@@ -327,6 +329,7 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     return true;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 bool RunnerContext::removeMatches(const QStringList matchIdList)
 {
     bool success = false;
@@ -338,7 +341,9 @@ bool RunnerContext::removeMatches(const QStringList matchIdList)
 
     return success;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 bool RunnerContext::removeMatch(const QString matchId)
 {
     if (!isValid()) {
@@ -357,7 +362,9 @@ bool RunnerContext::removeMatch(const QString matchId)
 
     return true;
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
 {
     if (!isValid()) {
@@ -387,6 +394,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     Q_EMIT d->q->matchesChanged();
     return true;
 }
+#endif
 
 QList<QueryMatch> RunnerContext::matches() const
 {

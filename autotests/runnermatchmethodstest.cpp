@@ -44,9 +44,11 @@ private Q_SLOTS:
     void init();
     void testAdd();
     void testAddMulti();
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
     void testRemoveMatch();
     void testRemoveMatchMulti();
     void testRemoveMatchByRunner();
+#endif
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
     void testGetMatchById();
     void testNonExistentMatchIds();
@@ -89,6 +91,7 @@ void RunnerContextMatchMethodsTest::testAddMulti()
     QCOMPARE(ctx->matches().count(), 2);
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 void RunnerContextMatchMethodsTest::testRemoveMatch()
 {
     QueryMatch m = createMatch(QStringLiteral("m1"));
@@ -97,7 +100,9 @@ void RunnerContextMatchMethodsTest::testRemoveMatch()
     QVERIFY(ctx->removeMatch(m.id()));
     QCOMPARE(ctx->matches().count(), 1);
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 void RunnerContextMatchMethodsTest::testRemoveMatchByRunner()
 {
     QVERIFY(ctx->matches().isEmpty());
@@ -110,7 +115,9 @@ void RunnerContextMatchMethodsTest::testRemoveMatchByRunner()
     QCOMPARE(ctx->matches().count(), 1);
     QCOMPARE(ctx->matches().constFirst(), m3);
 }
+#endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 void RunnerContextMatchMethodsTest::testRemoveMatchMulti()
 {
     QVERIFY(ctx->matches().isEmpty());
@@ -128,6 +135,7 @@ void RunnerContextMatchMethodsTest::testRemoveMatchMulti()
     QCOMPARE(ctx->matches().count(), 1);
     QCOMPARE(ctx->matches().constFirst(), m3);
 }
+#endif
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
 void RunnerContextMatchMethodsTest::testGetMatchById()

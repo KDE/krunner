@@ -163,6 +163,7 @@ public:
      */
     bool addMatch(const QueryMatch &match);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * Removes a match from the existing list of matches.
      *
@@ -172,9 +173,13 @@ public:
      *
      * @return true if the match was removed, false otherwise.
      * @since 4.4
+     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
     bool removeMatch(const QString matchId);
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * Removes lists of matches from the existing list of matches.
      *
@@ -184,9 +189,13 @@ public:
      *
      * @return true if at least one match was removed, false otherwise.
      * @since 4.4
+     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
     bool removeMatches(const QStringList matchIdList);
+#endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /**
      * Removes lists of matches from a given AbstractRunner
      *
@@ -196,8 +205,11 @@ public:
      *
      * @return true if at least one match was removed, false otherwise.
      * @since 4.10
+     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
     bool removeMatches(AbstractRunner *runner);
+#endif
 
     /**
      * Retrieves all available matches for the current search term.
