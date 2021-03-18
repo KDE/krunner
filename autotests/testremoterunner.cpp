@@ -17,7 +17,7 @@
 // Test DBus runner, if the search term contains "foo" it returns a match, otherwise nothing
 // Run prints a line to stdout
 
-TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
+TestRemoteRunner::TestRemoteRunner(const QString &serviceName, bool showLifecycleMethodCalls)
 {
     new Krunner1Adaptor(this);
     qDBusRegisterMetaType<RemoteMatch>();
@@ -27,6 +27,7 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName)
     qDBusRegisterMetaType<RemoteImage>();
     Q_ASSERT(QDBusConnection::sessionBus().registerService(serviceName));
     Q_ASSERT(QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this));
+    m_showLifecycleMethodCalls = showLifecycleMethodCalls;
 }
 
 static RemoteImage serializeImage(const QImage &image)
@@ -90,11 +91,19 @@ void TestRemoteRunner::Run(const QString &id, const QString &actionId)
     std::cout.flush();
 }
 
+void TestRemoteRunner::Teardown()
+{
+    if (m_showLifecycleMethodCalls) {
+        std::cout << "Teardown" << std::endl;
+        std::cout.flush();
+    }
+}
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
     const auto arguments = app.arguments();
-    Q_ASSERT(arguments.count() == 2);
-    TestRemoteRunner r(arguments[1]);
+    Q_ASSERT(arguments.count() >= 2);
+    TestRemoteRunner r(arguments[1], arguments.count() == 3);
     app.exec();
 }

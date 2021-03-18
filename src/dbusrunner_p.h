@@ -14,6 +14,7 @@
 #include <QList>
 #include <QMutex>
 #include <QSet>
+#include <qobjectdefs.h>
 
 class DBusRunner : public Plasma::AbstractRunner
 {
@@ -27,8 +28,11 @@ public:
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action) override;
     QList<QAction *> actionsForMatch(const Plasma::QueryMatch &match) override;
 
-private:
+public Q_SLOTS:
+    void teardown();
     void requestActions();
+
+private:
     void setActions(const RemoteActions &remoteActions);
     static QImage decodeImage(const RemoteImage &remoteImage);
     QMutex m_mutex; // needed round any variable also accessed from Match
@@ -36,4 +40,8 @@ private:
     QSet<QString> m_matchingServices;
     QHash<QString, QList<QAction *>> m_actions;
     bool m_hasUniqueResults = false;
+    bool m_requestActionsOnce = false;
+    bool m_actionsOnceRequested = false;
+    bool m_matchWasCalled = false;
+    bool m_callLifecycleMethods = false;
 };

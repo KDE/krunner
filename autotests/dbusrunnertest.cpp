@@ -49,6 +49,7 @@ private Q_SLOTS:
     void testRequestActionsOnce();
     void testDBusRunnerSyntaxIntegration();
     void testIconData();
+    void testLifecycleMethods();
 #if WITH_KSERVICE
     void testMulti_data();
 #endif
@@ -170,8 +171,9 @@ void DBusRunnerTest::testRequestActionsOnce()
     fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
     fakeMatch.setData(QVariantList({QStringLiteral("net.krunnertests.dave"), QStringList({QStringLiteral("action1"), QStringLiteral("action2")})}));
 
-    // We haven't called the prepare slot or launched a query, if the implementation works
-    // the actions should already be available
+    // The actions should not be fetched before we have set up the match session
+    QCOMPARE(manager->actionsForMatch(fakeMatch).count(), 0);
+    launchQuery(QStringLiteral("foo"));
     // We need to retry this, because the DBus call to fetch the actions is async
     QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(fakeMatch).count(), 2, 2500);
 }
@@ -233,6 +235,27 @@ void DBusRunnerTest::testIconData()
 
     QCOMPARE(result.icon().availableSizes().first(), QSize(10, 10));
     QCOMPARE(result.icon().pixmap(QSize(10, 10)), QPixmap::fromImage(expectedIcon));
+}
+
+void DBusRunnerTest::testLifecycleMethods()
+{
+    QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave"), QString()});
+    initProperties();
+    // Match session should be set up automatically
+    launchQuery(QStringLiteral("foo"));
+    manager->matchSessionComplete();
+
+    // Wait for async D-Bus method to be called
+    QEventLoop loop;
+    QTimer::singleShot(1000, &loop, [&loop]() {
+        loop.quit();
+    });
+    loop.exec();
+
+    QCOMPARE(manager->matches().count(), 1);
+    const QStringList lifeCycleSteps = QString::fromLocal8Bit(process->readAllStandardOutput()).split(QLatin1Char('\n'), Qt::SkipEmptyParts);
+    const QStringList expectedLifeCycleSteps = {QStringLiteral("Matching:foo"), QStringLiteral("Teardown")};
+    QCOMPARE(lifeCycleSteps, expectedLifeCycleSteps);
 }
 
 QTEST_MAIN(DBusRunnerTest)

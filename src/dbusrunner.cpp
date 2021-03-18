@@ -35,6 +35,7 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
     m_hasUniqueResults = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Unique-Results")).toBool();
+    m_callLifecycleMethods = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Lifecycle-Methods")).toBool();
 
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
         qCWarning(KRUNNER) << "Invalid entry:" << pluginMetaData.name();
@@ -77,11 +78,9 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
         // don't check when not wildcarded, as it could be used with DBus-activation
         m_matchingServices << requestedServiceName;
     }
-    if (pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Request-Actions-Once")).toVariant().toBool()) {
-        requestActions();
-    } else {
-        connect(this, &AbstractRunner::prepare, this, &DBusRunner::requestActions);
-    }
+
+    m_requestActionsOnce = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Request-Actions-Once")).toVariant().toBool();
+    connect(this, &AbstractRunner::teardown, this, &DBusRunner::teardown);
 
     // Load the runner syntaxes
     const QStringList syntaxes = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntaxes")).toVariant().toStringList();
@@ -96,6 +95,17 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
 
 DBusRunner::~DBusRunner() = default;
 
+void DBusRunner::teardown()
+{
+    if (m_callLifecycleMethods && m_matchWasCalled) {
+        for (const QString &service : qAsConst(m_matchingServices)) {
+            auto method = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Teardown"));
+            QDBusConnection::sessionBus().asyncCall(method);
+        }
+    }
+    m_matchWasCalled = false;
+}
+
 void DBusRunner::requestActions()
 {
     clearActions();
@@ -106,23 +116,18 @@ void DBusRunner::requestActions()
 
     for (const QString &service : qAsConst(m_matchingServices)) {
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
-        QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
-
-        auto watcher = new QDBusPendingCallWatcher(reply);
-        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, watcher, service]() {
-            watcher->deleteLater();
-            QDBusReply<RemoteActions> reply = *watcher;
-            if (!reply.isValid()) {
-                qCDebug(KRUNNER) << "Error requestion actions; calling" << service << " :" << reply.error().name() << reply.error().message();
-                return;
-            }
-            const auto actions = reply.value();
-            for (const RemoteAction &action : actions) {
-                auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
-                a->setData(action.id);
-                m_actions[service].append(a);
-            }
-        });
+        QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().call(getActionsMethod);
+        reply.waitForFinished();
+        if (!reply.isValid()) {
+            qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
+            return;
+        }
+        const auto actions = reply.value();
+        for (const RemoteAction &action : actions) {
+            auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
+            a->setData(action.id);
+            m_actions[service].append(a);
+        }
     }
 }
 
@@ -132,6 +137,14 @@ void DBusRunner::match(Plasma::RunnerContext &context)
     {
         QMutexLocker lock(&m_mutex);
         services = m_matchingServices;
+        m_matchWasCalled = true;
+
+        // Request the actions
+        if ((m_requestActionsOnce && !m_actionsOnceRequested) // We only want to fetch the actions once but haven't done so yet
+            || (!m_requestActionsOnce)) { // We want to fetch the actions for each match session
+            m_actionsOnceRequested = true;
+            QMetaObject::invokeMethod(this, "requestActions");
+        }
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
     QList<QSharedPointer<QDBusPendingCallWatcher>> watchers;

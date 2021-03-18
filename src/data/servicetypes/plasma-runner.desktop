@@ -102,3 +102,7 @@ Type=bool
 # If a runner has produced a match with the same id the match will be removed in favor of the other runner's match
 [PropertyDef::X-Plasma-Runner-Weak-Results]
 Type=bool
+
+# If the Prepare/Teardown/ReloadConfiguration methods should be called, since 5.83
+[PropertyDef::X-Plasma-Runner-Lifecycle-Methods]
+Type=bool
