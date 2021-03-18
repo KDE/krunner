@@ -1,6 +1,30 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.kde.krunner1">
+    <!--
+        This method gets called when a match session is over.
+        It can be used to clear data which should not be kept in memory after a match session.
+    -->
+    <method name="Teardown"/>
+
+    <!--
+        This method can be used to set runner config at runtime. In case the service wildcard is used
+        the config is only for one service requested.
+        It gets only called when the X-Plasma-Api value is set to DBus2
+
+        Possible values for the response map are:
+        MatchRegex (String)
+        MinLetterCount (int)
+        TriggerWords (StringList)
+        Actions (RemoteActions), see X-Plasma-Request-Actions-Once property docs
+
+        See API documentation of the AbstractRunner class for details about these values.
+    -->
+    <method name="Config">
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap" />
+      <arg name="config" type="{sv}" direction="out">
+      </arg>
+    </method>
 
     <!--
         Returns a list of actions supported by this runner.
