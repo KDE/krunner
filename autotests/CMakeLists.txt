@@ -2,6 +2,8 @@ find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
 
 include(ECMAddTests)
 
+remove_definitions(-DQT_NO_CAST_FROM_ASCII)
+
 if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
         EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.76.0
         AND NOT WIN32)
@@ -17,6 +19,12 @@ ecm_add_tests(
 )
 ecm_add_tests(
         runnermatchmethodstest.cpp
+        LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
+)
+
+
+ecm_add_tests(
+        runnermanagerhistorytest.cpp
         LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
 )
 

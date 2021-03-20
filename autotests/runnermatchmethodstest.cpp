@@ -4,6 +4,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
+#include "abstractrunner.h"
+#include "fakerunner.h"
 #include "runnermanager.h"
 
 #include <QAction>
@@ -12,17 +14,9 @@
 
 using namespace Plasma;
 
-class Runner : public AbstractRunner
-{
-public:
-    Runner()
-        : AbstractRunner(nullptr, KPluginMetaData(QStringLiteral("metadata.desktop")), QVariantList())
-    {
-    }
-};
 namespace
 {
-inline QueryMatch createMatch(const QString &id, Runner *r = nullptr)
+inline QueryMatch createMatch(const QString &id, AbstractRunner *r = nullptr)
 {
     QueryMatch m(r);
     m.setId(id);
@@ -38,8 +32,8 @@ public:
     ~RunnerContextMatchMethodsTest();
 
     RunnerContext *ctx = nullptr;
-    Runner *runner1;
-    Runner *runner2;
+    FakeRunner *runner1;
+    FakeRunner *runner2;
 private Q_SLOTS:
     void init();
     void testAdd();
@@ -57,8 +51,8 @@ private Q_SLOTS:
 
 RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
     : QObject()
-    , runner1(new Runner())
-    , runner2(new Runner())
+    , runner1(new FakeRunner())
+    , runner2(new FakeRunner())
 {
 }
 
