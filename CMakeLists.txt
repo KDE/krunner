@@ -24,7 +24,6 @@ include(CMakePackageConfigHelpers)
 include(KDEPackageAppTemplates)
 include(ECMQtDeclareLoggingCategory)
 include(ECMSetupQtPluginMacroNames)
-include(KDEClangFormat)
 include(KDEGitCommitHooks)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
@@ -121,7 +120,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-# add clang-format target for all our real source files
-file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
-kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
