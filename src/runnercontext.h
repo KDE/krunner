@@ -234,8 +234,10 @@ public:
     /**
      * Sets single runner query mode. Note that a call to reset() will
      * turn off single runner query mode.
+     * TODO KF6 Make private
      *
      * @see reset()
+     * @internal
      * @since 4.4
      */
     void setSingleRunnerQueryMode(bool enabled);
