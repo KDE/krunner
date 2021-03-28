@@ -156,13 +156,16 @@ public:
         if (currentSingleRunner && currentSingleRunner->id() == singleModeRunnerId) {
             return;
         }
-        if (runners.isEmpty()) {
-            loadRunners();
-        }
         currentSingleRunner = q->runner(singleModeRunnerId);
+        // If there are no runners loaded or the single runner could no be loaded,
+        // this is the case if it was disabled but gets queries using the singleRunnerMode, BUG: 435050
+        if (runners.isEmpty() || !currentSingleRunner) {
+            loadRunners(singleModeRunnerId);
+            currentSingleRunner = q->runner(singleModeRunnerId);
+        }
     }
 
-    void loadRunners()
+    void loadRunners(const QString &singleRunnerId = QString())
     {
         QVector<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
 
@@ -188,7 +191,11 @@ public:
             const QString runnerName = description.pluginId();
             const bool isPluginEnabled = pluginConf.readEntry(runnerName + QLatin1String("Enabled"), description.isEnabledByDefault());
             const bool loaded = runners.contains(runnerName);
-            const bool selected = loadAll || (isPluginEnabled && (noWhiteList || whiteList.contains(runnerName)));
+            bool selected = loadAll || disabledRunnerIds.contains(runnerName) || (isPluginEnabled && (noWhiteList || whiteList.contains(runnerName)));
+            if (!selected && runnerName == singleRunnerId) {
+                selected = true;
+                disabledRunnerIds << runnerName;
+            }
 
             const bool singleQueryModeEnabled = description.rawData().value(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toVariant().toBool();
 
@@ -518,6 +525,7 @@ public:
     QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
     KSharedConfigPtr configPrt;
     KConfigGroup stateData;
+    QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
 #ifdef HAVE_KACTIVITIES
     const KActivities::Consumer activitiesConsumer;
 #endif
@@ -850,7 +858,9 @@ void RunnerManager::setupMatchSession()
         }
     } else {
         for (AbstractRunner *runner : qAsConst(d->runners)) {
-            Q_EMIT runner->prepare();
+            if (!d->disabledRunnerIds.contains(runner->name())) {
+                Q_EMIT runner->prepare();
+            }
         }
 
         d->allRunnersPrepped = true;
@@ -879,6 +889,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 {
     setupMatchSession();
     QString term = untrimmedTerm.trimmed();
+    const QString prevSingleRunner = d->singleModeRunnerId;
     d->untrimmedTerm = untrimmedTerm;
 
     // Set the required values and load the runner
@@ -891,7 +902,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         return;
     }
 
-    if (d->context.query() == term) {
+    if (d->context.query() == term && prevSingleRunner == runnerName) {
         // we already are searching for this!
         return;
     }
@@ -919,6 +930,10 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     const int queryLetterCount = term.count();
     for (Plasma::AbstractRunner *r : qAsConst(runnable)) {
         if (r->isMatchingSuspended()) {
+            continue;
+        }
+        // If this runner is loaded but disabled
+        if (!d->singleMode && d->disabledRunnerIds.contains(r->id())) {
             continue;
         }
         // The runners can set the min letter count as a property, this way we don't
