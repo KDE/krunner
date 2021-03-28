@@ -675,6 +675,7 @@ AbstractRunner *RunnerManager::runner(const QString &name) const
     return d->runners.value(name, nullptr);
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
 AbstractRunner *RunnerManager::singleModeRunner() const
 {
     return d->currentSingleRunner;
@@ -717,7 +718,7 @@ void RunnerManager::setSingleMode(bool singleMode)
         }
     }
 }
-
+#endif
 QList<AbstractRunner *> RunnerManager::runners() const
 {
     return d->runners.values();
