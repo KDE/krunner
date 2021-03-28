@@ -61,10 +61,15 @@ public:
      */
     AbstractRunner *runner(const QString &pluginName) const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 82)
     /**
      * @return the currently active "single mode" runner, or null if none
      * @since 4.4
+     * @deprecated Since 5.81, the dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead"
      */
+    KRUNNER_DEPRECATED_VERSION(5,
+                               82,
+                               "The dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead")
     AbstractRunner *singleModeRunner() const;
 
     /**
@@ -74,19 +79,30 @@ public:
      * will return NULL
      * @param id the id of the runner to use
      * @since 4.4
+     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, pass in the singleModeRunnerId into the launchQuery overload instead
      */
+    KRUNNER_DEPRECATED_VERSION(5,
+                               82,
+                               "The dedicated singleRunnerMode methods are deprecated, pass in the singleModeRunnerId into the launchQuery overload instead")
     void setSingleModeRunnerId(const QString &id);
 
     /**
      * @return the id of the runner to use in single mode
      * @since 4.4
+     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 82, "The dedicated singleRunnerMode methods are deprecated, save the variable before using it in launchQuery() instead")
     QString singleModeRunnerId() const;
 
     /**
      * @return true if the manager is set to run in single runner mode
      * @since 4.4
+     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, call the RunnerContext::singleRunnerQueryMode on the searchContext instead
      */
+    KRUNNER_DEPRECATED_VERSION(
+        5,
+        82,
+        "The dedicated singleRunnerMode methods are deprecated, call the RunnerContext::singleRunnerQueryMode on the searchContext instead")
     bool singleMode() const;
 
     /**
@@ -94,8 +110,15 @@ public:
      *
      * @param singleMode true if the manager should be in single mode, false otherwise
      * @since 4.4
+     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, the single mode is set to true when launchQuery is called with a non
+     * empty and existing runnerId
      */
+    KRUNNER_DEPRECATED_VERSION(5,
+                               82,
+                               "The dedicated singleRunnerMode methods are deprecated, the single mode is set to true when launchQuery is called with a non "
+                               "empty and existing runnerId")
     void setSingleMode(bool singleMode);
+#endif
 
     /**
      * Returns the translated name of a runner
