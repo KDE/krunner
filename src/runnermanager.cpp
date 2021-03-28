@@ -84,13 +84,6 @@ class RunnerManagerPrivate
 public:
     RunnerManagerPrivate(RunnerManager *parent)
         : q(parent)
-        , deferredRun(nullptr)
-        , currentSingleRunner(nullptr)
-        , prepped(false)
-        , allRunnersPrepped(false)
-        , singleRunnerPrepped(false)
-        , teardownRequested(false)
-        , singleMode(false)
     {
         matchChangeTimer.setSingleShot(true);
         delayTimer.setSingleShot(true);
@@ -512,21 +505,20 @@ public:
     QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner *> runners;
     QHash<QString, QString> advertiseSingleRunnerIds;
-    AbstractRunner *currentSingleRunner;
+    AbstractRunner *currentSingleRunner = nullptr;
     QSet<QSharedPointer<FindMatchesJob>> searchJobs;
     QSet<QSharedPointer<FindMatchesJob>> oldSearchJobs;
     QStringList enabledCategories;
     QString singleModeRunnerId;
-    bool prepped : 1;
-    bool allRunnersPrepped : 1;
-    bool singleRunnerPrepped : 1;
-    bool teardownRequested : 1;
-    bool singleMode : 1;
-    bool activityAware : 1;
-    bool historyEnabled : 1;
-    bool retainPriorSearch : 1;
+    bool prepped = false;
+    bool allRunnersPrepped = false;
+    bool singleRunnerPrepped = false;
+    bool teardownRequested = false;
+    bool singleMode = false;
+    bool activityAware = false;
+    bool historyEnabled = false;
+    bool retainPriorSearch = false;
     QStringList whiteList;
-    QString configFile;
     KConfigWatcher::Ptr watcher;
     QHash<QString, QString> priorSearch;
     QString untrimmedTerm;

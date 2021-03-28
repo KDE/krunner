@@ -39,7 +39,6 @@ public:
         : QSharedData()
         , type(RunnerContext::UnknownType)
         , q(context)
-        , singleRunnerQueryMode(false)
     {
     }
 
@@ -48,7 +47,6 @@ public:
         , launchCounts(p.launchCounts)
         , type(RunnerContext::None)
         , q(p.q)
-        , singleRunnerQueryMode(false)
     {
     }
 
@@ -151,7 +149,7 @@ public:
     RunnerContext::Type type;
     RunnerContext *q;
     static RunnerContext s_dummyContext;
-    bool singleRunnerQueryMode;
+    bool singleRunnerQueryMode = false;
 };
 
 RunnerContext RunnerContextPrivate::s_dummyContext;

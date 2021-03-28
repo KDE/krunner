@@ -23,19 +23,12 @@ class QueryMatchPrivate : public QSharedData
 public:
     QueryMatchPrivate(AbstractRunner *r)
         : QSharedData()
-        , lock(new QReadWriteLock(QReadWriteLock::Recursive))
         , runner(r)
-        , type(QueryMatch::ExactMatch)
-        , relevance(.7)
-        , selAction(nullptr)
-        , enabled(true)
-        , idSetByData(false)
     {
     }
 
     QueryMatchPrivate(const QueryMatchPrivate &other)
         : QSharedData(other)
-        , lock(new QReadWriteLock(QReadWriteLock::Recursive))
     {
         QReadLocker l(other.lock);
         runner = other.runner;
@@ -61,9 +54,9 @@ public:
         delete lock;
     }
 
-    QReadWriteLock *lock;
+    QReadWriteLock *lock = new QReadWriteLock(QReadWriteLock::Recursive);
     QPointer<AbstractRunner> runner;
-    QueryMatch::Type type;
+    QueryMatch::Type type = QueryMatch::ExactMatch;
     QString matchCategory;
     QString id;
     QString text;
@@ -73,10 +66,10 @@ public:
     QIcon icon;
     QString iconName;
     QVariant data;
-    qreal relevance;
-    QAction *selAction;
-    bool enabled : 1;
-    bool idSetByData : 1;
+    qreal relevance = .7;
+    QAction *selAction = nullptr;
+    bool enabled = true;
+    bool idSetByData = false;
     QList<QAction *> actions;
 };
 
