@@ -880,8 +880,11 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     QString term = untrimmedTerm.trimmed();
     d->untrimmedTerm = untrimmedTerm;
 
-    setSingleModeRunnerId(runnerName);
-    setSingleMode(d->currentSingleRunner);
+    // Set the required values and load the runner
+    d->singleModeRunnerId = runnerName;
+    d->singleMode = !runnerName.isEmpty();
+    d->loadSingleRunner();
+    // If we could not load the single runner we reset
     if (!runnerName.isEmpty() && !d->currentSingleRunner) {
         reset();
         return;
