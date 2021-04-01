@@ -180,8 +180,6 @@ public:
         const bool noWhiteList = whiteList.isEmpty();
         KConfigGroup pluginConf = configPrt->group("Plugins");
 
-        advertiseSingleRunnerIds.clear();
-
         QStringList allCategories;
         QSet<AbstractRunner *> deadRunners;
         QMutableVectorIterator<KPluginMetaData> it(offers);
@@ -202,12 +200,6 @@ public:
             if (!selected && runnerName == singleRunnerId) {
                 selected = true;
                 disabledRunnerIds << runnerName;
-            }
-
-            const bool singleQueryModeEnabled = description.rawData().value(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toVariant().toBool();
-
-            if (singleQueryModeEnabled) {
-                advertiseSingleRunnerIds.insert(runnerName, description.name());
             }
 
             if (selected) {
@@ -518,7 +510,6 @@ public:
     QTimer delayTimer; // Timer to control when to run slow runners
     QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner *> runners;
-    QHash<QString, QString> advertiseSingleRunnerIds;
     AbstractRunner *currentSingleRunner;
     QSet<QSharedPointer<FindMatchesJob>> searchJobs;
     QSet<QSharedPointer<FindMatchesJob>> oldSearchJobs;
@@ -726,24 +717,27 @@ void RunnerManager::setSingleMode(bool singleMode)
         }
     }
 }
-#endif
-QList<AbstractRunner *> RunnerManager::runners() const
-{
-    return d->runners.values();
-}
 
 QStringList RunnerManager::singleModeAdvertisedRunnerIds() const
 {
-    return d->advertiseSingleRunnerIds.keys();
+    QStringList advertiseSingleRunnerIds;
+    for (auto *runner : qAsConst(d->runners)) {
+        if (runner->metadata(RunnerReturnPluginMetaData).rawData().value(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toVariant().toBool()) {
+            advertiseSingleRunnerIds << runner->id();
+        }
+    }
+    return advertiseSingleRunnerIds;
 }
 
 QString RunnerManager::runnerName(const QString &id) const
 {
-    if (runner(id)) {
-        return runner(id)->name();
-    } else {
-        return d->advertiseSingleRunnerIds.value(id, QString());
-    }
+    return d->runners.contains(id) ? d->runners.value(id)->name() : QString();
+}
+#endif
+
+QList<AbstractRunner *> RunnerManager::runners() const
+{
+    return d->runners.values();
 }
 
 RunnerContext *RunnerManager::searchContext() const
