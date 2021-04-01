@@ -118,26 +118,30 @@ public:
                                "The dedicated singleRunnerMode methods are deprecated, the single mode is set to true when launchQuery is called with a non "
                                "empty and existing runnerId")
     void setSingleMode(bool singleMode);
-#endif
+
+    /**
+     * @return the names of all runners that advertise single query mode
+     * @since 4.4
+     * @deprecated Since 5.81, filter the runners manually using the X-Plasma-AdvertiseSingleRunnerQueryMode of the metadata
+     */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "filter the runners manually using the X-Plasma-AdvertiseSingleRunnerQueryMode of the metadata")
+    QStringList singleModeAdvertisedRunnerIds() const;
 
     /**
      * Returns the translated name of a runner
      * @param id the id of the runner
      *
      * @since 4.4
+     * @deprecated Since 5.81, call runner(const QString &id) and fetch the name from the returned object instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 81, "call runner(const QString &id) and fetch the name from the returned object instead")
     QString runnerName(const QString &id) const;
+#endif
 
     /**
      * @return the list of all currently loaded runners
      */
     QList<AbstractRunner *> runners() const;
-
-    /**
-     * @return the names of all runners that advertise single query mode
-     * @since 4.4
-     */
-    QStringList singleModeAdvertisedRunnerIds() const;
 
     /**
      * Retrieves the current context
