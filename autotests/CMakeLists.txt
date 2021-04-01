@@ -28,6 +28,11 @@ ecm_add_tests(
     LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
 )
 
+ecm_add_tests(
+    runnermanagersinglerunnermodetest.cpp
+    LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets Qt5::DBus
+)
+
 set(demoapp_SRCS testremoterunner.cpp)
 qt5_add_dbus_adaptor(demoapp_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
 add_executable(testremoterunner ${demoapp_SRCS})
@@ -38,3 +43,4 @@ target_link_libraries(testremoterunner
 
 include(../KF5KRunnerMacros.cmake)
 configure_krunner_test(dbusrunnertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
+configure_krunner_test(runnermanagersinglerunnermodetest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
