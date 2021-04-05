@@ -336,12 +336,6 @@ public:
             return;
         }
 
-        if (deferredRun.isEnabled() && runJob->runner() == deferredRun.runner()) {
-            QueryMatch tmpRun = deferredRun;
-            deferredRun = QueryMatch(nullptr);
-            tmpRun.run(context);
-        }
-
         searchJobs.remove(runJob);
         oldSearchJobs.remove(runJob);
 
@@ -498,7 +492,6 @@ public:
     static const int slowRunDelay = 400;
 
     RunnerManager *const q;
-    QueryMatch deferredRun;
     RunnerContext context;
     QTimer matchChangeTimer;
     QTimer delayTimer; // Timer to control when to run slow runners
@@ -749,25 +742,9 @@ void RunnerManager::run(const QString &matchId)
 
 void RunnerManager::run(const QueryMatch &match)
 {
-    if (!match.isEnabled()) {
-        return;
+    if (match.isEnabled()) {
+        d->context.run(match);
     }
-
-    // TODO: this function is not const as it may be used for learning
-    AbstractRunner *runner = match.runner();
-
-    for (auto it = d->searchJobs.constBegin(); it != d->searchJobs.constEnd(); ++it) {
-        if ((*it)->runner() == runner && !(*it)->isFinished()) {
-            d->deferredRun = match;
-            return;
-        }
-    }
-
-    if (d->deferredRun.isValid()) {
-        d->deferredRun = QueryMatch(nullptr);
-    }
-
-    d->context.run(match);
 }
 
 bool RunnerManager::runMatch(const QueryMatch &match)
@@ -1008,12 +985,6 @@ void RunnerManager::reset()
     }
 
     d->searchJobs.clear();
-
-    if (d->deferredRun.isEnabled()) {
-        QueryMatch tmpRun = d->deferredRun;
-        d->deferredRun = QueryMatch(nullptr);
-        tmpRun.run(d->context);
-    }
 
     d->context.reset();
     Q_EMIT queryFinished();
