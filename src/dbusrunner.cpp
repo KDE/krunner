@@ -108,13 +108,22 @@ void DBusRunner::teardown()
 
 void DBusRunner::requestActions()
 {
-    clearActions();
-    m_actions.clear();
-
     // in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
     // then match together in matchForAction()
 
     for (const QString &service : qAsConst(m_matchingServices)) {
+        // if we only want to request the actions once and have done so we want to skip the service
+        // but in case it got newly loaded we need to request the actions, BUG: 435350
+        if (m_requestActionsOnce) {
+            if (m_requestedActionServices.contains(service)) {
+                continue;
+            } else {
+                m_requestedActionServices << service;
+            }
+        }
+        qDeleteAll(m_actions[service]);
+        m_actions[service].clear();
+
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
         QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().call(getActionsMethod);
         reply.waitForFinished();

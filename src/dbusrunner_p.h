@@ -44,4 +44,5 @@ private:
     bool m_actionsOnceRequested = false;
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
+    QSet<QString> m_requestedActionServices;
 };

@@ -50,6 +50,7 @@ private Q_SLOTS:
     void testDBusRunnerSyntaxIntegration();
     void testIconData();
     void testLifecycleMethods();
+    void testRequestActionsOnceWildcards();
 #if WITH_KSERVICE
     void testMulti_data();
 #endif
@@ -256,6 +257,30 @@ void DBusRunnerTest::testLifecycleMethods()
     const QStringList lifeCycleSteps = QString::fromLocal8Bit(process->readAllStandardOutput()).split(QLatin1Char('\n'), Qt::SkipEmptyParts);
     const QStringList expectedLifeCycleSteps = {QStringLiteral("Matching:foo"), QStringLiteral("Teardown")};
     QCOMPARE(lifeCycleSteps, expectedLifeCycleSteps);
+}
+
+void DBusRunnerTest::testRequestActionsOnceWildcards()
+{
+    initProperties();
+    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
+    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"), {QStringLiteral("plasma-runner.desktop")});
+    QVERIFY(md.isValid());
+    manager->loadRunner(md);
+    QCOMPARE(manager->runners().count(), 1);
+    launchQuery("foo");
+    QVERIFY(manager->matches().isEmpty());
+    QueryMatch match(manager->runners().constFirst());
+    match.setId("test");
+    match.setData(QStringList{"net.krunnertests.multi.a1"});
+    QVERIFY(manager->actionsForMatch(match).isEmpty());
+    manager->matchSessionComplete();
+
+    // We have started the process later and the actions should now be fetched when the match session is started
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
+
+    launchQuery("fooo");
+    QVERIFY(!manager->matches().isEmpty());
+    QVERIFY(!manager->actionsForMatch(match).isEmpty());
 }
 
 QTEST_MAIN(DBusRunnerTest)
