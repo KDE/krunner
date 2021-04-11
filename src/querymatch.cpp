@@ -49,6 +49,7 @@ public:
 #endif
         urls = other.urls;
         actions = other.actions;
+        multiLine = other.multiLine;
     }
 
     ~QueryMatchPrivate()
@@ -73,6 +74,7 @@ public:
     bool enabled = true;
     bool idSetByData = false;
     QList<QAction *> actions;
+    bool multiLine = false;
 };
 
 QueryMatch::QueryMatch(AbstractRunner *runner)
@@ -288,6 +290,16 @@ bool QueryMatch::operator<(const QueryMatch &other) const
     }
 
     return d->type < other.d->type;
+}
+
+void QueryMatch::setMultiLine(bool multiLine)
+{
+    d->multiLine = multiLine;
+}
+
+bool QueryMatch::isMultiLine() const
+{
+    return d->multiLine;
 }
 
 QueryMatch &QueryMatch::operator=(const QueryMatch &other)

@@ -302,6 +302,21 @@ public:
      */
     void setSelectedAction(QAction *action);
 
+    /**
+     * Set if the text should be displayed as a multiLine string
+     * @param multiLine
+     * @since 5.82
+     */
+    void setMultiLine(bool multiLine);
+
+    /**
+     * If the text should be displayed as a multiLine string
+     * If no explicit value is set set using setMultiline it will default to false
+     * @return bool
+     * @since 5.82
+     */
+    bool isMultiLine() const;
+
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
     /**
      * @return true if this match can be configured before being run
