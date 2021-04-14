@@ -241,22 +241,32 @@ void DBusRunnerTest::testIconData()
 void DBusRunnerTest::testLifecycleMethods()
 {
     QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave"), QString()});
-    initProperties();
+    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
+    auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestruntimeconfig.desktop"), {QStringLiteral("plasma-runner.desktop")});
+    manager->loadRunner(md);
+    QCOMPARE(manager->runners().count(), 1);
     // Match session should be set up automatically
-    launchQuery(QStringLiteral("foo"));
+    launchQuery(QStringLiteral("fooo"));
+
+    // Make sure we got our match, end the match session and give the process a bit of time to get the DBus signal
+    QTRY_COMPARE_WITH_TIMEOUT(manager->matches().count(), 1, 2000);
     manager->matchSessionComplete();
+    QTest::qWait(500);
 
-    // Wait for async D-Bus method to be called
-    QEventLoop loop;
-    QTimer::singleShot(1000, &loop, [&loop]() {
-        loop.quit();
-    });
-    loop.exec();
-
-    QCOMPARE(manager->matches().count(), 1);
     const QStringList lifeCycleSteps = QString::fromLocal8Bit(process->readAllStandardOutput()).split(QLatin1Char('\n'), Qt::SkipEmptyParts);
-    const QStringList expectedLifeCycleSteps = {QStringLiteral("Matching:foo"), QStringLiteral("Teardown")};
+    const QStringList expectedLifeCycleSteps = {
+        QStringLiteral("Config"),
+        QStringLiteral("Matching:fooo"),
+        QStringLiteral("Teardown"),
+    };
     QCOMPARE(lifeCycleSteps, expectedLifeCycleSteps);
+
+    // The query does not match our min letter count we set at runtime
+    launchQuery(QStringLiteral("foo"));
+    QVERIFY(manager->matches().isEmpty());
+    // The query does not match our match regex we set at runtime
+    launchQuery(QStringLiteral("barfoo"));
+    QVERIFY(manager->matches().isEmpty());
 }
 
 void DBusRunnerTest::testRequestActionsOnceWildcards()
@@ -277,6 +287,7 @@ void DBusRunnerTest::testRequestActionsOnceWildcards()
 
     // We have started the process later and the actions should now be fetched when the match session is started
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
+    QTest::qWait(500); // Wait a bit for the runner to pick up the new service
 
     launchQuery("fooo");
     QVERIFY(!manager->matches().isEmpty());

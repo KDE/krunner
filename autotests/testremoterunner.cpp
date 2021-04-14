@@ -99,6 +99,19 @@ void TestRemoteRunner::Teardown()
     }
 }
 
+QVariantMap TestRemoteRunner::Config()
+{
+    if (m_showLifecycleMethodCalls) {
+        std::cout << "Config" << std::endl;
+        std::cout.flush();
+    }
+
+    return {
+        {"X-Plasma-Runner-Match-Regex", "^fo"},
+        {"X-Plasma-Runner-Min-Letter-Count", 4},
+    };
+}
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);

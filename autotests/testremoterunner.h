@@ -2,6 +2,7 @@
 
 #include "../src/dbusutils_p.h"
 #include <QObject>
+#include <QVariantMap>
 
 class TestRemoteRunner : public QObject
 {
@@ -14,6 +15,7 @@ public Q_SLOTS:
     RemoteMatches Match(const QString &searchTerm);
     void Run(const QString &id, const QString &actionId);
     void Teardown();
+    QVariantMap Config();
 
 private:
     bool m_showLifecycleMethodCalls = false;

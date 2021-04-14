@@ -95,6 +95,15 @@ DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
 
 DBusRunner::~DBusRunner() = default;
 
+void DBusRunner::reloadConfiguration()
+{
+    // If we have already loaded a config, but the runner is told to reload it's config
+    if (m_callLifecycleMethods) {
+        suspendMatching(true);
+        requestConfig();
+    }
+}
+
 void DBusRunner::teardown()
 {
     if (m_callLifecycleMethods && m_matchWasCalled) {
@@ -103,6 +112,7 @@ void DBusRunner::teardown()
             QDBusConnection::sessionBus().asyncCall(method);
         }
     }
+    m_actionsForSessionRequested = false;
     m_matchWasCalled = false;
 }
 
@@ -126,7 +136,6 @@ void DBusRunner::requestActions()
 
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
         QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().call(getActionsMethod);
-        reply.waitForFinished();
         if (!reply.isValid()) {
             qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
             return;
@@ -140,6 +149,35 @@ void DBusRunner::requestActions()
     }
 }
 
+void DBusRunner::requestConfig()
+{
+    const QString service = *m_matchingServices.constBegin();
+    auto getConfigMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Config"));
+    QDBusPendingReply<QVariantMap> reply = QDBusConnection::sessionBus().asyncCall(getConfigMethod);
+
+    auto watcher = new QDBusPendingCallWatcher(reply);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, watcher, service]() {
+        watcher->deleteLater();
+        QDBusReply<QVariantMap> reply = *watcher;
+        if (!reply.isValid()) {
+            suspendMatching(false);
+            qCDebug(KRUNNER) << "Error requesting config; calling" << service << " :" << reply.error().name() << reply.error().message();
+            return;
+        }
+        const QVariantMap config = reply.value();
+        for (auto it = config.cbegin(), end = config.cend(); it != end; ++it) {
+            if (it.key() == QLatin1String("X-Plasma-Runner-Match-Regex")) {
+                QRegularExpression regex(it.value().toString());
+                regex.optimize();
+                setMatchRegex(regex);
+            } else if (it.key() == QLatin1String("X-Plasma-Runner-Min-Letter-Count")) {
+                setMinLetterCount(it.value().toInt());
+            }
+        }
+        suspendMatching(false);
+    });
+}
+
 void DBusRunner::match(Plasma::RunnerContext &context)
 {
     QSet<QString> services;
@@ -150,8 +188,9 @@ void DBusRunner::match(Plasma::RunnerContext &context)
 
         // Request the actions
         if ((m_requestActionsOnce && !m_actionsOnceRequested) // We only want to fetch the actions once but haven't done so yet
-            || (!m_requestActionsOnce)) { // We want to fetch the actions for each match session
+            || (!m_actionsForSessionRequested)) { // We want to fetch the actions for each match session
             m_actionsOnceRequested = true;
+            m_actionsForSessionRequested = true;
             QMetaObject::invokeMethod(this, "requestActions");
         }
     }

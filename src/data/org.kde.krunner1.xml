@@ -8,6 +8,18 @@
     <method name="Teardown"/>
 
     <!--
+        This method can be used to set runner config at runtime. In case the service wildcard is used
+        the config is only for one service requested.
+        It gets only called when the X-Plasma-Runner-Lifecycle-Methods method is explicitly set to true.
+        This method is called before Prepare and before the matching is started.
+    -->
+    <method name="Config">
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap" />
+      <arg name="config" type="{sv}" direction="out">
+      </arg>
+    </method>
+
+    <!--
         Returns a list of actions supported by this runner.
         For example, a song match returned by a music player runner can be queued, added to the playlist, or played.
         This should be constant

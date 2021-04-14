@@ -379,12 +379,16 @@ public:
 
     void runnerMatchingSuspended(bool suspended)
     {
-        if (suspended || !prepped || teardownRequested) {
+        auto *runner = qobject_cast<AbstractRunner *>(q->sender());
+        if (suspended || !prepped || teardownRequested || !runner) {
             return;
         }
 
-        if (auto *runner = qobject_cast<AbstractRunner *>(q->sender())) {
-            startJob(runner);
+        const QString query = context.query();
+        if (singleMode || runner->minLetterCount() <= query.size()) {
+            if (singleMode || !runner->hasMatchRegex() || runner->matchRegex().match(query).hasMatch()) {
+                startJob(runner);
+            }
         }
     }
 
