@@ -184,6 +184,7 @@ QList<QAction *> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match
     return match.isValid() ? match.actions() : QList<QAction *>();
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 86)
 QAction *AbstractRunner::addAction(const QString &id, const QIcon &icon, const QString &text)
 {
     QAction *a = new QAction(icon, text, this);
@@ -217,6 +218,7 @@ void AbstractRunner::clearActions()
     qDeleteAll(d->actions);
     d->actions.clear();
 }
+#endif
 
 QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
 {

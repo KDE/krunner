@@ -113,7 +113,7 @@ void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActio
         qDeleteAll(m_actions[service]);
         m_actions[service].clear();
         for (const RemoteAction &action : actions) {
-            auto a = addAction(action.id, QIcon::fromTheme(action.iconName), action.text);
+            auto a = new QAction(QIcon::fromTheme(action.iconName), action.text);
             a->setData(action.id);
             m_actions[service].append(a);
         }

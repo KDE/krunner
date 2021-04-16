@@ -517,6 +517,7 @@ protected:
      */
     virtual QList<QAction *> actionsForMatch(const Plasma::QueryMatch &match);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 86)
     /**
      * Creates and then adds an action to the action registry.
      * AbstractRunner assumes ownership of the created action.
@@ -525,7 +526,9 @@ protected:
      * @param icon The icon to display
      * @param text The text to display
      * @return the created QAction
+     * @deprecated Since 5.86 create the QAction instance manually
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "create the QAction instance manually")
     QAction *addAction(const QString &id, const QIcon &icon, const QString &text);
 
     /**
@@ -536,7 +539,9 @@ protected:
      *
      * @param id A unique identifier string
      * @param action The QAction to be stored
+     * @deprecated Since 5.86, create the QAction instance manually
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "create the QAction instance manually")
     void addAction(const QString &id, QAction *action);
 
     /**
@@ -544,24 +549,33 @@ protected:
      * AbstractRunner deletes the action once removed.
      *
      * @param id The id of the action to be removed
+     * @deprecated Since 5.86, deprecated for lack of usage
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "deprecated for lack of usage")
     void removeAction(const QString &id);
 
     /**
      * Returns the action associated with the id
+     * @deprecated Since 5.86, create the QAction instances manually and store them in a custom container instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "create the QAction instances manually and store them in a custom container instead")
     QAction *action(const QString &id) const;
 
     /**
      * Returns all registered actions
+     * @deprecated Since 5.86, create the QAction instances manually and store them in a custom container instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "create the QAction instances manually and store them in a custom container instead")
     QHash<QString, QAction *> actions() const;
 
     /**
      * Clears the action registry.
      * The action pool deletes the actions.
+     * @deprecated Since 5.86, use a custom container to store the QAction instances instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 86, "use a custom container to store the QAction instances instead")
     void clearActions();
+#endif
 
     /**
      * Adds a registered syntax that this runner understands. This is used to
