@@ -44,7 +44,9 @@ public:
         icon = other.icon;
         iconName = other.iconName;
         data = other.data;
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 82)
         mimeType = other.mimeType;
+#endif
         urls = other.urls;
         actions = other.actions;
     }
@@ -221,6 +223,7 @@ QString QueryMatch::iconName() const
     return d->iconName;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 82)
 void QueryMatch::setMimeType(const QString &mimeType)
 {
     QWriteLocker locker(d->lock);
@@ -232,6 +235,7 @@ QString QueryMatch::mimeType() const
     QReadLocker locker(d->lock);
     return d->mimeType;
 }
+#endif
 
 void QueryMatch::setUrls(const QList<QUrl> &urls)
 {

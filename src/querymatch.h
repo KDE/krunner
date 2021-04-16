@@ -230,17 +230,23 @@ public:
      */
     QString iconName() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 82)
     /**
      * Sets the MimeType, if any, associated with this match.
      * This overrides the MimeType provided by QueryContext, and should only be
      * set when it is different from the QueryContext MimeType
+     * @deprecated Since 5.82, deprecated for lack of usage
      */
+    KRUNNER_DEPRECATED_VERSION(5, 82, "deprecated for lack of usage")
     void setMimeType(const QString &mimeType);
 
     /**
      * @return the mimtype for this match, or QString() is none
+     * @deprecated Since 5.82, deprecated for lack of usage
      */
+    KRUNNER_DEPRECATED_VERSION(5, 82, "deprecated for lack of usage")
     QString mimeType() const;
+#endif
 
     /**
      * Sets the urls, if any, associated with this match
