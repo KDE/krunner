@@ -81,9 +81,15 @@ public:
         matchChangeTimer.setSingleShot(true);
         delayTimer.setSingleShot(true);
 
-        QObject::connect(&matchChangeTimer, SIGNAL(timeout()), q, SLOT(matchesChanged()));
-        QObject::connect(&context, SIGNAL(matchesChanged()), q, SLOT(scheduleMatchesChanged()));
-        QObject::connect(&delayTimer, SIGNAL(timeout()), q, SLOT(unblockJobs()));
+        QObject::connect(&matchChangeTimer, &QTimer::timeout, q, [this]() {
+            matchesChanged();
+        });
+        QObject::connect(&context, &RunnerContext::matchesChanged, q, [this]() {
+            scheduleMatchesChanged();
+        });
+        QObject::connect(&delayTimer, &QTimer::timeout, q, [this]() {
+            unblockJobs();
+        });
 
         // Set up tracking of the last time matchesChanged was signalled
         lastMatchChangeSignalled.start();
@@ -296,7 +302,9 @@ public:
         }
 
         if (runner) {
-            QObject::connect(runner, SIGNAL(matchingSuspended(bool)), q, SLOT(runnerMatchingSuspended(bool)));
+            QObject::connect(runner, &AbstractRunner::matchingSuspended, q, [this](bool state) {
+                runnerMatchingSuspended(state);
+            });
             runner->init();
             if (prepped) {
                 Q_EMIT runner->prepare();
@@ -391,7 +399,9 @@ public:
         }
 #endif
         QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-        QObject::connect(job.data(), SIGNAL(done(ThreadWeaver::JobPointer)), q, SLOT(jobDone(ThreadWeaver::JobPointer)));
+        QObject::connect(job.data(), &FindMatchesJob::done, q, [this](ThreadWeaver::JobPointer jobPtr) {
+            jobDone(jobPtr);
+        });
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
         if (runner->speed() == AbstractRunner::SlowSpeed) {
@@ -617,7 +627,9 @@ void RunnerManager::loadRunner(const QString &path)
 {
     if (!d->runners.contains(path)) {
         AbstractRunner *runner = new AbstractRunner(this, path);
-        connect(runner, SIGNAL(matchingSuspended(bool)), this, SLOT(runnerMatchingSuspended(bool)));
+        connect(runner, &AbstractRunner::matchingSuspended, this, [this](bool state) {
+            d->runnerMatchingSuspended(state);
+        });
         d->runners.insert(path, runner);
     }
 }
