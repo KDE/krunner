@@ -31,7 +31,7 @@ public:
     RunnerContextMatchMethodsTest();
     ~RunnerContextMatchMethodsTest();
 
-    RunnerContext *ctx = nullptr;
+    std::unique_ptr<RunnerContext> ctx;
     FakeRunner *runner1;
     FakeRunner *runner2;
 private Q_SLOTS:
@@ -64,8 +64,7 @@ RunnerContextMatchMethodsTest::~RunnerContextMatchMethodsTest()
 
 void RunnerContextMatchMethodsTest::init()
 {
-    delete ctx;
-    ctx = new RunnerContext();
+    ctx.reset(new RunnerContext());
 }
 
 void RunnerContextMatchMethodsTest::testAdd()
