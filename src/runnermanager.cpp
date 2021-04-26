@@ -173,7 +173,6 @@ public:
         const bool noWhiteList = whiteList.isEmpty();
         KConfigGroup pluginConf = configPrt->group("Plugins");
 
-        QStringList allCategories;
         QSet<AbstractRunner *> deadRunners;
         QMutableVectorIterator<KPluginMetaData> it(offers);
         while (it.hasNext()) {
@@ -207,7 +206,6 @@ public:
                     bool allCategoriesDisabled = true;
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
                     const QStringList categories = runner->categories();
-                    allCategories << categories;
 
                     for (const QString &cat : categories) {
                         if (enabledCategories.contains(cat)) {
@@ -231,10 +229,6 @@ public:
                 deadRunners.insert(runners.take(runnerName));
                 qCDebug(KRUNNER) << "Plugin disabled. Removing runner: " << runnerName;
             }
-        }
-
-        if (enabledCategories.isEmpty()) {
-            enabledCategories = allCategories;
         }
 
         if (!deadRunners.isEmpty()) {
