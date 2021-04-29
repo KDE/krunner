@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
+# SPDX-License-Identifier: CC0-1.0
 [Desktop Entry]
 Name=%{APPNAME}
 Comment=%{APPNAME} Runner written in Python

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
 # Exit if something fails
 set -e
 

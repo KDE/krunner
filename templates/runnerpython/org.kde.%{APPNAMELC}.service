@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: none
+# SPDX-License-Identifier: CC0-1.0
 [D-BUS Service]
 Name=org.kde.%{APPNAMELC}
 Exec=/usr/bin/python3 "%{PROJECTDIR}/%{APPNAMELC}.py"

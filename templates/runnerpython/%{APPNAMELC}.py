@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# SPDX-FileCopyrightText: %{CURRENT_YEAR} %{AUTHOR} <%{EMAIL}>
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import GLib
