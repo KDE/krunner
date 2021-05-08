@@ -41,7 +41,7 @@ using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> callback)
+void forEachDBusPlugin(std::function<void(const KPluginMetaData &)> callback)
 {
     const QStringList dBusPlugindirs =
         QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
@@ -53,12 +53,8 @@ void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> call
             const QString desktopFilePath = dir + QLatin1Char('/') + file;
             KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(desktopFilePath, serviceTypeFiles);
             if (pluginMetaData.isValid() && !addedPluginIds.contains(pluginMetaData.pluginId())) {
-                bool cancel = false;
-                callback(pluginMetaData, &cancel);
+                callback(pluginMetaData);
                 addedPluginIds << pluginMetaData.pluginId();
-                if (cancel) {
-                    return;
-                }
             }
         }
     }
@@ -797,7 +793,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
     }
 
     // get D-Bus plugins
-    forEachDBusPlugin([&](const KPluginMetaData &pluginMetaData, bool *) {
+    forEachDBusPlugin([&](const KPluginMetaData &pluginMetaData) {
         pluginMetaDatas.append(pluginMetaData);
         knownRunnerIds.insert(pluginMetaData.pluginId());
     });
