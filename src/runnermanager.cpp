@@ -46,14 +46,16 @@ void forEachDBusPlugin(std::function<void(const KPluginMetaData &, bool *)> call
     const QStringList dBusPlugindirs =
         QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
     const QStringList serviceTypeFiles(QStringLiteral("plasma-runner.desktop"));
+    QSet<QString> addedPluginIds;
     for (const QString &dir : dBusPlugindirs) {
         const QStringList desktopFiles = QDir(dir).entryList(QStringList(QStringLiteral("*.desktop")));
         for (const QString &file : desktopFiles) {
             const QString desktopFilePath = dir + QLatin1Char('/') + file;
             KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(desktopFilePath, serviceTypeFiles);
-            if (pluginMetaData.isValid()) {
+            if (pluginMetaData.isValid() && !addedPluginIds.contains(pluginMetaData.pluginId())) {
                 bool cancel = false;
                 callback(pluginMetaData, &cancel);
+                addedPluginIds << pluginMetaData.pluginId();
                 if (cancel) {
                     return;
                 }
