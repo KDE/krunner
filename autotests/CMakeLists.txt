@@ -34,7 +34,7 @@ ecm_add_tests(
 )
 
 set(demoapp_SRCS testremoterunner.cpp)
-qt5_add_dbus_adaptor(demoapp_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
+qt_add_dbus_adaptor(demoapp_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
 add_executable(testremoterunner ${demoapp_SRCS})
 target_link_libraries(testremoterunner
     Qt5::DBus
