@@ -8,7 +8,10 @@ endif()
 
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-set (KF5Runner_SRCS
+add_library(KF5Runner SHARED)
+add_library(KF5::Runner ALIAS KF5Runner)
+
+target_sources(KF5Runner PRIVATE
     abstractrunner.cpp
     dbusrunner.cpp
     runnerjobs.cpp
@@ -16,8 +19,9 @@ set (KF5Runner_SRCS
     runnercontext.cpp
     runnermanager.cpp
     runnersyntax.cpp
-    abstractrunnertest.h)
-ecm_qt_declare_logging_category(KF5Runner_SRCS
+    abstractrunnertest.h
+)
+ecm_qt_declare_logging_category(KF5Runner
     HEADER krunner_debug.h
     IDENTIFIER KRUNNER
     CATEGORY_NAME kf.runner
@@ -27,9 +31,6 @@ ecm_qt_declare_logging_category(KF5Runner_SRCS
 )
 set_property(SOURCE "data/org.kde.krunner1.xml" PROPERTY INCLUDE dbusutils_p.h)
 
-add_library(KF5Runner
-    ${KF5Runner_SRCS})
-add_library(KF5::Runner ALIAS KF5Runner)
 ecm_generate_export_header(KF5Runner
     BASE_NAME KRunner
     GROUP_BASE_NAME KF

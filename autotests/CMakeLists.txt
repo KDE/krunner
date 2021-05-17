@@ -33,9 +33,9 @@ ecm_add_tests(
     LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets Qt5::DBus
 )
 
-set(demoapp_SRCS testremoterunner.cpp)
-qt_add_dbus_adaptor(demoapp_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
-add_executable(testremoterunner ${demoapp_SRCS})
+add_executable(testremoterunner)
+qt_add_dbus_adaptor(demoapp_dbus_adaptor_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
+target_sources(testremoterunner PRIVATE testremoterunner.cpp ${demoapp_dbus_adaptor_SRCS})
 target_link_libraries(testremoterunner
     Qt5::DBus
     KF5::Runner

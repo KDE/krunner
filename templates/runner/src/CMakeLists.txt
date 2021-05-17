@@ -1,8 +1,11 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"plasma_runner_org.kde.%{APPNAMELC}\")
 
-set(%{APPNAMELC}_SRCS %{APPNAMELC}.cpp)
+add_library(%{APPNAMELC} MODULE)
 
-add_library(%{APPNAMELC} MODULE ${%{APPNAMELC}_SRCS})
+target_sources(%{APPNAMELC} PRIVATE
+    %{APPNAMELC}.cpp
+)
+
 kcoreaddons_desktop_to_json(%{APPNAMELC} plasma-runner-%{APPNAMELC}.desktop)
 target_link_libraries(%{APPNAMELC} KF5::Runner KF5::I18n)
 
