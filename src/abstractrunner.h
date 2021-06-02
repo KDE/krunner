@@ -687,8 +687,7 @@ K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
  * @since 5.72
  */
 #define K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) \
-    K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();) \
-    K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+    K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();)
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 75)
 /**

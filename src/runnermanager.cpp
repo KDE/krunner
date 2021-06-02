@@ -279,28 +279,20 @@ public:
 
         if (api.isEmpty()) {
             KPluginLoader pluginLoader(pluginMetaData.fileName());
-            const quint64 pluginVersion = pluginLoader.pluginVersion();
-            if (Plasma::isPluginVersionCompatible(pluginVersion)) {
-                if (KPluginFactory *factory = pluginLoader.factory()) {
-                    const QVariantList args
-                    {
+            if (KPluginFactory *factory = pluginLoader.factory()) {
+                const QVariantList args
+                {
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
-                        pluginMetaData.metaDataFileName(),
+                    pluginMetaData.metaDataFileName(),
 #endif
-                            QVariant::fromValue(pluginMetaData),
+                        QVariant::fromValue(pluginMetaData),
 #endif
-                    };
-                    runner = factory->create<AbstractRunner>(q, args);
-                } else {
-                    qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << pluginLoader.errorString()
-                                                 << " (library path was:" << pluginMetaData.fileName() << ")";
-                }
+                };
+                runner = factory->create<AbstractRunner>(q, args);
             } else {
-                const QString runnerVersion =
-                    QStringLiteral("%1.%2.%3").arg(pluginVersion >> 16).arg((pluginVersion >> 8) & 0x00ff).arg(pluginVersion & 0x0000ff);
-                qCWarning(KRUNNER) << "Cannot load runner" << pluginMetaData.name() << "- versions mismatch: KRunner" << Plasma::versionString() << ","
-                                   << pluginMetaData.name() << runnerVersion;
+                qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << pluginLoader.errorString()
+                                             << " (library path was:" << pluginMetaData.fileName() << ")";
             }
         } else if (api == QLatin1String("DBus")) {
             runner = new DBusRunner(pluginMetaData, q);
