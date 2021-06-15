@@ -672,8 +672,7 @@ private:
  */
 #define K_EXPORT_PLASMA_RUNNER( libname, classname )     \
 K_EXPORT_PLASMA_RUNNER_WARNING("Deprecated. Since 5.72, use K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) instead") \
-K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+K_PLUGIN_FACTORY(factory, registerPlugin<classname>();)
 #endif
 
 /**
@@ -697,8 +696,7 @@ K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
  * @deprecated Since 5.0, use K_PLUGIN_FACTORY directly
  */
 #define K_EXPORT_RUNNER_CONFIG( name, classname )     \
-K_PLUGIN_FACTORY(ConfigFactory, registerPlugin<classname>();) \
-K_EXPORT_PLUGIN_VERSION(PLASMA_VERSION)
+K_PLUGIN_FACTORY(ConfigFactory, registerPlugin<classname>();)
 #endif
 // clang-format on
 
