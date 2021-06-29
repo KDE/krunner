@@ -548,8 +548,6 @@ RunnerManager::~RunnerManager()
     if (!qApp->closingDown() && (!d->searchJobs.isEmpty() || !d->oldSearchJobs.isEmpty())) {
         new DelayedJobCleaner(d->searchJobs + d->oldSearchJobs);
     }
-
-    delete d;
 }
 
 void RunnerManager::reloadConfiguration()

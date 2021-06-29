@@ -15,6 +15,8 @@
 #include <KPluginInfo>
 #include <KPluginMetaData>
 
+#include <memory>
+
 #include "abstractrunner.h"
 #include "krunner_export.h"
 
@@ -448,7 +450,7 @@ private:
     Q_PRIVATE_SLOT(d, void unblockJobs())
     Q_PRIVATE_SLOT(d, void runnerMatchingSuspended(bool))
 
-    RunnerManagerPrivate *const d;
+    std::unique_ptr<RunnerManagerPrivate> const d;
 
     friend class RunnerManagerPrivate;
 };

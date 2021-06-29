@@ -41,10 +41,7 @@ RunnerSyntax::RunnerSyntax(const RunnerSyntax &other)
 {
 }
 
-RunnerSyntax::~RunnerSyntax()
-{
-    delete d;
-}
+RunnerSyntax::~RunnerSyntax() = default;
 
 RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
 {

@@ -8,6 +8,7 @@
 #define PLASMA_RUNNERSYNTAX_H
 
 #include <QStringList>
+#include <memory>
 
 #include "krunner_export.h"
 
@@ -126,7 +127,7 @@ public:
 #endif
 
 private:
-    RunnerSyntaxPrivate *const d;
+    std::unique_ptr<RunnerSyntaxPrivate> const d;
 };
 
 } // namespace Plasma

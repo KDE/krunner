@@ -19,6 +19,8 @@
 #include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
 #include <plasma_version.h>
 
+#include <memory>
+
 #include "krunner_export.h"
 #include "querymatch.h"
 #include "runnercontext.h"
@@ -640,7 +642,7 @@ protected:
     virtual QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match);
 
 private:
-    AbstractRunnerPrivate *const d;
+    std::unique_ptr<AbstractRunnerPrivate> const d;
     bool hasUniqueResults();
     bool hasWeakResults();
     friend class RunnerContext;

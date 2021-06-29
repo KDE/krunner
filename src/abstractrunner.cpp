@@ -87,10 +87,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const QVariantList &args)
 }
 #endif
 
-AbstractRunner::~AbstractRunner()
-{
-    delete d;
-}
+AbstractRunner::~AbstractRunner() = default;
 
 KConfigGroup AbstractRunner::config() const
 {
