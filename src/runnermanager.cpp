@@ -40,7 +40,7 @@ using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-void forEachDBusPlugin(std::function<void(const KPluginMetaData &)> callback)
+void forEachDBusPlugin(const std::function<void(const KPluginMetaData &)> &callback)
 {
     const QStringList dBusPlugindirs =
         QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
