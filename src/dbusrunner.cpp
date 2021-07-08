@@ -24,7 +24,6 @@
 
 DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     : Plasma::AbstractRunner(pluginMetaData, parent)
-    , m_mutex(QMutex::NonRecursive)
 {
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
