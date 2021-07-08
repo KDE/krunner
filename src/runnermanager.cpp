@@ -36,7 +36,6 @@
 #include "querymatch.h"
 #include "runnerjobs_p.h"
 
-using ThreadWeaver::Job;
 using ThreadWeaver::Queue;
 
 namespace Plasma
