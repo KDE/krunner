@@ -72,10 +72,6 @@ void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
 }
 #endif
 
-/*****************************************************
- *  RunnerManager::Private class
- *
- *****************************************************/
 class RunnerManagerPrivate
 {
 public:
@@ -505,10 +501,6 @@ public:
 #endif
 };
 
-/*****************************************************
- *  RunnerManager::Public class
- *
- *****************************************************/
 RunnerManager::RunnerManager(QObject *parent)
     : RunnerManager(QString(), parent)
 {
