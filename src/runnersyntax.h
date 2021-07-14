@@ -120,7 +120,7 @@ public:
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
     /**
      * @return a description of the search term for this syntax
-     * @deprecated Since 5.76, the desciption should be directly set when creating the example query.
+     * @deprecated Since 5.76, the description should be directly set when creating the example query.
      */
     KRUNNER_DEPRECATED_VERSION(5, 76, "Feature is obsolete, the search term description should be set inside of the example query directly")
     QString searchTermDescription() const;

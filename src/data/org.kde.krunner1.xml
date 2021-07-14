@@ -52,7 +52,7 @@
             - Subtext
             - Action Ids (StringList). In case you don't want to display any actions set this to an empty list.
               Otherwise all the actions will be shown for compatibility with the previous versions of the D-Bus API.
-              When the actions ony need to be fetched once you can set the X-Plasma-Request-Actions-Once property of
+              When the actions only need to be fetched once you can set the X-Plasma-Request-Actions-Once property of
               the service file to true.
             - icon-data (iiibiiay). Custom icon pixmap. Icon name should be preferred, if available.
               Format is the same as org.freedesktop.Notifications icon-data, in order: width, height, row stride,

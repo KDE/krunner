@@ -654,7 +654,7 @@ private:
 
 // clang-format off
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
-// Boilerplate to emit a version-controlled warning about the deprecated macro at leats with GCC
+// Boilerplate to emit a version-controlled warning about the deprecated macro at least with GCC
 #if KRUNNER_DEPRECATED_WARNINGS_SINCE >= 0x054800 // 5.72.0
 #   if defined(__GNUC__)
 #       define K_EXPORT_PLASMA_RUNNER_DO_PRAGMA(x) _Pragma (#x)

@@ -3,7 +3,7 @@
 This plugin provides a simple template for a KRunner plugin using dbus.
 
 The install script copies the Krunner config file and a dbus activation service file
-to their appropiate locations.  
+to their appropriate locations.
 This way the python script gets executed when KRunner
 requests matches and it does not need to be autostarted.
 
