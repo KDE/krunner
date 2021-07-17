@@ -16,6 +16,7 @@
 #include <QTimer>
 
 #include <KConfigWatcher>
+#include <KFileUtils>
 #include <KPluginMetaData>
 #include <KServiceTypeTrader>
 #include <KSharedConfig>
@@ -40,25 +41,6 @@ using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-void forEachDBusPlugin(const std::function<void(const KPluginMetaData &)> &callback)
-{
-    const QStringList dBusPlugindirs =
-        QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
-    const QStringList serviceTypeFiles(QStringLiteral("plasma-runner.desktop"));
-    QSet<QString> addedPluginIds;
-    for (const QString &dir : dBusPlugindirs) {
-        const QStringList desktopFiles = QDir(dir).entryList(QStringList(QStringLiteral("*.desktop")));
-        for (const QString &file : desktopFiles) {
-            const QString desktopFilePath = dir + QLatin1Char('/') + file;
-            KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(desktopFilePath, serviceTypeFiles);
-            if (pluginMetaData.isValid() && !addedPluginIds.contains(pluginMetaData.pluginId())) {
-                callback(pluginMetaData);
-                addedPluginIds << pluginMetaData.pluginId();
-            }
-        }
-    }
-}
-
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
 {
@@ -773,11 +755,16 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
         knownRunnerIds.insert(pluginMetaData.pluginId());
     }
 
-    // get D-Bus plugins
-    forEachDBusPlugin([&](const KPluginMetaData &pluginMetaData) {
-        pluginMetaDatas.append(pluginMetaData);
-        knownRunnerIds.insert(pluginMetaData.pluginId());
-    });
+    const QStringList dBusPlugindirs =
+        QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
+    const QStringList dbusRunnerFiles = KFileUtils::findAllUniqueFiles(dBusPlugindirs, QStringList(QStringLiteral("*.desktop")));
+    for (const QString &dbusRunnerFile : dbusRunnerFiles) {
+        KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(dbusRunnerFile, QStringList(QStringLiteral("plasma-runner.desktop")));
+        if (pluginMetaData.isValid() && !knownRunnerIds.contains(pluginMetaData.pluginId())) {
+            pluginMetaDatas.append(pluginMetaData);
+            knownRunnerIds.insert(pluginMetaData.pluginId());
+        }
+    }
 
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     // also search for deprecated kservice-based KRunner plugins metadata
