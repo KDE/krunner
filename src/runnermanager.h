@@ -340,6 +340,7 @@ public:
     QMimeData *mimeDataForMatch(const QString &matchId) const;
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 85)
     /**
      * Returns a list of all known Runner implementations
      *
@@ -350,8 +351,17 @@ public:
      *                  registered to an application.
      * @return list of metadata of known runners
      * @since 5.72
+     * @deprecated Since 5.85, the concept of parent apps for runners is deprecated, use no-arg overload instead
      **/
-    static QVector<KPluginMetaData> runnerMetaDataList(const QString &parentApp = QString());
+    KRUNNER_DEPRECATED_VERSION(5, 85, "The concept of parent apps for runners is deprecated, use no-arg overload instead")
+    static QVector<KPluginMetaData> runnerMetaDataList(const QString &parentApp);
+#endif
+
+    /**
+     * @return metadata list of all known Runner implementations
+     * @since 5.72
+     */
+    static QVector<KPluginMetaData> runnerMetaDataList();
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
     /**

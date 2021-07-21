@@ -745,6 +745,7 @@ QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
     return match.isValid() ? match.runner()->mimeDataForMatch(match) : nullptr;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 85)
 QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parentApp)
 {
     // get binary plugins
@@ -777,6 +778,47 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
                                                    : QStringLiteral("[X-KDE-ParentApp] == '") + parentApp + QLatin1Char('\'');
 
     const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    const KPluginInfo::List backwardCompatPluginInfos = KPluginInfo::fromServices(offers);
+    QT_WARNING_POP
+
+    for (const KPluginInfo &pluginInfo : backwardCompatPluginInfos) {
+        if (!knownRunnerIds.contains(pluginInfo.pluginName())) {
+            warnAboutDeprecatedMetaData(pluginInfo);
+            pluginMetaDatas.append(pluginInfo.toMetaData());
+        }
+    }
+#endif
+
+    return pluginMetaDatas;
+}
+#endif
+
+QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
+{
+    QVector<KPluginMetaData> pluginMetaDatas = KPluginLoader::findPlugins(QStringLiteral("kf5/krunner"));
+    QSet<QString> knownRunnerIds;
+    knownRunnerIds.reserve(pluginMetaDatas.size());
+    for (const KPluginMetaData &pluginMetaData : qAsConst(pluginMetaDatas)) {
+        knownRunnerIds.insert(pluginMetaData.pluginId());
+    }
+
+    const QStringList dBusPlugindirs =
+        QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
+    const QStringList dbusRunnerFiles = KFileUtils::findAllUniqueFiles(dBusPlugindirs, QStringList(QStringLiteral("*.desktop")));
+    for (const QString &dbusRunnerFile : dbusRunnerFiles) {
+        KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(dbusRunnerFile, QStringList(QStringLiteral("plasma-runner.desktop")));
+        if (pluginMetaData.isValid() && !knownRunnerIds.contains(pluginMetaData.pluginId())) {
+            pluginMetaDatas.append(pluginMetaData);
+            knownRunnerIds.insert(pluginMetaData.pluginId());
+        }
+    }
+
+#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+    // also search for deprecated kservice-based KRunner plugins metadata
+    const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"));
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
     QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
