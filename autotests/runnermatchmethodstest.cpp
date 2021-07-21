@@ -169,6 +169,7 @@ void RunnerContextMatchMethodsTest::testNonExistentMatchIds()
     QVERIFY(!ctx->match(QStringLiteral("does_not_exist")).isValid());
     QCOMPARE(ctx->match(QStringLiteral("does_not_exist")).runner(), nullptr);
 }
+#endif
 
 void RunnerContextMatchMethodsTest::testDuplicateIds()
 {
@@ -192,7 +193,6 @@ void RunnerContextMatchMethodsTest::testDuplicateIds()
     QCOMPARE(matches.at(2), match4);
 }
 
-#endif
 
 QTEST_MAIN(RunnerContextMatchMethodsTest)
 
