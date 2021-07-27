@@ -157,7 +157,7 @@ public:
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 85)
             const QString tryExec = description.value(QStringLiteral("TryExec"));
             if (!tryExec.isEmpty()) {
-                qCWarning(KRUNNER) << "The TryExec property is deprecated, manually check if the application exists if needed";
+                qCDebug(KRUNNER) << description.pluginId() << "The TryExec property is deprecated, manually check if the application exists if needed";
                 if (QStandardPaths::findExecutable(tryExec).isEmpty()) {
                     // we don't actually have this application!
                     continue;
