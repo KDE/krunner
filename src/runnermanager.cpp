@@ -154,11 +154,16 @@ public:
             KPluginMetaData &description = it.next();
             qCDebug(KRUNNER) << "Loading runner: " << description.pluginId();
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 85)
             const QString tryExec = description.value(QStringLiteral("TryExec"));
-            if (!tryExec.isEmpty() && QStandardPaths::findExecutable(tryExec).isEmpty()) {
-                // we don't actually have this application!
-                continue;
+            if (!tryExec.isEmpty()) {
+                qCWarning(KRUNNER) << "The TryExec property is deprecated, manually check if the application exists if needed";
+                if (QStandardPaths::findExecutable(tryExec).isEmpty()) {
+                    // we don't actually have this application!
+                    continue;
+                }
             }
+#endif
 
             const QString runnerName = description.pluginId();
             const bool isPluginEnabled = pluginConf.readEntry(runnerName + QLatin1String("Enabled"), description.isEnabledByDefault());
