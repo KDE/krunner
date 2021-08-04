@@ -26,3 +26,4 @@ cmake-build-debug*
 .vscode
 /compile_commands.json
 .clangd
+.cache
