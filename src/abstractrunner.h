@@ -534,7 +534,7 @@ protected:
      * // in the runner class definition
      * QList<QAction *> m_actions;
      * // when initializing the runner, optionally set the date if needed
-     * auto action = new QAction(QIcon::fromTheme(iconName), text);
+     * auto action = new QAction(QIcon::fromTheme(iconName), text, this);
      * m_actions << action;
      * // when creating the match
      * match.setActions(m_actions);
