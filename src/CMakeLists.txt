@@ -103,13 +103,11 @@ install(FILES
    data/servicetypes/plasma-runner.desktop
    DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
 
-add_custom_target(copy_servicetypes)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
-add_custom_command(TARGET copy_servicetypes PRE_BUILD COMMAND
+add_custom_command(TARGET KF5Runner PRE_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy
     ${CMAKE_CURRENT_SOURCE_DIR}/data/servicetypes/plasma-runner.desktop
     ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
-add_dependencies(KF5Runner copy_servicetypes)
 
 ecm_qt_install_logging_categories(
     EXPORT KRUNNER
