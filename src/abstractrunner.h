@@ -522,11 +522,23 @@ protected:
      * Creates and then adds an action to the action registry.
      * AbstractRunner assumes ownership of the created action.
      *
+     * @see QueryMatch::setActions
+     * @see actionsForMatch
+     *
      * @param id A unique identifier string
      * @param icon The icon to display
      * @param text The text to display
      * @return the created QAction
      * @deprecated Since 5.86 create the QAction instance manually
+     * @code
+     * // in the runner class definition
+     * QList<QAction *> m_actions;
+     * // when initializing the runner, optionally set the date if needed
+     * auto action = new QAction(QIcon::fromTheme(iconName), text);
+     * m_actions << action;
+     * // when creating the match
+     * match.setActions(m_actions);
+     * @endcode
      */
     KRUNNER_DEPRECATED_VERSION(5, 86, "create the QAction instance manually")
     QAction *addAction(const QString &id, const QIcon &icon, const QString &text);
