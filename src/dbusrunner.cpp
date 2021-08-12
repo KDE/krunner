@@ -23,8 +23,8 @@
 
 #define IFACE_NAME "org.kde.krunner1"
 
-DBusRunner::DBusRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
-    : Plasma::AbstractRunner(pluginMetaData, parent)
+DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
+    : Plasma::AbstractRunner(parent, pluginMetaData, args)
 {
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();

@@ -441,6 +441,15 @@ protected:
     friend class RunnerManager;
     friend class RunnerManagerPrivate;
 
+    /**
+     * Constructor for a KRunner plugin
+     * @param parent parent object for this runner
+     * @param pluginMetaData metadata that was embedded in the runner
+     * @param args for compatibility with KPluginFactory, should be passed on to the parent constructor
+     * @since 5.72
+     */
+    AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
     KRUNNER_DEPRECATED_VERSION(5, 77, "use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)")
     explicit AbstractRunner(QObject *parent = nullptr, const QString &path = QString());
@@ -455,10 +464,10 @@ protected:
     explicit AbstractRunner(const KService::Ptr service, QObject *parent = nullptr);
 #endif
 #endif
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 86)
     /// @since 5.72
     explicit AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent = nullptr);
-    /// @since 5.77
-    AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+#endif
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
     /// @deprecated Since 5.77, use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)
     KRUNNER_DEPRECATED_VERSION(5, 77, "use AbstractRunner(QObject *, const KPluginMetaData &, const QVariantList &)")

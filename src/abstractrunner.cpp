@@ -32,12 +32,14 @@ AbstractRunner::AbstractRunner(QObject *parent, const QString &path)
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 86)
 AbstractRunner::AbstractRunner(const KPluginMetaData &pluginMetaData, QObject *parent)
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this))
 {
     d->init(pluginMetaData);
 }
+#endif
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 AbstractRunner::AbstractRunner(const KService::Ptr service, QObject *parent)
