@@ -285,7 +285,8 @@ public:
         } else if (api.startsWith(QLatin1String("DBus"))) {
             runner = new DBusRunner(q, pluginMetaData, {});
         } else {
-            runner = new AbstractRunner(q, pluginMetaData, {});
+            qCWarning(KRUNNER) << "Unknown X-Plasma-API requested for runner" << pluginMetaData.fileName();
+            return nullptr;
         }
 
         if (runner) {
