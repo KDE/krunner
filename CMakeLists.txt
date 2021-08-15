@@ -38,7 +38,7 @@ ecm_setup_version(PROJECT
 )
 
 # Dependencies
-set(REQUIRED_QT_VERSION 5.15.0)
+set(REQUIRED_QT_VERSION 5.15.2)
 
 find_package(Qt5 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Widgets Quick)
 
@@ -70,7 +70,7 @@ ecm_setup_qtplugin_macro_names(
         PACKAGE_SETUP_AUTOMOC_VARIABLES
 )
 
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00) # must port away from qmlRegisterInterface before upgrading this to 050f00
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02) # must port away from qmlRegisterInterface before upgrading this to 050f00
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055100)
 add_definitions(-DPLASMA_DISABLE_DEPRECATED_BEFORE_AND_AT=0x050500) # needed because we use Plasma::Package in the API
 
