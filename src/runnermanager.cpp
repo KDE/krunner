@@ -266,8 +266,6 @@ public:
         const QString api = pluginMetaData.value(QStringLiteral("X-Plasma-API"));
 
         if (api.isEmpty()) {
-            KPluginLoader pluginLoader(pluginMetaData.fileName());
-            if (KPluginFactory *factory = pluginLoader.factory()) {
                 const QVariantList args
                 {
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 77)
@@ -277,11 +275,13 @@ public:
                         QVariant::fromValue(pluginMetaData),
 #endif
                 };
-                runner = factory->create<AbstractRunner>(q, args);
-            } else {
-                qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << pluginLoader.errorString()
-                                             << " (library path was:" << pluginMetaData.fileName() << ")";
-            }
+                auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q, args);
+                if (res) {
+                    runner = res.plugin;
+                } else {
+                    qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << res.errorString
+                                                 << " (library path was:" << pluginMetaData.fileName() << ")";
+                }
         } else if (api.startsWith(QLatin1String("DBus"))) {
             runner = new DBusRunner(q, pluginMetaData, {});
         } else {
@@ -771,7 +771,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
         return md.value(QStringLiteral("X-KDE-ParentApp")) == parentApp;
     };
 
-    QVector<KPluginMetaData> pluginMetaDatas = KPluginLoader::findPlugins(QStringLiteral("kf5/krunner"), filterParentApp);
+    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf5/krunner"), filterParentApp);
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
     for (const KPluginMetaData &pluginMetaData : qAsConst(pluginMetaDatas)) {
@@ -815,7 +815,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
 
 QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 {
-    QVector<KPluginMetaData> pluginMetaDatas = KPluginLoader::findPlugins(QStringLiteral("kf5/krunner"));
+    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf5/krunner"));
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
     for (const KPluginMetaData &pluginMetaData : qAsConst(pluginMetaDatas)) {

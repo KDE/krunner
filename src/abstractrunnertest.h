@@ -3,7 +3,6 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#include <KPluginLoader>
 #include <KPluginMetaData>
 #include <KRunner/AbstractRunner>
 #include <KRunner/RunnerManager>
@@ -43,13 +42,12 @@ public:
         QVERIFY(md.isValid());
         manager->loadRunner(md);
 #else
-        auto pluginMetaDatas = KPluginLoader::findPluginsById(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_DIR),
-                                                              QFileInfo(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_NAME)).baseName());
-        QCOMPARE(pluginMetaDatas.count(), 1);
-        KPluginMetaData runnerMetadata = pluginMetaDatas.first();
+        auto metaData = KPluginMetaData::findPluginById(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_DIR),
+                                                        QFileInfo(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_NAME)).baseName());
+        QVERIFY(metaData.isValid());
 
         // Set internal variables
-        manager->loadRunner(runnerMetadata);
+        manager->loadRunner(metaData);
 #endif
         QCOMPARE(manager->runners().count(), 1);
         runner = manager->runners().constFirst();
