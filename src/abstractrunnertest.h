@@ -3,6 +3,9 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
+#ifndef PLASMA_ABSTRACTRUNNERTEST_H
+#define PLASMA_ABSTRACTRUNNERTEST_H
+
 #include <KPluginMetaData>
 #include <KRunner/AbstractRunner>
 #include <KRunner/RunnerManager>
@@ -113,3 +116,5 @@ private:
 #endif
 };
 }
+
+#endif
