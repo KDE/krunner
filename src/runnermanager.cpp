@@ -337,7 +337,7 @@ public:
 
         if (searchJobs.isEmpty() && oldSearchJobs.isEmpty()) {
             if (allRunnersPrepped) {
-                for (AbstractRunner *runner : qAsConst(runners)) {
+                for (AbstractRunner *runner : std::as_const(runners)) {
                     Q_EMIT runner->teardown();
                 }
 
@@ -456,7 +456,7 @@ public:
             historyEntries.removeOne(a);
         }
 
-        for (const QString &deletedActivity : qAsConst(historyEntries)) {
+        for (const QString &deletedActivity : std::as_const(historyEntries)) {
             historyGroup.deleteEntry(deletedActivity);
         }
         historyGroup.sync();
@@ -583,7 +583,7 @@ QStringList RunnerManager::enabledCategories() const
     QStringList list = d->stateData.readEntry("enabledCategories", QStringList());
     if (list.isEmpty()) {
         list.reserve(d->runners.count());
-        for (AbstractRunner *runner : qAsConst(d->runners)) {
+        for (AbstractRunner *runner : std::as_const(d->runners)) {
             list << runner->categories();
         }
     }
@@ -683,7 +683,7 @@ void RunnerManager::setSingleMode(bool singleMode)
 QStringList RunnerManager::singleModeAdvertisedRunnerIds() const
 {
     QStringList advertiseSingleRunnerIds;
-    for (auto *runner : qAsConst(d->runners)) {
+    for (auto *runner : std::as_const(d->runners)) {
         if (runner->metadata(RunnerReturnPluginMetaData).rawData().value(QStringLiteral("X-Plasma-AdvertiseSingleRunnerQueryMode")).toVariant().toBool()) {
             advertiseSingleRunnerIds << runner->id();
         }
@@ -774,7 +774,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
     QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf5/krunner"), filterParentApp);
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
-    for (const KPluginMetaData &pluginMetaData : qAsConst(pluginMetaDatas)) {
+    for (const KPluginMetaData &pluginMetaData : std::as_const(pluginMetaDatas)) {
         knownRunnerIds.insert(pluginMetaData.pluginId());
     }
 
@@ -818,7 +818,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
     QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf5/krunner"));
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
-    for (const KPluginMetaData &pluginMetaData : qAsConst(pluginMetaDatas)) {
+    for (const KPluginMetaData &pluginMetaData : std::as_const(pluginMetaDatas)) {
         knownRunnerIds.insert(pluginMetaData.pluginId());
     }
 
@@ -875,7 +875,7 @@ void RunnerManager::setupMatchSession()
             d->singleRunnerPrepped = true;
         }
     } else {
-        for (AbstractRunner *runner : qAsConst(d->runners)) {
+        for (AbstractRunner *runner : std::as_const(d->runners)) {
             if (!d->disabledRunnerIds.contains(runner->name())) {
                 Q_EMIT runner->prepare();
             }
@@ -946,7 +946,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     }
 
     const int queryLetterCount = term.count();
-    for (Plasma::AbstractRunner *r : qAsConst(runnable)) {
+    for (Plasma::AbstractRunner *r : std::as_const(runnable)) {
         if (r->isMatchingSuspended()) {
             continue;
         }
@@ -1036,14 +1036,14 @@ void RunnerManager::enableKNotifyPluginWatcher()
             if (groupName == QLatin1String("Plugins")) {
                 reloadConfiguration();
             } else if (groupName == QLatin1String("Runners")) {
-                for (auto *runner : qAsConst(d->runners)) {
+                for (auto *runner : std::as_const(d->runners)) {
                     // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
                     if (changedNames.contains(runner->metadata(RunnerReturnPluginMetaData).pluginId().toUtf8())) {
                         runner->reloadConfiguration();
                     }
                 }
             } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")) {
-                for (auto *runner : qAsConst(d->runners)) {
+                for (auto *runner : std::as_const(d->runners)) {
                     // If the same config group has been modified which gets created in AbstractRunner::config()
                     if (groupName == runner->id()) {
                         runner->reloadConfiguration();

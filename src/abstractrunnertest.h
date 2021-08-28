@@ -103,7 +103,7 @@ public:
      */
     void killRunningDBusProcesses()
     {
-        for (auto &process : qAsConst(m_runningProcesses)) {
+        for (auto &process : std::as_const(m_runningProcesses)) {
             process->kill();
             QVERIFY(process->waitForFinished());
         }

@@ -393,7 +393,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     QList<QueryMatch> presentMatchList;
 
     LOCK_FOR_READ(d)
-    for (const QueryMatch &match : qAsConst(d->matches)) {
+    for (const QueryMatch &match : std::as_const(d->matches)) {
         if (match.runner() == runner) {
             presentMatchList << match;
         }
@@ -405,7 +405,7 @@ bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
     }
 
     LOCK_FOR_WRITE(d)
-    for (const QueryMatch &match : qAsConst(presentMatchList)) {
+    for (const QueryMatch &match : std::as_const(presentMatchList)) {
         d->matches.removeAll(match);
     }
     UNLOCK(d)

@@ -123,7 +123,7 @@ void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActio
 void DBusRunner::teardown()
 {
     if (m_matchWasCalled) {
-        for (const QString &service : qAsConst(m_matchingServices)) {
+        for (const QString &service : std::as_const(m_matchingServices)) {
             auto method = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Teardown"));
             QDBusConnection::sessionBus().asyncCall(method);
         }
@@ -137,7 +137,7 @@ QMap<QString, RemoteActions> DBusRunner::requestActions()
     // in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
     // then match together in matchForAction()
     QMap<QString, RemoteActions> returnedActions;
-    for (const QString &service : qAsConst(m_matchingServices)) {
+    for (const QString &service : std::as_const(m_matchingServices)) {
         // if we only want to request the actions once and have done so we want to skip the service
         // but in case it got newly loaded we need to request the actions, BUG: 435350
         if (m_requestActionsOnce) {
@@ -216,7 +216,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
     QList<QSharedPointer<QDBusPendingCallWatcher>> watchers;
 
-    for (const QString &service : qAsConst(services)) {
+    for (const QString &service : std::as_const(services)) {
         auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
@@ -277,7 +277,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
             Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
     }
     // we're done matching when every service replies
-    for (auto w : qAsConst(watchers)) {
+    for (auto w : std::as_const(watchers)) {
         w->waitForFinished();
     }
 }
