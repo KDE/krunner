@@ -7,7 +7,7 @@
 # In case of DBus runners the DESKTOP_FILE parameter must be set. This is required for loading the runner from the
 # metadata file.
 # Since 5.80.0
-# SPDX-FileCopyrightText: (C) 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
+# SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
 # SPDX-License-Identifier: BSD-2-Clause
 
 function(configure_krunner_test TEST_TARGET RUNNER_TARGET)

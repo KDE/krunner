@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: KDE contributors
+# SPDX-License-Identifier: BSD-2-Clause
 project(runnermodel)
 
 add_library(runnermodelplugin SHARED)

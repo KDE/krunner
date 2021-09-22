@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: KDE Contributors
+# SPDX-License-Identifier: BSD-2-Clause
+
 # TODO: merge QML plugin from Milou into this instead and provide a plugin again officially,
 # named "org.kde.krunner" to follow naming pattern for QML plugins from KF modules
 if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND

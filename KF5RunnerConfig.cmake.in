@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Friedrich W. H. Kossebau <kossebau@kde.org>
+# SPDX-FileCopyrightText: Aleix Pol <aleixpol@kde.org>
+# SPDX-License-Identifier: BSD-2-Clause
+
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
