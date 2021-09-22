@@ -7,3 +7,7 @@ Files: autotests/*.desktop
 Copyright: KRunner contributors
 License: CC0-1.0
 
+Files: templates/runnerpython/*
+Copyright: Alexander Lohnau
+License: LGPL-2.1-or-later
+
