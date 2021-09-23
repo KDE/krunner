@@ -11,3 +11,7 @@ Files: templates/runnerpython/*
 Copyright: Alexander Lohnau
 License: LGPL-2.1-or-later
 
+Files: templates/runner/*
+Copyright: KDE Contributors
+License: GPL-2.0-or-later
+
