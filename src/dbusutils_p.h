@@ -1,3 +1,11 @@
+/*
+    SPDX-FileCopyrightText: 2017, 2018 David Edmundson <davidedmundson@kde.org>
+    SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
+    SPDX-FileCopyrightText: 2020 Kai Uwe Broulik <kde@broulik.de>
+
+    SPDX-License-Identifier: LGPL-2.0-or-later
+*/
+
 #pragma once
 
 #include <KRunner/QueryMatch>
