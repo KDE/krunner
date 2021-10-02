@@ -5,10 +5,8 @@ Dependencies:
 - 'on': ['Linux', 'FreeBSD', 'Windows', 'macOS']
   'require':
     'frameworks/extra-cmake-modules': '@same'
-    'frameworks/solid' : '@same'
     'frameworks/kio' : '@same'
     'frameworks/kconfig' : '@same'
-    'frameworks/kcompletion' : '@same'
     'frameworks/kservice' : '@same'
     'frameworks/threadweaver' : '@same'
     'frameworks/ki18n' : '@same'
