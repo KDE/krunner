@@ -309,11 +309,15 @@ public:
     void loadRunner(const QString &path);
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
     /**
      * @return the list of allowed plugins
      * @since 4.4
+     * @deprecated Since 5.88, reading allowed runners from the config is deprecated, use @p runners() and get their @p AbstractRunner::id instead
      */
+    KRUNNER_DEPRECATED_VERSION(5, 88, "reading allowed runners from the config is deprecated, use runners() and get their ids instead")
     QStringList allowedRunners() const;
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
     /**

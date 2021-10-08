@@ -572,10 +572,12 @@ void RunnerManager::setEnabledCategories(const QStringList &categories)
 }
 #endif
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 88)
 QStringList RunnerManager::allowedRunners() const
 {
     return d->stateData.readEntry("pluginWhiteList", QStringList());
 }
+#endif
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
 QStringList RunnerManager::enabledCategories() const
