@@ -172,6 +172,8 @@ public:
     static RunnerContext s_dummyContext;
     bool singleRunnerQueryMode = false;
     QMap<QString, QueryMatch> uniqueIds;
+    QString requestedText;
+    int requestedCursorPosition = 0;
 };
 
 RunnerContext RunnerContextPrivate::s_dummyContext;
@@ -251,6 +253,7 @@ void RunnerContext::setQuery(const QString &term)
         return;
     }
 
+    d->requestedText.clear(); // Invalidate this field whenever the query changes
     d->term = term;
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
     d->determineType();
@@ -433,6 +436,12 @@ QueryMatch RunnerContext::match(const QString &id) const
 }
 #endif
 
+void RunnerContext::requestQueryStringUpdate(const QString &text, int cursorPosition) const
+{
+    d->requestedText = text;
+    d->requestedCursorPosition = cursorPosition;
+}
+
 void RunnerContext::setSingleRunnerQueryMode(bool enabled)
 {
     d->singleRunnerQueryMode = enabled;
@@ -477,6 +486,15 @@ void RunnerContext::run(const QueryMatch &match)
 {
     ++d->launchCounts[match.id()];
     match.run(*this);
+}
+
+QString RunnerContext::requestedQueryString() const
+{
+    return d->requestedText;
+}
+int RunnerContext::requestedCursorPosition() const
+{
+    return d->requestedCursorPosition;
 }
 
 } // Plasma namespace

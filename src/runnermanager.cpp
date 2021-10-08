@@ -740,7 +740,12 @@ bool RunnerManager::runMatch(const QueryMatch &match)
         }
     }
     d->context.run(match);
-    return true;
+    if (d->context.requestedQueryString().isEmpty()) {
+        return true;
+    } else {
+        Q_EMIT setSearchTerm(d->context.requestedQueryString(), d->context.requestedCursorPosition());
+        return false;
+    }
 }
 
 QList<QAction *> RunnerManager::actionsForMatch(const QueryMatch &match)

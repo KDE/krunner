@@ -232,6 +232,18 @@ public:
 #endif
 
     /**
+     * Request that KRunner updates the query string and stasy open, even after running a match.
+     * This method is const so it can be called in a const context.
+     *
+     * @param text Text that will be displayed in the search field
+     * @param cursorPosition Position of the cursor, if this is different than the length of the text,
+     * the characters between the position and text will be selected
+     *
+     * @since 5.90
+     */
+    void requestQueryStringUpdate(const QString &text, int cursorPosition) const;
+
+    /**
      * Sets single runner query mode. Note that a call to reset() will
      * turn off single runner query mode.
      * TODO KF6 Make private
@@ -279,6 +291,9 @@ Q_SIGNALS:
     void matchesChanged();
 
 private:
+    QString requestedQueryString() const;
+    int requestedCursorPosition() const;
+    friend class RunnerManager;
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
 
