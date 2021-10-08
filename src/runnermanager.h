@@ -386,7 +386,7 @@ public:
      * @since 5.73
      * @see reloadConfiguration
      */
-    void enableKNotifyPluginWatcher();
+    void enableKNotifyPluginWatcher(); // TODO KF6 make enabling the watcher default behavior and remove the method
 
 public Q_SLOTS:
     /**
@@ -420,7 +420,7 @@ public Q_SLOTS:
     /**
      * Convenience version of above
      */
-    void launchQuery(const QString &term);
+    void launchQuery(const QString &term); // TODO KF6 Merge with other overload and use default argument
 
     /**
      * Reset the current data and stops the query
