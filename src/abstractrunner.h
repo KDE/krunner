@@ -712,6 +712,7 @@ K_EXPORT_PLASMA_RUNNER_WARNING("Deprecated. Since 5.72, use K_EXPORT_PLASMA_RUNN
 K_PLUGIN_FACTORY(factory, registerPlugin<classname>();)
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 88)
 /**
  * @relates Plasma::AbstractRunner
  *
@@ -721,9 +722,11 @@ K_PLUGIN_FACTORY(factory, registerPlugin<classname>();)
  * @param jsonFile name of the JSON file to be compiled into the plugin as metadata
  *
  * @since 5.72
+ * @deprecated Since 5.88 use K_PLUGIN_CLASS_WITH_JSON instead
  */
 #define K_EXPORT_PLASMA_RUNNER_WITH_JSON(classname, jsonFile) \
     K_PLUGIN_FACTORY_WITH_JSON(classname ## Factory, jsonFile, registerPlugin<classname>();)
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 75)
 /**

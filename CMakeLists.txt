@@ -63,6 +63,7 @@ if(KF5Activities_FOUND)
     set(HAVE_KACTIVITIES TRUE)
 endif()
 
+# TODO KF6 remove
 ecm_setup_qtplugin_macro_names(
     JSON_NONE
         "K_EXPORT_PLASMA_RUNNER"
