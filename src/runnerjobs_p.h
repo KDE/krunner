@@ -31,7 +31,7 @@ namespace Plasma
 class DelayedRunnerPolicy : public ThreadWeaver::QueuePolicy
 {
 public:
-    ~DelayedRunnerPolicy();
+    ~DelayedRunnerPolicy() override;
 
     static DelayedRunnerPolicy &instance();
 
@@ -120,7 +120,7 @@ class DelayedJobCleaner : public QObject
     Q_OBJECT
 public:
     DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob>> &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
-    ~DelayedJobCleaner();
+    ~DelayedJobCleaner() override;
 
 private Q_SLOTS:
     void jobDone(ThreadWeaver::JobPointer);

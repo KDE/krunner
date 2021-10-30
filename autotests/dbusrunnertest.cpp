@@ -37,7 +37,7 @@ class DBusRunnerTest : public AbstractRunnerTest
     Q_OBJECT
 public:
     DBusRunnerTest();
-    ~DBusRunnerTest();
+    ~DBusRunnerTest() override;
 
 private Q_SLOTS:
     void initTestCase();

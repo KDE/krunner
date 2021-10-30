@@ -30,7 +30,7 @@ class RunnerContextMatchMethodsTest : public QObject
     Q_OBJECT
 public:
     RunnerContextMatchMethodsTest();
-    ~RunnerContextMatchMethodsTest();
+    ~RunnerContextMatchMethodsTest() override;
 
     std::unique_ptr<RunnerContext> ctx;
     FakeRunner *runner1;

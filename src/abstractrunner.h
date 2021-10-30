@@ -84,7 +84,7 @@ public:
     /** An ordered list of runners */
     typedef QList<AbstractRunner *> List;
 
-    virtual ~AbstractRunner();
+    ~AbstractRunner() override;
 
     /**
      * This is the main query method. It should trigger creation of

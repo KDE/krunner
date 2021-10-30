@@ -60,7 +60,7 @@ public:
      */
     RunnerContext &operator=(const RunnerContext &other);
 
-    ~RunnerContext();
+    ~RunnerContext() override;
 
     /**
      * Resets the search term for this object.
