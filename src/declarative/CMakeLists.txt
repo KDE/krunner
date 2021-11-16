@@ -6,7 +6,9 @@ add_library(runnermodelplugin SHARED)
 
 target_sources(runnermodelplugin PRIVATE
     runnermodel.cpp
+    runnermodel.h
     runnermodelplugin.cpp
+    runnermodelplugin.h
 )
 
 ecm_qt_declare_logging_category(runnermodelplugin

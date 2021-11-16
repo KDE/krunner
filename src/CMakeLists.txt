@@ -16,13 +16,23 @@ add_library(KF5::Runner ALIAS KF5Runner)
 
 target_sources(KF5Runner PRIVATE
     abstractrunner.cpp
-    dbusrunner.cpp
-    runnerjobs.cpp
-    querymatch.cpp
-    runnercontext.cpp
-    runnermanager.cpp
-    runnersyntax.cpp
+    abstractrunner.h
+    abstractrunner_p.h
     abstractrunnertest.h
+    dbusrunner.cpp
+    dbusrunner_p.h
+    dbusutils_p.h
+    querymatch.cpp
+    querymatch.h
+    runnercontext.cpp
+    runnercontext.h
+    runnerjobs.cpp
+    runnerjobs_p.h
+    runnermanager.cpp
+    runnermanager.h
+    runnersyntax.cpp
+    runnersyntax.h
+
 )
 ecm_qt_declare_logging_category(KF5Runner
     HEADER krunner_debug.h
