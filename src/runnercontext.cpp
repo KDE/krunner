@@ -171,6 +171,7 @@ public:
     RunnerContext *q;
     static RunnerContext s_dummyContext;
     bool singleRunnerQueryMode = false;
+    bool shouldIgnoreCurrentMatchForHistory = false;
     QMap<QString, QueryMatch> uniqueIds;
     QString requestedText;
     int requestedCursorPosition = 0;
@@ -243,6 +244,7 @@ void RunnerContext::reset()
     d->uniqueIds.clear();
     d->type = UnknownType;
     d->singleRunnerQueryMode = false;
+    d->shouldIgnoreCurrentMatchForHistory = false;
 }
 
 void RunnerContext::setQuery(const QString &term)
@@ -450,6 +452,16 @@ void RunnerContext::setSingleRunnerQueryMode(bool enabled)
 bool RunnerContext::singleRunnerQueryMode() const
 {
     return d->singleRunnerQueryMode;
+}
+
+void RunnerContext::ignoreCurrentMatchForHistory() const
+{
+    d->shouldIgnoreCurrentMatchForHistory = true;
+}
+
+bool RunnerContext::shouldIgnoreCurrentMatchForHistory() const
+{
+    return d->shouldIgnoreCurrentMatchForHistory;
 }
 
 void RunnerContext::restore(const KConfigGroup &config)

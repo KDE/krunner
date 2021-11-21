@@ -731,8 +731,8 @@ void RunnerManager::run(const QueryMatch &match)
 
 bool RunnerManager::runMatch(const QueryMatch &match)
 {
-    d->addToHistory();
     if (match.type() == Plasma::QueryMatch::InformationalMatch && !match.selectedAction()) {
+        d->addToHistory();
         const QString info = match.data().toString();
         if (!info.isEmpty()) {
             Q_EMIT setSearchTerm(info, info.length());
@@ -740,6 +740,9 @@ bool RunnerManager::runMatch(const QueryMatch &match)
         }
     }
     d->context.run(match);
+    if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
+        d->addToHistory();
+    }
     if (d->context.requestedQueryString().isEmpty()) {
         return true;
     } else {

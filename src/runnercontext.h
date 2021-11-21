@@ -261,6 +261,13 @@ public:
     bool singleRunnerQueryMode() const;
 
     /**
+     * Set this to true in the AbstractRunner::run method to prevent the entry
+     * from being saved to the history.
+     * @since 5.90
+     */
+    void ignoreCurrentMatchForHistory() const;
+
+    /**
      * Sets the launch counts for the associated match ids
      *
      * If a runner adds a match to this context, the context will check if the
@@ -293,6 +300,7 @@ Q_SIGNALS:
 private:
     QString requestedQueryString() const;
     int requestedCursorPosition() const;
+    bool shouldIgnoreCurrentMatchForHistory() const;
     friend class RunnerManager;
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
