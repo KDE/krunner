@@ -172,7 +172,7 @@ public:
 #endif
 
             const QString runnerName = description.pluginId();
-            const bool isPluginEnabled = pluginConf.readEntry(runnerName + QLatin1String("Enabled"), description.isEnabledByDefault());
+            const bool isPluginEnabled = description.isEnabled(pluginConf);
             const bool loaded = runners.contains(runnerName);
             bool selected = loadAll || disabledRunnerIds.contains(runnerName) || (isPluginEnabled && (noWhiteList || whiteList.contains(runnerName)));
             if (!selected && runnerName == singleRunnerId) {
