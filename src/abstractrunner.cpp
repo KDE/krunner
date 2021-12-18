@@ -450,7 +450,6 @@ void AbstractRunner::setTriggerWords(const QStringList &triggerWords)
     // If we can reject the query because of the length we don't need the regex
     setMinLetterCount(minTriggerWordLetters);
     QRegularExpression regex(constructedRegex);
-    regex.optimize();
     setMatchRegex(regex);
 }
 

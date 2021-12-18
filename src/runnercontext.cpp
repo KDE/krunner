@@ -468,7 +468,7 @@ void RunnerContext::restore(const KConfigGroup &config)
 {
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
-    const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
+    static const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
     for (const QString &entry : cfgList) {
         const QRegularExpressionMatch match = re.match(entry);
         if (!match.hasMatch()) {

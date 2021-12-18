@@ -179,7 +179,6 @@ void DBusRunner::requestConfig()
         for (auto it = config.cbegin(), end = config.cend(); it != end; ++it) {
             if (it.key() == QLatin1String("MatchRegex")) {
                 QRegularExpression regex(it.value().toString());
-                regex.optimize();
                 setMatchRegex(regex);
             } else if (it.key() == QLatin1String("MinLetterCount")) {
                 setMinLetterCount(it.value().toInt());
