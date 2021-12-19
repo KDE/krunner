@@ -28,6 +28,8 @@ include(KDEPackageAppTemplates)
 include(ECMQtDeclareLoggingCategory)
 include(ECMSetupQtPluginMacroNames)
 include(KDEGitCommitHooks)
+include(KDEDeprecationSettings)
+
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 
@@ -44,6 +46,13 @@ ecm_setup_version(PROJECT
 set(REQUIRED_QT_VERSION 5.15.2)
 
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Widgets Quick)
+
+ecm_set_disabled_deprecation_versions(
+    QT ${REQUIRED_QT_VERSION}
+    KF 5.89.0
+    PLASMA 5.0.0  # needed because we use Plasma::Package in the API
+    KSERVICE 5.89.0  # needed because we use KPluginInfo, KServiceTypeTrader in the API
+)
 
 find_package(KF5Config ${KF_DEP_VERSION} REQUIRED)
 find_package(KF5CoreAddons ${KF_DEP_VERSION} REQUIRED)
@@ -78,10 +87,6 @@ ecm_setup_qtplugin_macro_names(
     CONFIG_CODE_VARIABLE
         PACKAGE_SETUP_AUTOMOC_VARIABLES
 )
-
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00) # must port away from qmlRegisterInterface before upgrading this to 050f00
-add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055100)
-add_definitions(-DPLASMA_DISABLE_DEPRECATED_BEFORE_AND_AT=0x050500) # needed because we use Plasma::Package in the API
 
 # Subdirectories
 add_subdirectory(src)

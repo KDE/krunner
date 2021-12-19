@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 project(runnermodel)
 
+# we depend on deprecated Qt API, however the QML plugin is deprecated and not worth porting
+remove_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x50f02)
+
 add_library(runnermodelplugin SHARED)
 
 target_sources(runnermodelplugin PRIVATE
