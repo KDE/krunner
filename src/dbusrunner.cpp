@@ -105,17 +105,18 @@ void DBusRunner::reloadConfiguration()
     }
 }
 
-void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActions> remoteActions)
+void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions)
 {
     for (auto it = remoteActions.begin(), end = remoteActions.end(); it != end; it++) {
         const QString service = it.key();
         const RemoteActions actions = it.value();
-        qDeleteAll(m_actions[service]);
-        m_actions[service].clear();
+        auto &serviceActions = m_actions[service];
+        qDeleteAll(serviceActions);
+        serviceActions.clear();
         for (const RemoteAction &action : actions) {
             auto a = new QAction(QIcon::fromTheme(action.iconName), action.text, this);
             a->setData(action.id);
-            m_actions[service].append(a);
+            serviceActions.append(a);
         }
     }
 }

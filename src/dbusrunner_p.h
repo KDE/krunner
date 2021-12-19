@@ -31,7 +31,7 @@ public:
 public Q_SLOTS:
     void teardown();
     // This method should only be called from the main thread!
-    void createQActionsFromRemoteActions(const QMap<QString, RemoteActions> remoteActions);
+    void createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions);
 
 private:
     // Returns RemoteActions with service name as key
