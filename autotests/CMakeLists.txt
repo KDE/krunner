@@ -40,6 +40,7 @@ qt_add_dbus_adaptor(demoapp_dbus_adaptor_SRCS "../src/data/org.kde.krunner1.xml"
 target_sources(testremoterunner PRIVATE testremoterunner.cpp ${demoapp_dbus_adaptor_SRCS})
 target_link_libraries(testremoterunner
     Qt5::DBus
+    Qt5::Gui
     KF5::Runner
 )
 
