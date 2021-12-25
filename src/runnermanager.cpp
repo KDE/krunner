@@ -30,7 +30,9 @@
 #include <ThreadWeaver/Queue>
 #include <ThreadWeaver/Thread>
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 65)
 #include <plasma/version.h>
+#endif
 
 #include "dbusrunner_p.h"
 #include "krunner_debug.h"
