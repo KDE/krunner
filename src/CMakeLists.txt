@@ -54,17 +54,17 @@ ecm_generate_export_header(KF5Runner
 )
 
 set(KRunner_BUILD_INCLUDE_DIRS ${KRunner_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner>")
+target_include_directories(KF5Runner INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KRunner>")
 target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_INCLUDE_DIRS}>")
 
 
 target_link_libraries(KF5Runner
     PUBLIC
-        Qt5::Core
+        Qt${QT_MAJOR_VERSION}::Core
     PRIVATE
-        Qt5::DBus
-        Qt5::Gui
-        Qt5::Widgets
+        Qt${QT_MAJOR_VERSION}::DBus
+        Qt${QT_MAJOR_VERSION}::Gui
+        Qt${QT_MAJOR_VERSION}::Widgets
         KF5::ConfigCore
         KF5::Service
         KF5::I18n
@@ -109,18 +109,18 @@ install(TARGETS KF5Runner
         ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES ${KRunner_CamelCase_HEADERS}
-        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner/KRunner
+        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KRunner/KRunner
         COMPONENT Devel)
 
 install(FILES
             ${CMAKE_CURRENT_BINARY_DIR}/krunner_export.h
             ${KRunner_HEADERS}
-        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner/krunner
+        DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KRunner/krunner
         COMPONENT Devel)
 
 install(FILES
    data/servicetypes/plasma-runner.desktop
-   DESTINATION ${KDE_INSTALL_KSERVICETYPES5DIR})
+   DESTINATION ${KDE_INSTALL_KSERVICETYPESDIR})
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
 add_custom_command(TARGET KF5Runner PRE_BUILD COMMAND
@@ -165,7 +165,7 @@ if(BUILD_QCH)
 endif()
 
 include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KRunner)
+ecm_generate_pri_file(BASE_NAME KRunner LIB_NAME KF5Runner DEPS "core" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KRunner)
 install(FILES ${PRI_FILENAME}
         DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
 

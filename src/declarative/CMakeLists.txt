@@ -18,9 +18,9 @@ ecm_qt_declare_logging_category(runnermodelplugin
 )
 
 target_link_libraries(runnermodelplugin
-        Qt5::Quick
-        Qt5::Qml
-        Qt5::Widgets # QAction
+        Qt${QT_MAJOR_VERSION}::Quick
+        Qt${QT_MAJOR_VERSION}::Qml
+        Qt${QT_MAJOR_VERSION}::Widgets # QAction
         KF5::I18n
         KF5::Service
         KF5Runner

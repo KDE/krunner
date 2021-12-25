@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2021 Alexander Lohnau <alexander.lohnau@gmx.de>
 # SPDX-License-Identifier: BSD-2-Clause
-find_package(Qt5 ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
+find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test)
 
 include(ECMAddTests)
 
@@ -11,36 +11,36 @@ if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
         AND NOT WIN32)
     ecm_add_tests(
         runnercontexttest.cpp
-        LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner
+        LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner
     )
 endif()
 
 ecm_add_tests(
    dbusrunnertest.cpp
-   LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
+   LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
 )
 ecm_add_tests(
         runnermatchmethodstest.cpp
-    LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
 )
 
 
 ecm_add_tests(
     runnermanagerhistorytest.cpp
-    LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
 )
 
 ecm_add_tests(
     runnermanagersinglerunnermodetest.cpp
-    LINK_LIBRARIES Qt5::Test KF5::KIOCore KF5Runner Qt5::Widgets Qt5::DBus
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
 )
 
 add_executable(testremoterunner)
 qt_add_dbus_adaptor(demoapp_dbus_adaptor_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
 target_sources(testremoterunner PRIVATE testremoterunner.cpp ${demoapp_dbus_adaptor_SRCS})
 target_link_libraries(testremoterunner
-    Qt5::DBus
-    Qt5::Gui
+    Qt${QT_MAJOR_VERSION}::DBus
+    Qt${QT_MAJOR_VERSION}::Gui
     KF5::Runner
 )
 

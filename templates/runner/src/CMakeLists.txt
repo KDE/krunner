@@ -11,4 +11,4 @@ target_link_libraries(%{APPNAMELC} KF5::Runner KF5::I18n)
 
 install(TARGETS %{APPNAMELC} DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/krunner)
 
-install(FILES plasma-runner-%{APPNAMELC}.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES plasma-runner-%{APPNAMELC}.desktop DESTINATION ${KDE_INSTALL_KSERVICESDIR})
