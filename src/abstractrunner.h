@@ -16,8 +16,6 @@
 #include <KPluginMetaData>
 #include <KService>
 
-#include <krunner_export.h>
-
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 65)
 #include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
 #include <plasma_version.h>
