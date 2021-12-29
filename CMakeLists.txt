@@ -45,12 +45,6 @@ set(REQUIRED_QT_VERSION 5.15.2)
 
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Widgets Quick)
 
-# Core5Compat isn't used here directly, but is linked against by other KF modules
-# that this module links against
-if(QT_MAJOR_VERSION STREQUAL "6")
-    find_package(Qt6 CONFIG REQUIRED Core5Compat)
-endif()
-
 find_package(KF5Config ${KF_DEP_VERSION} REQUIRED)
 find_package(KF5CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF5I18n ${KF_DEP_VERSION} REQUIRED)
