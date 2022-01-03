@@ -309,7 +309,7 @@ public:
     void loadRunner(const QString &path);
 #endif
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 88)
     /**
      * @return the list of allowed plugins
      * @since 4.4
