@@ -806,10 +806,9 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
     const QString constraint = parentApp.isEmpty() ? QStringLiteral("not exist [X-KDE-ParentApp] or [X-KDE-ParentApp] == ''")
                                                    : QStringLiteral("[X-KDE-ParentApp] == '") + parentApp + QLatin1Char('\'');
 
-    const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
     QT_WARNING_PUSH
-    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_DEPRECATED
+    const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"), constraint);
     const KPluginInfo::List backwardCompatPluginInfos = KPluginInfo::fromServices(offers);
     QT_WARNING_POP
 
@@ -847,10 +846,9 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 
 #if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     // also search for deprecated kservice-based KRunner plugins metadata
-    const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"));
     QT_WARNING_PUSH
-    QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-    QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+    QT_WARNING_DISABLE_DEPRECATED
+    const KService::List offers = KServiceTypeTrader::self()->query(QStringLiteral("Plasma/Runner"));
     const KPluginInfo::List backwardCompatPluginInfos = KPluginInfo::fromServices(offers);
     QT_WARNING_POP
 
@@ -868,7 +866,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72)
 KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
 {
-    return KPluginInfo::fromMetaData(runnerMetaDataList(parentApp));
+    return QT_IGNORE_DEPRECATIONS(KPluginInfo::fromMetaData(runnerMetaDataList(parentApp)));
 }
 #endif
 

@@ -365,7 +365,7 @@ QString AbstractRunner::description() const
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72)
 KPluginInfo AbstractRunner::metadata() const
 {
-    return KPluginInfo::fromMetaData(d->runnerDescription);
+    return QT_IGNORE_DEPRECATIONS(KPluginInfo::fromMetaData(d->runnerDescription));
 }
 #endif
 
