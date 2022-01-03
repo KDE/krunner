@@ -866,7 +866,10 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72)
 KPluginInfo::List RunnerManager::listRunnerInfo(const QString &parentApp)
 {
-    return QT_IGNORE_DEPRECATIONS(KPluginInfo::fromMetaData(runnerMetaDataList(parentApp)));
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_DEPRECATED
+    return KPluginInfo::fromMetaData(runnerMetaDataList(parentApp));
+    QT_WARNING_POP
 }
 #endif
 
