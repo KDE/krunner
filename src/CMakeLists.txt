@@ -73,7 +73,7 @@ target_link_libraries(KF5Runner
         KF5::KIOCore #KProtocolInfo
 )
 if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.65.0)
+   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.73.0)
     target_link_libraries(KF5Runner
         PUBLIC
             KF5::Plasma # Must be public because abstractrunner.h needs plasma/version.h
