@@ -347,4 +347,9 @@ private:
 
 }
 
+#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+using QueryMatch = Plasma::QueryMatch;
+using AbstractRunner = Plasma::AbstractRunner;
+#endif
+
 #endif

@@ -748,4 +748,10 @@ K_PLUGIN_FACTORY(ConfigFactory, registerPlugin<classname>();)
 #endif
 // clang-format on
 
+#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+using AbstractRunner = Plasma::AbstractRunner;
+using RunnerContext = Plasma::RunnerContext;
+using RunnerSyntax = Plasma::RunnerSyntax;
+#endif
+
 #endif
