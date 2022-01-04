@@ -19,8 +19,11 @@
 #include <QUrl>
 
 #include <KConfigGroup>
-#include <KProtocolInfo>
 #include <KShell>
+
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
+#include <KProtocolInfo>
+#endif
 
 #include "abstractrunner.h"
 #include "krunner_debug.h"

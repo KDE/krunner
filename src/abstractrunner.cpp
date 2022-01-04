@@ -5,6 +5,11 @@
 */
 
 #include "abstractrunner.h"
+
+#ifndef KSERVICE_BUILD_DEPRECATED_SINCE
+#define KSERVICE_BUILD_DEPRECATED_SINCE(a, b) 0
+#endif
+
 #include "abstractrunner_p.h"
 
 #include <QAction>

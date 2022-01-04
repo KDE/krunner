@@ -6,9 +6,13 @@
 
 #include "runnermanager.h"
 
+#ifdef KSERVICE_BUILD_DEPRECATED_SINCE
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 #define WITH_KSERVICE 1
-#else
+#endif
+#endif
+
+#ifndef WITH_KSERVICE
 #define WITH_KSERVICE 0
 #endif
 

@@ -8,6 +8,7 @@
 
 #include <QAction>
 #include <QIcon>
+#include <QPointer>
 #include <QReadWriteLock>
 #include <QSharedData>
 #include <QVariant>

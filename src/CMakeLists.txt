@@ -61,22 +61,23 @@ target_include_directories(KF5Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_I
 target_link_libraries(KF5Runner
     PUBLIC
         Qt${QT_MAJOR_VERSION}::Core
+        KF5::I18n
+        KF5::ConfigCore
+        Qt${QT_MAJOR_VERSION}::Gui # QIcon
+        KF5::CoreAddons # KPluginFactory
     PRIVATE
         Qt${QT_MAJOR_VERSION}::DBus
-        Qt${QT_MAJOR_VERSION}::Gui
         Qt${QT_MAJOR_VERSION}::Widgets
-        KF5::ConfigCore
-        KF5::Service
-        KF5::I18n
         KF5::ThreadWeaver
-        KF5::CoreAddons #KShell
-        KF5::KIOCore #KProtocolInfo
 )
 if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.73.0)
+   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.91.0)
     target_link_libraries(KF5Runner
         PUBLIC
+            KF5::Service # KPluginInfo
             KF5::Plasma # Must be public because abstractrunner.h needs plasma/version.h
+        PRIVATE
+            KF5::KIOCore #KProtocolInfo
     )
 endif()
 if(HAVE_KACTIVITIES)

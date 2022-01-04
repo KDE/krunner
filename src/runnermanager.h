@@ -12,13 +12,16 @@
 #include <QList>
 #include <QObject>
 
+#include "krunner_export.h"
+
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
 #include <KPluginInfo>
+#endif
 #include <KPluginMetaData>
 
 #include <memory>
 
 #include "abstractrunner.h"
-#include "krunner_export.h"
 
 class QAction;
 class KConfigGroup;

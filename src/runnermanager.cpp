@@ -18,7 +18,11 @@
 #include <KConfigWatcher>
 #include <KFileUtils>
 #include <KPluginMetaData>
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72)
 #include <KServiceTypeTrader>
+#else
+#define KSERVICE_BUILD_DEPRECATED_SINCE(a, b) 0
+#endif
 #include <KSharedConfig>
 
 #include "config.h"
@@ -43,7 +47,7 @@ using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
 void warnAboutDeprecatedMetaData(const KPluginInfo &pluginInfo)
 {
     if (!pluginInfo.libraryPath().isEmpty()) {
@@ -844,7 +848,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
         }
     }
 
-#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
     // also search for deprecated kservice-based KRunner plugins metadata
     QT_WARNING_PUSH
     QT_WARNING_DISABLE_DEPRECATED

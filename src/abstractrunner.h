@@ -12,11 +12,16 @@
 #include <QStringList>
 
 #include <KConfigGroup>
-#include <KPluginInfo>
 #include <KPluginMetaData>
-#include <KService>
 
 #include "krunner_export.h"
+
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+#include <KPluginInfo>
+#include <KService>
+#else
+#include <KPluginFactory>
+#endif
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 65)
 #include <plasma/plasma_export.h> // for PLASMA_ENABLE_DEPRECATED_SINCE
