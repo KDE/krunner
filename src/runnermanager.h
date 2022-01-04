@@ -469,5 +469,8 @@ private:
 };
 
 }
+#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+using RunnerManager = Plasma::RunnerManager;
+#endif
 
 #endif
