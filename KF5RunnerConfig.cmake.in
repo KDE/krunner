@@ -5,8 +5,12 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
-find_dependency(Qt@QT_MAJOR_VERSION@Core "@REQUIRED_QT_VERSION@")
-find_dependency(KF5Plasma "@KF_DEP_VERSION@")
+find_dependency(Qt@QT_MAJOR_VERSION@ @REQUIRED_QT_VERSION@ CONFIG REQUIRED Core Gui)
+find_dependency(KF5CoreAddons "@KF_DEP_VERSION@") # KPluginFactory
+find_dependency(KF5Config "@KF_DEP_VERSION@") # KConfigGroup
+if (@KF5Plasma_FOUND@)
+    find_dependency(KF5Plasma "@KF_DEP_VERSION@") # Deprecated Plasma version headers
+endif()
 
 @PACKAGE_SETUP_AUTOMOC_VARIABLES@
 

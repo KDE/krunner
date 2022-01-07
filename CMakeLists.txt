@@ -54,6 +54,8 @@ if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
     find_package(KF5KIO ${KF_DEP_VERSION} REQUIRED)
     find_package(KF5Service ${KF_DEP_VERSION} REQUIRED)
     find_package(KF5Plasma ${KF_DEP_VERSION} REQUIRED)
+else()
+    set(KF5Plasma_FOUND 0)
 endif()
 
 find_package(KF5Activities ${KF_DEP_VERSION})
