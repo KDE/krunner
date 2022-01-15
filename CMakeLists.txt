@@ -127,7 +127,7 @@ install(EXPORT KF5RunnerTargets
         NAMESPACE KF5::)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
-        DESTINATION "${KDE_INSTALL_INCLUDEDIR_KF}"
+        DESTINATION "${KDE_INSTALL_INCLUDEDIR_KF}/KRunner"
         COMPONENT Devel)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
