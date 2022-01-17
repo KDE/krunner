@@ -133,7 +133,10 @@ private:
 } // namespace Plasma
 
 #if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+namespace KRunner
+{
 using RunnerSyntax = Plasma::RunnerSyntax;
+}
 #endif
 
 #endif // multiple inclusion guard

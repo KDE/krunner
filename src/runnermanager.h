@@ -470,7 +470,10 @@ private:
 
 }
 #if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
+namespace KRunner
+{
 using RunnerManager = Plasma::RunnerManager;
+}
 #endif
 
 #endif
