@@ -237,12 +237,10 @@ void RunnerContext::reset()
     // we still have to remove all the matches, since if the
     // ref count was 1 (e.g. only the RunnerContext is using
     // the dptr) then we won't get a copy made
-    if (!d->matches.isEmpty()) {
-        d->matches.clear();
-        Q_EMIT matchesChanged();
-    }
-
+    d->matches.clear();
     d->term.clear();
+    Q_EMIT matchesChanged();
+
     d->mimeType.clear();
     d->uniqueIds.clear();
     d->type = UnknownType;
@@ -252,7 +250,9 @@ void RunnerContext::reset()
 
 void RunnerContext::setQuery(const QString &term)
 {
-    reset();
+    if (!this->query().isEmpty()) {
+        reset();
+    }
 
     if (term.isEmpty()) {
         return;

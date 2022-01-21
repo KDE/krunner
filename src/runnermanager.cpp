@@ -67,6 +67,7 @@ public:
         : q(parent)
     {
         matchChangeTimer.setSingleShot(true);
+        matchChangeTimer.setTimerType(Qt::TimerType::PreciseTimer); // Without this, autotest will fail due to imprecision of this timer
         delayTimer.setSingleShot(true);
 
         QObject::connect(&matchChangeTimer, &QTimer::timeout, q, [this]() {
@@ -88,11 +89,28 @@ public:
 
     void scheduleMatchesChanged()
     {
-        if (lastMatchChangeSignalled.hasExpired(250)) {
+        // We avoid over-refreshing the client. We only refresh every this much milliseconds
+        constexpr int refreshPeriod = 250;
+        // This will tell us if we are reseting the matches to start a new search. RunnerContext::reset() clears its query string for its emission
+        if (context.query().isEmpty()) {
+            matchChangeTimer.stop();
+            // This actually contains the query string for the new search that we're launching (if any):
+            if (!this->untrimmedTerm.trimmed().isEmpty()) {
+                // We are starting a new search, we shall stall for some time before deciding to show an empty matches list.
+                // This stall should be enough for the engine to provide more meaningful result, so we avoid refreshing with
+                // an empty results list if possible.
+                matchChangeTimer.start(refreshPeriod);
+                // We "pretend" that we have refreshed it so the next call will be forced to wait the timeout:
+                lastMatchChangeSignalled.restart();
+            } else {
+                // We have an empty input string, so it's not a real query. We don't expect any results to come, so no need to stall
+                Q_EMIT q->matchesChanged(context.matches());
+            }
+        } else if (lastMatchChangeSignalled.hasExpired(refreshPeriod)) {
             matchChangeTimer.stop();
             Q_EMIT q->matchesChanged(context.matches());
         } else {
-            matchChangeTimer.start(250 - lastMatchChangeSignalled.elapsed());
+            matchChangeTimer.start(refreshPeriod - lastMatchChangeSignalled.elapsed());
         }
     }
 
@@ -319,13 +337,17 @@ public:
         searchJobs.remove(runJob);
         oldSearchJobs.remove(runJob);
 
-        if (searchJobs.isEmpty() && context.matches().isEmpty()) {
-            // we finished our run, and there are no valid matches, and so no
-            // signal will have been sent out. so we need to emit the signal
-            // ourselves here
-            Q_EMIT q->matchesChanged(context.matches());
-        }
         if (searchJobs.isEmpty()) {
+            // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+            if (matchChangeTimer.isActive()) {
+                matchChangeTimer.stop();
+                Q_EMIT q->matchesChanged(context.matches());
+            } else if (context.matches().isEmpty()) {
+                // we finished our run, and there are no valid matches, and so no
+                // signal will have been sent out. so we need to emit the signal
+                // ourselves here
+                Q_EMIT q->matchesChanged(context.matches());
+            }
             Q_EMIT q->queryFinished();
         }
     }
