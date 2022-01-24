@@ -226,7 +226,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
         connect(
             watcher,
             &QDBusPendingCallWatcher::finished,
-            this,
+            watcher,
             [this, service, &context, reply]() {
                 if (reply.isError()) {
                     qCDebug(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
