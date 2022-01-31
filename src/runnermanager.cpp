@@ -852,7 +852,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
 
 QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 {
-    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf5/krunner"));
+    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf" QT_STRINGIFY(QT_VERSION_MAJOR) "/krunner"));
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
     for (const KPluginMetaData &pluginMetaData : std::as_const(pluginMetaDatas)) {
