@@ -21,9 +21,9 @@ class RunnerManagerHistoryTest : public QObject
 private:
     void addToHistory(const QStringList &queries, RunnerManager &manager)
     {
-        FakeRunner runner;
+        QCOMPARE(manager.runners().count(), 1);
         for (const QString &query : queries) {
-            QueryMatch match(&runner);
+            QueryMatch match(manager.runners().constFirst());
             // Make sure internally the term and untrimmedTerm are set
             manager.launchQuery(query, "thisrunnerdoesnotexist");
             manager.searchContext()->setQuery(query);
@@ -51,6 +51,8 @@ void RunnerManagerHistoryTest::testRunnerHistory()
     QFETCH(const QStringList, expectedEntries);
 
     RunnerManager manager;
+    manager.setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+    manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
     addToHistory(queries, manager);
     QCOMPARE(manager.history(), expectedEntries);
 }
@@ -69,6 +71,8 @@ void RunnerManagerHistoryTest::testRunnerHistory_data()
 void RunnerManagerHistoryTest::testHistorySuggestionsAndRemoving()
 {
     RunnerManager manager;
+    manager.setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+    manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
     const QStringList queries = {"test1", "test2", "test3"};
     addToHistory(queries, manager);
     QStringList expectedBeforeRemoval = QStringList{"test3", "test2", "test1"};

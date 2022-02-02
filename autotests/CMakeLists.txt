@@ -25,10 +25,14 @@ ecm_add_tests(
 )
 
 
+kcoreaddons_add_plugin(fakerunnerplugin SOURCES fakerunnerplugin.cpp INSTALL_NAMESPACE "krunnertest" STATIC)
+target_link_libraries(fakerunnerplugin  KF5Runner)
+kcoreaddons_desktop_to_json(fakerunnerplugin metadatafile1.desktop)
 ecm_add_tests(
     runnermanagerhistorytest.cpp
     LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
 )
+kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
 
 ecm_add_tests(
     runnermanagersinglerunnermodetest.cpp
