@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/kservicetypes5/">
+        <file alias="plasma-runner.desktop">data/servicetypes/plasma-runner.desktop</file>
+    </qresource>
+</RCC>

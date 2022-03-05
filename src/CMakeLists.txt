@@ -32,7 +32,7 @@ target_sources(KF5Runner PRIVATE
     runnermanager.h
     runnersyntax.cpp
     runnersyntax.h
-
+    krunner.qrc
 )
 ecm_qt_declare_logging_category(KF5Runner
     HEADER krunner_debug.h
