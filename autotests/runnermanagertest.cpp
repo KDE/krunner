@@ -84,7 +84,7 @@ private Q_SLOTS:
         QCOMPARE(spyQueryFinished.count(), 1); // Still the same, query is not done
 
         // We programmed it to emit the result after 300ms, so we need to wait 50ms more for the next emission
-        QVERIFY(spyQueryFinished.wait(65)); // 65ms as a margin of safety for 50ms
+        QVERIFY(spyQueryFinished.wait(100)); // 100ms as a margin of safety for 50ms
 
         // This should have taken at least 300ms total, as we requested via the special query string
         QVERIFY(timer.elapsed() >= 300);
