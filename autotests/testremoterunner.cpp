@@ -25,8 +25,10 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName, bool showLifecycl
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
     qDBusRegisterMetaType<RemoteImage>();
-    Q_ASSERT(QDBusConnection::sessionBus().registerService(serviceName));
-    Q_ASSERT(QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this));
+    const bool connected = QDBusConnection::sessionBus().registerService(serviceName);
+    Q_ASSERT(connected);
+    const bool registered = QDBusConnection::sessionBus().registerObject(QStringLiteral("/dave"), this);
+    Q_ASSERT(registered);
     m_showLifecycleMethodCalls = showLifecycleMethodCalls;
 }
 
