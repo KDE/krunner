@@ -7,14 +7,18 @@
 #ifndef PLASMA_ABSTRACTRUNNER_H
 #define PLASMA_ABSTRACTRUNNER_H
 
+#include "krunner_export.h"
+
 #include <QIcon>
 #include <QObject>
 #include <QStringList>
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 94)
 #include <KConfigGroup>
+#else
+class KConfigGroup;
+#endif
 #include <KPluginMetaData>
-
-#include "krunner_export.h"
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
 #include <KPluginInfo>

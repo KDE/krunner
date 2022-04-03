@@ -6,6 +6,7 @@
 #include "fakerunner.h"
 #include "runnermanager.h"
 
+#include <KConfigGroup>
 #include <KSharedConfig>
 #include <QAction>
 #include <QCoreApplication>

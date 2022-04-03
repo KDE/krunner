@@ -36,12 +36,12 @@ kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
 
 ecm_add_tests(
     runnermanagersinglerunnermodetest.cpp
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner KF5::ConfigCore Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
 )
 
 ecm_add_tests(
     runnermanagertest.cpp
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner KF5::ConfigCore Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
 )
 
 add_executable(testremoterunner)
