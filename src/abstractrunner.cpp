@@ -15,6 +15,7 @@
 #include <QAction>
 #include <QElapsedTimer>
 #include <QHash>
+#include <QIcon>
 #include <QMimeData>
 #include <QMutex>
 

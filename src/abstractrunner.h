@@ -9,14 +9,15 @@
 
 #include "krunner_export.h"
 
-#include <QIcon>
 #include <QObject>
 #include <QStringList>
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 94)
 #include <KConfigGroup>
+#include <QIcon>
 #else
 class KConfigGroup;
+class QIcon;
 #endif
 #include <KPluginMetaData>
 
