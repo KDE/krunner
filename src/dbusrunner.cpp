@@ -14,9 +14,12 @@
 #include <QDBusMessage>
 #include <QDBusMetaType>
 #include <QDBusPendingReply>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QMutexLocker>
 #include <qobjectdefs.h>
+
+#include <KWindowSystem>
 
 #include "dbusutils_p.h"
 #include "krunner_debug.h"
@@ -37,6 +40,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
     m_hasUniqueResults = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
     m_callLifecycleMethods = pluginMetaData.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2");
+    m_hasActivation = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Has-Activation")).toBool();
 
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
         qCWarning(KRUNNER) << "Invalid entry:" << pluginMetaData.name();
@@ -321,9 +325,25 @@ void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMa
         actionId = match.selectedAction()->data().toString();
     }
 
-    auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
-    runMethod.setArguments(QList<QVariant>({matchId, actionId}));
-    QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+    if (m_hasActivation) {
+        const int launchedSerial = KWindowSystem::lastInputSerial(qGuiApp->focusWindow());
+
+        connect(KWindowSystem::self(),
+                &KWindowSystem::xdgActivationTokenArrived,
+                this,
+                [this, launchedSerial, service, matchId, actionId](int tokenSerial, const QString &token) {
+                    if (tokenSerial == launchedSerial) {
+                        auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
+                        runMethod.setArguments(QList<QVariant>({matchId, actionId, token}));
+                        QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+                    }
+                });
+        KWindowSystem::requestXdgActivationToken(qGuiApp->focusWindow(), launchedSerial, QString()); // TODO what app_id should we send here?
+    } else {
+        auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
+        runMethod.setArguments(QList<QVariant>({matchId, actionId}));
+        QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+    }
 }
 
 QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)

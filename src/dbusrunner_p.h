@@ -48,5 +48,6 @@ private:
     bool m_actionsForSessionRequested = false;
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
+    bool m_hasActivation = false;
     QSet<QString> m_requestedActionServices;
 };

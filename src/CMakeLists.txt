@@ -80,9 +80,9 @@ if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
 endif()
 if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
    EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.94.0)
-    target_link_libraries(KF5Runner PUBLIC Qt${QT_MAJOR_VERSION}::Gui KF5::ConfigCore)
+    target_link_libraries(KF5Runner PUBLIC Qt${QT_MAJOR_VERSION}::Gui KF5::ConfigCore KF5::WindowSystem)
 else()
-    target_link_libraries(KF5Runner PRIVATE Qt${QT_MAJOR_VERSION}::Gui KF5::ConfigCore)
+    target_link_libraries(KF5Runner PRIVATE Qt${QT_MAJOR_VERSION}::Gui KF5::ConfigCore KF5::WindowSystem)
 endif()
 if(HAVE_KACTIVITIES)
     target_link_libraries(KF5Runner PRIVATE KF5::Activities)

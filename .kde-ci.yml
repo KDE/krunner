@@ -10,6 +10,7 @@ Dependencies:
     'frameworks/kservice' : '@same'
     'frameworks/threadweaver' : '@same'
     'frameworks/ki18n' : '@same'
+    'frameworks/kwindowsystem' : '@same'
     'frameworks/plasma-framework' : '@same'
 
 Options:
