@@ -102,6 +102,7 @@ void DBusRunnerTest::testMatch()
     QCOMPARE(result.text(), QStringLiteral("Match 1"));
     QCOMPARE(result.iconName(), QStringLiteral("icon1"));
     QCOMPARE(result.type(), Plasma::QueryMatch::ExactMatch);
+    QCOMPARE(result.isMultiLine(), true);
     // relevance can't be compared easily because RunnerContext meddles with it
 
     // verify actions

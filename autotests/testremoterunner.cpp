@@ -80,6 +80,7 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
         m.type = Plasma::QueryMatch::ExactMatch;
         m.relevance = 0.8;
         m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
+        m.properties[QStringLiteral("multiline")] = true;
         ms << m;
     }
     return ms;

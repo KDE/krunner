@@ -255,6 +255,10 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                     }
                     m.setId(match.id);
 
+                    if (match.properties.contains(QStringLiteral("multiline"))) {
+                        m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
+                    }
+
                     const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
                     if (iconData.isValid()) {
                         const auto iconDataArgument = iconData.value<QDBusArgument>();

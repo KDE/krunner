@@ -78,16 +78,17 @@
          - Type (see PlasmaQuery::Type)
          - Relevance
          - Properties (VariantMap)
-            - Urls (StringList)
-            - Category
-            - Subtext
-            - Action Ids (StringList). In case you don't want to display any actions set this to an empty list.
+            - urls (StringList)
+            - category
+            - subtext
+            - actions (StringList of RemoteAction's IDs). In case you don't want to display any actions set this to an empty list.
               Otherwise all the actions will be shown for compatibility with the previous versions of the D-Bus API.
               When the actions only need to be fetched once you can set the X-Plasma-Request-Actions-Once property of
               the service file to true.
             - icon-data (iiibiiay). Custom icon pixmap. Icon name should be preferred, if available.
               Format is the same as org.freedesktop.Notifications icon-data, in order: width, height, row stride,
               has alpha, bits per sample, number of channels, pixmap data.
+            - multiline (boolean). If the text should be displayed as styled multiline text.
       -->
       <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="RemoteMatches"/>
       <arg name="matches" type="a(sssida{sv})" direction="out"/>
