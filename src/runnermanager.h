@@ -25,6 +25,10 @@
 
 class QAction;
 class KConfigGroup;
+namespace
+{
+class AbstractRunnerTest;
+};
 
 namespace Plasma
 {
@@ -462,10 +466,12 @@ Q_SIGNALS:
 
 private:
     Q_PRIVATE_SLOT(d, void jobDone(ThreadWeaver::JobPointer))
+    KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
 
     std::unique_ptr<RunnerManagerPrivate> const d;
 
     friend class RunnerManagerPrivate;
+    friend AbstractRunnerTest;
 };
 
 }

@@ -39,6 +39,7 @@
 #endif
 
 #include "dbusrunner_p.h"
+#include "kpluginmetadata_utils_p.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
 #include "runnerjobs_p.h"
@@ -820,7 +821,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList(const QString &parent
         QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
     const QStringList dbusRunnerFiles = KFileUtils::findAllUniqueFiles(dBusPlugindirs, QStringList(QStringLiteral("*.desktop")));
     for (const QString &dbusRunnerFile : dbusRunnerFiles) {
-        KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(dbusRunnerFile, QStringList(QStringLiteral("plasma-runner.desktop")));
+        KPluginMetaData pluginMetaData = parseMetaDataFromDesktopFile(dbusRunnerFile);
         if (pluginMetaData.isValid() && !knownRunnerIds.contains(pluginMetaData.pluginId())) {
             pluginMetaDatas.append(pluginMetaData);
             knownRunnerIds.insert(pluginMetaData.pluginId());
@@ -863,7 +864,7 @@ QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
         QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, QStringLiteral("krunner/dbusplugins"), QStandardPaths::LocateDirectory);
     const QStringList dbusRunnerFiles = KFileUtils::findAllUniqueFiles(dBusPlugindirs, QStringList(QStringLiteral("*.desktop")));
     for (const QString &dbusRunnerFile : dbusRunnerFiles) {
-        KPluginMetaData pluginMetaData = KPluginMetaData::fromDesktopFile(dbusRunnerFile, QStringList(QStringLiteral("plasma-runner.desktop")));
+        KPluginMetaData pluginMetaData = parseMetaDataFromDesktopFile(dbusRunnerFile);
         if (pluginMetaData.isValid() && !knownRunnerIds.contains(pluginMetaData.pluginId())) {
             pluginMetaDatas.append(pluginMetaData);
             knownRunnerIds.insert(pluginMetaData.pluginId());
@@ -1064,6 +1065,11 @@ void RunnerManager::reset()
 
     d->context.reset();
     Q_EMIT queryFinished();
+}
+
+KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) const
+{
+    return parseMetaDataFromDesktopFile(filename);
 }
 
 void RunnerManager::enableKNotifyPluginWatcher()

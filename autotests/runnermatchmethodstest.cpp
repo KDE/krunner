@@ -13,6 +13,8 @@
 #include <QStandardPaths>
 #include <QTest>
 
+#include "kpluginmetadata_utils_p.h"
+
 using namespace Plasma;
 
 namespace
@@ -60,8 +62,8 @@ RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
     const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
     qputenv("XDG_DATA_DIRS", modifiedDataDirs);
-    KPluginMetaData data1 = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("metadatafile1.desktop"));
-    KPluginMetaData data2 = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("metadatafile2.desktop"));
+    KPluginMetaData data1 = parseMetaDataFromDesktopFile(QFINDTESTDATA("metadatafile1.desktop"));
+    KPluginMetaData data2 = parseMetaDataFromDesktopFile(QFINDTESTDATA("metadatafile2.desktop"));
     QVERIFY(data1.isValid());
     QVERIFY(data2.isValid());
     runner1 = new FakeRunner(data1);

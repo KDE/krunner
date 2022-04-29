@@ -15,6 +15,7 @@
 #include <QTest>
 
 #include "abstractrunnertest.h"
+#include "kpluginmetadata_utils_p.h"
 
 Q_DECLARE_METATYPE(Plasma::QueryMatch)
 Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>)
@@ -31,7 +32,7 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).toLocal8Bit());
         QCoreApplication::setLibraryPaths(QStringList());
         initProperties();
-        auto md = KPluginMetaData::fromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"), {QStringLiteral("plasma-runner.desktop")});
+        auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
         QVERIFY(md.isValid());
         manager->loadRunner(md);
     }
