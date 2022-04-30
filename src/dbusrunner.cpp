@@ -248,16 +248,14 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                     m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
                     m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
                     m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
-                    if (match.properties.contains(QStringLiteral("actions"))) {
-                        m.setData(QVariantList({service, match.properties.value(QStringLiteral("actions"))}));
-                    } else {
+                    const auto actionsIt = match.properties.find(QStringLiteral("actions"));
+                    if (actionsIt == match.properties.cend()) {
                         m.setData(QVariantList({service}));
+                    } else {
+                        m.setData(QVariantList({service, actionsIt.value().toStringList()}));
                     }
                     m.setId(match.id);
-
-                    if (match.properties.contains(QStringLiteral("multiline"))) {
-                        m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
-                    }
+                    m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
 
                     const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
                     if (iconData.isValid()) {
