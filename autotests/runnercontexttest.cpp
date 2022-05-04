@@ -31,15 +31,15 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("ftp with host") << "ftp://kde.org" << Plasma::RunnerContext::NetworkLocation;
     QTest::newRow("file double slash") << "file://home" << Plasma::RunnerContext::Directory;
-    QTest::newRow("file triple slash") << "file:///home" << Plasma::RunnerContext::Directory;
-    QTest::newRow("file single slash") << "file:/home" << Plasma::RunnerContext::Directory;
+    QTest::newRow("file triple slash") << "file://" + QDir::homePath() << Plasma::RunnerContext::Directory;
+    QTest::newRow("file single slash") << "file:" + QDir::homePath() << Plasma::RunnerContext::Directory;
     QTest::newRow("file multiple path") << "file://usr/bin" << Plasma::RunnerContext::Directory;
     QTest::newRow("invalid file path") << "file://bad/path" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("executable") << "ls" << Plasma::RunnerContext::Executable;
     QTest::newRow("executable with params") << "ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("full path executable") << "ls -R" << Plasma::RunnerContext::ShellCommand;
     QTest::newRow("full path executable with params") << "/bin/ls -R" << Plasma::RunnerContext::ShellCommand;
-    QTest::newRow("protocol-less path") << "/home" << Plasma::RunnerContext::Directory;
+    QTest::newRow("protocol-less path") << QDir::homePath() << Plasma::RunnerContext::Directory;
     QTest::newRow("protocol-less tilded") << "~" << Plasma::RunnerContext::Directory;
     const QString file = getSomeExistingFileInHomeDir();
     if (!file.isEmpty()) {
