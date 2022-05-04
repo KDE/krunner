@@ -31,11 +31,11 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
     qDBusRegisterMetaType<RemoteImage>();
-    qRegisterMetaType<QMap<QString, RemoteActions>>();
+    qRegisterMetaType<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>");
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
-    m_hasUniqueResults = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Unique-Results")).toBool();
+    m_hasUniqueResults = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
     m_callLifecycleMethods = pluginMetaData.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2");
 
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
@@ -80,12 +80,15 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
         m_matchingServices << requestedServiceName;
     }
 
-    m_requestActionsOnce = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Request-Actions-Once")).toVariant().toBool();
+    m_requestActionsOnce = pluginMetaData.value(QStringLiteral("X-Plasma-Request-Actions-Once"), false);
     connect(this, &AbstractRunner::teardown, this, &DBusRunner::teardown);
 
     // Load the runner syntaxes
-    const QStringList syntaxes = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntaxes")).toVariant().toStringList();
-    const QStringList syntaxDescriptions = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions")).toVariant().toStringList();
+    const QJsonValue syntaxesJson = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntaxes"));
+    const QStringList syntaxes = syntaxesJson.isArray() ? syntaxesJson.toVariant().toStringList() : syntaxesJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
+    const QJsonValue syntaxDescriptionsJson = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions"));
+    const QStringList syntaxDescriptions =
+        syntaxDescriptionsJson.isArray() ? syntaxDescriptionsJson.toVariant().toStringList() : syntaxDescriptionsJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
     const int descriptionCount = syntaxDescriptions.count();
     for (int i = 0; i < syntaxes.count(); ++i) {
         const QString &query = syntaxes.at(i);
