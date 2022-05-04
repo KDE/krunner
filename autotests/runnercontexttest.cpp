@@ -30,7 +30,7 @@ void RunnerContextTest::typeDetection_data()
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("http without host") << "http://" << Plasma::RunnerContext::UnknownType;
     QTest::newRow("ftp with host") << "ftp://kde.org" << Plasma::RunnerContext::NetworkLocation;
-    QTest::newRow("file double slash") << "file://home" << Plasma::RunnerContext::Directory;
+    QTest::newRow("file double slash") << "file:/" + QDir::homePath() << Plasma::RunnerContext::Directory;
     QTest::newRow("file triple slash") << "file://" + QDir::homePath() << Plasma::RunnerContext::Directory;
     QTest::newRow("file single slash") << "file:" + QDir::homePath() << Plasma::RunnerContext::Directory;
     QTest::newRow("file multiple path") << "file://usr/bin" << Plasma::RunnerContext::Directory;

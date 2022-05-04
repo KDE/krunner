@@ -488,15 +488,15 @@ AbstractRunnerPrivate::~AbstractRunnerPrivate()
 
 void AbstractRunnerPrivate::init()
 {
+    minLetterCount = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0);
     if (runnerDescription.isValid()) {
         const auto rawData = runnerDescription.rawData();
-        minLetterCount = rawData.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count")).toInt();
         if (rawData.contains(QStringLiteral("X-Plasma-Runner-Match-Regex"))) {
             matchRegex = QRegularExpression(rawData.value(QStringLiteral("X-Plasma-Runner-Match-Regex")).toString());
             hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
         }
-        hasUniqueResults = rawData.value(QStringLiteral("X-Plasma-Runner-Unique-Results")).toBool();
-        hasWeakResults = rawData.value(QStringLiteral("X-Plasma-Runner-Weak-Results")).toBool();
+        hasUniqueResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
+        hasWeakResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false);
     }
 }
 
