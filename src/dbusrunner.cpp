@@ -31,7 +31,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
     qDBusRegisterMetaType<RemoteImage>();
-    qRegisterMetaType<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>");
+    qRegisterMetaType<QMap<QString, RemoteActions>>();
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
@@ -212,7 +212,9 @@ void DBusRunner::match(Plasma::RunnerContext &context)
             m_actionsOnceRequested = true;
             m_actionsForSessionRequested = true;
             auto actions = requestActions();
-            const auto actionsArg = QArgument<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>", actions);
+            // clang-format off
+            const auto actionsArg = QArgument<QMap<QString, RemoteActions>>("QMap<QString,RemoteActions>", actions);
+            // clang-format on
             QMetaObject::invokeMethod(this, "createQActionsFromRemoteActions", actionsArg);
         }
     }
