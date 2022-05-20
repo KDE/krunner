@@ -49,7 +49,7 @@ find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui
 
 ecm_set_disabled_deprecation_versions(
     QT ${REQUIRED_QT_VERSION}
-    KF 5.89.0
+    KF 5.94.0
     PLASMA 5.0.0  # needed because we use Plasma::Package in the API
     KSERVICE 5.89.0  # needed because we use KPluginInfo, KServiceTypeTrader in the API
 )
