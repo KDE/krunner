@@ -217,17 +217,16 @@ void DBusRunner::match(Plasma::RunnerContext &context)
         }
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
-    QList<QSharedPointer<QDBusPendingCallWatcher>> watchers;
+    std::vector<std::unique_ptr<QDBusPendingCallWatcher>> watchers;
 
     for (const QString &service : std::as_const(services)) {
         auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
 
-        auto watcher = new QDBusPendingCallWatcher(reply);
-        watchers << QSharedPointer<QDBusPendingCallWatcher>(watcher);
+        watchers.push_back(std::make_unique<QDBusPendingCallWatcher>(reply));
         connect(
-            watcher,
+            watchers.back().get(),
             &QDBusPendingCallWatcher::finished,
             this,
             [this, service, &context, reply]() {
@@ -282,7 +281,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
             Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
     }
     // we're done matching when every service replies
-    for (auto w : std::as_const(watchers)) {
+    for (auto &w : watchers) {
         w->waitForFinished();
     }
 }
