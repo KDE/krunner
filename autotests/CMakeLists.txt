@@ -11,17 +11,17 @@ if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
         AND NOT WIN32)
     ecm_add_tests(
         runnercontexttest.cpp
-        LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner
+        LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::KIOCore KF5Runner KF5::ConfigCore
     )
 endif()
 
 ecm_add_tests(
    dbusrunnertest.cpp
-   LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus
+   LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus KF5::ConfigCore
 )
 ecm_add_tests(
         runnermatchmethodstest.cpp
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets KF5::ConfigCore
 )
 
 
