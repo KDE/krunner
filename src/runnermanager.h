@@ -28,7 +28,7 @@ class KConfigGroup;
 namespace
 {
 class AbstractRunnerTest;
-};
+}
 
 namespace Plasma
 {

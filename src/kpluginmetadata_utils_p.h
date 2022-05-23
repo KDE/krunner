@@ -16,7 +16,7 @@ template<class T = QString>
 inline void copyIfExists(const KConfigGroup &grp, QJsonObject &obj, const char *key, const T &t = QString())
 {
     copyAndRenameIfExists(grp, obj, key, key, t);
-};
+}
 
 template<class T>
 inline void copyAndRenameIfExists(const KConfigGroup &grp, QJsonObject &obj, const char *oldKey, const char *key, const T &t)
@@ -24,7 +24,7 @@ inline void copyAndRenameIfExists(const KConfigGroup &grp, QJsonObject &obj, con
     if (grp.hasKey(oldKey)) {
         obj.insert(QLatin1String(key), grp.readEntry(oldKey, t));
     }
-};
+}
 inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
 {
     KDesktopFile file(fileName);
