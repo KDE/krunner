@@ -6,9 +6,13 @@
 #include "fakerunner.h"
 #include "runnermanager.h"
 
+#include <KConfig>
+#include <KConfigGroup>
+#include <KSharedConfig>
 #include <QAction>
 #include <QObject>
 #include <QProcess>
+#include <QSignalSpy>
 #include <QStandardPaths>
 #include <QTest>
 
@@ -17,8 +21,15 @@ using namespace Plasma;
 class RunnerManagerHistoryTest : public QObject
 {
     Q_OBJECT
+public:
+    RunnerManagerHistoryTest()
+    {
+        QStandardPaths::setTestModeEnabled(true);
+        stateConfigFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "krunnerstaterc";
+    }
 
 private:
+    QString stateConfigFile;
     void addToHistory(const QStringList &queries, RunnerManager &manager)
     {
         QCOMPARE(manager.runners().count(), 1);
@@ -30,19 +41,24 @@ private:
             manager.runMatch(match);
         }
     }
+    void launchQuery(const QString &query, RunnerManager *manager)
+    {
+        QSignalSpy spy(manager, &Plasma::RunnerManager::queryFinished);
+        manager->launchQuery(query);
+        QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
+    }
 
 private Q_SLOTS:
     void init()
     {
-        QStandardPaths::setTestModeEnabled(true);
-        QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "krunnerstaterc";
-        if (QFileInfo::exists(path)) {
-            QFile::remove(path);
+        if (QFileInfo::exists(stateConfigFile)) {
+            QFile::remove(stateConfigFile);
         }
     }
     void testRunnerHistory();
     void testRunnerHistory_data();
     void testHistorySuggestionsAndRemoving();
+    void testRelevanceForOftenLaunched();
 };
 
 void RunnerManagerHistoryTest::testRunnerHistory()
@@ -86,6 +102,43 @@ void RunnerManagerHistoryTest::testHistorySuggestionsAndRemoving()
     QStringList expectedAfterRemoval = QStringList{"test2", "test1"};
     QCOMPARE(manager.history(), expectedAfterRemoval);
     QCOMPARE(manager.getHistorySuggestion("t"), "test2");
+}
+
+void RunnerManagerHistoryTest::testRelevanceForOftenLaunched()
+{
+    {
+        KConfig cfg(stateConfigFile);
+        cfg.group("PlasmaRunnerManager").writeEntry("LaunchCounts", "5 foo");
+        cfg.sync();
+    }
+    std::unique_ptr<RunnerManager> manager(new RunnerManager());
+    manager->setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+    manager->loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
+
+    launchQuery(QStringLiteral("foo"), manager.get());
+
+    const auto matches = manager->matches();
+    QCOMPARE(matches.size(), 2);
+    QCOMPARE(matches.at(0).id(), QStringLiteral("foo"));
+    QCOMPARE(matches.at(1).id(), QStringLiteral("bar"));
+    QCOMPARE(matches.at(1).relevance(), 0.2);
+
+    QVERIFY(matches.at(0).relevance() > matches.at(1).relevance());
+    QVERIFY(matches.at(0).relevance() < 0.6); // 0.5 is the max we add as a bonus, 0.1 comes from the runner
+    {
+        KConfig cfg(stateConfigFile);
+        cfg.group("PlasmaRunnerManager").writeEntry("LaunchCounts", QStringList{"5 foo", "5 bar"});
+        cfg.sync();
+        KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)->reparseConfiguration();
+    }
+    manager.reset(new RunnerManager());
+    manager->setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+    manager->loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
+
+    launchQuery(QStringLiteral("foo"), manager.get());
+    const auto newMatches = manager->matches();
+    QCOMPARE(newMatches.size(), 2);
+    QVERIFY(newMatches.at(0).relevance() < newMatches.at(1).relevance());
 }
 
 QTEST_MAIN(RunnerManagerHistoryTest)

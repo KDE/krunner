@@ -18,4 +18,22 @@ public:
         : FakeRunner(nullptr, metadata, {})
     {
     }
+
+    void match(RunnerContext &context) override
+    {
+        if (context.query() == QLatin1String("foo")) {
+            context.addMatch(createDummyMatch(QStringLiteral("foo"), 0.1));
+            context.addMatch(createDummyMatch(QStringLiteral("bar"), 0.2));
+        }
+    }
+
+private:
+    QueryMatch createDummyMatch(const QString &text, qreal relevance)
+    {
+        QueryMatch match(this);
+        match.setId(text);
+        match.setText(text);
+        match.setRelevance(relevance);
+        return match;
+    }
 };

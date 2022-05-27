@@ -30,7 +30,7 @@ target_link_libraries(fakerunnerplugin  KF5Runner)
 kcoreaddons_desktop_to_json(fakerunnerplugin metadatafile1.desktop)
 ecm_add_tests(
     runnermanagerhistorytest.cpp
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets KF5::ConfigCore
 )
 kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
 
