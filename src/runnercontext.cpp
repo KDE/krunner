@@ -164,15 +164,6 @@ public:
         }
     }
 
-    void increaseMatchRelevance(QueryMatch &match) const
-    {
-        // Give previously launched matches a slight boost in relevance
-        // The boost smoothly saturates to 0.5;
-        if (int count = launchCounts.value(match.id())) {
-            match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
-        }
-    }
-
     QReadWriteLock lock;
     QList<QueryMatch> matches;
     QHash<QString, int> launchCounts;
@@ -328,7 +319,11 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
 
     LOCK_FOR_WRITE(d)
     for (QueryMatch match : matches) {
-        d->increaseMatchRelevance(match);
+        // Give previously launched matches a slight boost in relevance
+        // The boost smoothly saturates to 0.5;
+        if (int count = d->launchCounts.value(match.id())) {
+            match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
+        }
         d->addMatch(match);
     }
     UNLOCK(d);
@@ -342,20 +337,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
 
 bool RunnerContext::addMatch(const QueryMatch &match)
 {
-    if (!isValid()) {
-        // Bail out if the qptr is dirty
-        return false;
-    }
-
-    QueryMatch m(match); // match must be non-const to modify relevance
-    d->increaseMatchRelevance(m);
-
-    LOCK_FOR_WRITE(d)
-    d->addMatch(m);
-    UNLOCK(d);
-    Q_EMIT d->q->matchesChanged();
-
-    return true;
+    return addMatches({match});
 }
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
