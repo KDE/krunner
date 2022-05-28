@@ -4,7 +4,6 @@
 */
 
 #include "runnermanager.h"
-#include "fakerunner.h"
 
 #include <KSharedConfig>
 #include <QAction>

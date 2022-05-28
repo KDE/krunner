@@ -3,7 +3,6 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "fakerunner.h"
 #include "runnermanager.h"
 
 #include <KConfigGroup>
