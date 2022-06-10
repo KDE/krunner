@@ -26,7 +26,7 @@
 #include <KSharedConfig>
 
 #include "config.h"
-#ifdef HAVE_KACTIVITIES
+#if HAVE_KACTIVITIES
 #include <KActivities/Consumer>
 #endif
 
@@ -129,7 +129,7 @@ public:
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
         enabledCategories = stateData.readEntry("enabledCategories", QStringList());
 #endif
-#ifdef HAVE_KACTIVITIES
+#if HAVE_KACTIVITIES
         // Wait for consumer to be ready
         QObject::connect(&activitiesConsumer,
                          &KActivities::Consumer::serviceStatusChanged,
@@ -435,7 +435,7 @@ public:
 
     inline QString getActivityKey()
     {
-#ifdef HAVE_KACTIVITIES
+#if HAVE_KACTIVITIES
         if (activityAware) {
             const QString currentActivity = activitiesConsumer.currentActivity();
             return currentActivity.isEmpty() ? nulluuid : currentActivity;
@@ -472,7 +472,7 @@ public:
         stateData.sync();
     }
 
-#ifdef HAVE_KACTIVITIES
+#if HAVE_KACTIVITIES
     void deleteHistoryOfDeletedActivities()
     {
         KConfigGroup historyGroup = stateData.group("History");
@@ -527,7 +527,7 @@ public:
     KSharedConfigPtr configPrt;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
-#ifdef HAVE_KACTIVITIES
+#if HAVE_KACTIVITIES
     const KActivities::Consumer activitiesConsumer;
 #endif
 };
