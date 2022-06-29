@@ -9,11 +9,11 @@
 
 #include "krunner_export.h"
 
+#include <KConfigGroup>
 #include <QObject>
 #include <QStringList>
 
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 94)
-#include <KConfigGroup>
 #include <QIcon>
 #else
 class KConfigGroup;
