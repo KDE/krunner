@@ -15,11 +15,9 @@
 #include <QAction>
 #include <QElapsedTimer>
 #include <QHash>
-#include <QIcon>
 #include <QMimeData>
 #include <QMutex>
 
-#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KSharedConfig>
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 65)
