@@ -19,7 +19,7 @@ class Runner(dbus.service.Object):
     def Match(self, query: str):
         """This method is used to get the matches and it returns a list of tupels"""
         if query == "hello":
-            # data, text, icon, type (Plasma::QueryType), relevance (0-1), properties (subtext, category and urls)
+            # data, text, icon, type (Plasma::QueryType), relevance (0-1), properties (subtext, category, multiline(bool) and urls)
             return [("Hello", "Hello from %{APPNAME}!", "document-edit", 100, 1.0, {'subtext': 'Demo Subtext'})]
         return []
 
