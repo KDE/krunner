@@ -50,6 +50,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     Q_PROPERTY(QString priorSearch READ priorSearch WRITE setPriorSearch)
     Q_PROPERTY(QStringList history READ history)
     Q_PROPERTY(bool historyEnabled READ historyEnabled NOTIFY historyEnabledChanged)
+    Q_PROPERTY(int runnerWidth READ runnerWidth NOTIFY runnerWidthChanged)
 
 public:
     explicit RunnerManager(QObject *parent = nullptr);
@@ -246,7 +247,7 @@ public:
      * @since 5.78
      */
     bool historyEnabled();
-
+    int runnerWidth();
     /**
      * Causes a reload of the current configuration
      */

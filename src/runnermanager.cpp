@@ -142,6 +142,11 @@ public:
 #endif
         const KConfigGroup generalConfig = configPrt->group("General");
         const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
+        const int _runnerWidth = generalConfig.readEntry("RunnerWidth", 30);
+        if (runnerWidth != _runnerWidth) {
+            runnerWidth = _runnerWidth;
+            Q_EMIT q->runnerWidthChanged();
+        }
         if (historyEnabled != _historyEnabled) {
             historyEnabled = _historyEnabled;
             Q_EMIT q->historyEnabledChanged();
@@ -519,6 +524,7 @@ public:
     bool activityAware = false;
     bool historyEnabled = false;
     bool retainPriorSearch = false;
+    int runnerWidth;
     QStringList whiteList;
     KConfigWatcher::Ptr watcher;
     QHash<QString, QString> priorSearch;
@@ -1027,6 +1033,10 @@ QString RunnerManager::query() const
 QStringList RunnerManager::history() const
 {
     return d->readHistoryForCurrentActivity();
+}
+int RunnerManager::runnerWidth()
+{
+    return d->runnerWidth;
 }
 
 void RunnerManager::removeFromHistory(int index)
