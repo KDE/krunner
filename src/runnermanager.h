@@ -465,6 +465,8 @@ Q_SIGNALS:
      */
     void historyEnabledChanged();
 
+    void runnerWidthChanged();
+
 private:
     Q_PRIVATE_SLOT(d, void jobDone(ThreadWeaver::JobPointer))
     KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
