@@ -33,9 +33,9 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     QJsonObject kplugin;
     copyIfExists(grp, kplugin, "Name");
     copyIfExists(grp, kplugin, "Icon");
-    copyIfExists(grp, kplugin, "X-KDE-PluginInfo-Name", "Id");
+    copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-Name", "Id", QString());
     copyIfExists(grp, kplugin, "Description");
-    copyIfExists(grp, kplugin, "Comment", "Description");
+    copyAndRenameIfExists(grp, kplugin, "Comment", "Description", QString());
     copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-EnabledByDefault", "EnabledByDefault", false);
     QJsonObject root;
     root.insert(QLatin1String("KPlugin"), kplugin);
