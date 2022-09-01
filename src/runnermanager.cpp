@@ -760,14 +760,17 @@ void RunnerManager::run(const QueryMatch &match)
 
 bool RunnerManager::runMatch(const QueryMatch &match)
 {
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 99)
     if (match.type() == Plasma::QueryMatch::InformationalMatch && !match.selectedAction()) {
         d->addToHistory();
         const QString info = match.data().toString();
+        qWarning() << Q_FUNC_INFO << info << match.data();
         if (!info.isEmpty()) {
             Q_EMIT setSearchTerm(info, info.length());
             return false;
         }
     }
+#endif
     d->context.run(match);
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
