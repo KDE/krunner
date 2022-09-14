@@ -42,10 +42,13 @@ public:
         CompletionMatch = 10, /**< Possible completion for the data of the query */
         PossibleMatch = 30, /**< Something that may match the query */
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 99)
+        /**
+            A purely informational, non-runnable match, such as the answer to a question or calculation. The data of the match will be converted to
+            a string and set in the search field
+            @deprecated Since 5.99, call RunnerContext::requestQueryStringUpdate in AbstractRunner::run method instead
+            */
         InformationalMatch KRUNNER_ENUMERATOR_DEPRECATED_VERSION(5, 99, "Call RunnerContext::requestQueryStringUpdate in AbstractRunner::run method instead") =
-            50, /** @deprecated
-          Since 5.99 < A purely informational, non-runnable match, such as the answer to a question or calculation. The data of the match will be converted to
-          a string and set in the search field */
+            50,
 #endif
         HelperMatch = 70, /**< A match that represents an action not directly related
                              to activating the given search term, such as a search
