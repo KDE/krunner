@@ -111,7 +111,7 @@ ecm_generate_headers(KRunner_CamelCase_HEADERS
 
 install(TARGETS KF5Runner
         EXPORT KF5RunnerTargets
-        ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+        ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES ${KRunner_CamelCase_HEADERS}
         DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KRunner/KRunner
