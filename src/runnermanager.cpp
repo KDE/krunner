@@ -1067,7 +1067,9 @@ void RunnerManager::reset()
     d->searchJobs.clear();
 
     d->context.reset();
-    Q_EMIT queryFinished();
+    if (!d->oldSearchJobs.empty()) {
+        Q_EMIT queryFinished();
+    }
 }
 
 KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) const

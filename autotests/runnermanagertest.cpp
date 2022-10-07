@@ -25,7 +25,7 @@ class RunnerManagerTest : public AbstractRunnerTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void loadRunner()
+    void initTestCase()
     {
         startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
         qputenv("XDG_DATA_DIRS", QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).toLocal8Bit());
@@ -34,16 +34,12 @@ private Q_SLOTS:
         auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
         QVERIFY(md.isValid());
         manager->loadRunner(md);
+        qRegisterMetaType<QList<Plasma::QueryMatch>>();
     }
 
-    void cleanup()
+    void cleanupTestCase()
     {
         killRunningDBusProcesses();
-    }
-
-    void init()
-    {
-        qRegisterMetaType<QList<Plasma::QueryMatch>>();
     }
 
     /**
@@ -52,7 +48,6 @@ private Q_SLOTS:
      */
     void testScheduleMatchesChanged()
     {
-        loadRunner();
         QSignalSpy spyQueryFinished(manager.get(), &Plasma::RunnerManager::queryFinished);
         QSignalSpy spyMatchesChanged(manager.get(), &Plasma::RunnerManager::matchesChanged);
 
@@ -68,9 +63,6 @@ private Q_SLOTS:
         // This special string will simulate a 300ms delay
         manager->launchQuery("fooDelay300");
 
-        // We will have one queryFinished emission immediately signaled by RunnerManager::reset()
-        QCOMPARE(spyQueryFinished.count(), 1);
-
         // However not yet a matcheschanged, it should be stalled for 250ms
         QCOMPARE(spyMatchesChanged.count(), 0);
 
@@ -82,7 +74,7 @@ private Q_SLOTS:
         QVERIFY(timer.elapsed() >= 250);
         QCOMPARE(spyMatchesChanged.count(), 1);
         QCOMPARE(manager->matches().count(), 0); // This is the empty matches "reset" emission, result is not ready yet
-        QCOMPARE(spyQueryFinished.count(), 1); // Still the same, query is not done
+        QCOMPARE(spyQueryFinished.count(), 0); // Still the same, query is not done
 
         // We programmed it to emit the result after 300ms, so we need to wait 50ms more for the next emission
         QVERIFY(spyQueryFinished.wait());
@@ -93,13 +85,32 @@ private Q_SLOTS:
         // At this point RunnerManager::jobDone() should have anticipated the final emission.
         QCOMPARE(spyMatchesChanged.count(), 2); // We had the second matchesChanged emission, now with the query result
         QCOMPARE(manager->matches().count(), 1); // The result is here
-        QCOMPARE(spyQueryFinished.count(), 2); // Will have emited queryFinished, job is done
+        QCOMPARE(spyQueryFinished.count(), 1); // Will have emited queryFinished, job is done
 
         // Now we will make sure that RunnerManager::scheduleMatchesChanged() emits matchesChanged instantly
         // if we start a query with an empty string. It will never produce results, stalling is meaningless
         manager->launchQuery("");
         QCOMPARE(spyMatchesChanged.count(), 3); // One more, instantly, without stall
         QCOMPARE(manager->matches().count(), 0); // Empty results for empty query string
+        QVERIFY(spyQueryFinished.wait());
+    }
+
+    /**
+     * This will test queryFinished signal from reset() is emitted when the previous runners are
+     * still running.
+     */
+    void testQueryFinishedFromReset()
+    {
+        QSignalSpy spyQueryFinished(manager.get(), &Plasma::RunnerManager::queryFinished);
+
+        manager->launchQuery("fooDelay1000");
+        QCOMPARE(spyQueryFinished.size(), 0);
+
+        manager->launchQuery("fooDelay300");
+        QCOMPARE(spyQueryFinished.size(), 1); // From reset()
+
+        QVERIFY(spyQueryFinished.wait());
+        QCOMPARE(spyQueryFinished.size(), 2);
     }
 };
 
