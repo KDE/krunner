@@ -420,9 +420,7 @@ public:
         }
 #endif
         QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-        QObject::connect(job.data(), &FindMatchesJob::done, q, [this](ThreadWeaver::JobPointer jobPtr) {
-            jobDone(jobPtr);
-        });
+        QObject::connect(job.data(), &FindMatchesJob::done, q, std::bind(&RunnerManagerPrivate::jobDone, this, std::placeholders::_1));
 
 #if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
         if (runner->speed() == AbstractRunner::SlowSpeed) {
