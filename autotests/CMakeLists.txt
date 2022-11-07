@@ -43,6 +43,7 @@ ecm_add_tests(
     runnermanagertest.cpp
     LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus KF5::ConfigCore
 )
+kcoreaddons_target_static_plugins(runnermanagertest krunnertest)
 ecm_add_tests(
     testmetadataconversion.cpp
     LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus KF5::ConfigCore

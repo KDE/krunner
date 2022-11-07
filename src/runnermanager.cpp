@@ -568,7 +568,13 @@ RunnerManager::RunnerManager(KConfigGroup &c, QObject *parent)
 RunnerManager::~RunnerManager()
 {
     if (!qApp->closingDown() && (!d->searchJobs.isEmpty() || !d->oldSearchJobs.isEmpty())) {
-        new DelayedJobCleaner(d->searchJobs + d->oldSearchJobs);
+        const QSet<QSharedPointer<FindMatchesJob>> jobs(d->searchJobs + d->oldSearchJobs);
+        QSet<AbstractRunner *> runners;
+        for (auto &job : jobs) {
+            job->runner()->setParent(nullptr);
+            runners << job->runner();
+        }
+        new DelayedJobCleaner(jobs, runners);
     }
 }
 

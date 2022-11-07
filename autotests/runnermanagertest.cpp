@@ -112,6 +112,20 @@ private Q_SLOTS:
         QVERIFY(spyQueryFinished.wait());
         QCOMPARE(spyQueryFinished.size(), 2);
     }
+
+    /**
+     * When we delete the RunnerManager while a job is still running, we should not crash
+     */
+    void testNotCrashWhenDeletingRunnerManager()
+    {
+        RunnerManager manager;
+        manager.setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+        manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
+
+        QCOMPARE(manager.runners().size(), 1);
+
+        manager.launchQuery("somequery");
+    }
 };
 
 QTEST_MAIN(RunnerManagerTest)
