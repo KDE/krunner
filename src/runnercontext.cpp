@@ -38,14 +38,14 @@ namespace Plasma
 class RunnerContextPrivate : public QSharedData
 {
 public:
-    RunnerContextPrivate(RunnerContext *context)
+    explicit RunnerContextPrivate(RunnerContext *context)
         : QSharedData()
         , type(RunnerContext::UnknownType)
         , q(context)
     {
     }
 
-    RunnerContextPrivate(const RunnerContextPrivate &p)
+    explicit RunnerContextPrivate(const RunnerContextPrivate &p)
         : QSharedData()
         , launchCounts(p.launchCounts)
         , type(RunnerContext::None)

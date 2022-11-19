@@ -119,7 +119,7 @@ class DelayedJobCleaner : public QObject
 {
     Q_OBJECT
 public:
-    DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob>> &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
+    explicit DelayedJobCleaner(const QSet<QSharedPointer<FindMatchesJob>> &jobs, const QSet<AbstractRunner *> &runners = QSet<AbstractRunner *>());
     ~DelayedJobCleaner() override;
 
 private Q_SLOTS:
