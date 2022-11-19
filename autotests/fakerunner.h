@@ -40,10 +40,10 @@ public:
 private:
     QueryMatch createDummyMatch(const QString &text, qreal relevance)
     {
-        QueryMatch match(this);
-        match.setId(text);
-        match.setText(text);
-        match.setRelevance(relevance);
-        return match;
+        QueryMatch queryMatch(this);
+        queryMatch.setId(text);
+        queryMatch.setText(text);
+        queryMatch.setRelevance(relevance);
+        return queryMatch;
     }
 };

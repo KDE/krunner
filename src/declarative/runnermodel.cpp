@@ -64,8 +64,8 @@ QStringList RunnerModel::runners() const
 void RunnerModel::setRunners(const QStringList &allowedRunners)
 {
     // use sets to ensure comparison is order-independent
-    const auto runners = this->runners();
-    if (QSet<QString>(allowedRunners.begin(), allowedRunners.end()) == QSet<QString>(runners.begin(), runners.end())) {
+    const auto runnersIds = this->runners();
+    if (QSet<QString>(allowedRunners.begin(), allowedRunners.end()) == QSet<QString>(runnersIds.begin(), runnersIds.end())) {
         return;
     }
     if (m_manager) {
