@@ -164,7 +164,7 @@ void QueryMatch::setData(const QVariant &data)
     if (d->id.isEmpty() || d->idSetByData) {
         const QString matchId = data.toString();
         if (!matchId.isEmpty()) {
-            setId(data.toString());
+            setId(matchId);
             d->idSetByData = true;
         }
     }
