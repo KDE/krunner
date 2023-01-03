@@ -46,7 +46,7 @@ public:
         manager->loadRunner(md);
 #else
         auto metaData = KPluginMetaData::findPluginById(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_DIR),
-                                                        QFileInfo(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_NAME)).baseName());
+                                                        QFileInfo(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_NAME)).completeBaseName());
         QVERIFY(metaData.isValid());
 
         // Set internal variables
