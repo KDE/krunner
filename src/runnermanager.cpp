@@ -994,7 +994,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runnable = d->runners;
     }
 
-    const int queryLetterCount = term.count();
+    const int queryLetterCount = term.length();
     for (Plasma::AbstractRunner *r : std::as_const(runnable)) {
         if (r->isMatchingSuspended()) {
             continue;
