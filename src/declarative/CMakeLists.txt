@@ -24,9 +24,9 @@ target_link_libraries(runnermodelplugin
         Qt${QT_MAJOR_VERSION}::Quick
         Qt${QT_MAJOR_VERSION}::Qml
         Qt${QT_MAJOR_VERSION}::Widgets # QAction
-        KF5::I18n
-        KF5::Service
-        KF5Runner
+        KF6::I18n
+        KF6::Service
+        KF6Runner
 )
 
 install(TARGETS runnermodelplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/runnermodel)

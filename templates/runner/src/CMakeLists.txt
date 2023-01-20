@@ -7,7 +7,7 @@ target_sources(%{APPNAMELC} PRIVATE
 )
 
 kcoreaddons_desktop_to_json(%{APPNAMELC} plasma-runner-%{APPNAMELC}.desktop)
-target_link_libraries(%{APPNAMELC} KF5::Runner KF5::I18n)
+target_link_libraries(%{APPNAMELC} KF6::Runner KF6::I18n)
 
 install(TARGETS %{APPNAMELC} DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/krunner)
 

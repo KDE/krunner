@@ -15,8 +15,8 @@ deprecated: false
 release: true
 libraries:
  - qmake: KRunner
-   cmake: "KF5::Runner"
-cmakename: KF5Runner
+   cmake: "KF6::Runner"
+cmakename: KF6Runner
 
 public_lib: true
 group: Frameworks

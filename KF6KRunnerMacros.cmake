@@ -1,5 +1,5 @@
 #.rst:
-# KF5KRunnerMacros
+# KF6KRunnerMacros
 # ---------------------------
 #
 # This module provides the ``configure_krunner_test`` function which takes the test- and runner target as a parameter.

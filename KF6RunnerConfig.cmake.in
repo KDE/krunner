@@ -6,14 +6,14 @@
 
 include(CMakeFindDependencyMacro)
 find_dependency(Qt@QT_MAJOR_VERSION@ @REQUIRED_QT_VERSION@ CONFIG REQUIRED Core Gui)
-find_dependency(KF5CoreAddons "@KF_DEP_VERSION@") # KPluginFactory
-find_dependency(KF5Config "@KF_DEP_VERSION@") # KConfigGroup
-if (@KF5Plasma_FOUND@)
-    find_dependency(KF5Plasma "@KF_DEP_VERSION@") # Deprecated Plasma version headers
+find_dependency(KF6CoreAddons "@KF_DEP_VERSION@") # KPluginFactory
+find_dependency(KF6Config "@KF_DEP_VERSION@") # KConfigGroup
+if (@KF6Plasma_FOUND@)
+    find_dependency(KF6Plasma "@KF_DEP_VERSION@") # Deprecated Plasma version headers
 endif()
 
 @PACKAGE_SETUP_AUTOMOC_VARIABLES@
 
-include("${CMAKE_CURRENT_LIST_DIR}/KF5RunnerTargets.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/KF5KRunnerMacros.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/KF6RunnerTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/KF6KRunnerMacros.cmake")
 @PACKAGE_INCLUDE_QCHTARGETS@
