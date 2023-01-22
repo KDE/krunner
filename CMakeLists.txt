@@ -49,9 +49,7 @@ find_package(Qt6 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui Quick)
 
 ecm_set_disabled_deprecation_versions(
     QT ${REQUIRED_QT_VERSION}
-    KF 5.95.0
-    PLASMA 5.0.0  # needed because we use Plasma::Package in the API
-    KSERVICE 5.89.0  # needed because we use KPluginInfo, KServiceTypeTrader in the API
+    KF 5.102.0
 )
 
 find_package(KF6Config ${KF_DEP_VERSION} REQUIRED)
@@ -68,17 +66,6 @@ set_package_properties(KF6Activities PROPERTIES
 if(KF6Activities_FOUND)
     set(HAVE_KACTIVITIES TRUE)
 endif()
-
-# TODO KF6 remove
-ecm_setup_qtplugin_macro_names(
-    JSON_NONE
-        "K_EXPORT_PLASMA_RUNNER"
-        "K_EXPORT_RUNNER_CONFIG"
-    JSON_ARG2
-        "K_EXPORT_PLASMA_RUNNER_WITH_JSON"
-    CONFIG_CODE_VARIABLE
-        PACKAGE_SETUP_AUTOMOC_VARIABLES
-)
 
 # Subdirectories
 add_subdirectory(src)
