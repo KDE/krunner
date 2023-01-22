@@ -185,14 +185,6 @@ public:
      */
     static QVector<KPluginMetaData> runnerMetaDataList();
 
-    /**
-     * If you call this method the manager will create a KConfigWatcher
-     * which reload its runners or the runner configuration when the settings in the KCM are edited.
-     * @since 5.73
-     * @see reloadConfiguration
-     */
-    void enableKNotifyPluginWatcher(); // TODO KF6 make enabling the watcher default behavior and remove the method
-
 public Q_SLOTS:
     /**
      * Call this method when the runners should be prepared for a query session.

@@ -46,6 +46,7 @@ public:
     RunnerManagerPrivate(RunnerManager *parent)
         : q(parent)
     {
+        initializeKNotifyPluginWatcher();
         matchChangeTimer.setSingleShot(true);
         matchChangeTimer.setTimerType(Qt::TimerType::PreciseTimer); // Without this, autotest will fail due to imprecision of this timer
         delayTimer.setSingleShot(true);
@@ -366,6 +367,33 @@ public:
 
         Queue::instance()->enqueue(job);
         searchJobs.insert(job);
+    }
+
+    // Must only be called once
+    void initializeKNotifyPluginWatcher()
+    {
+        Q_ASSERT(!watcher);
+        watcher = KConfigWatcher::create(configPrt);
+        q->connect(watcher.data(), &KConfigWatcher::configChanged, q, [this](const KConfigGroup &group, const QByteArrayList &changedNames) {
+            const QString groupName = group.name();
+            if (groupName == QLatin1String("Plugins")) {
+                q->reloadConfiguration();
+            } else if (groupName == QLatin1String("Runners")) {
+                for (auto *runner : std::as_const(runners)) {
+                    // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
+                    if (changedNames.contains(runner->metadata().pluginId().toUtf8())) {
+                        runner->reloadConfiguration();
+                    }
+                }
+            } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")) {
+                for (auto *runner : std::as_const(runners)) {
+                    // If the same config group has been modified which gets created in AbstractRunner::config()
+                    if (groupName == runner->id()) {
+                        runner->reloadConfiguration();
+                    }
+                }
+            }
+        });
     }
 
     inline QString getActivityKey()
@@ -776,33 +804,6 @@ void RunnerManager::reset()
 KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) const
 {
     return parseMetaDataFromDesktopFile(filename);
-}
-
-void RunnerManager::enableKNotifyPluginWatcher()
-{
-    if (!d->watcher) {
-        d->watcher = KConfigWatcher::create(d->configPrt);
-        connect(d->watcher.data(), &KConfigWatcher::configChanged, this, [this](const KConfigGroup &group, const QByteArrayList &changedNames) {
-            const QString groupName = group.name();
-            if (groupName == QLatin1String("Plugins")) {
-                reloadConfiguration();
-            } else if (groupName == QLatin1String("Runners")) {
-                for (auto *runner : std::as_const(d->runners)) {
-                    // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
-                    if (changedNames.contains(runner->metadata().pluginId().toUtf8())) {
-                        runner->reloadConfiguration();
-                    }
-                }
-            } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")) {
-                for (auto *runner : std::as_const(d->runners)) {
-                    // If the same config group has been modified which gets created in AbstractRunner::config()
-                    if (groupName == runner->id()) {
-                        runner->reloadConfiguration();
-                    }
-                }
-            }
-        });
-    }
 }
 
 QString RunnerManager::priorSearch() const
