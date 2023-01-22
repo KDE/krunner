@@ -13,6 +13,8 @@
     : Plasma::AbstractRunner(parent, args)
 {
     setObjectName(QStringLiteral("%{APPNAME}"));
+    // Disallow short queries
+    setMinLetterCount(3);
 }
 
 %{APPNAME}::~%{APPNAME}()
@@ -23,10 +25,6 @@
 void %{APPNAME}::match(Plasma::RunnerContext &context)
 {
     const QString term = context.query();
-    if (term.length() < 3) {
-        return;
-    }
-
     // TODO
 }
 
