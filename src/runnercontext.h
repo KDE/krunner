@@ -124,18 +124,6 @@ public:
     void requestQueryStringUpdate(const QString &text, int cursorPosition) const;
 
     /**
-     * Sets single runner query mode. Note that a call to reset() will
-     * turn off single runner query mode.
-     *
-     * @note This method is considered internal. To set the single runner mode you should pass in a runnerId to @ref RunnerManager::launchQuery
-     * @see reset()
-     * @internal
-     * @since 4.4
-     */
-    // TODO KF6 Make private
-    void setSingleRunnerQueryMode(bool enabled);
-
-    /**
      * @return true if the current query is a single runner query
      * @since 4.4
      */
@@ -182,6 +170,9 @@ private:
     QString requestedQueryString() const;
     int requestedCursorPosition() const;
     bool shouldIgnoreCurrentMatchForHistory() const;
+    // Sets single runner query mode. Note that a call to reset() will turn off single runner query mode.
+    void setSingleRunnerQueryMode(bool enabled);
+
     friend class RunnerManager;
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
