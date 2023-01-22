@@ -64,10 +64,6 @@ void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface * /*job*/)
 {
 }
 
-////////////////////
-// Jobs
-////////////////////
-
 FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerContext *context, QObject *)
     : ThreadWeaver::Job()
     , m_context(*context, nullptr)
