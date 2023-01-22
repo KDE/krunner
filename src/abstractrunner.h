@@ -43,9 +43,6 @@ class AbstractRunnerPrivate;
  * Be aware that runners have to be thread-safe. This is due to the fact that
  * each runner is executed in its own thread for each new term. Thus, a runner
  * may be executed more than once at the same time. See match() for details.
- * To let krunner expose a global shortcut for the single runner query mode, the runner
- * must set the "X-Plasma-AdvertiseSingleRunnerMode" key to true in the .desktop file
- * and set a default syntax. See setDefaultSyntax() for details.
  *
  */
 class KRUNNER_EXPORT AbstractRunner : public QObject
