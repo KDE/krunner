@@ -35,8 +35,6 @@ class Package;
 class QueryMatch;
 class AbstractRunnerPrivate;
 
-enum RunnerReturnPluginMetaDataConstant { RunnerReturnPluginMetaData }; // KF6: remove again
-
 /**
  * @class AbstractRunner abstractrunner.h <KRunner/AbstractRunner>
  *
@@ -160,20 +158,8 @@ public:
 
     /**
      * @return the plugin metadata for this runner
-     *
-     * Overload to get non-deprecated metadata format. Use like this:
-     * @code
-     * KPluginMetaData md = runner->metadata(Plasma::RunnerReturnPluginMetaData);
-     * @endcode
-     * If you disable the deprecated version using the KRUNNER_DISABLE_DEPRECATED_BEFORE_AND_AT macro,
-     * then you can omit Plasma::RunnerReturnPluginMetaDataConstant and use it like this:
-     * @code
-     * KPluginMetaData md = runner->metadata();
-     * @endcode
-     *
-     * @since 5.72
      */
-    KPluginMetaData metadata(RunnerReturnPluginMetaDataConstant = RunnerReturnPluginMetaData) const;
+    KPluginMetaData metadata() const;
     /**
      * @return the icon for this Runner
      */

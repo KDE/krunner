@@ -794,7 +794,7 @@ void RunnerManager::enableKNotifyPluginWatcher()
             } else if (groupName == QLatin1String("Runners")) {
                 for (auto *runner : std::as_const(d->runners)) {
                     // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
-                    if (changedNames.contains(runner->metadata(RunnerReturnPluginMetaData).pluginId().toUtf8())) {
+                    if (changedNames.contains(runner->metadata().pluginId().toUtf8())) {
                         runner->reloadConfiguration();
                     }
                 }

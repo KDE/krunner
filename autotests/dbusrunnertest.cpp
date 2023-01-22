@@ -15,10 +15,6 @@
 #include <QTime>
 #include <QTimer>
 
-#if WITH_KSERVICE
-#include <KSycoca>
-#endif
-
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
 

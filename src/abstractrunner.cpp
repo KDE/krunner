@@ -144,7 +144,7 @@ QString AbstractRunner::description() const
     return objectName();
 }
 
-KPluginMetaData AbstractRunner::metadata(RunnerReturnPluginMetaDataConstant) const
+KPluginMetaData AbstractRunner::metadata() const
 {
     return d->runnerDescription;
 }
