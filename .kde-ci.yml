@@ -5,12 +5,10 @@ Dependencies:
 - 'on': ['Linux', 'FreeBSD', 'Windows', 'macOS']
   'require':
     'frameworks/extra-cmake-modules': '@same'
-    'frameworks/kio' : '@same'
     'frameworks/kconfig' : '@same'
-    'frameworks/kservice' : '@same'
+    'frameworks/kcoreaddons' : '@same'
     'frameworks/threadweaver' : '@same'
     'frameworks/ki18n' : '@same'
-    'frameworks/plasma-framework' : '@same'
 
 Options:
   test-before-installing: True
