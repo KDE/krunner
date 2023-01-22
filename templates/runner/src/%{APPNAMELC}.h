@@ -14,7 +14,7 @@ class %{APPNAME} : public Plasma::AbstractRunner
     Q_OBJECT
 
 public:
-    %{APPNAME}(QObject *parent, const QVariantList &args);
+    %{APPNAME}(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
     ~%{APPNAME}() override;
 
 public: // Plasma::AbstractRunner API
