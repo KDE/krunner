@@ -218,12 +218,7 @@ public Q_SLOTS:
      * @param runnerId optional, if only one specific runner is to be used;
      *               providing an id will put the manager into single runner mode
      */
-    void launchQuery(const QString &term, const QString &runnerId);
-
-    /**
-     * Convenience version of above
-     */
-    void launchQuery(const QString &term); // TODO KF6 Merge with other overload and use default argument
+    void launchQuery(const QString &term, const QString &runnerId = QString());
 
     /**
      * Reset the current data and stops the query

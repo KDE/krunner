@@ -650,11 +650,6 @@ void RunnerManager::matchSessionComplete()
     d->context.save(d->stateData);
 }
 
-void RunnerManager::launchQuery(const QString &term)
-{
-    launchQuery(term, QString());
-}
-
 void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &runnerName)
 {
     setupMatchSession();
