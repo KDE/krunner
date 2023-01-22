@@ -260,7 +260,7 @@ protected:
      * @param args for compatibility with KPluginFactory, should be passed on to the parent constructor
      * @since 5.72
      */
-    AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+    explicit AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
 
     /**
      * Sets whether or not the runner is available for match requests. Useful to
