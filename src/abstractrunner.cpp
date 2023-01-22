@@ -193,13 +193,8 @@ bool AbstractRunner::hasMatchRegex() const
 }
 
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData)
-    : priority(AbstractRunner::NormalPriority)
+    : runnerDescription(pluginMetaData)
     , runner(r)
-    , fastRuns(0)
-    , runnerDescription(pluginMetaData)
-    , defaultSyntax(nullptr)
-    , hasRunOptions(false)
-    , suspendMatching(false)
 {
     minLetterCount = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0);
     if (runnerDescription.isValid()) {
