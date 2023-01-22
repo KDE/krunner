@@ -11,6 +11,7 @@
 #include <QRegularExpression>
 
 #include <KPluginMetaData>
+#include <kpluginmetadata.h>
 
 namespace Plasma
 {
@@ -19,12 +20,9 @@ class AbstractRunner;
 class AbstractRunnerPrivate
 {
 public:
-    AbstractRunnerPrivate(AbstractRunner *r);
-    ~AbstractRunnerPrivate();
-    void init();
-    void init(const KPluginMetaData &pluginMetaData);
+    AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData);
     AbstractRunner::Priority priority;
-    KPluginMetaData runnerDescription;
+    const KPluginMetaData runnerDescription;
     AbstractRunner *runner;
     int fastRuns;
     QReadWriteLock speedLock;

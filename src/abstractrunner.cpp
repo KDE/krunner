@@ -24,9 +24,8 @@ namespace Plasma
 {
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList & /*args*/)
     : QObject(parent)
-    , d(new AbstractRunnerPrivate(this))
+    , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
-    d->init(pluginMetaData);
 }
 
 AbstractRunner::~AbstractRunner() = default;
@@ -198,21 +197,14 @@ bool AbstractRunner::hasMatchRegex() const
     return d->hasMatchRegex;
 }
 
-AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
+AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData)
     : priority(AbstractRunner::NormalPriority)
     , runner(r)
     , fastRuns(0)
+    , runnerDescription(pluginMetaData)
     , defaultSyntax(nullptr)
     , hasRunOptions(false)
     , suspendMatching(false)
-{
-}
-
-AbstractRunnerPrivate::~AbstractRunnerPrivate()
-{
-}
-
-void AbstractRunnerPrivate::init()
 {
     minLetterCount = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0);
     if (runnerDescription.isValid()) {
@@ -224,12 +216,6 @@ void AbstractRunnerPrivate::init()
         hasUniqueResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
         hasWeakResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false);
     }
-}
-
-void AbstractRunnerPrivate::init(const KPluginMetaData &pluginMetaData)
-{
-    runnerDescription = pluginMetaData;
-    init();
 }
 
 } // Plasma namespace
