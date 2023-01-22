@@ -24,7 +24,6 @@ target_sources(KF6Runner PRIVATE
     runnermanager.h
     runnersyntax.cpp
     runnersyntax.h
-    krunner.qrc
 )
 ecm_qt_declare_logging_category(KF6Runner
     HEADER krunner_debug.h
@@ -100,10 +99,6 @@ install(FILES
             ${KRunner_HEADERS}
         DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KRunner/krunner
         COMPONENT Devel)
-
-install(FILES
-   data/servicetypes/plasma-runner.desktop
-   DESTINATION ${KDE_INSTALL_KSERVICETYPESDIR})
 
 ecm_qt_install_logging_categories(
     EXPORT KRUNNER
