@@ -33,20 +33,6 @@ class KRUNNER_EXPORT RunnerContext : public QObject
     Q_OBJECT
 
 public:
-    enum Type {
-        None = 0,
-        UnknownType = 1,
-        Directory = 2,
-        File = 4,
-        NetworkLocation = 8,
-        Executable = 16,
-        ShellCommand = 32,
-        Help = 64,
-        FileSystem = Directory | File | Executable | ShellCommand,
-    };
-
-    Q_DECLARE_FLAGS(Types, Type)
-
     explicit RunnerContext(QObject *parent = nullptr);
 
     /**
@@ -199,9 +185,6 @@ private:
     friend class RunnerManager;
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(RunnerContext::Types)
-
 }
 
 #endif

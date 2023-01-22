@@ -204,7 +204,6 @@ bool AbstractRunner::hasMatchRegex() const
 
 AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r)
     : priority(AbstractRunner::NormalPriority)
-    , blackListed(RunnerContext::None)
     , runner(r)
     , fastRuns(0)
     , defaultSyntax(nullptr)

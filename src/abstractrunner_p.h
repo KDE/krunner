@@ -24,7 +24,6 @@ public:
     void init();
     void init(const KPluginMetaData &pluginMetaData);
     AbstractRunner::Priority priority;
-    RunnerContext::Types blackListed;
     KPluginMetaData runnerDescription;
     AbstractRunner *runner;
     int fastRuns;

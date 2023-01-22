@@ -36,7 +36,6 @@ class RunnerContextPrivate : public QSharedData
 public:
     explicit RunnerContextPrivate(RunnerContext *context)
         : QSharedData()
-        , type(RunnerContext::UnknownType)
         , q(context)
     {
     }
@@ -44,7 +43,6 @@ public:
     explicit RunnerContextPrivate(const RunnerContextPrivate &p)
         : QSharedData()
         , launchCounts(p.launchCounts)
-        , type(RunnerContext::None)
         , q(p.q)
     {
     }
@@ -83,9 +81,6 @@ public:
     QList<QueryMatch> matches;
     QHash<QString, int> launchCounts;
     QString term;
-    QString mimeType;
-    QStringList enabledCategories;
-    RunnerContext::Type type;
     RunnerContext *q;
     static RunnerContext s_dummyContext;
     bool singleRunnerQueryMode = false;
@@ -156,9 +151,7 @@ void RunnerContext::reset()
     d->term.clear();
     Q_EMIT matchesChanged();
 
-    d->mimeType.clear();
     d->uniqueIds.clear();
-    d->type = UnknownType;
     d->singleRunnerQueryMode = false;
     d->shouldIgnoreCurrentMatchForHistory = false;
 }
