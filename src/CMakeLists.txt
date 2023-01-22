@@ -41,7 +41,7 @@ ecm_generate_export_header(KF6Runner
     GROUP_BASE_NAME KF
     VERSION ${KF_VERSION}
     DEPRECATED_BASE_VERSION 0
-    DEPRECATION_VERSIONS 5.28 5.71 5.72 5.73 5.76 5.77 5.79 5.81 5.82 5.85 5.86 5.88 5.99
+    DEPRECATION_VERSIONS
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
@@ -58,24 +58,10 @@ target_link_libraries(KF6Runner
     PRIVATE
         Qt${QT_MAJOR_VERSION}::DBus
         Qt${QT_MAJOR_VERSION}::Widgets
+        Qt${QT_MAJOR_VERSION}::Gui
+        KF6::ConfigCore
         KF6::ThreadWeaver
 )
-if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.91.0)
-    target_link_libraries(KF6Runner
-        PUBLIC
-            KF6::Service # KPluginInfo
-            KF6::Plasma # Must be public because abstractrunner.h needs plasma/version.h
-        PRIVATE
-            KF6::KIOCore #KProtocolInfo
-    )
-endif()
-if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.94.0)
-    target_link_libraries(KF6Runner PUBLIC Qt${QT_MAJOR_VERSION}::Gui KF6::ConfigCore)
-else()
-    target_link_libraries(KF6Runner PRIVATE Qt${QT_MAJOR_VERSION}::Gui KF6::ConfigCore)
-endif()
 if(HAVE_KACTIVITIES)
     target_link_libraries(KF6Runner PRIVATE KF6::Activities)
 endif()
@@ -118,12 +104,6 @@ install(FILES
 install(FILES
    data/servicetypes/plasma-runner.desktop
    DESTINATION ${KDE_INSTALL_KSERVICETYPESDIR})
-
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
-add_custom_command(TARGET KF6Runner PRE_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/data/servicetypes/plasma-runner.desktop
-    ${CMAKE_BINARY_DIR}/bin/data/kservicetypes5)
 
 ecm_qt_install_logging_categories(
     EXPORT KRUNNER

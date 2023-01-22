@@ -58,14 +58,6 @@ find_package(KF6Config ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6ThreadWeaver ${KF_DEP_VERSION} REQUIRED)
-if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-   EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.91.0)
-    find_package(KF6KIO ${KF_DEP_VERSION} REQUIRED)
-    find_package(KF6Service ${KF_DEP_VERSION} REQUIRED)
-    find_package(KF6Plasma ${KF_DEP_VERSION} REQUIRED)
-else()
-    set(KF6Plasma_FOUND 0)
-endif()
 
 find_package(KF6Activities ${KF_DEP_VERSION})
 set_package_properties(KF6Activities PROPERTIES

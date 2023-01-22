@@ -6,15 +6,6 @@ include(ECMAddTests)
 
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-if(NOT EXCLUDE_DEPRECATED_BEFORE_AND_AT STREQUAL "CURRENT" AND
-        EXCLUDE_DEPRECATED_BEFORE_AND_AT VERSION_LESS 5.76.0
-        AND NOT WIN32)
-    ecm_add_tests(
-        runnercontexttest.cpp
-        LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF6::KIOCore KF6Runner KF6::ConfigCore
-    )
-endif()
-
 ecm_add_tests(
    dbusrunnertest.cpp
    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF6Runner Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::DBus KF6::ConfigCore
