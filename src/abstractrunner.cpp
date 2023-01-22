@@ -119,29 +119,17 @@ QString AbstractRunner::name() const
 
 QIcon AbstractRunner::icon() const
 {
-    if (d->runnerDescription.isValid()) {
-        return QIcon::fromTheme(d->runnerDescription.iconName());
-    }
-
-    return QIcon();
+    return QIcon::fromTheme(d->runnerDescription.iconName());
 }
 
 QString AbstractRunner::id() const
 {
-    if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.pluginId();
-    }
-
-    return objectName();
+    return d->runnerDescription.pluginId();
 }
 
 QString AbstractRunner::description() const
 {
-    if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.description();
-    }
-
-    return objectName();
+    return d->runnerDescription.description();
 }
 
 KPluginMetaData AbstractRunner::metadata() const
