@@ -486,7 +486,7 @@ public:
     KConfigWatcher::Ptr watcher;
     QHash<QString, QString> priorSearch;
     QString untrimmedTerm;
-    QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
+    const QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
     KSharedConfigPtr configPrt;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
