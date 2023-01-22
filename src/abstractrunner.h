@@ -51,13 +51,6 @@ class AbstractRunnerPrivate;
 class KRUNNER_EXPORT AbstractRunner : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool matchingSuspended READ isMatchingSuspended WRITE suspendMatching NOTIFY matchingSuspended)
-    Q_PROPERTY(QString id READ id)
-    Q_PROPERTY(QString description READ description)
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(QIcon icon READ icon)
-    Q_PROPERTY(int minLetterCount READ minLetterCount WRITE setMinLetterCount)
-    Q_PROPERTY(QRegularExpression matchRegex READ matchRegex WRITE setMatchRegex)
 
 public:
     /** Specifies a priority for the runner */
