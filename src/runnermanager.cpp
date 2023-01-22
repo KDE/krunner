@@ -43,8 +43,11 @@ namespace Plasma
 class RunnerManagerPrivate
 {
 public:
-    RunnerManagerPrivate(RunnerManager *parent)
+    RunnerManagerPrivate(RunnerManager *parent, const QString &configFile)
         : q(parent)
+        , configPrt(KSharedConfig::openConfig(configFile))
+        , stateData(KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)
+                        ->group("PlasmaRunnerManager"))
     {
         initializeKNotifyPluginWatcher();
         matchChangeTimer.setSingleShot(true);
@@ -159,7 +162,7 @@ public:
         QSet<AbstractRunner *> deadRunners;
         QMutableVectorIterator<KPluginMetaData> it(offers);
         while (it.hasNext()) {
-            KPluginMetaData &description = it.next();
+            const KPluginMetaData &description = it.next();
             qCDebug(KRUNNER) << "Loading runner: " << description.pluginId();
 
             const QString runnerName = description.pluginId();
@@ -487,7 +490,7 @@ public:
     QHash<QString, QString> priorSearch;
     QString untrimmedTerm;
     const QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
-    KSharedConfigPtr configPrt;
+    const KSharedConfigPtr configPrt;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
 #if HAVE_KACTIVITIES
@@ -502,18 +505,8 @@ RunnerManager::RunnerManager(QObject *parent)
 
 RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     : QObject(parent)
-    , d(new RunnerManagerPrivate(this))
+    , d(new RunnerManagerPrivate(this, configFile))
 {
-    d->configPrt = KSharedConfig::openConfig(configFile);
-    // If the old config group still exists the migration script wasn't executed
-    // so we keep using this location
-    KConfigGroup oldStateDataGroup = d->configPrt->group("PlasmaRunnerManager");
-    if (oldStateDataGroup.exists() && !oldStateDataGroup.readEntry("migrated", false)) {
-        d->stateData = oldStateDataGroup;
-    } else {
-        d->stateData =
-            KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)->group("PlasmaRunnerManager");
-    }
     d->loadConfiguration();
 }
 
