@@ -80,51 +80,6 @@ public:
      */
     QString query() const;
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * The type of item the search term might refer to.
-     * @see Type
-     * @deprecated feature is deprecated. Do the checks manually inside of the match logic
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is deprecated. Do the checks manually inside of the match logic")
-    Type type() const;
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * A list of categories of which results should be returned.
-     * This list is typically populated from the AbstractRunner::categories
-     * function.
-     * @deprecated Since 5.76, feature is unused and not supported by most runners
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
-    QStringList enabledCategories() const;
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * Sets the list of enabled categories. Runners can use this list
-     * to optimize themselves by only returning results from the enabled
-     * categories
-     * @deprecated Since 5.76, feature is unused and not supported by most runners
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
-    void setEnabledCategories(const QStringList &categories);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * The mimetype that the search term refers to, if discoverable.
-     *
-     * @return QString() if the mimetype can not be determined, otherwise
-     *         the mimetype of the object being referred to by the search
-     *         string.
-     * @deprecated feature is unused, determine the mime type manually if needed
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused, determine the mime type manually if needed")
-    QString mimeType() const;
-#endif
-
     /**
      * @returns true if this context is no longer valid and therefore
      * matching using it should abort. Most useful as an optimization technique
@@ -163,73 +118,12 @@ public:
      */
     bool addMatch(const QueryMatch &match);
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
-    /**
-     * Removes a match from the existing list of matches.
-     *
-     * If you are going to be removing multiple matches, use removeMatches instead.
-     *
-     * @param matchId the id of match to remove
-     *
-     * @return true if the match was removed, false otherwise.
-     * @since 4.4
-     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
-    bool removeMatch(const QString matchId);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
-    /**
-     * Removes lists of matches from the existing list of matches.
-     *
-     * This method is thread safe and causes the matchesChanged() signal to be emitted.
-     *
-     * @param matchIdList the list of matches id to remove
-     *
-     * @return true if at least one match was removed, false otherwise.
-     * @since 4.4
-     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
-    bool removeMatches(const QStringList matchIdList);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
-    /**
-     * Removes lists of matches from a given AbstractRunner
-     *
-     * This method is thread safe and causes the matchesChanged() signal to be emitted.
-     *
-     * @param runner the AbstractRunner from which to remove matches
-     *
-     * @return true if at least one match was removed, false otherwise.
-     * @since 4.10
-     * @deprecated Since 5.81, feature is unused, aggregate and filter the matches before adding them to the runnercontext instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 81, "feature is unused, aggregate and filter the matches before adding them to the runnercontext instead")
-    bool removeMatches(AbstractRunner *runner);
-#endif
-
     /**
      * Retrieves all available matches for the current search term.
      *
      * @return a list of matches
      */
     QList<QueryMatch> matches() const;
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
-    /**
-     * Retrieves a match by id.
-     *
-     * @param id the id of the match to return
-     * @return the match associated with this id, or an invalid QueryMatch object
-     *         if the id does not exist
-     * @deprecated Since 5.79, deprecated due to lack of usage. Instead filter the matches manually based on the id
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 79, "Deprecated due to lack of usage, instead filter the matches manually based on the id")
-    QueryMatch match(const QString &id) const;
-#endif
 
     /**
      * Request that KRunner updates the query string and stasy open, even after running a match.

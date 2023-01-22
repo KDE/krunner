@@ -21,10 +21,6 @@
 #include <KConfigGroup>
 #include <KShell>
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-#include <KProtocolInfo>
-#endif
-
 #include "abstractrunner.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
@@ -57,91 +53,10 @@ public:
     {
     }
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-    /**
-     * Determines type of query
-                &&
-     */
-    void determineType()
-    {
-        // NOTE! this method must NEVER be called from
-        // code that may be running in multiple threads
-        // with the same data.
-        type = RunnerContext::UnknownType;
-        QString path = QDir::cleanPath(KShell::tildeExpand(term));
-
-        int space = path.indexOf(QLatin1Char(' '));
-        if (!QStandardPaths::findExecutable(path.left(space)).isEmpty()) {
-            // it's a shell command if there's a space because that implies
-            // that it has arguments!
-            type = (space > 0) ? RunnerContext::ShellCommand : RunnerContext::Executable;
-        } else {
-            QUrl url = QUrl::fromUserInput(term);
-
-            // QUrl::fromUserInput assigns http to everything if it cannot match it to
-            // anything else. We do not want that.
-            if (url.scheme() == QLatin1String("http")) {
-                if (!term.startsWith(QLatin1String("http"))) {
-                    url.setScheme(QString());
-                }
-            }
-
-            const bool hasProtocol = !url.scheme().isEmpty();
-            const bool isLocalProtocol = !hasProtocol || KProtocolInfo::protocolClass(url.scheme()) == QLatin1String(":local");
-            if ((hasProtocol && ((!isLocalProtocol && !url.host().isEmpty()) || (isLocalProtocol && url.scheme() != QLatin1String("file"))))
-                || term.startsWith(QLatin1String("\\\\"))) {
-                // we either have a network protocol with a host, so we can show matches for it
-                // or we have a non-file url that may be local so a host isn't required
-                // or we have an UNC path (\\foo\bar)
-                type = RunnerContext::NetworkLocation;
-            } else if (isLocalProtocol) {
-                // at this point in the game, we assume we have a path,
-                // but if a path doesn't have any slashes
-                // it's too ambiguous to be sure we're in a filesystem context
-                path = !url.scheme().isEmpty() ? QDir::cleanPath(url.toLocalFile()) : path;
-                if ((path.indexOf(QLatin1Char('/')) != -1 || path.indexOf(QLatin1Char('\\')) != -1)) {
-                    QFileInfo info(path);
-                    if (info.isSymLink()) {
-                        path = info.canonicalFilePath();
-                        info = QFileInfo(path);
-                    }
-                    if (info.isDir()) {
-                        type = RunnerContext::Directory;
-                        mimeType = QStringLiteral("inode/folder");
-                    } else if (info.isFile()) {
-                        type = RunnerContext::File;
-                        QMimeDatabase db;
-                        QMimeType mime = db.mimeTypeForFile(path);
-                        if (!mime.isDefault()) {
-                            mimeType = mime.name();
-                        }
-                    }
-                }
-            }
-        }
-    }
-#endif
-
     void invalidate()
     {
         q = &s_dummyContext;
     }
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-    QueryMatch *findMatchById(const QString &id)
-    {
-        QueryMatch *match = nullptr;
-        lock.lockForRead();
-        for (auto &matchEntry : matches) {
-            if (matchEntry.id() == id) {
-                match = &matchEntry;
-                break;
-            }
-        }
-        lock.unlock();
-        return match;
-    }
-#endif
 
     void addMatch(const QueryMatch &match)
     {
@@ -260,9 +175,6 @@ void RunnerContext::setQuery(const QString &term)
 
     d->requestedText.clear(); // Invalidate this field whenever the query changes
     d->term = term;
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-    d->determineType();
-#endif
 }
 
 QString RunnerContext::query() const
@@ -272,34 +184,6 @@ QString RunnerContext::query() const
     // and setQuery(QString) calls reset()
     return d->term;
 }
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-
-void RunnerContext::setEnabledCategories(const QStringList &categories)
-{
-    d->enabledCategories = categories;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-QStringList RunnerContext::enabledCategories() const
-{
-    return d->enabledCategories;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-RunnerContext::Type RunnerContext::type() const
-{
-    return d->type;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-QString RunnerContext::mimeType() const
-{
-    return d->mimeType;
-}
-#endif
 
 bool RunnerContext::isValid() const
 {
@@ -322,7 +206,9 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
         if (int count = d->launchCounts.value(match.id())) {
+            qWarning() << Q_FUNC_INFO << match.text() << match.relevance() << (match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
             match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
+            qWarning() << Q_FUNC_INFO << match.text() << match.relevance();
         }
         d->addMatch(match);
     }
@@ -340,73 +226,6 @@ bool RunnerContext::addMatch(const QueryMatch &match)
     return addMatches({match});
 }
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-bool RunnerContext::removeMatches(const QStringList matchIdList)
-{
-    bool success = false;
-    for (const QString &id : matchIdList) {
-        if (removeMatch(id)) {
-            success = true;
-        }
-    }
-
-    return success;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-bool RunnerContext::removeMatch(const QString matchId)
-{
-    if (!isValid()) {
-        return false;
-    }
-    LOCK_FOR_READ(d)
-    const QueryMatch *match = d->findMatchById(matchId);
-    UNLOCK(d)
-    if (!match) {
-        return false;
-    }
-    LOCK_FOR_WRITE(d)
-    d->matches.removeAll(*match);
-    UNLOCK(d)
-    Q_EMIT d->q->matchesChanged();
-
-    return true;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-bool RunnerContext::removeMatches(Plasma::AbstractRunner *runner)
-{
-    if (!isValid()) {
-        return false;
-    }
-
-    QList<QueryMatch> presentMatchList;
-
-    LOCK_FOR_READ(d)
-    for (const QueryMatch &match : std::as_const(d->matches)) {
-        if (match.runner() == runner) {
-            presentMatchList << match;
-        }
-    }
-    UNLOCK(d)
-
-    if (presentMatchList.isEmpty()) {
-        return false;
-    }
-
-    LOCK_FOR_WRITE(d)
-    for (const QueryMatch &match : std::as_const(presentMatchList)) {
-        d->matches.removeAll(match);
-    }
-    UNLOCK(d)
-
-    Q_EMIT d->q->matchesChanged();
-    return true;
-}
-#endif
-
 QList<QueryMatch> RunnerContext::matches() const
 {
     LOCK_FOR_READ(d)
@@ -414,16 +233,6 @@ QList<QueryMatch> RunnerContext::matches() const
     UNLOCK(d);
     return matches;
 }
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 79)
-QueryMatch RunnerContext::match(const QString &id) const
-{
-    LOCK_FOR_READ(d)
-    const QueryMatch *match = d->findMatchById(id);
-    UNLOCK(d)
-    return match ? *match : QueryMatch(nullptr);
-}
-#endif
 
 void RunnerContext::requestQueryStringUpdate(const QString &text, int cursorPosition) const
 {

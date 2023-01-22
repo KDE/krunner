@@ -41,15 +41,6 @@ public:
         NoMatch = 0, /**< Null match */
         CompletionMatch = 10, /**< Possible completion for the data of the query */
         PossibleMatch = 30, /**< Something that may match the query */
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 99)
-        /**
-         * A purely informational, non-runnable match, such as the answer to a question or calculation.
-         * The data of the match will be converted to a string and set in the search field.
-         * @deprecated Since 5.99, call RunnerContext::requestQueryStringUpdate in AbstractRunner::run method instead
-         */
-        InformationalMatch KRUNNER_ENUMERATOR_DEPRECATED_VERSION(5, 99, "Call RunnerContext::requestQueryStringUpdate in AbstractRunner::run method instead") =
-            50,
-#endif
         /**
          * A match that represents an action not directly related
          * to activating the given search term, such as a search
@@ -238,24 +229,6 @@ public:
      */
     QString iconName() const;
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 82)
-    /**
-     * Sets the MimeType, if any, associated with this match.
-     * This overrides the MimeType provided by QueryContext, and should only be
-     * set when it is different from the QueryContext MimeType
-     * @deprecated Since 5.82, deprecated for lack of usage
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 82, "deprecated for lack of usage")
-    void setMimeType(const QString &mimeType);
-
-    /**
-     * @return the mimtype for this match, or QString() is none
-     * @deprecated Since 5.82, deprecated for lack of usage
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 82, "deprecated for lack of usage")
-    QString mimeType() const;
-#endif
-
     /**
      * Sets the urls, if any, associated with this match
      */
@@ -324,30 +297,6 @@ public:
      * @since 5.82
      */
     bool isMultiLine() const;
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
-    /**
-     * @return true if this match can be configured before being run
-     * @since 4.3
-     * @deprecated Since 5.0, this feature has been defunct
-     */
-    KRUNNER_DEPRECATED_VERSION_BELATED(5, 71, 5, 0, "No longer use, feature removed")
-    bool hasConfigurationInterface() const;
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 71)
-    /**
-     * If hasConfigurationInterface() returns true, this method may be called to get
-     * a widget displaying the options the user can interact with to modify
-     * the behaviour of what happens when the match is run.
-     *
-     * @param widget the parent of the options widgets.
-     * @since 4.3
-     * @deprecated Since 5.0, this feature has been defunct
-     */
-    KRUNNER_DEPRECATED_VERSION_BELATED(5, 71, 5, 0, "No longer use, feature removed")
-    void createConfigurationInterface(QWidget *parent);
-#endif
 
 private:
     QSharedDataPointer<QueryMatchPrivate> d;

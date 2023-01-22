@@ -77,18 +77,6 @@ public:
      */
     QStringList exampleQueries() const;
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * @return the example queries associated with this Syntax object, with
-     * the searchTermDescription replacing instances of :q:. Used for showing
-     * the queries in the user interface.
-     * @deprecated Since 5.76, the description should be directly set when creating the example query.
-     * To display the queries in the user interface. Use exampleQueries() instead.
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "The descriptions should be directly set when creating the example query. Use exampleQueries() instead.")
-    QStringList exampleQueriesWithTermDescription() const;
-#endif
-
     /**
      * Sets the description for the syntax, describing what it does from
      * the user's point of view.
@@ -100,32 +88,6 @@ public:
      *         point of view
      */
     QString description() const;
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * Sets the text that should be used to replace instances of :q:
-     * in the text. By default this is the generic phrase "search term".
-     * If the syntax expects a specific kind of input, it may be defined
-     * here. A syntax used by a runner that changes the brightness of the display
-     * may set this to "brightness" for instance.
-     * @deprecated Since 5.76, set the description directly when creating the example query. Use <my query description> instead of :q: when creating the string
-     */
-    KRUNNER_DEPRECATED_VERSION(
-        5,
-        76,
-        "Set the description directly when creating the example query. Use <my query description> instead of :q: when creating the string")
-    void setSearchTermDescription(const QString &description);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * @return a description of the search term for this syntax
-     * @deprecated Since 5.76, the description should be directly set when creating the example query.
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "Feature is obsolete, the search term description should be set inside of the example query directly")
-    QString searchTermDescription() const;
-#endif
-
 private:
     std::unique_ptr<RunnerSyntaxPrivate> const d;
 };

@@ -59,49 +59,9 @@ QStringList RunnerSyntax::exampleQueries() const
     return d->exampleQueries;
 }
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-QStringList RunnerSyntax::exampleQueriesWithTermDescription() const
-{
-    QStringList queries;
-    const QString termDesc(QLatin1Char('<') + searchTermDescription() + QLatin1Char('>'));
-    for (QString query : std::as_const(d->exampleQueries)) {
-        queries << query.replace(QStringLiteral(":q:"), termDesc);
-    }
-
-    return queries;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-void RunnerSyntax::setDescription(const QString &description)
-{
-    d->description = description;
-}
-#endif
-
 QString RunnerSyntax::description() const
 {
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-    QString description = d->description;
-    description.replace(QLatin1String(":q:"), QLatin1Char('<') + searchTermDescription() + QLatin1Char('>'));
-    return description;
-#else
     return d->description;
-#endif
 }
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-void RunnerSyntax::setSearchTermDescription(const QString &description)
-{
-    d->termDescription = description;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
-QString RunnerSyntax::searchTermDescription() const
-{
-    return d->termDescription;
-}
-#endif
 
 } // Plasma namespace

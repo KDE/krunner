@@ -14,9 +14,6 @@
 
 #include "krunner_export.h"
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
-#include <KPluginInfo>
-#endif
 #include <KPluginMetaData>
 
 #include <memory>
@@ -54,13 +51,6 @@ class KRUNNER_EXPORT RunnerManager : public QObject
 public:
     explicit RunnerManager(QObject *parent = nullptr);
     explicit RunnerManager(const QString &configFile, QObject *parent = nullptr);
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * @deprecated Since 5.76, use "RunnerManager(const QString &configFile, QObject *parent)" instead.
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "use RunnerManager(const QString &configFile, QObject *parent) instead")
-    explicit RunnerManager(KConfigGroup &config, QObject *parent = nullptr);
-#endif
     ~RunnerManager() override;
 
     /**
@@ -69,83 +59,6 @@ public:
      * @return Pointer to the runner
      */
     AbstractRunner *runner(const QString &pluginName) const;
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 82)
-    /**
-     * @return the currently active "single mode" runner, or null if none
-     * @since 4.4
-     * @deprecated Since 5.81, the dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead"
-     */
-    KRUNNER_DEPRECATED_VERSION(5,
-                               82,
-                               "The dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead")
-    AbstractRunner *singleModeRunner() const;
-
-    /**
-     * Puts the manager into "single runner" mode using the given
-     * runner; if the runner does not exist or can not be loaded then
-     * the single runner mode will not be started and singleModeRunner()
-     * will return NULL
-     * @param id the id of the runner to use
-     * @since 4.4
-     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, pass in the singleModeRunnerId into the launchQuery overload instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5,
-                               82,
-                               "The dedicated singleRunnerMode methods are deprecated, pass in the singleModeRunnerId into the launchQuery overload instead")
-    void setSingleModeRunnerId(const QString &id);
-
-    /**
-     * @return the id of the runner to use in single mode
-     * @since 4.4
-     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, use runner(const QString &pluginName) with the singleRunnerId instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 82, "The dedicated singleRunnerMode methods are deprecated, save the variable before using it in launchQuery() instead")
-    QString singleModeRunnerId() const;
-
-    /**
-     * @return true if the manager is set to run in single runner mode
-     * @since 4.4
-     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, call the RunnerContext::singleRunnerQueryMode on the searchContext instead
-     */
-    KRUNNER_DEPRECATED_VERSION(
-        5,
-        82,
-        "The dedicated singleRunnerMode methods are deprecated, call the RunnerContext::singleRunnerQueryMode on the searchContext instead")
-    bool singleMode() const;
-
-    /**
-     * Sets whether or not the manager is in single mode.
-     *
-     * @param singleMode true if the manager should be in single mode, false otherwise
-     * @since 4.4
-     * @deprecated Since 5.82, the dedicated singleRunnerMode methods are deprecated, the single mode is set to true when launchQuery is called with a non
-     * empty and existing runnerId
-     */
-    KRUNNER_DEPRECATED_VERSION(5,
-                               82,
-                               "The dedicated singleRunnerMode methods are deprecated, the single mode is set to true when launchQuery is called with a non "
-                               "empty and existing runnerId")
-    void setSingleMode(bool singleMode);
-
-    /**
-     * @return the names of all runners that advertise single query mode
-     * @since 4.4
-     * @deprecated Since 5.81, filter the runners manually using the X-Plasma-AdvertiseSingleRunnerQueryMode of the metadata
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 81, "filter the runners manually using the X-Plasma-AdvertiseSingleRunnerQueryMode of the metadata")
-    QStringList singleModeAdvertisedRunnerIds() const;
-
-    /**
-     * Returns the translated name of a runner
-     * @param id the id of the runner
-     *
-     * @since 4.4
-     * @deprecated Since 5.81, call runner(const QString &id) and fetch the name from the returned object instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 81, "call runner(const QString &id) and fetch the name from the returned object instead")
-    QString runnerName(const QString &id) const;
-#endif
 
     /**
      * @return the list of all currently loaded runners
@@ -169,16 +82,6 @@ public:
      * @param match the match to be executed
      */
     void run(const QueryMatch &match);
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
-    /**
-     * Runs a given match
-     * @param id the id of the match to run
-     * @deprecated Since 5.79, use run(const QueryMatch &match) instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 79, "Use run(const QueryMatch &match) instead")
-    void run(const QString &id);
-#endif
 
     /**
      * Runs a given match. This also respects the extra handling for the InformationalMatch.
@@ -260,35 +163,6 @@ public:
      */
     void setAllowedRunners(const QStringList &runners);
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * Sets the list of categories which matches should be
-     * returned for. It also internally tries not to execute the
-     * runners which do not fall in this category.
-     * @deprecated Since 5.76, feature is unused and not supported by most runners
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
-    void setEnabledCategories(const QStringList &categories);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
-#if KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
-    /**
-     * Attempts to add the AbstractRunner plugin represented
-     * by the KService passed in. Usually one can simply let
-     * the configuration of plugins handle loading Runner plugins,
-     * but in cases where specific runners should be loaded this
-     * allows for that to take place
-     *
-     * @param service the service to use to load the plugin
-     * @since 4.5
-     * @deprecated Since 5.72, use loadRunner(const KPluginMetaData &)
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 72, "use loadRunner(const KPluginMetaData &)")
-    void loadRunner(const KService::Ptr service);
-#endif
-#endif
-
     /**
      * Attempts to add the AbstractRunner plugin represented
      * by the plugin info passed in. Usually one can simply let
@@ -301,95 +175,17 @@ public:
      */
     void loadRunner(const KPluginMetaData &pluginMetaData);
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 77)
-    /**
-     * Attempts to add the AbstractRunner from a Plasma::Package on disk.
-     * Usually one can simply let the configuration of plugins
-     * handle loading Runner plugins, but in cases where specific
-     * runners should be loaded this allows for that to take place
-     *
-     * @param path the path to a Runner package to load
-     * @since 4.5
-     * @deprecated Since 5.0, the KPackage support was removed in Plasma 5.0
-     */
-    KRUNNER_DEPRECATED_VERSION_BELATED(5, 77, 5, 0, "the KPackage support was removed in Plasma 5.0")
-    void loadRunner(const QString &path);
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 88)
-    /**
-     * @return the list of allowed plugins
-     * @since 4.4
-     * @deprecated Since 5.88, reading allowed runners from the config is deprecated, use @p runners() and get their @p AbstractRunner::id instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 88, "reading allowed runners from the config is deprecated, use runners() and get their ids instead")
-    QStringList allowedRunners() const;
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 76)
-    /**
-     * @return the list of enabled categories
-     * @deprecated Since 5.76, feature is unused and not supported by most runners
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 76, "feature is unused and not supported by most runners")
-    QStringList enabledCategories() const;
-#endif
-
     /**
      * @return mime data of the specified match
      * @since 4.5
      */
     QMimeData *mimeDataForMatch(const QueryMatch &match) const;
 
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 79)
-    /**
-     * @return mime data of the specified match
-     * @since 4.5
-     * @deprecated Since 5.79, use mimeDataForMatch(const QueryMatch &match) instead
-     */
-    KRUNNER_DEPRECATED_VERSION(5, 79, "Use mimeDataForMatch(const QueryMatch &match) instead")
-    QMimeData *mimeDataForMatch(const QString &matchId) const;
-#endif
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 85)
-    /**
-     * Returns a list of all known Runner implementations
-     *
-     * @param parentApp the application to filter runners on. Uses the
-     *                  X-KDE-ParentApp entry (if any) in the plugin metadata.
-     *                  The default value of QString() will result in a
-     *                  list containing only runners not specifically
-     *                  registered to an application.
-     * @return list of metadata of known runners
-     * @since 5.72
-     * @deprecated Since 5.85, the concept of parent apps for runners is deprecated, use no-arg overload instead
-     **/
-    KRUNNER_DEPRECATED_VERSION(5, 85, "The concept of parent apps for runners is deprecated, use no-arg overload instead")
-    static QVector<KPluginMetaData> runnerMetaDataList(const QString &parentApp);
-#endif
-
     /**
      * @return metadata list of all known Runner implementations
      * @since 5.72
      */
     static QVector<KPluginMetaData> runnerMetaDataList();
-
-#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 72)
-    /**
-     * Returns a list of all known Runner implementations
-     *
-     * @param parentApp the application to filter applets on. Uses the
-     *                  X-KDE-ParentApp entry (if any) in the plugin info.
-     *                  The default value of QString() will result in a
-     *                  list containing only applets not specifically
-     *                  registered to an application.
-     * @return list of AbstractRunners
-     * @since 4.6
-     * @deprecated since 5.72, use runnerMetaDataList() instead
-     **/
-    KRUNNER_DEPRECATED_VERSION(5, 72, "Use runnerMetaDataList() instead")
-    static KPluginInfo::List listRunnerInfo(const QString &parentApp = QString());
-#endif
 
     /**
      * If you call this method the manager will create a KConfigWatcher

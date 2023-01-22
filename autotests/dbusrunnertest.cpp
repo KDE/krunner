@@ -6,16 +6,6 @@
 
 #include "runnermanager.h"
 
-#ifdef KSERVICE_BUILD_DEPRECATED_SINCE
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 72) && KSERVICE_BUILD_DEPRECATED_SINCE(5, 0)
-#define WITH_KSERVICE 1
-#endif
-#endif
-
-#ifndef WITH_KSERVICE
-#define WITH_KSERVICE 0
-#endif
-
 #include <QAction>
 #include <QObject>
 #include <QProcess>
@@ -56,9 +46,6 @@ private Q_SLOTS:
     void testIconData();
     void testLifecycleMethods();
     void testRequestActionsOnceWildcards();
-#if WITH_KSERVICE
-    void testMulti_data();
-#endif
 };
 
 DBusRunnerTest::DBusRunnerTest()
@@ -123,38 +110,15 @@ void DBusRunnerTest::testMatch()
     QCOMPARE(process->readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:action1"));
 }
 
-#if WITH_KSERVICE
-void DBusRunnerTest::testMulti_data()
-{
-    QTest::addColumn<bool>("useKService");
-
-    QTest::newRow("deprecated") << true;
-    QTest::newRow("non-deprecated") << false;
-}
-#endif
-
 void DBusRunnerTest::testMulti()
 {
-#if WITH_KSERVICE
-    QFETCH(bool, useKService);
-#endif
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
     manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
 
-#if WITH_KSERVICE
-    if (useKService) {
-        KService::Ptr s(new KService(QFINDTESTDATA("dbusrunnertestmulti.desktop")));
-        QVERIFY(s);
-        manager->loadRunner(s);
-    } else {
-#endif
-        auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
-        QVERIFY(md.isValid());
-        manager->loadRunner(md);
-#if WITH_KSERVICE
-    }
-#endif
+    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
+    QVERIFY(md.isValid());
+    manager->loadRunner(md);
     launchQuery(QStringLiteral("foo"));
 
     // verify matches, must be one from each

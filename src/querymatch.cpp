@@ -45,9 +45,6 @@ public:
         icon = other.icon;
         iconName = other.iconName;
         data = other.data;
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 82)
-        mimeType = other.mimeType;
-#endif
         urls = other.urls;
         actions = other.actions;
         multiLine = other.multiLine;
@@ -228,20 +225,6 @@ QString QueryMatch::iconName() const
     return d->iconName;
 }
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 82)
-void QueryMatch::setMimeType(const QString &mimeType)
-{
-    QWriteLocker locker(d->lock);
-    d->mimeType = mimeType;
-}
-
-QString QueryMatch::mimeType() const
-{
-    QReadLocker locker(d->lock);
-    return d->mimeType;
-}
-#endif
-
 void QueryMatch::setUrls(const QList<QUrl> &urls)
 {
     QWriteLocker locker(d->lock);
@@ -330,20 +313,6 @@ void QueryMatch::run(const RunnerContext &context) const
         d->runner.data()->run(context, *this);
     }
 }
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
-bool QueryMatch::hasConfigurationInterface() const
-{
-    return false;
-}
-#endif
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 71)
-void QueryMatch::createConfigurationInterface(QWidget *parent)
-{
-    Q_UNUSED(parent)
-}
-#endif
 
 void QueryMatch::setActions(const QList<QAction *> &actions)
 {

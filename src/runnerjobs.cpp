@@ -18,49 +18,6 @@ using ThreadWeaver::Queue;
 
 namespace Plasma
 {
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-DelayedRunnerPolicy::DelayedRunnerPolicy()
-    : QueuePolicy()
-{
-}
-
-DelayedRunnerPolicy::~DelayedRunnerPolicy()
-{
-}
-
-DelayedRunnerPolicy &DelayedRunnerPolicy::instance()
-{
-    static DelayedRunnerPolicy policy;
-    return policy;
-}
-
-bool DelayedRunnerPolicy::canRun(ThreadWeaver::JobPointer job)
-{
-    QSharedPointer<FindMatchesJob> aJob(job.dynamicCast<FindMatchesJob>());
-    if (QTimer *t = aJob->delayTimer()) {
-        // If the timer is active, the required delay has not been reached
-        return !t->isActive(); // DATA RACE!  (with QTimer start/stop from runnermanager.cpp)
-    }
-
-    return true;
-}
-
-void DelayedRunnerPolicy::free(ThreadWeaver::JobPointer job)
-{
-    Q_UNUSED(job)
-}
-
-void DelayedRunnerPolicy::release(ThreadWeaver::JobPointer job)
-{
-    free(job);
-}
-
-void DelayedRunnerPolicy::destructed(ThreadWeaver::JobInterface *job)
-{
-    Q_UNUSED(job)
-}
-#endif
-
 DefaultRunnerPolicy::DefaultRunnerPolicy()
     : QueuePolicy()
     , m_cap(2)
@@ -119,15 +76,7 @@ FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerCon
 {
     QMutexLocker l(mutex());
     Q_UNUSED(l);
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-    if (runner->speed() == Plasma::AbstractRunner::SlowSpeed) {
-        assignQueuePolicy(&DelayedRunnerPolicy::instance());
-    } else {
-        assignQueuePolicy(&DefaultRunnerPolicy::instance());
-    }
-#else
     assignQueuePolicy(&DefaultRunnerPolicy::instance());
-#endif
 }
 
 FindMatchesJob::~FindMatchesJob()

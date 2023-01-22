@@ -48,9 +48,6 @@ private Q_SLOTS:
     void testSingleRunnerResults();
     void testNonExistentRunnerId();
     void testLoadingDisabledRunner();
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 81)
-    void testAdvertisedSingleRunners();
-#endif
 };
 
 void RunnerManagerSingleRunnerModeTest::testAllRunnerResults()
@@ -120,14 +117,6 @@ void RunnerManagerSingleRunnerModeTest::testLoadingDisabledRunner()
     QCOMPARE(manager->matches().count(), 1);
     QCOMPARE(manager->matches().constFirst().runner()->id(), "dbusrunnertestmulti");
 }
-
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 82)
-void RunnerManagerSingleRunnerModeTest::testAdvertisedSingleRunners()
-{
-    loadTwoRunners();
-    QCOMPARE(manager->singleModeAdvertisedRunnerIds(), QStringList{"dbusrunnertest"});
-}
-#endif
 
 QTEST_MAIN(RunnerManagerSingleRunnerModeTest)
 
