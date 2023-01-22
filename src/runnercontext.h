@@ -42,7 +42,6 @@ public:
 
     /**
      * Assignment operator
-     * @since 4.4
      */
     RunnerContext &operator=(const RunnerContext &other);
 
@@ -82,7 +81,6 @@ public:
      * While not required to be used within runners, it provides a nice way
      * to avoid unnecessary processing in runners that may run for an extended
      * period (as measured in 10s of ms) and therefore improve the user experience.
-     * @since 4.2.3
      */
     bool isValid() const;
 
@@ -125,7 +123,6 @@ public:
 
     /**
      * @return true if the current query is a single runner query
-     * @since 4.4
      */
     bool singleRunnerQueryMode() const;
 

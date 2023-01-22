@@ -159,7 +159,6 @@ public:
      * Sets a whitelist for the plugins that can be loaded by this manager.
      *
      * @param plugins the plugin names of allowed runners
-     * @since 4.4
      */
     void setAllowedRunners(const QStringList &runners);
 
@@ -177,7 +176,6 @@ public:
 
     /**
      * @return mime data of the specified match
-     * @since 4.5
      */
     QMimeData *mimeDataForMatch(const QueryMatch &match) const;
 
@@ -200,7 +198,6 @@ public Q_SLOTS:
      * Call this method when the runners should be prepared for a query session.
      * Call matchSessionComplete when the query session is finished for the time
      * being.
-     * @since 4.4
      * @see matchSessionComplete
      */
     void setupMatchSession();
@@ -208,7 +205,6 @@ public Q_SLOTS:
     /**
      * Call this method when the query session is finished for the time
      * being.
-     * @since 4.4
      * @see prepareForMatchSession
      */
     void matchSessionComplete();
@@ -242,7 +238,6 @@ Q_SIGNALS:
 
     /**
      * Emitted when the launchQuery finish
-     * @since 4.5
      */
     void queryFinished();
 

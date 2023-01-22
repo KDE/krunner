@@ -172,14 +172,12 @@ public:
 
     /**
      * @return the syntaxes the runner has registered that it accepts and understands
-     * @since 4.3
      */
     QList<RunnerSyntax> syntaxes() const;
 
     /**
      * @return true if the runner is currently busy with non-interuptable work, signaling that
      * new threads should not be created for it at this time
-     * @since 4.6
      */
     bool isMatchingSuspended() const;
 
@@ -245,7 +243,6 @@ Q_SIGNALS:
      * slow downs. Things that take longer or which should be loaded once and
      * remain extant for the lifespan of the AbstractRunner should be done in init().
      * @see init()
-     * @since 4.4
      */
     void prepare();
 
@@ -253,14 +250,12 @@ Q_SIGNALS:
      * This signal is emitted when a session of matches is complete, giving runners
      * the opportunity to tear down anything set up as a result of the prepare()
      * method.
-     * @since 4.4
      */
     void teardown();
 
     /**
      * Emitted when the runner enters or exits match suspension
      * @see matchingSuspended
-     * @since 4.6
      */
     void matchingSuspended(bool suspended);
 
@@ -311,7 +306,6 @@ protected:
      * used.
      *
      * @param syntax the syntax to register
-     * @since 4.3
      */
     void addSyntax(const RunnerSyntax &syntax);
 
@@ -320,7 +314,6 @@ protected:
      * the syntaxes.
      *
      * @param the syntaxes to register for this runner
-     * @since 4.3
      */
     void setSyntaxes(const QList<RunnerSyntax> &syns);
 
@@ -334,7 +327,6 @@ protected:
     /**
      * Reimplement this slot if you want your runner
      * to support serialization and drag and drop
-     * @since 4.5
      */
     virtual QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match);
 
