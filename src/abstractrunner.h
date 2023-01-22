@@ -62,9 +62,6 @@ public:
         HighestPriority,
     };
 
-    /** An ordered list of runners */
-    typedef QList<AbstractRunner *> List;
-
     ~AbstractRunner() override;
 
     /**
