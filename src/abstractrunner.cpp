@@ -22,12 +22,10 @@
 
 namespace Plasma
 {
-AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
+AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList & /*args*/)
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this))
 {
-    Q_UNUSED(args)
-
     d->init(pluginMetaData);
 }
 
@@ -98,10 +96,8 @@ void AbstractRunner::setPriority(Priority priority)
     d->priority = priority;
 }
 
-void AbstractRunner::run(const Plasma::RunnerContext &search, const Plasma::QueryMatch &action)
+void AbstractRunner::run(const Plasma::RunnerContext & /*search*/, const Plasma::QueryMatch & /*action*/)
 {
-    Q_UNUSED(search);
-    Q_UNUSED(action);
 }
 
 void AbstractRunner::match(Plasma::RunnerContext &)

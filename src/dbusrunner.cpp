@@ -304,10 +304,8 @@ QList<QAction *> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
     }
 }
 
-void DBusRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
+void DBusRunner::run(const Plasma::RunnerContext & /*context*/, const Plasma::QueryMatch &match)
 {
-    Q_UNUSED(context);
-
     QString actionId;
     QString matchId;
     if (m_hasUniqueResults) {

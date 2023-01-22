@@ -60,9 +60,8 @@ void DefaultRunnerPolicy::release(ThreadWeaver::JobPointer job)
     free(job);
 }
 
-void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface *job)
+void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface * /*job*/)
 {
-    Q_UNUSED(job)
 }
 
 ////////////////////
