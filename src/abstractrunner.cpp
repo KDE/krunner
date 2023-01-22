@@ -194,8 +194,7 @@ void AbstractRunner::setTriggerWords(const QStringList &triggerWords)
     }
     // If we can reject the query because of the length we don't need the regex
     setMinLetterCount(minTriggerWordLetters);
-    QRegularExpression regex(constructedRegex);
-    setMatchRegex(regex);
+    setMatchRegex(QRegularExpression(constructedRegex));
 }
 
 bool AbstractRunner::hasMatchRegex() const
