@@ -32,13 +32,8 @@ AbstractRunner::~AbstractRunner() = default;
 
 KConfigGroup AbstractRunner::config() const
 {
-    QString group = id();
-    if (group.isEmpty()) {
-        group = QStringLiteral("UnnamedRunner");
-    }
-
     KConfigGroup runners(KSharedConfig::openConfig(QStringLiteral("krunnerrc")), "Runners");
-    return KConfigGroup(&runners, group);
+    return runners.group(id());
 }
 
 void AbstractRunner::reloadConfiguration()
