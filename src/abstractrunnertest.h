@@ -3,8 +3,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_ABSTRACTRUNNERTEST_H
-#define PLASMA_ABSTRACTRUNNERTEST_H
+#ifndef KRUNNER_ABSTRACTRUNNERTEST_H
+#define KRUNNER_ABSTRACTRUNNERTEST_H
 
 #include <KPluginMetaData>
 #include <KRunner/AbstractRunner>
@@ -29,8 +29,8 @@ class AbstractRunnerTest : public QObject
 {
 public:
     using QObject::QObject;
-    std::unique_ptr<Plasma::RunnerManager> manager = nullptr;
-    Plasma::AbstractRunner *runner = nullptr;
+    std::unique_ptr<KRunner::RunnerManager> manager = nullptr;
+    KRunner::AbstractRunner *runner = nullptr;
 
     /**
      * Load the runner and set the manager and runner properties.
@@ -38,7 +38,7 @@ public:
     void initProperties()
     {
         qputenv("LC_ALL", "C.utf-8");
-        manager.reset(new Plasma::RunnerManager());
+        manager.reset(new KRunner::RunnerManager());
 
 #if KRUNNER_DBUS_RUNNER_TESTING
         auto md = manager->convertDBusRunnerToJson(QStringLiteral(KRUNNER_TEST_DESKTOP_FILE));
@@ -66,7 +66,7 @@ public:
      */
     void launchQuery(const QString &query, const QString &runnerName = QString())
     {
-        QSignalSpy spy(manager.get(), &Plasma::RunnerManager::queryFinished);
+        QSignalSpy spy(manager.get(), &KRunner::RunnerManager::queryFinished);
         manager->launchQuery(query, runnerName);
         QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
     }

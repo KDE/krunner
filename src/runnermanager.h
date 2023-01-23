@@ -6,8 +6,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_RUNNERMANAGER_H
-#define PLASMA_RUNNERMANAGER_H
+#ifndef KRUNNER_RUNNERMANAGER_H
+#define KRUNNER_RUNNERMANAGER_H
 
 #include <QList>
 #include <QObject>
@@ -27,7 +27,7 @@ namespace
 class AbstractRunnerTest;
 }
 
-namespace Plasma
+namespace KRunner
 {
 class QueryMatch;
 class AbstractRunner;
@@ -221,7 +221,7 @@ Q_SIGNALS:
     /**
      * Emitted each time a new match is added to the list
      */
-    void matchesChanged(const QList<Plasma::QueryMatch> &matches);
+    void matchesChanged(const QList<KRunner::QueryMatch> &matches);
 
     /**
      * Emitted when the launchQuery finish
@@ -253,11 +253,4 @@ private:
 };
 
 }
-#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
-namespace KRunner
-{
-using RunnerManager = Plasma::RunnerManager;
-}
-#endif
-
 #endif

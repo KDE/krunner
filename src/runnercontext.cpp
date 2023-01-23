@@ -29,7 +29,7 @@
 #define LOCK_FOR_WRITE(d) d->lock.lockForWrite();
 #define UNLOCK(d) d->lock.unlock();
 
-namespace Plasma
+namespace KRunner
 {
 class RunnerContextPrivate : public QSharedData
 {
@@ -117,7 +117,7 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
         return *this;
     }
 
-    QExplicitlySharedDataPointer<Plasma::RunnerContextPrivate> oldD = d;
+    QExplicitlySharedDataPointer<KRunner::RunnerContextPrivate> oldD = d;
     LOCK_FOR_WRITE(d)
     LOCK_FOR_READ(other.d)
     d = other.d;
@@ -298,6 +298,6 @@ int RunnerContext::requestedCursorPosition() const
     return d->requestedCursorPosition;
 }
 
-} // Plasma namespace
+} // KRunner namespace
 
 #include "moc_runnercontext.cpp"

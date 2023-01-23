@@ -4,8 +4,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_ABSTRACTRUNNER_H
-#define PLASMA_ABSTRACTRUNNER_H
+#ifndef KRUNNER_ABSTRACTRUNNER_H
+#define KRUNNER_ABSTRACTRUNNER_H
 
 #include "krunner_export.h"
 
@@ -28,7 +28,7 @@ class QAction;
 class QMimeData;
 class QRegularExpression;
 
-namespace Plasma
+namespace KRunner
 {
 class DataEngine;
 class Package;
@@ -110,7 +110,7 @@ public:
      *
      * @sa run(), RunnerContext::addMatch, RunnerContext::addMatches, QueryMatch
      */
-    virtual void match(Plasma::RunnerContext &context);
+    virtual void match(KRunner::RunnerContext &context);
 
     /**
      * Called whenever an exact or possible match associated with this
@@ -120,7 +120,7 @@ public:
      *                the match was created.
      * @param match The actual match to run/execute.
      */
-    virtual void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match);
+    virtual void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match);
 
     /**
      * The priority of the runner.
@@ -285,7 +285,7 @@ protected:
      * Actions must first be added to the runner's action registry.
      * Note: execution of correct action is left up to the runner.
      */
-    virtual QList<QAction *> actionsForMatch(const Plasma::QueryMatch &match);
+    virtual QList<QAction *> actionsForMatch(const KRunner::QueryMatch &match);
 
     /**
      * Adds a registered syntax that this runner understands. This is used to
@@ -315,7 +315,7 @@ protected:
      * Reimplement this slot if you want your runner
      * to support serialization and drag and drop
      */
-    virtual QMimeData *mimeDataForMatch(const Plasma::QueryMatch &match);
+    virtual QMimeData *mimeDataForMatch(const KRunner::QueryMatch &match);
 
 private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
@@ -326,15 +326,5 @@ private:
     friend class QueryMatch;
 };
 
-} // Plasma namespace
-
-
-#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
-namespace KRunner
-{
-using AbstractRunner = Plasma::AbstractRunner;
-using RunnerContext = Plasma::RunnerContext;
-}
-#endif
-
+} // KRunner namespace
 #endif

@@ -17,7 +17,7 @@
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
 
-using namespace Plasma;
+using namespace KRunner;
 
 class RunnerManagerSingleRunnerModeTest : public AbstractRunnerTest
 {

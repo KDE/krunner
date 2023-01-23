@@ -4,8 +4,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_RUNNERCONTEXT_H
-#define PLASMA_RUNNERCONTEXT_H
+#ifndef KRUNNER_RUNNERCONTEXT_H
+#define KRUNNER_RUNNERCONTEXT_H
 
 #include <QList>
 #include <QObject>
@@ -15,7 +15,7 @@
 
 class KConfigGroup;
 
-namespace Plasma
+namespace KRunner
 {
 class QueryMatch;
 class AbstractRunner;

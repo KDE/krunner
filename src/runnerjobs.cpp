@@ -16,7 +16,7 @@
 using ThreadWeaver::Job;
 using ThreadWeaver::Queue;
 
-namespace Plasma
+namespace KRunner
 {
 DefaultRunnerPolicy::DefaultRunnerPolicy()
     : QueuePolicy()
@@ -36,7 +36,7 @@ DefaultRunnerPolicy &DefaultRunnerPolicy::instance()
 
 bool DefaultRunnerPolicy::canRun(ThreadWeaver::JobPointer job)
 {
-    Plasma::AbstractRunner *runner = job.dynamicCast<FindMatchesJob>()->runner();
+    KRunner::AbstractRunner *runner = job.dynamicCast<FindMatchesJob>()->runner();
     QMutexLocker l(&m_mutex);
 
     if (m_runCounts[runner->name()] > m_cap) {
@@ -49,7 +49,7 @@ bool DefaultRunnerPolicy::canRun(ThreadWeaver::JobPointer job)
 
 void DefaultRunnerPolicy::free(ThreadWeaver::JobPointer job)
 {
-    Plasma::AbstractRunner *runner = job.dynamicCast<FindMatchesJob>()->runner();
+    KRunner::AbstractRunner *runner = job.dynamicCast<FindMatchesJob>()->runner();
     QMutexLocker l(&m_mutex);
 
     --m_runCounts[runner->name()];
@@ -64,7 +64,7 @@ void DefaultRunnerPolicy::destructed(ThreadWeaver::JobInterface * /*job*/)
 {
 }
 
-FindMatchesJob::FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerContext *context, QObject *)
+FindMatchesJob::FindMatchesJob(KRunner::AbstractRunner *runner, KRunner::RunnerContext *context, QObject *)
     : ThreadWeaver::Job()
     , m_context(*context, nullptr)
     , m_runner(runner)
@@ -91,7 +91,7 @@ int FindMatchesJob::priority() const
     return m_runner->priority();
 }
 
-Plasma::AbstractRunner *FindMatchesJob::runner() const
+KRunner::AbstractRunner *FindMatchesJob::runner() const
 {
     return m_runner;
 }
@@ -137,4 +137,4 @@ void DelayedJobCleaner::checkIfFinished()
     }
 }
 
-} // Plasma namespace
+} // KRunner namespace

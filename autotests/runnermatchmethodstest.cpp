@@ -15,7 +15,7 @@
 
 #include "kpluginmetadata_utils_p.h"
 
-using namespace Plasma;
+using namespace KRunner;
 
 namespace
 {

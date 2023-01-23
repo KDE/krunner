@@ -4,8 +4,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_QUERYMATCH_H
-#define PLASMA_QUERYMATCH_H
+#ifndef KRUNNER_QUERYMATCH_H
+#define KRUNNER_QUERYMATCH_H
 
 #include <QList>
 #include <QSharedDataPointer>
@@ -18,7 +18,7 @@ class QIcon;
 class QString;
 class QVariant;
 
-namespace Plasma
+namespace KRunner
 {
 class RunnerContext;
 class AbstractRunner;
@@ -302,13 +302,4 @@ private:
 };
 
 }
-
-#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
-namespace KRunner
-{
-using QueryMatch = Plasma::QueryMatch;
-using AbstractRunner = Plasma::AbstractRunner;
-}
-#endif
-
 #endif

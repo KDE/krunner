@@ -10,7 +10,7 @@
 #include <QRegularExpression>
 #include <KPluginMetaData>
 
-namespace Plasma
+namespace KRunner
 {
 class AbstractRunner;
 
@@ -31,5 +31,5 @@ public:
     bool hasWeakResults = false;
 };
 
-} // namespace Plasma
+} // namespace KRunner
 #endif

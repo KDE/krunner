@@ -18,10 +18,10 @@
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
 
-using namespace Plasma;
+using namespace KRunner;
 
-Q_DECLARE_METATYPE(Plasma::QueryMatch)
-Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>)
+Q_DECLARE_METATYPE(KRunner::QueryMatch)
+Q_DECLARE_METATYPE(QList<KRunner::QueryMatch>)
 
 class DBusRunnerTest : public AbstractRunnerTest
 {
@@ -47,7 +47,7 @@ private Q_SLOTS:
 DBusRunnerTest::DBusRunnerTest()
     : AbstractRunnerTest()
 {
-    qRegisterMetaType<QList<Plasma::QueryMatch>>();
+    qRegisterMetaType<QList<KRunner::QueryMatch>>();
 }
 
 DBusRunnerTest::~DBusRunnerTest()
@@ -85,7 +85,7 @@ void DBusRunnerTest::testMatch()
     QCOMPARE(result.id(), QStringLiteral("dbusrunnertest_id1")); // note the runner name is prepended
     QCOMPARE(result.text(), QStringLiteral("Match 1"));
     QCOMPARE(result.iconName(), QStringLiteral("icon1"));
-    QCOMPARE(result.type(), Plasma::QueryMatch::ExactMatch);
+    QCOMPARE(result.type(), KRunner::QueryMatch::ExactMatch);
     QCOMPARE(result.isMultiLine(), true);
     // relevance can't be compared easily because RunnerContext meddles with it
 

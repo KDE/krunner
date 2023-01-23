@@ -15,7 +15,7 @@
 #include <QStandardPaths>
 #include <QTest>
 
-using namespace Plasma;
+using namespace KRunner;
 
 class RunnerManagerHistoryTest : public QObject
 {
@@ -42,7 +42,7 @@ private:
     }
     void launchQuery(const QString &query, RunnerManager *manager)
     {
-        QSignalSpy spy(manager, &Plasma::RunnerManager::queryFinished);
+        QSignalSpy spy(manager, &KRunner::RunnerManager::queryFinished);
         manager->launchQuery(query);
         QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
     }

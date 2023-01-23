@@ -4,15 +4,15 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_RUNNERSYNTAX_H
-#define PLASMA_RUNNERSYNTAX_H
+#ifndef KRUNNER_RUNNERSYNTAX_H
+#define KRUNNER_RUNNERSYNTAX_H
 
 #include <QStringList>
 #include <memory>
 
 #include "krunner_export.h"
 
-namespace Plasma
+namespace KRunner
 {
 class RunnerSyntaxPrivate;
 /**
@@ -26,14 +26,14 @@ class RunnerSyntaxPrivate;
  * Lets say the runner has a trigger word and then the user can type anything after that. In that case you could use
  * ":q:" as a placeholder, which will get expanded to i18n("search term") and be put in brackets.
  * @code
-   Plasma::RunnerSyntax syntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
+   KRunner::RunnerSyntax syntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
    addSyntax(syntax);
  * @endcode
  *
  * But if the query the user has to enter is sth. specific like a program,
  * url or file you should use a custom placeholder to make it easier to understand.
  * @code
-   Plasma::RunnerSyntax syntax(QStringLiteral("sometriggereword <%1>").arg(i18n("program name"))), i18n("Description for this syntax"));
+   KRunner::RunnerSyntax syntax(QStringLiteral("sometriggereword <%1>").arg(i18n("program name"))), i18n("Description for this syntax"));
    addSyntax(syntax);
  * @endcode
  */
@@ -91,13 +91,6 @@ private:
     std::unique_ptr<RunnerSyntaxPrivate> const d;
 };
 
-} // namespace Plasma
-
-#if !KRUNNER_ENABLE_DEPRECATED_SINCE(5, 91)
-namespace KRunner
-{
-using RunnerSyntax = Plasma::RunnerSyntax;
-}
-#endif
+} // namespace KRunner
 
 #endif // multiple inclusion guard

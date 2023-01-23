@@ -8,7 +8,7 @@
 #include <QEventLoop>
 #include <QTimer>
 
-using namespace Plasma;
+using namespace KRunner;
 
 class FakeRunner : public AbstractRunner
 {

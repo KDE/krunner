@@ -17,7 +17,7 @@
 
 #include "abstractrunner.h"
 
-namespace Plasma
+namespace KRunner
 {
 class QueryMatchPrivate : public QSharedData
 {
@@ -332,4 +332,4 @@ QList<QAction *> QueryMatch::actions() const
     return d->actions;
 }
 
-} // Plasma namespace
+} // KRunner namespace

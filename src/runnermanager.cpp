@@ -37,7 +37,7 @@
 
 using ThreadWeaver::Queue;
 
-namespace Plasma
+namespace KRunner
 {
 
 class RunnerManagerPrivate
@@ -711,7 +711,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     }
 
     const int queryLetterCount = term.length();
-    for (Plasma::AbstractRunner *r : std::as_const(runnable)) {
+    for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
         if (r->isMatchingSuspended()) {
             continue;
         }
@@ -819,6 +819,6 @@ bool RunnerManager::retainPriorSearch()
     return d->retainPriorSearch;
 }
 
-} // Plasma namespace
+} // KRunner namespace
 
 #include "moc_runnermanager.cpp"

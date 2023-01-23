@@ -24,7 +24,7 @@
 #define IFACE_NAME "org.kde.krunner1"
 
 DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, pluginMetaData, args)
+    : KRunner::AbstractRunner(parent, pluginMetaData, args)
 {
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
@@ -93,7 +93,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     for (int i = 0; i < syntaxes.count(); ++i) {
         const QString &query = syntaxes.at(i);
         const QString description = i < descriptionCount ? syntaxDescriptions.at(i) : QString();
-        addSyntax(Plasma::RunnerSyntax(query, description));
+        addSyntax(KRunner::RunnerSyntax(query, description));
     }
 }
 
@@ -198,7 +198,7 @@ void DBusRunner::requestConfig()
     });
 }
 
-void DBusRunner::match(Plasma::RunnerContext &context)
+void DBusRunner::match(KRunner::RunnerContext &context)
 {
     QSet<QString> services;
     {
@@ -236,7 +236,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
                 }
                 const auto matches = reply.value();
                 for (const RemoteMatch &match : matches) {
-                    Plasma::QueryMatch m(this);
+                    KRunner::QueryMatch m(this);
 
                     m.setText(match.text);
                     m.setIconName(match.iconName);
@@ -286,7 +286,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
     }
 }
 
-QList<QAction *> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
+QList<QAction *> DBusRunner::actionsForMatch(const KRunner::QueryMatch &match)
 {
     const QVariantList data = match.data().toList();
     if (data.count() > 1) {
@@ -304,7 +304,7 @@ QList<QAction *> DBusRunner::actionsForMatch(const Plasma::QueryMatch &match)
     }
 }
 
-void DBusRunner::run(const Plasma::RunnerContext & /*context*/, const Plasma::QueryMatch &match)
+void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::QueryMatch &match)
 {
     QString actionId;
     QString matchId;

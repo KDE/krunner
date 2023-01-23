@@ -15,7 +15,7 @@
 #include <QMutex>
 #include <QSet>
 
-class DBusRunner : public Plasma::AbstractRunner
+class DBusRunner : public KRunner::AbstractRunner
 {
     Q_OBJECT
 
@@ -23,10 +23,10 @@ public:
     explicit DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
     ~DBusRunner() override;
 
-    void match(Plasma::RunnerContext &context) override;
+    void match(KRunner::RunnerContext &context) override;
     void reloadConfiguration() override;
-    void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action) override;
-    QList<QAction *> actionsForMatch(const Plasma::QueryMatch &match) override;
+    void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &action) override;
+    QList<QAction *> actionsForMatch(const KRunner::QueryMatch &match) override;
 
 public Q_SLOTS:
     void teardown();

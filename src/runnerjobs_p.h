@@ -4,8 +4,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef PLASMA_RUNNERJOBS_P_H
-#define PLASMA_RUNNERJOBS_P_H
+#ifndef KRUNNER_RUNNERJOBS_P_H
+#define KRUNNER_RUNNERJOBS_P_H
 
 #include <QHash>
 #include <QMutex>
@@ -21,7 +21,7 @@ using ThreadWeaver::Job;
 
 class QTimer;
 
-namespace Plasma
+namespace KRunner
 {
 // QueuePolicy that limits the instances of a particular runner
 class DefaultRunnerPolicy : public ThreadWeaver::QueuePolicy
@@ -61,11 +61,11 @@ class FindMatchesJob : public QObject, public Job
 {
     Q_OBJECT
 public:
-    FindMatchesJob(Plasma::AbstractRunner *runner, Plasma::RunnerContext *context, QObject *parent = nullptr);
+    FindMatchesJob(KRunner::AbstractRunner *runner, KRunner::RunnerContext *context, QObject *parent = nullptr);
     ~FindMatchesJob() override;
 
     int priority() const override;
-    Plasma::AbstractRunner *runner() const;
+    KRunner::AbstractRunner *runner() const;
 
 Q_SIGNALS:
     void done(ThreadWeaver::JobPointer self);
@@ -74,8 +74,8 @@ protected:
     void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) override;
 
 private:
-    Plasma::RunnerContext m_context;
-    Plasma::AbstractRunner *m_runner;
+    KRunner::RunnerContext m_context;
+    KRunner::AbstractRunner *m_runner;
 };
 
 class DelayedJobCleaner : public QObject
@@ -97,4 +97,4 @@ private:
 
 }
 
-#endif // PLASMA_RUNNERJOBS_P_H
+#endif // KRUNNER_RUNNERJOBS_P_H

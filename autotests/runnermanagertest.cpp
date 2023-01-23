@@ -16,10 +16,10 @@
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
 
-Q_DECLARE_METATYPE(Plasma::QueryMatch)
-Q_DECLARE_METATYPE(QList<Plasma::QueryMatch>)
+Q_DECLARE_METATYPE(KRunner::QueryMatch)
+Q_DECLARE_METATYPE(QList<KRunner::QueryMatch>)
 
-using namespace Plasma;
+using namespace KRunner;
 
 class RunnerManagerTest : public AbstractRunnerTest
 {
@@ -34,7 +34,7 @@ private Q_SLOTS:
         auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
         QVERIFY(md.isValid());
         manager->loadRunner(md);
-        qRegisterMetaType<QList<Plasma::QueryMatch>>();
+        qRegisterMetaType<QList<KRunner::QueryMatch>>();
     }
 
     void cleanupTestCase()
@@ -48,8 +48,8 @@ private Q_SLOTS:
      */
     void testScheduleMatchesChanged()
     {
-        QSignalSpy spyQueryFinished(manager.get(), &Plasma::RunnerManager::queryFinished);
-        QSignalSpy spyMatchesChanged(manager.get(), &Plasma::RunnerManager::matchesChanged);
+        QSignalSpy spyQueryFinished(manager.get(), &KRunner::RunnerManager::queryFinished);
+        QSignalSpy spyMatchesChanged(manager.get(), &KRunner::RunnerManager::matchesChanged);
 
         QVERIFY(spyQueryFinished.isValid());
         QVERIFY(spyMatchesChanged.isValid());
@@ -101,7 +101,7 @@ private Q_SLOTS:
      */
     void testQueryFinishedFromReset()
     {
-        QSignalSpy spyQueryFinished(manager.get(), &Plasma::RunnerManager::queryFinished);
+        QSignalSpy spyQueryFinished(manager.get(), &KRunner::RunnerManager::queryFinished);
 
         manager->launchQuery("fooDelay1000");
         QCOMPARE(spyQueryFinished.size(), 0);

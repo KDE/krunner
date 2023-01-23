@@ -8,7 +8,7 @@
 
 #include <KLocalizedString>
 
-namespace Plasma
+namespace KRunner
 {
 class RunnerSyntaxPrivate
 {
@@ -64,4 +64,4 @@ QString RunnerSyntax::description() const
     return d->description;
 }
 
-} // Plasma namespace
+} // KRunner namespace

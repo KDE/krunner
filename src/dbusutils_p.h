@@ -19,7 +19,7 @@ struct RemoteMatch {
     QString id;
     QString text;
     QString iconName;
-    Plasma::QueryMatch::Type type = Plasma::QueryMatch::NoMatch;
+    KRunner::QueryMatch::Type type = KRunner::QueryMatch::NoMatch;
     qreal relevance = 0;
     QVariantMap properties;
 };
@@ -66,7 +66,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, RemoteMatc
     argument >> match.iconName;
     int type;
     argument >> type;
-    match.type = static_cast<Plasma::QueryMatch::Type>(type);
+    match.type = static_cast<KRunner::QueryMatch::Type>(type);
     argument >> match.relevance;
     argument >> match.properties;
     argument.endStructure();

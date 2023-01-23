@@ -20,7 +20,7 @@
 
 #include "krunner_debug.h"
 
-namespace Plasma
+namespace KRunner
 {
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList & /*args*/)
     : QObject(parent)
@@ -65,7 +65,7 @@ QList<RunnerSyntax> AbstractRunner::syntaxes() const
     return d->syntaxes;
 }
 
-QList<QAction *> AbstractRunner::actionsForMatch(const Plasma::QueryMatch &match)
+QList<QAction *> AbstractRunner::actionsForMatch(const KRunner::QueryMatch &match)
 {
     return match.isValid() ? match.actions() : QList<QAction *>();
 }
@@ -90,11 +90,11 @@ void AbstractRunner::setPriority(Priority priority)
     d->priority = priority;
 }
 
-void AbstractRunner::run(const Plasma::RunnerContext & /*search*/, const Plasma::QueryMatch & /*action*/)
+void AbstractRunner::run(const KRunner::RunnerContext & /*search*/, const KRunner::QueryMatch & /*action*/)
 {
 }
 
-void AbstractRunner::match(Plasma::RunnerContext &)
+void AbstractRunner::match(KRunner::RunnerContext &)
 {
 }
 
@@ -208,6 +208,6 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMet
     }
 }
 
-} // Plasma namespace
+} // KRunner namespace
 
 #include "moc_abstractrunner.cpp"

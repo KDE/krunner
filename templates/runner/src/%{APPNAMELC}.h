@@ -9,7 +9,7 @@
 
 #include <KRunner/AbstractRunner>
 
-class %{APPNAME} : public Plasma::AbstractRunner
+class %{APPNAME} : public KRunner::AbstractRunner
 {
     Q_OBJECT
 
@@ -17,9 +17,9 @@ public:
     %{APPNAME}(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
     ~%{APPNAME}() override;
 
-public: // Plasma::AbstractRunner API
-    void match(Plasma::RunnerContext &context) override;
-    void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match) override;
+public: // KRunner::AbstractRunner API
+    void match(KRunner::RunnerContext &context) override;
+    void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;
 };
 
 #endif

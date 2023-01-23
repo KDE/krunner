@@ -10,7 +10,7 @@
 #include <KLocalizedString>
 
 %{APPNAME}::%{APPNAME}(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, data, args)
+    : KRunner::AbstractRunner(parent, data, args)
 {
     setObjectName(QStringLiteral("%{APPNAME}"));
     // Disallow short queries
@@ -22,13 +22,13 @@
 }
 
 
-void %{APPNAME}::match(Plasma::RunnerContext &context)
+void %{APPNAME}::match(KRunner::RunnerContext &context)
 {
     const QString term = context.query();
     // TODO
 }
 
-void %{APPNAME}::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
+void %{APPNAME}::run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match)
 {
     Q_UNUSED(context)
     Q_UNUSED(match)
