@@ -7,10 +7,6 @@
 include(CMakeFindDependencyMacro)
 find_dependency(Qt6 @REQUIRED_QT_VERSION@ CONFIG REQUIRED Core Gui)
 find_dependency(KF6CoreAddons "@KF_DEP_VERSION@") # KPluginFactory
-find_dependency(KF6Config "@KF_DEP_VERSION@") # KConfigGroup
-if (@KF6Plasma_FOUND@)
-    find_dependency(KF6Plasma "@KF_DEP_VERSION@") # Deprecated Plasma version headers
-endif()
 
 @PACKAGE_SETUP_AUTOMOC_VARIABLES@
 
