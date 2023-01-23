@@ -52,7 +52,6 @@ target_include_directories(KF6Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_I
 target_link_libraries(KF6Runner
     PUBLIC
         Qt${QT_MAJOR_VERSION}::Core
-        KF6::I18n
         KF6::CoreAddons # KPluginFactory
     PRIVATE
         Qt${QT_MAJOR_VERSION}::DBus
@@ -60,6 +59,7 @@ target_link_libraries(KF6Runner
         Qt${QT_MAJOR_VERSION}::Gui
         KF6::ConfigCore
         KF6::ThreadWeaver
+        KF6::I18n
 )
 if(HAVE_KACTIVITIES)
     target_link_libraries(KF6Runner PRIVATE KF6::Activities)
@@ -119,7 +119,6 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt6Core_QCH
-            KF6I18n_QCH
             KF6CoreAddons_QCH
         INCLUDE_DIRS
             ${KRunner_BUILD_INCLUDE_DIRS}
