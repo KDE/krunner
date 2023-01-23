@@ -18,7 +18,6 @@ ecm_add_tests(
 
 kcoreaddons_add_plugin(fakerunnerplugin SOURCES fakerunnerplugin.cpp INSTALL_NAMESPACE "krunnertest" STATIC)
 target_link_libraries(fakerunnerplugin  KF6Runner)
-kcoreaddons_desktop_to_json(fakerunnerplugin metadatafile1.desktop)
 ecm_add_tests(
     runnermanagerhistorytest.cpp
     LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner KF6::ConfigCore
