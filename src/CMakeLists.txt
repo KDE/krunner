@@ -119,6 +119,8 @@ if(BUILD_QCH)
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt6Core_QCH
+            KF6I18n_QCH
+            KF6CoreAddons_QCH
         INCLUDE_DIRS
             ${KRunner_BUILD_INCLUDE_DIRS}
         BLANK_MACROS
