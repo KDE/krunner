@@ -75,7 +75,7 @@
          - Id
          - Text
          - IconName
-         - Type (see PlasmaQuery::Type)
+         - Type (see KRunner::QueryMatch::Type)
          - Relevance
          - Properties (VariantMap)
             - urls (StringList)
