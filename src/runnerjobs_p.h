@@ -19,8 +19,6 @@
 
 using ThreadWeaver::Job;
 
-class QTimer;
-
 namespace KRunner
 {
 // QueuePolicy that limits the instances of a particular runner

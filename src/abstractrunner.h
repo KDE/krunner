@@ -12,8 +12,6 @@
 #include <QObject>
 #include <QStringList>
 
-class KConfigGroup;
-class QIcon;
 #include <KPluginMetaData>
 
 #include <KPluginFactory>
@@ -24,15 +22,14 @@ class QIcon;
 #include "runnercontext.h"
 #include "runnersyntax.h"
 
+class KConfigGroup;
 class QAction;
 class QMimeData;
 class QRegularExpression;
+class QIcon;
 
 namespace KRunner
 {
-class DataEngine;
-class Package;
-class QueryMatch;
 class AbstractRunnerPrivate;
 
 /**
