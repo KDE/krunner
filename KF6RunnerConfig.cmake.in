@@ -5,7 +5,7 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
-find_dependency(Qt@QT_MAJOR_VERSION@ @REQUIRED_QT_VERSION@ CONFIG REQUIRED Core Gui)
+find_dependency(Qt6 @REQUIRED_QT_VERSION@ CONFIG REQUIRED Core Gui)
 find_dependency(KF6CoreAddons "@KF_DEP_VERSION@") # KPluginFactory
 find_dependency(KF6Config "@KF_DEP_VERSION@") # KConfigGroup
 if (@KF6Plasma_FOUND@)

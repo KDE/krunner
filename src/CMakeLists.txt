@@ -51,12 +51,12 @@ target_include_directories(KF6Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_I
 
 target_link_libraries(KF6Runner
     PUBLIC
-        Qt${QT_MAJOR_VERSION}::Core
+        Qt6::Core
         KF6::CoreAddons # KPluginFactory
     PRIVATE
-        Qt${QT_MAJOR_VERSION}::DBus
-        Qt${QT_MAJOR_VERSION}::Widgets
-        Qt${QT_MAJOR_VERSION}::Gui
+        Qt6::DBus
+        Qt6::Widgets
+        Qt6::Gui
         KF6::ConfigCore
         KF6::ThreadWeaver
         KF6::I18n

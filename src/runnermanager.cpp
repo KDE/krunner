@@ -591,7 +591,7 @@ QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
 
 QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
 {
-    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf" QT_STRINGIFY(QT_VERSION_MAJOR) "/krunner"));
+    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf6/krunner"));
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
     for (const KPluginMetaData &pluginMetaData : std::as_const(pluginMetaDatas)) {
