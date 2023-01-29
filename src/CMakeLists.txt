@@ -55,7 +55,6 @@ target_link_libraries(KF6Runner
         KF6::CoreAddons # KPluginFactory
     PRIVATE
         Qt6::DBus
-        Qt6::Widgets
         Qt6::Gui
         KF6::ConfigCore
         KF6::ThreadWeaver

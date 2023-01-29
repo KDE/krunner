@@ -17,7 +17,6 @@ class QAction;
 class QIcon;
 class QString;
 class QVariant;
-class QWidget;
 
 namespace Plasma
 {

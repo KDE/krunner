@@ -8,11 +8,11 @@ remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 ecm_add_tests(
    dbusrunnertest.cpp
-   LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets Qt6::DBus KF6::ConfigCore
+   LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner Qt6::DBus KF6::ConfigCore
 )
 ecm_add_tests(
         runnermatchmethodstest.cpp
-    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets KF6::ConfigCore
+    LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner KF6::ConfigCore
 )
 
 
@@ -21,23 +21,23 @@ target_link_libraries(fakerunnerplugin  KF6Runner)
 kcoreaddons_desktop_to_json(fakerunnerplugin metadatafile1.desktop)
 ecm_add_tests(
     runnermanagerhistorytest.cpp
-    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets KF6::ConfigCore
+    LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner KF6::ConfigCore
 )
 kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
 
 ecm_add_tests(
     runnermanagersinglerunnermodetest.cpp
-    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets Qt6::DBus KF6::ConfigCore
+    LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner Qt6::DBus KF6::ConfigCore
 )
 
 ecm_add_tests(
     runnermanagertest.cpp
-    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets Qt6::DBus KF6::ConfigCore
+    LINK_LIBRARIES Qt6::Gui Qt6::Test KF6Runner Qt6::DBus KF6::ConfigCore
 )
 kcoreaddons_target_static_plugins(runnermanagertest krunnertest)
 ecm_add_tests(
     testmetadataconversion.cpp
-    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::Widgets Qt6::DBus KF6::ConfigCore
+    LINK_LIBRARIES Qt6::Test KF6Runner Qt6::DBus KF6::ConfigCore
 )
 
 add_executable(testremoterunner)
