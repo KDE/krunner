@@ -2,15 +2,14 @@
 # KF6KRunnerMacros
 # ---------------------------
 #
-# This module provides the ``configure_krunner_test`` function which takes the test- and runner target as a parameter.
+# This module provides the ``krunner_configure_test`` function which takes the test- and runner target as a parameter.
 # This will add the compile definitions for the AbstractRunnerTest header.
 # In case of DBus runners the DESKTOP_FILE parameter must be set. This is required for loading the runner from the
 # metadata file.
-# Since 5.80.0
 # SPDX-FileCopyrightText: 2020 Alexander Lohnau <alexander.lohnau@gmx.de>
 # SPDX-License-Identifier: BSD-2-Clause
 
-function(configure_krunner_test TEST_TARGET RUNNER_TARGET)
+function(krunner_configure_test TEST_TARGET RUNNER_TARGET)
     include(CMakeParseArguments)
     set(options)
     set(oneValueArgs DESKTOP_FILE)
