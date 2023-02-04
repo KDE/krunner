@@ -276,32 +276,6 @@ public:
         return runner;
     }
 
-    void jobDone(ThreadWeaver::JobPointer job)
-    {
-        auto runJob = job.dynamicCast<FindMatchesJob>();
-
-        if (!runJob) {
-            return;
-        }
-
-        searchJobs.remove(runJob);
-        oldSearchJobs.remove(runJob);
-
-        if (searchJobs.isEmpty()) {
-            // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
-            if (matchChangeTimer.isActive()) {
-                matchChangeTimer.stop();
-                Q_EMIT q->matchesChanged(context.matches());
-            } else if (context.matches().isEmpty()) {
-                // we finished our run, and there are no valid matches, and so no
-                // signal will have been sent out. so we need to emit the signal
-                // ourselves here
-                Q_EMIT q->matchesChanged(context.matches());
-            }
-            Q_EMIT q->queryFinished();
-        }
-    }
-
     void checkTearDown()
     {
         if (!prepped || !teardownRequested) {
@@ -364,8 +338,29 @@ public:
     void startJob(AbstractRunner *runner)
     {
         QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-        QObject::connect(job.data(), &FindMatchesJob::done, q, [this](ThreadWeaver::JobPointer jobPtr) {
-            jobDone(jobPtr);
+        QObject::connect(job.data(), &FindMatchesJob::done, q, [this](ThreadWeaver::JobPointer job) {
+            auto runJob = job.dynamicCast<FindMatchesJob>();
+
+            if (!runJob) {
+                return;
+            }
+
+            searchJobs.remove(runJob);
+            oldSearchJobs.remove(runJob);
+
+            if (searchJobs.isEmpty()) {
+                // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+                if (matchChangeTimer.isActive()) {
+                    matchChangeTimer.stop();
+                    Q_EMIT q->matchesChanged(context.matches());
+                } else if (context.matches().isEmpty()) {
+                    // we finished our run, and there are no valid matches, and so no
+                    // signal will have been sent out. so we need to emit the signal
+                    // ourselves here
+                    Q_EMIT q->matchesChanged(context.matches());
+                }
+                Q_EMIT q->queryFinished();
+            }
         });
 
         Queue::instance()->enqueue(job);
