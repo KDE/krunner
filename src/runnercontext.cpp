@@ -199,9 +199,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
         if (int count = d->launchCounts.value(match.id())) {
-            qWarning() << Q_FUNC_INFO << match.text() << match.relevance() << (match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
             match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
-            qWarning() << Q_FUNC_INFO << match.text() << match.relevance();
         }
         d->addMatch(match);
     }
