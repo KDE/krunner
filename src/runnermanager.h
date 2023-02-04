@@ -232,9 +232,9 @@ Q_SIGNALS:
      * Put the given search term in the KRunner search field
      * @param term The term that should be displayed
      * @param cursorPosition Where the cursor should be positioned
-     * @since 5.78
+     * @since 6.0
      */
-    void setSearchTerm(const QString &term, int cursorPosition);
+    void requestUpdateQueryString(const QString &term, int cursorPosition);
 
     /**
      * @see @p historyEnabled

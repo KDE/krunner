@@ -359,6 +359,7 @@ public:
                     // ourselves here
                     Q_EMIT q->matchesChanged(context.matches());
                 }
+
                 Q_EMIT q->queryFinished();
             }
         });
@@ -586,7 +587,7 @@ bool RunnerManager::runMatch(const QueryMatch &match)
     if (d->context.requestedQueryString().isEmpty()) {
         return true;
     } else {
-        Q_EMIT setSearchTerm(d->context.requestedQueryString(), d->context.requestedCursorPosition());
+        Q_EMIT requestUpdateQueryString(d->context.requestedQueryString(), d->context.requestedCursorPosition());
         return false;
     }
 }
