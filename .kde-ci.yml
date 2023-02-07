@@ -9,6 +9,7 @@ Dependencies:
     'frameworks/kcoreaddons' : '@same'
     'frameworks/threadweaver' : '@same'
     'frameworks/ki18n' : '@same'
+    'frameworks/kitemmodels' : '@same'
 
 Options:
   test-before-installing: True

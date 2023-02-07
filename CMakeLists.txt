@@ -29,12 +29,12 @@ include(ECMQtDeclareLoggingCategory)
 include(ECMSetupQtPluginMacroNames)
 include(ECMDeprecationSettings)
 include(KDEGitCommitHooks)
-include(ECMQmlModule)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
+option(KRUNNER_USE_QML "Build the QML plugin that exposes the KRunner model" ON)
 
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX KRUNNER
@@ -56,6 +56,7 @@ find_package(KF6Config ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6ThreadWeaver ${KF_DEP_VERSION} REQUIRED)
+find_package(KF6ItemModels ${KF_DEP_VERSION})
 
 find_package(KF6Activities ${KF_DEP_VERSION})
 set_package_properties(KF6Activities PROPERTIES
