@@ -146,3 +146,5 @@ install(FILES
    "data/org.kde.krunner1.xml"
    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
    RENAME kf5_org.kde.krunner1.xml)
+
+add_subdirectory(declarative)
