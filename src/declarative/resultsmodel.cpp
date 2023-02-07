@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Milou Project
  * SPDX-FileCopyrightText: 2019 Kai Uwe Broulik <kde@broulik.de>
+ * SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
  *
  * SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
  *
@@ -331,7 +332,7 @@ QString ResultsModel::queryString() const
 
 void ResultsModel::setQueryString(const QString &queryString)
 {
-    d->resultsModel->setQueryString(queryString, runner());
+    d->resultsModel->setQueryString(queryString, singleRunner());
 }
 
 int ResultsModel::limit() const
@@ -354,14 +355,14 @@ bool ResultsModel::querying() const
     return d->resultsModel->querying();
 }
 
-QString ResultsModel::runner() const
+QString ResultsModel::singleRunner() const
 {
     return d->runner ? d->runner->id() : QString();
 }
 
-void ResultsModel::setRunner(const QString &runnerId)
+void ResultsModel::setSingleRunner(const QString &runnerId)
 {
-    if (runnerId == runner()) {
+    if (runnerId == singleRunner()) {
         return;
     }
     if (runnerId.isEmpty()) {
@@ -369,15 +370,15 @@ void ResultsModel::setRunner(const QString &runnerId)
     } else {
         d->runner = runnerManager()->runner(runnerId);
     }
-    Q_EMIT runnerChanged();
+    Q_EMIT singleRunnerChanged();
 }
 
-QString ResultsModel::runnerName() const
+QString ResultsModel::singleRunnerName() const
 {
     return d->runner ? d->runner->name() : QString();
 }
 
-QIcon ResultsModel::runnerIcon() const
+QIcon ResultsModel::singleRunnerIcon() const
 {
     return d->runner ? d->runner->icon() : QIcon();
 }

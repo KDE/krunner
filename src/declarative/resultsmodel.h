@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2019 Kai Uwe Broulik <kde@broulik.de>
+ * SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
  *
  * SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
  *
@@ -43,10 +44,10 @@ class ResultsModel : public QSortFilterProxyModel
      *
      * Defaults to empty string which means all runners
      */
-    Q_PROPERTY(QString runner READ runner WRITE setRunner NOTIFY runnerChanged)
-    // FIXME rename to singleModeRunnerName or something
-    Q_PROPERTY(QString runnerName READ runnerName NOTIFY runnerChanged)
-    Q_PROPERTY(QIcon runnerIcon READ runnerIcon NOTIFY runnerChanged)
+    Q_PROPERTY(QString singleRunner READ singleRunner WRITE setSingleRunner NOTIFY singleRunnerChanged)
+    Q_PROPERTY(QString singleRunnerName READ singleRunnerName NOTIFY singleRunnerChanged)
+    Q_PROPERTY(QIcon singleRunnerIcon READ singleRunnerIcon NOTIFY singleRunnerChanged)
+
     Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager CONSTANT)
 
 public:
@@ -78,12 +79,12 @@ public:
     bool querying() const;
     Q_SIGNAL void queryingChanged();
 
-    QString runner() const;
-    void setRunner(const QString &runner);
-    Q_SIGNAL void runnerChanged();
+    QString singleRunner() const;
+    void setSingleRunner(const QString &runner);
+    Q_SIGNAL void singleRunnerChanged();
 
-    QString runnerName() const;
-    QIcon runnerIcon() const;
+    QString singleRunnerName() const;
+    QIcon singleRunnerIcon() const;
 
     QHash<int, QByteArray> roleNames() const override;
 
