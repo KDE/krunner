@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2021 Alexander Lohnau <alexander.lohnau@gmx.de>
-    SPDX-License-Identifier: LicenseRef-KDE-Accepted-GPL
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #include "fakerunner.h"
