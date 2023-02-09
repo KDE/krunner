@@ -25,8 +25,7 @@ class RunnerContextPrivate;
  * @class RunnerContext runnercontext.h <KRunner/RunnerContext>
  *
  * @short The RunnerContext class provides information related to a search,
- *        including the search term, metadata on the search term and collected
- *        matches.
+ *        including the search term and collected matches.
  */
 class KRUNNER_EXPORT RunnerContext : public QObject
 {
@@ -51,6 +50,10 @@ public:
      * Resets the search term for this object.
      * This removes all current matches in the process and
      * turns off single runner query mode.
+     * Copies of this object that are used by runner are invalidated
+     * and adding matches will be a noop.
+     *
+     * @see RunnerContext:isValid
      */
     void reset();
 
@@ -67,17 +70,7 @@ public:
 
     /**
      * @returns true if this context is no longer valid and therefore
-     * matching using it should abort. Most useful as an optimization technique
-     * inside of AbstractRunner subclasses in the match method, e.g.:
-     *
-     * while (.. a possibly large iteration) {
-     *     if (!context.isValid()) {
-     *         return;
-     *     }
-     *
-     *     ... some processing ...
-     * }
-     *
+     * matching using it should abort.
      * While not required to be used within runners, it provides a nice way
      * to avoid unnecessary processing in runners that may run for an extended
      * period (as measured in 10s of ms) and therefore improve the user experience.
@@ -95,7 +88,8 @@ public:
     /**
      * Appends a match to the existing list of matches.
      *
-     * If you are going to be adding multiple matches, use @see addMatches instead.
+     * If you are going to be adding multiple matches, it is
+     * more performant to use @see addMatches instead.
      *
      * @param match the match to add
      * @return true if the match was added, false otherwise.
@@ -133,6 +127,7 @@ public:
      */
     void ignoreCurrentMatchForHistory() const;
 
+    // TODO KF6 consider making internal
     /**
      * Sets the launch counts for the associated match ids
      *

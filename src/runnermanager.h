@@ -54,11 +54,11 @@ public:
     ~RunnerManager() override;
 
     /**
-     * Finds and returns a loaded runner or NULL
-     * @param pluginName the name of the runner plugin
+     * Finds and returns a loaded runner or a nullptr
+     * @param pluginId the name of the runner plugin
      * @return Pointer to the runner
      */
-    AbstractRunner *runner(const QString &pluginName) const;
+    AbstractRunner *runner(const QString &pluginId) const;
 
     /**
      * @return the list of all currently loaded runners
@@ -81,24 +81,28 @@ public:
      * Runs a given match
      * @param match the match to be executed
      */
-    void run(const QueryMatch &match);
+    void run(const QueryMatch &match); // TODO KF6 remove?
 
     /**
      * Runs a given match. This also respects the extra handling for the InformationalMatch.
      * This also handles the history automatically
      * @param match the match to be executed
      * @return if the RunnerWindow should close
+     * @see AbstractRunner::run
      * @since 5.78
      */
     bool runMatch(const QueryMatch &match);
 
     /**
      * Retrieves the list of actions, if any, for a match
+     *
+     * @see AbstractRunner::actionsForMatch
+     * @see QueryMatch::setActions
      */
     QList<QAction *> actionsForMatch(const QueryMatch &match);
 
     /**
-     * @return the current query term
+     * @return the current query term set in @ref launchQuery
      */
     QString query() const;
 
@@ -152,11 +156,13 @@ public:
 
     /**
      * Causes a reload of the current configuration
+     * This gets called automatically when the config in the KCM is saved
      */
     void reloadConfiguration();
 
     /**
      * Sets a whitelist for the plugins that can be loaded by this manager.
+     * Runners that are disabled through the config will not be loaded.
      *
      * @param plugins the plugin names of allowed runners
      */
@@ -172,6 +178,7 @@ public:
      * @param pluginMetaData the metaData to use to load the plugin
      * @since 5.72
      */
+    // TODO KF6 I consider it weird that we do not return anything here
     void loadRunner(const KPluginMetaData &pluginMetaData);
 
     /**
@@ -180,7 +187,7 @@ public:
     QMimeData *mimeDataForMatch(const QueryMatch &match) const;
 
     /**
-     * @return metadata list of all known Runner implementations
+     * @return metadata list of all known Runner plugins
      * @since 5.72
      */
     static QVector<KPluginMetaData> runnerMetaDataList();

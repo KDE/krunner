@@ -27,8 +27,7 @@ class QueryMatchPrivate;
 /**
  * @class QueryMatch querymatch.h <KRunner/QueryMatch>
  *
- * @short A match returned by an AbstractRunner in response to a given
- * RunnerContext.
+ * @short A match returned by an AbstractRunner in response to a given RunnerContext.
  */
 class KRUNNER_EXPORT QueryMatch
 {
@@ -46,9 +45,7 @@ public:
          * in an external tool or a command learning trigger. Helper
          * matches tend to be generic to the query and should not
          * be autoactivated just because the user hits "Enter"
-         * while typing. They must be explicitly selected to
-         * be activated, but unlike InformationalMatch cause
-         * an action to be triggered.
+         * while typing.
          */
         HelperMatch = 70,
         ExactMatch = 100, /**< An exact match to the query */
@@ -95,6 +92,7 @@ public:
 
     /**
      * Sets the type of match this action represents.
+     * This value is used for sorting the different categories
      */
     void setType(Type type);
 
@@ -104,11 +102,11 @@ public:
     Type type() const;
 
     /**
-     * Sets information about the type of the match which can
-     * be used to categorize the match.
+     * Sets information about the type of the match which is
+     * used to group the matches.
      *
-     * This string should be translated as it can be displayed
-     * in an UI
+     * This string should be translated as it is displayed in an UI.
+     * The default is @ref AbstractRunner::name
      */
     void setMatchCategory(const QString &category);
 
@@ -116,8 +114,7 @@ public:
      * Extra information about the match which can be used
      * to categorize the type.
      *
-     * By default this returns the internal name of the runner
-     * which returned this result
+     * The default is @ref AbstractRunner::name
      */
     QString matchCategory() const;
 
@@ -138,13 +135,11 @@ public:
     qreal relevance() const;
 
     /**
-     * Sets data to be used internally by the associated
-     * AbstractRunner.
+     * Sets data to be used internally by the runner's @ref AbstractRunner::run implementation.
      *
-     * When set, it is also used to form
-     * part of the id() for this match. If that is inappropriate
-     * as an id, the runner may generate its own id and set that
-     * with setId(const QString&) directly after calling setData
+     * When set, it is also used to form part of the id() for this match.
+     * If that is inappropriate as an id, the runner may generate its own
+     * id and set that with @ref setId
      */
     void setData(const QVariant &data);
 
@@ -158,6 +153,13 @@ public:
      * match data().toString(). The id must be unique to all
      * matches from this runner, and should remain constant
      * for the same query for best results.
+     *
+     * If the "X-Plasma-Runner-Unique-Results" property from the metadata
+     * is set to true, the runnerId will not be prepended to the ID.
+     * This allows KRunner to de-duplicate results from different runners.
+     * In case the runner's matches are less specific than ones from other runners, the
+     * "X-Plasma-Runner-Weak-Results" property can be set so that duplicates from this
+     * runner are removed.
      *
      * @param id the new identifying string to use to refer
      *           to this entry
@@ -177,6 +179,7 @@ public:
     /**
      * Sets the main title text for this match; should be short
      * enough to fit nicely on one line in a user interface
+     * For styled and multiline text, @ref setMultiLine should be set to true
      *
      * @param text the text to use as the title
      */
@@ -280,7 +283,7 @@ public:
     /**
      * Sets the selected action
      */
-    void setSelectedAction(QAction *action);
+    void setSelectedAction(QAction *action); // TODO KF6 make internal?
 
     /**
      * Set if the text should be displayed as a multiLine string

@@ -19,7 +19,7 @@ class RunnerSyntaxPrivate;
  * @class RunnerSyntax runnersyntax.h <KRunner/RunnerSyntax>
  *
  * Represents a query prototype that the runner accepts. These can be
- * created and registered with AbstractRunner::addSyntax(Syntax &) to
+ * created and registered with AbstractRunner::addSyntax(RunnerSyntax) to
  * allow applications to show to the user what the runner is currently
  * capable of doing.
  *
@@ -47,12 +47,12 @@ public:
      * @param description A description of what the described syntax does from
      *                    the user's point of view.
      */
-    RunnerSyntax(const QString &exampleQuery, const QString &description);
+    explicit RunnerSyntax(const QString &exampleQuery, const QString &description);
 
     /**
      * Copy constructor
      */
-    RunnerSyntax(const RunnerSyntax &other);
+    explicit RunnerSyntax(const RunnerSyntax &other);
 
     ~RunnerSyntax();
 
@@ -77,14 +77,13 @@ public:
     QStringList exampleQueries() const;
 
     /**
-     * Sets the description for the syntax, describing what it does from
+     * Sets the user-visible description for the syntax, describing what it does from
      * the user's point of view.
      */
     void setDescription(const QString &description);
 
     /**
-     * @return the description of what the syntax does from the user's
-     *         point of view
+     * @return the user visible description of what the syntax does
      */
     QString description() const;
 private:

@@ -22,7 +22,7 @@ namespace
 {
 /**
  * This class provides a basic structure for a runner test.
- * The compile definitions should be configured using the `add_krunner_test` cmake macro
+ * The compile definitions should be configured using the `krunner_configure_test` cmake macro
  * @since 5.80
  */
 class AbstractRunnerTest : public QObject

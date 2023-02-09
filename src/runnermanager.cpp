@@ -546,13 +546,13 @@ void RunnerManager::loadRunner(const KPluginMetaData &pluginMetaData)
     }
 }
 
-AbstractRunner *RunnerManager::runner(const QString &name) const
+AbstractRunner *RunnerManager::runner(const QString &pluginId) const
 {
     if (d->runners.isEmpty()) {
         d->loadRunners();
     }
 
-    return d->runners.value(name, nullptr);
+    return d->runners.value(pluginId, nullptr);
 }
 
 QList<AbstractRunner *> RunnerManager::runners() const
