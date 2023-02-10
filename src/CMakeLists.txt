@@ -9,7 +9,6 @@ add_library(KF6::Runner ALIAS KF6Runner)
 target_sources(KF6Runner PRIVATE
     abstractrunner.cpp
     abstractrunner.h
-    abstractrunner_p.h
     abstractrunnertest.h
     dbusrunner.cpp
     dbusrunner_p.h

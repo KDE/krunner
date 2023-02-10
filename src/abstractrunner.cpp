@@ -6,13 +6,12 @@
 
 #include "abstractrunner.h"
 
-#include "abstractrunner_p.h"
-
 #include <QAction>
 #include <QElapsedTimer>
 #include <QHash>
 #include <QMimeData>
 #include <QMutex>
+#include <QRegularExpression>
 
 #include <KConfigGroup>
 #include <KLocalizedString>
@@ -22,6 +21,23 @@
 
 namespace KRunner
 {
+class AbstractRunnerPrivate
+{
+public:
+    explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData);
+    AbstractRunner::Priority priority = AbstractRunner::NormalPriority;
+    const KPluginMetaData runnerDescription;
+    AbstractRunner *runner;
+    QHash<QString, QAction *> actions;
+    QList<RunnerSyntax> syntaxes;
+    bool suspendMatching = false;
+    int minLetterCount = 0;
+    QRegularExpression matchRegex;
+    bool hasMatchRegex = false;
+    bool hasUniqueResults = false;
+    bool hasWeakResults = false;
+};
+
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList & /*args*/)
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
