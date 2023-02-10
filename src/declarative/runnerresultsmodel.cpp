@@ -198,7 +198,7 @@ bool RunnerResultsModel::run(const QModelIndex &idx)
 {
     KRunner::QueryMatch match = fetchMatch(idx);
     if (match.isValid() && match.isEnabled()) {
-        return m_manager->runMatch(match);
+        return m_manager->run(match);
     }
     return false;
 }
@@ -216,7 +216,7 @@ bool RunnerResultsModel::runAction(const QModelIndex &idx, int actionNumber)
     }
 
     match.setSelectedAction(actions.at(actionNumber));
-    return m_manager->runMatch(match);
+    return m_manager->run(match);
 }
 
 int RunnerResultsModel::columnCount(const QModelIndex &parent) const

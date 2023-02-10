@@ -37,7 +37,7 @@ private:
             // Make sure internally the term and untrimmedTerm are set
             manager.launchQuery(query, "thisrunnerdoesnotexist");
             manager.searchContext()->setQuery(query);
-            manager.runMatch(match);
+            manager.run(match);
         }
     }
     void launchQuery(const QString &query, RunnerManager *manager)

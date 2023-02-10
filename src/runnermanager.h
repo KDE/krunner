@@ -78,20 +78,13 @@ public:
     QList<QueryMatch> matches() const;
 
     /**
-     * Runs a given match
-     * @param match the match to be executed
-     */
-    void run(const QueryMatch &match); // TODO KF6 remove?
-
-    /**
      * Runs a given match. This also respects the extra handling for the InformationalMatch.
      * This also handles the history automatically
      * @param match the match to be executed
      * @return if the RunnerWindow should close
-     * @see AbstractRunner::run
-     * @since 5.78
+     * @since 6.0
      */
-    bool runMatch(const QueryMatch &match);
+    bool run(const QueryMatch &match);
 
     /**
      * Retrieves the list of actions, if any, for a match

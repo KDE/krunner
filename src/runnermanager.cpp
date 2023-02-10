@@ -570,15 +570,11 @@ QList<QueryMatch> RunnerManager::matches() const
     return d->context.matches();
 }
 
-void RunnerManager::run(const QueryMatch &match)
+bool RunnerManager::run(const QueryMatch &match)
 {
-    if (match.isEnabled()) {
-        d->context.run(match);
+    if (!match.isValid() || !match.isEnabled()) { // The model should prevent this
+        return false;
     }
-}
-
-bool RunnerManager::runMatch(const QueryMatch &match)
-{
     d->context.run(match);
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
