@@ -126,6 +126,13 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
     return *this;
 }
 
+/**
+ * Resets the search term for this object.
+ * This removes all current matches in the process and
+ * turns off single runner query mode.
+ * Copies of this object that are used by runner are invalidated
+ * and adding matches will be a noop.
+ */
 void RunnerContext::reset()
 {
     LOCK_FOR_WRITE(d);

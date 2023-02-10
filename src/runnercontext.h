@@ -47,17 +47,6 @@ public:
     ~RunnerContext() override;
 
     /**
-     * Resets the search term for this object.
-     * This removes all current matches in the process and
-     * turns off single runner query mode.
-     * Copies of this object that are used by runner are invalidated
-     * and adding matches will be a noop.
-     *
-     * @see RunnerContext:isValid
-     */
-    void reset();
-
-    /**
      * Sets the query term for this object and attempts to determine
      * the type of the search.
      */
@@ -152,6 +141,7 @@ private:
 
     void restore(const KConfigGroup &config);
     void save(KConfigGroup &config);
+    void reset();
 
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
