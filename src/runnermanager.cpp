@@ -565,7 +565,6 @@ RunnerContext *RunnerManager::searchContext() const
     return &d->context;
 }
 
-// Reordering is here so data is not reordered till strictly needed
 QList<QueryMatch> RunnerManager::matches() const
 {
     return d->context.matches();
