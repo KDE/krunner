@@ -127,24 +127,6 @@ public:
      */
     void ignoreCurrentMatchForHistory() const;
 
-    // TODO KF6 consider making internal
-    /**
-     * Sets the launch counts for the associated match ids
-     *
-     * If a runner adds a match to this context, the context will check if the
-     * match id has been launched before and increase the matches relevance
-     * correspondingly. In this manner, any front end can implement adaptive search
-     * by sorting items according to relevance.
-     *
-     * @param config the config group where launch data was stored
-     */
-    void restore(const KConfigGroup &config);
-
-    /**
-     * @param config the config group where launch data should be stored
-     */
-    void save(KConfigGroup &config);
-
     /**
      * Run a match using the information from this context
      *
@@ -166,6 +148,11 @@ private:
     void setSingleRunnerQueryMode(bool enabled);
 
     friend class RunnerManager;
+    friend class RunnerManagerPrivate;
+
+    void restore(const KConfigGroup &config);
+    void save(KConfigGroup &config);
+
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
 }
