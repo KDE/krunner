@@ -126,26 +126,27 @@ public:
     Priority priority() const;
 
     /**
-     * @return the user visible engine name for the Runner
+     * @return the plugin metadata for this runner that was passed in the constructor
+     */
+    KPluginMetaData metadata() const;
+
+    /**
+     * Returns the translated name from the runner's metadata
      */
     QString name() const;
 
     /**
-     * @return an id string for the Runner
+     * @return an id from the runner's metadata'
      */
     QString id() const;
 
     /**
-     * @return the description of this Runner
+     * @return the translated description from the runner's metadata'
      */
     QString description() const;
 
     /**
-     * @return the plugin metadata for this runner
-     */
-    KPluginMetaData metadata() const;
-    /**
-     * @return the icon for this Runner
+     * @return the icon from the runner's metadata'
      */
     QIcon icon() const;
 
@@ -167,12 +168,12 @@ public:
 
     /**
      * This is the minimum letter count for the query. If the query is shorter than this value
-     * and KRunner is not in the singleRunnerMode, the performMatch and consequently match method is not called.
+     * and KRunner is not in the singleRunnerMode, match method is not called.
      * This can be set using the X-Plasma-Runner-Min-Letter-Count property or the setMinLetterCount method.
+     * The default value is 0.
+     *
      * @see setMinLetterCount
      * @see match
-     * @see performMatch
-     * @return minLetterCount property
      * @since 5.75
      */
     int minLetterCount() const;
@@ -310,7 +311,9 @@ protected:
 
     /**
      * Reimplement this slot if you want your runner
-     * to support serialization and drag and drop
+     * to support serialization and drag and drop.
+     * By default, this sets the QMimeData urls
+     * to the ones specified in @ref QueryMatch::urls
      */
     virtual QMimeData *mimeDataForMatch(const KRunner::QueryMatch &match);
 

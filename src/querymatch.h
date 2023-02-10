@@ -137,7 +137,7 @@ public:
     /**
      * Sets data to be used internally by the runner's @ref AbstractRunner::run implementation.
      *
-     * When set, it is also used to form part of the id() for this match.
+     * When set, it is also used to form part of the @ref id for this match.
      * If that is inappropriate as an id, the runner may generate its own
      * id and set that with @ref setId
      */
@@ -237,7 +237,8 @@ public:
     void setUrls(const QList<QUrl> &urls);
 
     /**
-     * @return the mimtype for this match, or QString() is none
+     * @return the urls for this match, empty list if none
+     * These will be used in the default implementation of AbstractRunner::mimeDataForMatch
      */
     QList<QUrl> urls() const;
 
@@ -255,8 +256,8 @@ public:
 
     /**
      * Set the actions for this match.
-     * This method allows you to set the actions inside of the AbstractRunner::match() method
-     * and the default implementation of AbstractRunner::actionsForMatch() will return these.
+     * This method allows you to set the actions inside of the AbstractRunner::match method
+     * and the default implementation of AbstractRunner::actionsForMatch will return these.
      * @since 5.75
      */
     void setActions(const QList<QAction *> &actions);
@@ -276,7 +277,8 @@ public:
     QList<QAction *> actions() const;
 
     /**
-     * The current action.
+     * The action that the user has selected when running the match.
+     * This returns a nullptr if no action was selected.
      */
     QAction *selectedAction() const;
 
