@@ -66,7 +66,7 @@ endif()
 
 set_target_properties(KF6Runner
     PROPERTIES VERSION ${KRUNNER_VERSION}
-    SOVERSION 5
+    SOVERSION ${KRUNNER_SOVERSION}
     EXPORT_NAME "Runner"
 )
 
