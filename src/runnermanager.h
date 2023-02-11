@@ -81,10 +81,11 @@ public:
      * Runs a given match. This also respects the extra handling for the InformationalMatch.
      * This also handles the history automatically
      * @param match the match to be executed
+     * @param selectedAction the action returned by @ref AbstractRunner::actionsForMatch that has been selected by the user, nullptr if none
      * @return if the RunnerWindow should close
      * @since 6.0
      */
-    bool run(const QueryMatch &match);
+    bool run(const QueryMatch &match, QAction *selectedAction = nullptr);
 
     /**
      * Retrieves the list of actions, if any, for a match

@@ -215,8 +215,7 @@ bool RunnerResultsModel::runAction(const QModelIndex &idx, int actionNumber)
         return false;
     }
 
-    match.setSelectedAction(actions.at(actionNumber));
-    return m_manager->run(match);
+    return m_manager->run(match, actions.at(actionNumber));
 }
 
 int RunnerResultsModel::columnCount(const QModelIndex &parent) const

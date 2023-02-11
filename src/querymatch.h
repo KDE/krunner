@@ -283,11 +283,6 @@ public:
     QAction *selectedAction() const;
 
     /**
-     * Sets the selected action
-     */
-    void setSelectedAction(QAction *action); // TODO KF6 make internal?
-
-    /**
      * Set if the text should be displayed as a multiLine string
      * @param multiLine
      * @since 5.82
@@ -303,6 +298,8 @@ public:
     bool isMultiLine() const;
 
 private:
+    void setSelectedAction(QAction *action);
+    friend class RunnerManager;
     QSharedDataPointer<QueryMatchPrivate> d;
 };
 

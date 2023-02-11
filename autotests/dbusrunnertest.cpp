@@ -100,8 +100,7 @@ void DBusRunnerTest::testMatch()
     processSpy.wait();
     QCOMPARE(process->readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:"));
 
-    result.setSelectedAction(action);
-    manager->run(result);
+    manager->run(result, action);
     processSpy.wait();
     QCOMPARE(process->readAllStandardOutput().trimmed().split('\n').constLast(), QByteArray("Running:id1:action1"));
 }
