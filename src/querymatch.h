@@ -76,15 +76,6 @@ public:
     AbstractRunner *runner() const;
 
     /**
-     * Requests this match to activae using the given context
-     *
-     * @param context the context to use in conjunction with this run
-     *
-     * @sa AbstractRunner::run
-     */
-    void run(const RunnerContext &context) const;
-
-    /**
      * @return true if the match is valid and can therefore be run,
      *         an invalid match does not have an associated AbstractRunner
      */

@@ -307,13 +307,6 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
     return (d != other.d);
 }
 
-void QueryMatch::run(const RunnerContext &context) const
-{
-    if (d->runner) {
-        d->runner.data()->run(context, *this);
-    }
-}
-
 void QueryMatch::setActions(const QList<QAction *> &actions)
 {
     QWriteLocker locker(d->lock);

@@ -298,10 +298,9 @@ void RunnerContext::save(KConfigGroup &config)
     config.sync();
 }
 
-void RunnerContext::run(const QueryMatch &match)
+void RunnerContext::increaseLaunchCount(const QueryMatch &match)
 {
     ++d->launchCounts[match.id()];
-    match.run(*this);
 }
 
 QString RunnerContext::requestedQueryString() const

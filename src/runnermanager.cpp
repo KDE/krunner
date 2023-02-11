@@ -575,9 +575,14 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
     if (!match.isValid() || !match.isEnabled()) { // The model should prevent this
         return false;
     }
+
+    // Modify the match and run it
     QueryMatch m = match;
     m.setSelectedAction(selectedAction);
-    d->context.run(m);
+    m.runner()->run(d->context, m);
+    // To allow the RunnerContext to increase the relevance of often launched apps
+    d->context.increaseLaunchCount(m);
+
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
     }
