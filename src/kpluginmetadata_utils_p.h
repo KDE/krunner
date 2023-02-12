@@ -46,7 +46,6 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     copyIfExists(grp, root, "X-Plasma-Runner-Weak-Results", false);
     copyIfExists(grp, root, "X-Plasma-API");
     copyIfExists(grp, root, "X-Plasma-Request-Actions-Once", false);
-    copyIfExists(grp, root, "X-Plasma-AdvertiseSingleRunnerQueryMode", false);
     copyIfExists(grp, root, "X-Plasma-Runner-Min-Letter-Count", 0);
     copyIfExists(grp, root, "X-Plasma-Runner-Match-Regex");
     root.insert(QLatin1String("X-Plasma-Runner-Syntaxes"), QJsonArray::fromStringList(grp.readEntry("X-Plasma-Runner-Syntaxes", QStringList())));
