@@ -43,7 +43,7 @@ void RunnerResultsModel::onMatchesChanged(const QList<KRunner::QueryMatch> &matc
     // of categories but just what matches we have for each one.
     // Below when we populate the actual m_matches we'll make sure to keep the order
     // of existing categories to avoid pointless model changes.
-    QHash<QString /*category*/, QVector<KRunner::QueryMatch>> newMatches;
+    QHash<QString /*category*/, QList<KRunner::QueryMatch>> newMatches;
     for (const auto &match : matches) {
         const QString category = match.matchCategory();
         newCategories.insert(category);

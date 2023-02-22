@@ -184,7 +184,7 @@ public:
      * @return metadata list of all known Runner plugins
      * @since 5.72
      */
-    static QVector<KPluginMetaData> runnerMetaDataList();
+    static QList<KPluginMetaData> runnerMetaDataList();
 
 public Q_SLOTS:
     /**

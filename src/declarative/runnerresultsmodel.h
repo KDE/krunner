@@ -78,7 +78,7 @@ private:
     bool m_hasMatches = false;
 
     QStringList m_categories;
-    QHash<QString /*category*/, QVector<KRunner::QueryMatch>> m_matches;
+    QHash<QString /*category*/, QList<KRunner::QueryMatch>> m_matches;
 };
 
 } // namespace Milou

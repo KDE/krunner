@@ -153,7 +153,7 @@ public:
 
     void loadRunners(const QString &singleRunnerId = QString())
     {
-        QVector<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
+        QList<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
 
         const bool loadAll = stateData.readEntry("loadAll", false);
         const bool noWhiteList = whiteList.isEmpty();
@@ -608,9 +608,9 @@ QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
     return match.isValid() ? match.runner()->mimeDataForMatch(match) : nullptr;
 }
 
-QVector<KPluginMetaData> RunnerManager::runnerMetaDataList()
+QList<KPluginMetaData> RunnerManager::runnerMetaDataList()
 {
-    QVector<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf6/krunner"));
+    QList<KPluginMetaData> pluginMetaDatas = KPluginMetaData::findPlugins(QStringLiteral("kf6/krunner"));
     QSet<QString> knownRunnerIds;
     knownRunnerIds.reserve(pluginMetaDatas.size());
     for (const KPluginMetaData &pluginMetaData : std::as_const(pluginMetaDatas)) {
