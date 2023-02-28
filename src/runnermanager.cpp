@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QElapsedTimer>
+#include <QMutableListIterator>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QTimer>
@@ -160,7 +161,7 @@ public:
         KConfigGroup pluginConf = configPrt->group("Plugins");
 
         QSet<AbstractRunner *> deadRunners;
-        QMutableVectorIterator<KPluginMetaData> it(offers);
+        QMutableListIterator<KPluginMetaData> it(offers);
         while (it.hasNext()) {
             const KPluginMetaData &description = it.next();
             qCDebug(KRUNNER) << "Loading runner: " << description.pluginId();
