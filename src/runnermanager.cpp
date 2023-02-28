@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QElapsedTimer>
+#include <QMutableVectorIterator>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QTimer>
