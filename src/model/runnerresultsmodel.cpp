@@ -5,7 +5,7 @@
  *
  */
 
-#include "runnerresultsmodel.h"
+#include "runnerresultsmodel_p.h"
 
 #include <QAction>
 #include <QSet>

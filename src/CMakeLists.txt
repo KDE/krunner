@@ -23,6 +23,11 @@ target_sources(KF6Runner PRIVATE
     runnermanager.h
     runnersyntax.cpp
     runnersyntax.h
+
+    model/runnerresultsmodel.cpp
+    model/runnerresultsmodel_p.h
+    model/resultsmodel.cpp
+    model/resultsmodel.h
 )
 ecm_qt_declare_logging_category(KF6Runner
     HEADER krunner_debug.h
@@ -58,6 +63,7 @@ target_link_libraries(KF6Runner
         KF6::ConfigCore
         KF6::ThreadWeaver
         KF6::I18n
+        KF6::ItemModels
 )
 if(HAVE_KACTIVITIES)
     target_link_libraries(KF6Runner PRIVATE KF6::Activities)
@@ -80,6 +86,12 @@ ecm_generate_headers(KRunner_CamelCase_HEADERS
 
     PREFIX KRunner
     REQUIRED_HEADERS KRunner_HEADERS
+)
+ecm_generate_headers(KRunner_CamelCase_HEADERS
+  HEADER_NAMES ResultsModel
+    PREFIX KRunner
+    REQUIRED_HEADERS KRunner_HEADERS
+    RELATIVE model
 )
 
 # Install files
@@ -145,5 +157,3 @@ install(FILES
    "data/org.kde.krunner1.xml"
    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
    RENAME kf5_org.kde.krunner1.xml)
-
-add_subdirectory(declarative)

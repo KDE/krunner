@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "resultsmodel.h"
+#include <KRunner/ResultsModel>
 
 using namespace KRunner;
 

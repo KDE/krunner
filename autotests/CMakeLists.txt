@@ -56,6 +56,6 @@ krunner_configure_test(runnermanagertest testremoterunner DESKTOP_FILE "${CMAKE_
 find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Widgets)
 if (TARGET Qt6::Widgets)
     add_executable(modelwidgettest modelwidgettest.cpp)
-    target_link_libraries(modelwidgettest krunnermodel_STATIC Qt6::Widgets)
+    target_link_libraries(modelwidgettest KF6::Runner Qt6::Widgets)
     kcoreaddons_target_static_plugins(modelwidgettest krunnertest)
 endif()

@@ -9,7 +9,7 @@
 
 #include "resultsmodel.h"
 
-#include "runnerresultsmodel.h"
+#include "runnerresultsmodel_p.h"
 
 #include <QIdentityProxyModel>
 #include <QPointer>
@@ -255,10 +255,19 @@ public:
     }
 };
 
-class Q_DECL_HIDDEN ResultsModel::Private
+class KRunner::ResultsModelPrivate
 {
 public:
-    Private(ResultsModel *q);
+    ResultsModelPrivate(ResultsModel *q)
+        : q(q)
+        , resultsModel(new RunnerResultsModel(q))
+        , sortModel(new SortProxyModel(q))
+        , distributionModel(new CategoryDistributionProxyModel(q))
+        , flattenModel(new KDescendantsProxyModel(q))
+        , hideRootModel(new HideRootLevelProxyModel(q))
+        , duplicateDetectorModel(new DuplicateDetectorProxyModel(q))
+    {
+    }
 
     ResultsModel *q;
 
@@ -272,20 +281,9 @@ public:
     DuplicateDetectorProxyModel *duplicateDetectorModel;
 };
 
-ResultsModel::Private::Private(ResultsModel *q)
-    : q(q)
-    , resultsModel(new RunnerResultsModel(q))
-    , sortModel(new SortProxyModel(q))
-    , distributionModel(new CategoryDistributionProxyModel(q))
-    , flattenModel(new KDescendantsProxyModel(q))
-    , hideRootModel(new HideRootLevelProxyModel(q))
-    , duplicateDetectorModel(new DuplicateDetectorProxyModel(q))
-{
-}
-
 ResultsModel::ResultsModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-    , d(new Private(this))
+    , d(new ResultsModelPrivate(this))
 {
     connect(d->resultsModel, &RunnerResultsModel::queryStringChanged, this, &ResultsModel::queryStringChanged);
     connect(d->resultsModel, &RunnerResultsModel::queryingChanged, this, &ResultsModel::queryingChanged);

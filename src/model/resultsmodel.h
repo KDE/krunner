@@ -6,16 +6,20 @@
  *
  */
 
-#pragma once
+#ifndef KRUNNER_RESULTSMODEL
+#define KRUNNER_RESULTSMODEL
+
+#include "krunner_export.h"
 
 #include <KRunner/RunnerManager>
 #include <QIcon>
-#include <QScopedPointer>
 #include <QSortFilterProxyModel>
+#include <memory>
 
 namespace KRunner
 {
-class ResultsModel : public QSortFilterProxyModel
+class ResultsModelPrivate;
+class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -117,8 +121,8 @@ Q_SIGNALS:
     void queryStringChangeRequested(const QString &queryString, int pos);
 
 private:
-    class Private;
-    QScopedPointer<Private> d;
+    const std::unique_ptr<ResultsModelPrivate> d;
 };
 
-} // namespace Milou
+} // namespace KRunner
+#endif
