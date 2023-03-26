@@ -245,6 +245,7 @@ Q_SIGNALS:
 
 private:
     KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
+    // exported for dbusrunnertest
 
     std::unique_ptr<RunnerManagerPrivate> const d;
 

@@ -289,7 +289,7 @@ public:
     bool isMultiLine() const;
 
 private:
-    void setSelectedAction(QAction *action);
+    KRUNNER_NO_EXPORT void setSelectedAction(QAction *action);
     friend class RunnerManager;
     QSharedDataPointer<QueryMatchPrivate> d;
 };

@@ -120,19 +120,19 @@ Q_SIGNALS:
     void matchesChanged();
 
 private:
-    void increaseLaunchCount(const QueryMatch &match);
-    QString requestedQueryString() const;
-    int requestedCursorPosition() const;
-    bool shouldIgnoreCurrentMatchForHistory() const;
+    KRUNNER_NO_EXPORT void increaseLaunchCount(const QueryMatch &match);
+    KRUNNER_NO_EXPORT QString requestedQueryString() const;
+    KRUNNER_NO_EXPORT int requestedCursorPosition() const;
+    KRUNNER_NO_EXPORT bool shouldIgnoreCurrentMatchForHistory() const;
     // Sets single runner query mode. Note that a call to reset() will turn off single runner query mode.
-    void setSingleRunnerQueryMode(bool enabled);
+    KRUNNER_NO_EXPORT void setSingleRunnerQueryMode(bool enabled);
 
     friend class RunnerManager;
     friend class RunnerManagerPrivate;
 
-    void restore(const KConfigGroup &config);
-    void save(KConfigGroup &config);
-    void reset();
+    KRUNNER_NO_EXPORT void restore(const KConfigGroup &config);
+    KRUNNER_NO_EXPORT void save(KConfigGroup &config);
+    KRUNNER_NO_EXPORT void reset();
 
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };
