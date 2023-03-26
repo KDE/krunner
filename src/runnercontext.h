@@ -299,9 +299,9 @@ Q_SIGNALS:
     void matchesChanged();
 
 private:
-    QString requestedQueryString() const;
-    int requestedCursorPosition() const;
-    bool shouldIgnoreCurrentMatchForHistory() const;
+    KRUNNER_NO_EXPORT QString requestedQueryString() const;
+    KRUNNER_NO_EXPORT int requestedCursorPosition() const;
+    KRUNNER_NO_EXPORT bool shouldIgnoreCurrentMatchForHistory() const;
     friend class RunnerManager;
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };

@@ -467,6 +467,7 @@ Q_SIGNALS:
 private:
     Q_PRIVATE_SLOT(d, void jobDone(ThreadWeaver::JobPointer))
     KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
+    // exported for dbusrunnertest
 
     std::unique_ptr<RunnerManagerPrivate> const d;
 

@@ -691,8 +691,8 @@ protected:
 
 private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
-    bool hasUniqueResults();
-    bool hasWeakResults();
+    KRUNNER_NO_EXPORT bool hasUniqueResults();
+    KRUNNER_NO_EXPORT bool hasWeakResults();
     friend class RunnerContext;
     friend class RunnerContextPrivate;
     friend class QueryMatch;
