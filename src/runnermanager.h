@@ -168,6 +168,7 @@ public:
      * the configuration of plugins handle loading Runner plugins,
      * but in cases where specific runners should be loaded this
      * allows for that to take place
+     * @note Consider using @ref setAllowedRunners in case you want to only allow specific runners
      *
      * @param pluginMetaData the metaData to use to load the plugin
      * @return the loaded runner or nullptr
