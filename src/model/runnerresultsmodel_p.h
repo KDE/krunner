@@ -52,8 +52,6 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &child) const override;
 
-    QMimeData *mimeData(const QModelIndexList &indexes) const override;
-
     KRunner::RunnerManager *runnerManager() const;
     KRunner::QueryMatch fetchMatch(const QModelIndex &idx) const;
 

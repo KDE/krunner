@@ -367,20 +367,6 @@ QModelIndex RunnerResultsModel::parent(const QModelIndex &child) const
     return QModelIndex();
 }
 
-QMimeData *RunnerResultsModel::mimeData(const QModelIndexList &indexes) const
-{
-    if (indexes.isEmpty()) {
-        return nullptr;
-    }
-
-    KRunner::QueryMatch match = fetchMatch(indexes.first());
-    if (!match.isValid()) {
-        return nullptr;
-    }
-
-    return m_manager->mimeDataForMatch(match);
-}
-
 KRunner::RunnerManager *RunnerResultsModel::runnerManager() const
 {
     return m_manager;

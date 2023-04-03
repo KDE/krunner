@@ -425,10 +425,10 @@ QMimeData *ResultsModel::getMimeData(const QModelIndex &idx) const
 {
     KModelIndexProxyMapper mapper(this, d->resultsModel);
     const QModelIndex resultsIdx = mapper.mapLeftToRight(idx);
-    if (!resultsIdx.isValid()) {
-        return nullptr;
+    if (resultsIdx.isValid()) {
+        return runnerManager()->mimeDataForMatch(d->resultsModel->fetchMatch(resultsIdx));
     }
-    return d->resultsModel->mimeData({resultsIdx});
+    return nullptr;
 }
 
 KRunner::RunnerManager *ResultsModel::runnerManager() const
