@@ -170,10 +170,9 @@ public:
      * allows for that to take place
      *
      * @param pluginMetaData the metaData to use to load the plugin
-     * @since 5.72
+     * @return the loaded runner or nullptr
      */
-    // TODO KF6 I consider it weird that we do not return anything here
-    void loadRunner(const KPluginMetaData &pluginMetaData);
+    AbstractRunner *loadRunner(const KPluginMetaData &pluginMetaData);
 
     /**
      * @return mime data of the specified match

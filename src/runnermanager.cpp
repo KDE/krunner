@@ -537,14 +537,19 @@ void RunnerManager::setAllowedRunners(const QStringList &runners)
     }
 }
 
-void RunnerManager::loadRunner(const KPluginMetaData &pluginMetaData)
+AbstractRunner *RunnerManager::loadRunner(const KPluginMetaData &pluginMetaData)
 {
-    const QString runnerName = pluginMetaData.pluginId();
-    if (!runnerName.isEmpty() && !d->runners.contains(runnerName)) {
+    const QString runnerId = pluginMetaData.pluginId();
+    if (auto loadedRunner = d->runners.value(runnerId)) {
+        return loadedRunner;
+    }
+    if (!runnerId.isEmpty()) {
         if (AbstractRunner *runner = d->loadInstalledRunner(pluginMetaData)) {
-            d->runners.insert(runnerName, runner);
+            d->runners.insert(runnerId, runner);
+            return runner;
         }
     }
+    return nullptr;
 }
 
 AbstractRunner *RunnerManager::runner(const QString &pluginId) const
