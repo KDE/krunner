@@ -260,12 +260,6 @@ class KRunner::ResultsModelPrivate
 public:
     ResultsModelPrivate(ResultsModel *q)
         : q(q)
-        , resultsModel(new RunnerResultsModel(q))
-        , sortModel(new SortProxyModel(q))
-        , distributionModel(new CategoryDistributionProxyModel(q))
-        , flattenModel(new KDescendantsProxyModel(q))
-        , hideRootModel(new HideRootLevelProxyModel(q))
-        , duplicateDetectorModel(new DuplicateDetectorProxyModel(q))
     {
     }
 
@@ -273,12 +267,13 @@ public:
 
     QPointer<KRunner::AbstractRunner> runner = nullptr;
 
-    RunnerResultsModel *resultsModel;
-    SortProxyModel *sortModel;
-    CategoryDistributionProxyModel *distributionModel;
-    KDescendantsProxyModel *flattenModel;
-    HideRootLevelProxyModel *hideRootModel;
-    DuplicateDetectorProxyModel *duplicateDetectorModel;
+    RunnerResultsModel *const resultsModel = new RunnerResultsModel(q);
+    SortProxyModel *const sortModel = new SortProxyModel(q);
+    CategoryDistributionProxyModel *const distributionModel = new CategoryDistributionProxyModel(q);
+    KDescendantsProxyModel *const flattenModel = new KDescendantsProxyModel(q);
+    HideRootLevelProxyModel *const hideRootModel = new HideRootLevelProxyModel(q);
+    DuplicateDetectorProxyModel *const duplicateDetectorModel = new DuplicateDetectorProxyModel(q);
+    const KModelIndexProxyMapper mapper{q, resultsModel};
 };
 
 ResultsModel::ResultsModel(QObject *parent)
@@ -423,10 +418,8 @@ bool ResultsModel::runAction(const QModelIndex &idx, int actionNumber)
 
 QMimeData *ResultsModel::getMimeData(const QModelIndex &idx) const
 {
-    KModelIndexProxyMapper mapper(this, d->resultsModel);
-    const QModelIndex resultsIdx = mapper.mapLeftToRight(idx);
-    if (resultsIdx.isValid()) {
-        return runnerManager()->mimeDataForMatch(d->resultsModel->fetchMatch(resultsIdx));
+    if (auto resultIdx = d->mapper.mapLeftToRight(idx); resultIdx.isValid()) {
+        return runnerManager()->mimeDataForMatch(d->resultsModel->fetchMatch(resultIdx));
     }
     return nullptr;
 }
@@ -438,12 +431,8 @@ KRunner::RunnerManager *ResultsModel::runnerManager() const
 
 KRunner::QueryMatch ResultsModel::getQueryMatch(const QModelIndex &idx) const
 {
-    KModelIndexProxyMapper mapper(this, d->resultsModel);
-    const QModelIndex resultsIdx = mapper.mapLeftToRight(idx);
-    if (resultsIdx.isValid()) {
-        return d->resultsModel->fetchMatch(resultsIdx);
-    }
-    return QueryMatch();
+    const QModelIndex resultIdx = d->mapper.mapLeftToRight(idx);
+    return resultIdx.isValid() ? d->resultsModel->fetchMatch(resultIdx) : QueryMatch();
 }
 
 #include "resultsmodel.moc"
