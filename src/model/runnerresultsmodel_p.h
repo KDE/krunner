@@ -55,6 +55,7 @@ public:
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
     KRunner::RunnerManager *runnerManager() const;
+    KRunner::QueryMatch fetchMatch(const QModelIndex &idx) const;
 
 Q_SIGNALS:
     void queryStringChangeRequested(const QString &queryString, int pos);
@@ -63,8 +64,6 @@ Q_SIGNALS:
 
 private:
     void setQuerying(bool querying);
-
-    KRunner::QueryMatch fetchMatch(const QModelIndex &idx) const;
 
     void onMatchesChanged(const QList<KRunner::QueryMatch> &matches);
 

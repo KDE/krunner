@@ -111,6 +111,11 @@ public:
      */
     Q_INVOKABLE QMimeData *getMimeData(const QModelIndex &idx) const;
 
+    /**
+     * Get match for the result at given model index @p idx
+     */
+    KRunner::QueryMatch getQueryMatch(const QModelIndex &idx) const;
+
     KRunner::RunnerManager *runnerManager() const;
 
 Q_SIGNALS:

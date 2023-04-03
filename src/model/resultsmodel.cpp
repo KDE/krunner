@@ -436,4 +436,14 @@ KRunner::RunnerManager *ResultsModel::runnerManager() const
     return d->resultsModel->runnerManager();
 }
 
+KRunner::QueryMatch ResultsModel::getQueryMatch(const QModelIndex &idx) const
+{
+    KModelIndexProxyMapper mapper(this, d->resultsModel);
+    const QModelIndex resultsIdx = mapper.mapLeftToRight(idx);
+    if (resultsIdx.isValid()) {
+        return d->resultsModel->fetchMatch(resultsIdx);
+    }
+    return QueryMatch();
+}
+
 #include "resultsmodel.moc"
