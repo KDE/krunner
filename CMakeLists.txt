@@ -36,9 +36,10 @@ option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, 
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 option(KRUNNER_USE_QML "Build the QML plugin that exposes the KRunner model" ON)
 
+set(krunner_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/krunner_version.h")
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX KRUNNER
-    VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
+    VERSION_HEADER "${krunner_version_header}"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6RunnerConfigVersion.cmake"
     SOVERSION 6
 )
@@ -107,7 +108,7 @@ install(EXPORT KF6RunnerTargets
         FILE KF6RunnerTargets.cmake
         NAMESPACE KF6::)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/krunner_version.h"
+install(FILES "${krunner_version_header}"
         DESTINATION "${KDE_INSTALL_INCLUDEDIR_KF}/KRunner"
         COMPONENT Devel)
 
