@@ -6,6 +6,12 @@ configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 add_library(KF6Runner SHARED)
 add_library(KF6::Runner ALIAS KF6Runner)
 
+set_target_properties(KF6Runner PROPERTIES
+    VERSION     ${KRUNNER_VERSION}
+    SOVERSION   ${KRUNNER_SOVERSION}
+    EXPORT_NAME Runner
+)
+
 target_sources(KF6Runner PRIVATE
     abstractrunner.cpp
     abstractrunner.h
@@ -68,12 +74,6 @@ target_link_libraries(KF6Runner
 if(HAVE_KACTIVITIES)
     target_link_libraries(KF6Runner PRIVATE KF6::Activities)
 endif()
-
-set_target_properties(KF6Runner
-    PROPERTIES VERSION ${KRUNNER_VERSION}
-    SOVERSION ${KRUNNER_SOVERSION}
-    EXPORT_NAME "Runner"
-)
 
 ecm_generate_headers(KRunner_CamelCase_HEADERS
   HEADER_NAMES
