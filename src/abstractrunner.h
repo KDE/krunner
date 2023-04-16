@@ -252,10 +252,10 @@ protected:
      * Constructor for a KRunner plugin
      * @param parent parent object for this runner
      * @param pluginMetaData metadata that was embedded in the runner
-     * @param args for compatibility with KPluginFactory, should be passed on to the parent constructor
+     * @param args for compatibility with KPluginFactory, since 6.0 this can be omitted
      * @since 5.72
      */
-    explicit AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+    explicit AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args = {});
 
     /**
      * Sets whether or not the runner is available for match requests. Useful to

@@ -13,13 +13,13 @@ using namespace KRunner;
 class FakeRunner : public AbstractRunner
 {
 public:
-    explicit FakeRunner(QObject *parent, const KPluginMetaData &metadata, const QVariantList &args)
-        : AbstractRunner(parent, metadata, args)
+    explicit FakeRunner(QObject *parent, const KPluginMetaData &metadata)
+        : AbstractRunner(parent, metadata)
     {
         setObjectName("FakeRunner");
     }
     explicit FakeRunner(const KPluginMetaData &metadata = KPluginMetaData(QStringLiteral("metadata.desktop")))
-        : FakeRunner(nullptr, metadata, {})
+        : FakeRunner(nullptr, metadata)
     {
         setObjectName("FakeRunner");
     }
