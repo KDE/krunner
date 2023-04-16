@@ -85,10 +85,11 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
 
     // Load the runner syntaxes
     const QJsonValue syntaxesJson = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntaxes"));
-    const QStringList syntaxes = syntaxesJson.isArray() ? syntaxesJson.toVariant().toStringList() : syntaxesJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
+    const QStringList syntaxes =
+        syntaxesJson.isArray() ? syntaxesJson.toVariant().toStringList() : syntaxesJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
     const QJsonValue syntaxDescriptionsJson = pluginMetaData.rawData().value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions"));
-    const QStringList syntaxDescriptions =
-        syntaxDescriptionsJson.isArray() ? syntaxDescriptionsJson.toVariant().toStringList() : syntaxDescriptionsJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
+    const QStringList syntaxDescriptions = syntaxDescriptionsJson.isArray() ? syntaxDescriptionsJson.toVariant().toStringList()
+                                                                            : syntaxDescriptionsJson.toString().split(QLatin1Char(','), Qt::SkipEmptyParts);
     const int descriptionCount = syntaxDescriptions.count();
     for (int i = 0; i < syntaxes.count(); ++i) {
         const QString &query = syntaxes.at(i);

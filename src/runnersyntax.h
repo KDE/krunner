@@ -86,6 +86,7 @@ public:
      * @return the user visible description of what the syntax does
      */
     QString description() const;
+
 private:
     std::unique_ptr<RunnerSyntaxPrivate> const d;
 };

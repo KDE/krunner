@@ -111,7 +111,6 @@ void RunnerContextMatchMethodsTest::testDuplicateIds()
     QCOMPARE(matches.at(2), match4);
 }
 
-
 QTEST_MAIN(RunnerContextMatchMethodsTest)
 
 #include "runnermatchmethodstest.moc"

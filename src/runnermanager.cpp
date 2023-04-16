@@ -40,7 +40,6 @@ using ThreadWeaver::Queue;
 
 namespace KRunner
 {
-
 class RunnerManagerPrivate
 {
 public:
