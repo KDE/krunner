@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2009 Aaron Seigo <aseigo@kde.org>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -19,9 +20,8 @@ class RunnerSyntaxPrivate;
  * @class RunnerSyntax runnersyntax.h <KRunner/RunnerSyntax>
  *
  * Represents a query prototype that the runner accepts. These can be
- * created and registered with AbstractRunner::addSyntax(RunnerSyntax) to
- * allow applications to show to the user what the runner is currently
- * capable of doing.
+ * created and registered with AbstractRunner::addSyntax to
+ * allow applications to show to the user what the runner is currently capable of doing.
  *
  * Lets say the runner has a trigger word and then the user can type anything after that. In that case you could use
  * ":q:" as a placeholder, which will get expanded to i18n("search term") and be put in brackets.
@@ -41,38 +41,28 @@ class KRUNNER_EXPORT RunnerSyntax
 {
 public:
     /**
-     * Constructs a simple syntax object
+     * Constructs a RunnerSyntax with one example query
      *
      * @param exampleQuery See the class description for examples and placeholder conventions.
-     * @param description A description of what the described syntax does from
-     *                    the user's point of view.
+     * @param description A description of what the described syntax does from the user's point of view.
      */
-    explicit RunnerSyntax(const QString &exampleQuery, const QString &description)
+    explicit inline RunnerSyntax(const QString &exampleQuery, const QString &description)
         : RunnerSyntax(QStringList(exampleQuery), description)
     {
     }
 
     /**
-     * Constructs a syntax object
+     * Constructs a RunnerSyntax with multiple example queries
      *
-     * @param exampleQuery See the class description for examples and placeholder conventions.
+     * @param exampleQueries See the class description for examples and placeholder conventions.
      * @param description A description of what the described syntax does from the user's point of view.
+     * This description should be true for all example queries. In case they differ, consider using multiple syntaxes.
      *
      * @since 5.106
      */
     explicit RunnerSyntax(const QStringList &exampleQueries, const QString &description);
 
-    /**
-     * Copy constructor
-     */
-    explicit RunnerSyntax(const RunnerSyntax &other);
-
     ~RunnerSyntax();
-
-    /**
-     * Assignment operator
-     */
-    RunnerSyntax &operator=(const RunnerSyntax &rhs);
 
     /**
      * @return the example queries associated with this Syntax object
@@ -84,8 +74,13 @@ public:
      */
     QString description() const;
 
+    /// @internal
+    RunnerSyntax &operator=(const RunnerSyntax &rhs);
+    /// @internal
+    explicit RunnerSyntax(const RunnerSyntax &other);
+
 private:
-    std::unique_ptr<RunnerSyntaxPrivate> const d;
+    std::unique_ptr<RunnerSyntaxPrivate> d;
 };
 
 } // namespace KRunner

@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2009 Aaron Seigo <aseigo@kde.org>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -14,23 +15,26 @@ class RunnerSyntaxPrivate
 {
 public:
     RunnerSyntaxPrivate(const QStringList &_exampleQueries, const QString &_description)
-        : description(_description)
+        : exampleQueries(prepareExampleQueries(_exampleQueries))
+        , description(_description)
     {
-        for (const QString &query : _exampleQueries) {
-            addExampleQuery(query);
+    }
+
+    static QStringList prepareExampleQueries(const QStringList &queries)
+    {
+        Q_ASSERT_X(!queries.isEmpty(), "KRunner::RunnerSyntax", "List of example queries must not be empty");
+        QStringList exampleQueries;
+        for (const QString &query : queries) {
+            Q_ASSERT_X(!query.isEmpty(), "KRunner::RunnerSyntax", "Example query must not be empty!");
+            const static QString termDescription = i18n("search term");
+            const QString termDesc(QLatin1Char('<') + termDescription + QLatin1Char('>'));
+            exampleQueries.append(QString(query).replace(QLatin1String(":q:"), termDesc));
         }
+        return exampleQueries;
     }
 
-    void addExampleQuery(const QString &s)
-    {
-        Q_ASSERT_X(!s.isEmpty(), "KRunner::RunnerSyntax", "Example queries must not be empty!");
-        const QString termDesc(QLatin1Char('<') + termDescription + QLatin1Char('>'));
-        exampleQueries.append(QString(s).replace(QStringLiteral(":q:"), termDesc));
-    }
-
-    QStringList exampleQueries;
-    QString description;
-    QString termDescription = i18n("search term");
+    const QStringList exampleQueries;
+    const QString description;
 };
 
 RunnerSyntax::RunnerSyntax(const QStringList &exampleQueries, const QString &description)
@@ -48,7 +52,7 @@ RunnerSyntax::~RunnerSyntax() = default;
 
 RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
 {
-    *d = *rhs.d;
+    d.reset(new RunnerSyntaxPrivate(*rhs.d));
     return *this;
 }
 
