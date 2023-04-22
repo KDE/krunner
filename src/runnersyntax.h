@@ -47,7 +47,20 @@ public:
      * @param description A description of what the described syntax does from
      *                    the user's point of view.
      */
-    explicit RunnerSyntax(const QString &exampleQuery, const QString &description);
+    explicit RunnerSyntax(const QString &exampleQuery, const QString &description)
+        : RunnerSyntax(QStringList(exampleQuery), description)
+    {
+    }
+
+    /**
+     * Constructs a syntax object
+     *
+     * @param exampleQuery See the class description for examples and placeholder conventions.
+     * @param description A description of what the described syntax does from the user's point of view.
+     *
+     * @since 5.106
+     */
+    explicit RunnerSyntax(const QStringList &exampleQueries, const QString &description);
 
     /**
      * Copy constructor

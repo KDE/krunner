@@ -13,11 +13,12 @@ namespace KRunner
 class RunnerSyntaxPrivate
 {
 public:
-    RunnerSyntaxPrivate(const QString &s, const QString &d)
-        : description(d)
-        , termDescription(i18n("search term"))
+    RunnerSyntaxPrivate(const QStringList &_exampleQueries, const QString &_description)
+        : description(_description)
     {
-        addExampleQuery(s);
+        for (const QString &query : _exampleQueries) {
+            addExampleQuery(query);
+        }
     }
 
     void addExampleQuery(const QString &s)
@@ -28,11 +29,11 @@ public:
 
     QStringList exampleQueries;
     QString description;
-    QString termDescription;
+    QString termDescription = i18n("search term");
 };
 
-RunnerSyntax::RunnerSyntax(const QString &exampleQuery, const QString &description)
-    : d(new RunnerSyntaxPrivate(exampleQuery, description))
+RunnerSyntax::RunnerSyntax(const QStringList &exampleQueries, const QString &description)
+    : d(new RunnerSyntaxPrivate(exampleQueries, description))
 {
 }
 
