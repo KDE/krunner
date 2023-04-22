@@ -93,7 +93,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     for (int i = 0; i < syntaxes.count(); ++i) {
         const QString &query = syntaxes.at(i);
         const QString description = i < descriptionCount ? syntaxDescriptions.at(i) : QString();
-        addSyntax(Plasma::RunnerSyntax(query, description));
+        addSyntax(query, description);
     }
 }
 
