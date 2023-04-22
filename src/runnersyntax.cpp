@@ -23,6 +23,7 @@ public:
 
     void addExampleQuery(const QString &s)
     {
+        Q_ASSERT_X(!s.isEmpty(), "KRunner::RunnerSyntax", "Example queries must not be empty!");
         const QString termDesc(QLatin1Char('<') + termDescription + QLatin1Char('>'));
         exampleQueries.append(QString(s).replace(QStringLiteral(":q:"), termDesc));
     }
@@ -35,6 +36,7 @@ public:
 RunnerSyntax::RunnerSyntax(const QStringList &exampleQueries, const QString &description)
     : d(new RunnerSyntaxPrivate(exampleQueries, description))
 {
+    Q_ASSERT_X(!exampleQueries.isEmpty(), "KRunner::RunnerSyntax", "Example queries must not be empty");
 }
 
 RunnerSyntax::RunnerSyntax(const RunnerSyntax &other)
