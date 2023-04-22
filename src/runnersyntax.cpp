@@ -52,11 +52,6 @@ RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
     return *this;
 }
 
-void RunnerSyntax::addExampleQuery(const QString &exampleQuery)
-{
-    d->addExampleQuery(exampleQuery);
-}
-
 QStringList RunnerSyntax::exampleQueries() const
 {
     return d->exampleQueries;

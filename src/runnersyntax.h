@@ -75,25 +75,9 @@ public:
     RunnerSyntax &operator=(const RunnerSyntax &rhs);
 
     /**
-     * Adds a synonymous example query to this Syntax. Some runners may
-     * accept multiple formulations of keywords to trigger the same behaviour.
-     * This allows the runner to show these relationships by grouping the
-     * example queries into one Syntax object
-     *
-     * @param exampleQuery See the class description for examples and placeholder conventions.
-     */
-    void addExampleQuery(const QString &exampleQuery);
-
-    /**
      * @return the example queries associated with this Syntax object
      */
     QStringList exampleQueries() const;
-
-    /**
-     * Sets the user-visible description for the syntax, describing what it does from
-     * the user's point of view.
-     */
-    void setDescription(const QString &description);
 
     /**
      * @return the user visible description of what the syntax does
