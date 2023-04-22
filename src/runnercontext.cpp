@@ -8,14 +8,10 @@
 
 #include <cmath>
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
 #include <QMimeDatabase>
 #include <QReadWriteLock>
 #include <QRegularExpression>
 #include <QSharedData>
-#include <QStandardPaths>
 #include <QUrl>
 
 #include <KConfigGroup>

@@ -7,7 +7,6 @@
 #include "abstractrunner.h"
 
 #include <QAction>
-#include <QElapsedTimer>
 #include <QHash>
 #include <QMimeData>
 #include <QMutex>

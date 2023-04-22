@@ -4,7 +4,6 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#include <KAboutData>
 #include <KConfigGroup>
 #include <KDesktopFile>
 #include <KPluginMetaData>

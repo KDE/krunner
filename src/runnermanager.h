@@ -12,13 +12,11 @@
 #include <QList>
 #include <QObject>
 
-#include "krunner_export.h"
-
 #include <KPluginMetaData>
 
-#include <memory>
-
 #include "abstractrunner.h"
+#include "krunner_export.h"
+#include <memory>
 
 class QAction;
 class KConfigGroup;
