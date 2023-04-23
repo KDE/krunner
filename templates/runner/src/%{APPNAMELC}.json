@@ -9,7 +9,6 @@
         "Description": "%{APPNAME} runner",
         "EnabledByDefault": true,
         "Icon": "planetkde",
-        "Id": "%{APPNAMELC}",
         "License": "LGPL 2.1+",
         "Name": "%{APPNAME}",
         "Version": "0.1"

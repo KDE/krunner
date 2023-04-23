@@ -6,15 +6,16 @@
 
 #include "%{APPNAMELC}.h"
 
-// KF
 #include <KLocalizedString>
 
-%{APPNAME}::%{APPNAME}(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
-    : KRunner::AbstractRunner(parent, data, args)
+%{APPNAME}::%{APPNAME}(QObject *parent, const KPluginMetaData &data)
+    : KRunner::AbstractRunner(parent, data)
 {
     setObjectName(QStringLiteral("%{APPNAME}"));
     // Disallow short queries
     setMinLetterCount(3);
+    // Provide usage help for this plugin
+    addSyntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
 }
 
 %{APPNAME}::~%{APPNAME}()

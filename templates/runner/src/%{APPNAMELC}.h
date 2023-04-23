@@ -14,10 +14,10 @@ class %{APPNAME} : public KRunner::AbstractRunner
     Q_OBJECT
 
 public:
-    %{APPNAME}(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
+    %{APPNAME}(QObject *parent, const KPluginMetaData &data);
     ~%{APPNAME}() override;
 
-public: // KRunner::AbstractRunner API
+    // KRunner::AbstractRunner API
     void match(KRunner::RunnerContext &context) override;
     void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;
 };
