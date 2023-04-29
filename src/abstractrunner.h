@@ -643,18 +643,18 @@ protected:
 
     /**
      * Utility overload for creating a syntax based on the given parameters
-     * @param examples QString or QStringList of example queries
-     * @param description Description of this syntax
      * @see RunnerSyntax
-     * @code
-     * addSyntax(QStringList{i18n("something :q:"), i18n("somethingelse :q:"), i18n("Description")});
-     * @endcode
      * @since 5.106
      */
-    template<typename QSTRING_OR_QSTRINGLIST>
-    void addSyntax(QSTRING_OR_QSTRINGLIST examples, const QString &description)
+    inline void addSyntax(const QString &exampleQuery, const QString &description)
     {
-        addSyntax(KRunner::RunnerSyntax(QStringList(examples), description));
+        addSyntax(QStringList(exampleQuery), description);
+    }
+
+    /// @copydoc addSyntax(const QString &exampleQuery, const QString &description)
+    inline void addSyntax(const QStringList &exampleQueries, const QString &description)
+    {
+        addSyntax(KRunner::RunnerSyntax(exampleQueries, description));
     }
 
     /**
