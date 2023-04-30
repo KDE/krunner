@@ -212,8 +212,7 @@ void DBusRunner::match(Plasma::RunnerContext &context)
             m_actionsOnceRequested = true;
             m_actionsForSessionRequested = true;
             auto actions = requestActions();
-            const auto actionsArg = QArgument<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>", actions);
-            QMetaObject::invokeMethod(this, "createQActionsFromRemoteActions", actionsArg);
+            QMetaObject::invokeMethod(this, "createQActionsFromRemoteActions", QArgument("QMap<QString, RemoteActions>", actions));
         }
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
