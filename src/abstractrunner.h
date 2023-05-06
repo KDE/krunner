@@ -79,7 +79,7 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
 public:
 #if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 81)
     /** Specifies a nominal speed for the runner */
-    enum Speed {
+    enum Speed{
         SlowSpeed,
         NormalSpeed,
     };
@@ -654,7 +654,7 @@ protected:
     /// @copydoc addSyntax(const QString &exampleQuery, const QString &description)
     inline void addSyntax(const QStringList &exampleQueries, const QString &description)
     {
-        addSyntax(KRunner::RunnerSyntax(exampleQueries, description));
+        addSyntax(RunnerSyntax(exampleQueries, description));
     }
 
     /**

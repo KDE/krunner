@@ -52,10 +52,12 @@ RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
     return *this;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 106)
 void RunnerSyntax::addExampleQuery(const QString &exampleQuery)
 {
     d->addExampleQuery(exampleQuery);
 }
+#endif
 
 QStringList RunnerSyntax::exampleQueries() const
 {
@@ -75,7 +77,7 @@ QStringList RunnerSyntax::exampleQueriesWithTermDescription() const
 }
 #endif
 
-#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 76)
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 106)
 void RunnerSyntax::setDescription(const QString &description)
 {
     d->description = description;

@@ -72,6 +72,7 @@ public:
      */
     RunnerSyntax &operator=(const RunnerSyntax &rhs);
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 106)
     /**
      * Adds a synonymous example query to this Syntax. Some runners may
      * accept multiple formulations of keywords to trigger the same behaviour.
@@ -79,8 +80,11 @@ public:
      * example queries into one Syntax object
      *
      * @param exampleQuery See the class description for examples and placeholder conventions.
+     * @deprecated Since 5.106, use constructor taking example query QStringList
      */
+    KRUNNER_DEPRECATED_VERSION(5, 106, "Use constructor taking example query QStringList")
     void addExampleQuery(const QString &exampleQuery);
+#endif
 
     /**
      * @return the example queries associated with this Syntax object
@@ -99,11 +103,15 @@ public:
     QStringList exampleQueriesWithTermDescription() const;
 #endif
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 106)
     /**
      * Sets the description for the syntax, describing what it does from
      * the user's point of view.
+     * @deprecated Since 5.106, this should only be set when constructing the syntax
      */
+    KRUNNER_DEPRECATED_VERSION(5, 106, "This should only be set when constructing the syntax")
     void setDescription(const QString &description);
+#endif
 
     /**
      * @return the description of what the syntax does from the user's
