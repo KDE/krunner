@@ -33,6 +33,11 @@ public:
     QString termDescription = i18n("search term");
 };
 
+RunnerSyntax::RunnerSyntax(const QString &exampleQuery, const QString &description)
+    : d(new RunnerSyntaxPrivate({exampleQuery}, description))
+{
+}
+
 RunnerSyntax::RunnerSyntax(const QStringList &exampleQueries, const QString &description)
     : d(new RunnerSyntaxPrivate(exampleQueries, description))
 {
