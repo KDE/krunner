@@ -55,6 +55,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
     Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager CONSTANT)
 
 public:
+    explicit ResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent = nullptr);
     explicit ResultsModel(QObject *parent = nullptr);
     ~ResultsModel() override;
 

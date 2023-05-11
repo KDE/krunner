@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <KConfigGroup>
 #include <QAbstractItemModel>
 #include <QHash>
 #include <QString>
@@ -26,7 +27,7 @@ class RunnerResultsModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit RunnerResultsModel(QObject *parent = nullptr);
+    explicit RunnerResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent = nullptr);
     ~RunnerResultsModel() override;
 
     QString queryString() const;

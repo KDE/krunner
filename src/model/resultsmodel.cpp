@@ -14,6 +14,7 @@
 #include <QIdentityProxyModel>
 #include <QPointer>
 
+#include <KConfigGroup>
 #include <KDescendantsProxyModel>
 #include <KModelIndexProxyMapper>
 #include <KRunner/AbstractRunner>
@@ -258,8 +259,9 @@ public:
 class KRunner::ResultsModelPrivate
 {
 public:
-    ResultsModelPrivate(ResultsModel *q)
+    ResultsModelPrivate(const QString &configFile, KConfigGroup stateConfigGroup, ResultsModel *q)
         : q(q)
+        , resultsModel(new RunnerResultsModel(configFile, stateConfigGroup, q))
     {
     }
 
@@ -267,7 +269,7 @@ public:
 
     QPointer<KRunner::AbstractRunner> runner = nullptr;
 
-    RunnerResultsModel *const resultsModel = new RunnerResultsModel(q);
+    RunnerResultsModel *const resultsModel;
     SortProxyModel *const sortModel = new SortProxyModel(q);
     CategoryDistributionProxyModel *const distributionModel = new CategoryDistributionProxyModel(q);
     KDescendantsProxyModel *const flattenModel = new KDescendantsProxyModel(q);
@@ -277,8 +279,12 @@ public:
 };
 
 ResultsModel::ResultsModel(QObject *parent)
+    : ResultsModel(QStringLiteral("krunnerrc"), KConfigGroup(), parent)
+{
+}
+ResultsModel::ResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
     : QSortFilterProxyModel(parent)
-    , d(new ResultsModelPrivate(this))
+    , d(new ResultsModelPrivate(configFile, stateConfigGroup, this))
 {
     connect(d->resultsModel, &RunnerResultsModel::queryStringChanged, this, &ResultsModel::queryStringChanged);
     connect(d->resultsModel, &RunnerResultsModel::queryingChanged, this, &ResultsModel::queryingChanged);

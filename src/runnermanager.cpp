@@ -43,12 +43,14 @@ namespace KRunner
 class RunnerManagerPrivate
 {
 public:
-    RunnerManagerPrivate(RunnerManager *parent, const QString &configFile)
+    RunnerManagerPrivate(RunnerManager *parent, KConfigGroup stateConfigGroup, const QString &configFile)
         : q(parent)
         , configPrt(KSharedConfig::openConfig(configFile))
-        , stateData(KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)
-                        ->group("PlasmaRunnerManager"))
     {
+        stateData = stateConfigGroup.isValid()
+            ? stateConfigGroup
+            : KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)
+                  ->group("PlasmaRunnerManager");
         initializeKNotifyPluginWatcher();
         matchChangeTimer.setSingleShot(true);
         matchChangeTimer.setTimerType(Qt::TimerType::PreciseTimer); // Without this, autotest will fail due to imprecision of this timer
@@ -495,8 +497,13 @@ public:
 };
 
 RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
+    : RunnerManager(configFile, KConfigGroup(), parent)
+{
+}
+
+RunnerManager::RunnerManager(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
     : QObject(parent)
-    , d(new RunnerManagerPrivate(this, configFile))
+    , d(new RunnerManagerPrivate(this, stateConfigGroup, configFile))
 {
     d->loadConfiguration();
 }

@@ -126,6 +126,23 @@ private Q_SLOTS:
 
         manager.launchQuery("somequery");
     }
+
+    void testRunnerManagerStateGroups()
+    {
+        auto grp = KSharedConfig::openConfig(QString(), KConfig::NoGlobals)->group("Testme");
+        grp.deleteGroup();
+        RunnerManager manager(QString(), grp, this);
+        manager.setAllowedRunners({QStringLiteral("fakerunnerplugin")});
+        manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
+        QSignalSpy spyQueryFinished(&manager, &KRunner::RunnerManager::queryFinished);
+
+        manager.launchQuery("foo");
+        spyQueryFinished.wait();
+        manager.run(manager.matches().constFirst());
+        manager.matchSessionComplete();
+        QCOMPARE(grp.readEntry("LaunchCounts"), "1 foo");
+        QCOMPARE(grp.config()->groupList().size(), 1);
+    }
 };
 
 QTEST_MAIN(RunnerManagerTest)

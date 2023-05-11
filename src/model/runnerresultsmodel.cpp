@@ -16,9 +16,9 @@
 
 namespace KRunner
 {
-RunnerResultsModel::RunnerResultsModel(QObject *parent)
+RunnerResultsModel::RunnerResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
     : QAbstractItemModel(parent)
-    , m_manager(new RunnerManager(QStringLiteral("krunnerrc"), this))
+    , m_manager(new RunnerManager(configFile, stateConfigGroup, this))
 {
     connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
     connect(m_manager, &RunnerManager::queryFinished, this, [this] {
