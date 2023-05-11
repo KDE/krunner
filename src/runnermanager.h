@@ -47,8 +47,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     Q_PROPERTY(bool historyEnabled READ historyEnabled NOTIFY historyEnabledChanged)
 
 public:
-    explicit RunnerManager(QObject *parent = nullptr);
-    explicit RunnerManager(const QString &configFile, QObject *parent = nullptr);
+    explicit RunnerManager(const QString &configFile = QString(), QObject *parent = nullptr);
     ~RunnerManager() override;
 
     /**

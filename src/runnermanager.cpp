@@ -494,11 +494,6 @@ public:
 #endif
 };
 
-RunnerManager::RunnerManager(QObject *parent)
-    : RunnerManager(QString(), parent)
-{
-}
-
 RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
     : QObject(parent)
     , d(new RunnerManagerPrivate(this, configFile))
