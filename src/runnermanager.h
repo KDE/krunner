@@ -47,8 +47,18 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     Q_PROPERTY(bool historyEnabled READ historyEnabled NOTIFY historyEnabledChanged)
 
 public:
-    explicit RunnerManager(const QString &configFile = QString(), QObject *parent = nullptr);
-    explicit RunnerManager(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent);
+    /**
+     * Constructs a RunnerManager with the given parameters
+     * @param configurationGroup Config group used for reading enabled plugins
+     * @param stateGroup Config group used for storing history
+     * @since 6.0
+     */
+    explicit RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateGroup, QObject *parent);
+
+    /**
+     * Constructs a RunnerManager using the default locations for state/plugin config
+     */
+    explicit RunnerManager(QObject *parent = nullptr);
     ~RunnerManager() override;
 
     /**
@@ -245,7 +255,7 @@ private:
     KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
     // exported for dbusrunnertest
 
-    std::unique_ptr<RunnerManagerPrivate> const d;
+    std::unique_ptr<RunnerManagerPrivate> d;
 
     friend class RunnerManagerPrivate;
     friend AbstractRunnerTest;

@@ -16,9 +16,10 @@
 
 namespace KRunner
 {
-RunnerResultsModel::RunnerResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
+RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent)
     : QAbstractItemModel(parent)
-    , m_manager(new RunnerManager(configFile, stateConfigGroup, this))
+    // Invalid groups are passed in to avoid unneeded overloads and such
+    , m_manager(configGroup.isValid() && stateConfigGroup.isValid() ? new RunnerManager(configGroup, stateConfigGroup, this) : new RunnerManager(this))
 {
     connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
     connect(m_manager, &RunnerManager::queryFinished, this, [this] {

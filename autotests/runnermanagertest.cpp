@@ -129,9 +129,10 @@ private Q_SLOTS:
 
     void testRunnerManagerStateGroups()
     {
-        auto grp = KSharedConfig::openConfig(QString(), KConfig::NoGlobals)->group("Testme");
-        grp.deleteGroup();
-        RunnerManager manager(QString(), grp, this);
+        auto stateGrp = KSharedConfig::openConfig(QString(), KConfig::NoGlobals)->group("Testme");
+        auto configGrp = KSharedConfig::openConfig(QString(), KConfig::NoGlobals)->group("Plugins");
+        stateGrp.deleteGroup();
+        RunnerManager manager(configGrp, stateGrp, this);
         manager.setAllowedRunners({QStringLiteral("fakerunnerplugin")});
         manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
         QSignalSpy spyQueryFinished(&manager, &KRunner::RunnerManager::queryFinished);
@@ -140,8 +141,8 @@ private Q_SLOTS:
         spyQueryFinished.wait();
         manager.run(manager.matches().constFirst());
         manager.matchSessionComplete();
-        QCOMPARE(grp.readEntry("LaunchCounts"), "1 foo");
-        QCOMPARE(grp.config()->groupList().size(), 1);
+        QCOMPARE(stateGrp.readEntry("LaunchCounts"), "1 foo");
+        QCOMPARE(stateGrp.config()->groupList().size(), 1);
     }
 };
 

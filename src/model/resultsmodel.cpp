@@ -259,9 +259,9 @@ public:
 class KRunner::ResultsModelPrivate
 {
 public:
-    ResultsModelPrivate(const QString &configFile, KConfigGroup stateConfigGroup, ResultsModel *q)
+    ResultsModelPrivate(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, ResultsModel *q)
         : q(q)
-        , resultsModel(new RunnerResultsModel(configFile, stateConfigGroup, q))
+        , resultsModel(new RunnerResultsModel(configGroup, stateConfigGroup, q))
     {
     }
 
@@ -279,12 +279,12 @@ public:
 };
 
 ResultsModel::ResultsModel(QObject *parent)
-    : ResultsModel(QStringLiteral("krunnerrc"), KConfigGroup(), parent)
+    : ResultsModel(KConfigGroup(), KConfigGroup(), parent)
 {
 }
-ResultsModel::ResultsModel(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
+ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent)
     : QSortFilterProxyModel(parent)
-    , d(new ResultsModelPrivate(configFile, stateConfigGroup, this))
+    , d(new ResultsModelPrivate(configGroup, stateConfigGroup, this))
 {
     connect(d->resultsModel, &RunnerResultsModel::queryStringChanged, this, &ResultsModel::queryStringChanged);
     connect(d->resultsModel, &RunnerResultsModel::queryingChanged, this, &ResultsModel::queryingChanged);

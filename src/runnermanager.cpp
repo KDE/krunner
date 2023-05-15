@@ -43,14 +43,11 @@ namespace KRunner
 class RunnerManagerPrivate
 {
 public:
-    RunnerManagerPrivate(RunnerManager *parent, KConfigGroup stateConfigGroup, const QString &configFile)
+    RunnerManagerPrivate(const KConfigGroup &configurationGroup, KConfigGroup stateConfigGroup, RunnerManager *parent)
         : q(parent)
-        , configPrt(KSharedConfig::openConfig(configFile))
+        , pluginConf(configurationGroup)
+        , stateData(stateConfigGroup)
     {
-        stateData = stateConfigGroup.isValid()
-            ? stateConfigGroup
-            : KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)
-                  ->group("PlasmaRunnerManager");
         initializeKNotifyPluginWatcher();
         matchChangeTimer.setSingleShot(true);
         matchChangeTimer.setTimerType(Qt::TimerType::PreciseTimer); // Without this, autotest will fail due to imprecision of this timer
@@ -71,6 +68,7 @@ public:
         QObject::connect(q, &RunnerManager::matchesChanged, q, [&] {
             lastMatchChangeSignalled.restart();
         });
+        loadConfiguration();
     }
 
     void scheduleMatchesChanged()
@@ -122,7 +120,7 @@ public:
                              }
                          });
 #endif
-        const KConfigGroup generalConfig = configPrt->group("General");
+        const KConfigGroup generalConfig = pluginConf.config()->group("General");
         const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
         if (historyEnabled != _historyEnabled) {
             historyEnabled = _historyEnabled;
@@ -159,7 +157,6 @@ public:
 
         const bool loadAll = stateData.readEntry("loadAll", false);
         const bool noWhiteList = whiteList.isEmpty();
-        KConfigGroup pluginConf = configPrt->group("Plugins");
 
         QSet<AbstractRunner *> deadRunners;
         QMutableListIterator<KPluginMetaData> it(offers);
@@ -374,7 +371,7 @@ public:
     void initializeKNotifyPluginWatcher()
     {
         Q_ASSERT(!watcher);
-        watcher = KConfigWatcher::create(configPrt);
+        watcher = KConfigWatcher::create(KSharedConfig::openConfig(pluginConf.config()->name()));
         q->connect(watcher.data(), &KConfigWatcher::configChanged, q, [this](const KConfigGroup &group, const QByteArrayList &changedNames) {
             const QString groupName = group.name();
             if (groupName == QLatin1String("Plugins")) {
@@ -488,7 +485,7 @@ public:
     QHash<QString, QString> priorSearch;
     QString untrimmedTerm;
     const QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
-    const KSharedConfigPtr configPrt;
+    KConfigGroup pluginConf;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
 #if HAVE_KACTIVITIES
@@ -496,16 +493,20 @@ public:
 #endif
 };
 
-RunnerManager::RunnerManager(const QString &configFile, QObject *parent)
-    : RunnerManager(configFile, KConfigGroup(), parent)
+RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateConfigGroup, QObject *parent)
+    : QObject(parent)
+    , d(new RunnerManagerPrivate(pluginConfigGroup, stateConfigGroup, this))
 {
+    Q_ASSERT(pluginConfigGroup.isValid());
+    Q_ASSERT(stateConfigGroup.isValid());
 }
 
-RunnerManager::RunnerManager(const QString &configFile, KConfigGroup stateConfigGroup, QObject *parent)
+RunnerManager::RunnerManager(QObject *parent)
     : QObject(parent)
-    , d(new RunnerManagerPrivate(this, stateConfigGroup, configFile))
 {
-    d->loadConfiguration();
+    auto defaultStatePtr = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation);
+    auto configPtr = KSharedConfig::openConfig(QStringLiteral("krunnerrc"), KConfig::NoGlobals);
+    d.reset(new RunnerManagerPrivate(configPtr->group("Plugins"), defaultStatePtr->group("PlasmaRunnerManager"), this));
 }
 
 RunnerManager::~RunnerManager()
@@ -523,7 +524,7 @@ RunnerManager::~RunnerManager()
 
 void RunnerManager::reloadConfiguration()
 {
-    d->configPrt->reparseConfiguration();
+    d->pluginConf.config()->reparseConfiguration();
     d->stateData.config()->reparseConfiguration();
     d->loadConfiguration();
     d->loadRunners();
