@@ -2,6 +2,7 @@
     SPDX-FileCopyrightText: 2006 Aaron Seigo <aseigo@kde.org>
     SPDX-FileCopyrightText: 2007, 2009 Ryan P. Bitanga <ryan.bitanga@gmail.com>
     SPDX-FileCopyrightText: 2008 Jordi Polo <mumismo@gmail.com>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnauŋmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -121,11 +122,6 @@ public:
                          });
 #endif
         const KConfigGroup generalConfig = pluginConf.config()->group("General");
-        const bool _historyEnabled = generalConfig.readEntry("HistoryEnabled", true);
-        if (historyEnabled != _historyEnabled) {
-            historyEnabled = _historyEnabled;
-            Q_EMIT q->historyEnabledChanged();
-        }
         activityAware = generalConfig.readEntry("ActivityAware", true);
         retainPriorSearch = generalConfig.readEntry("RetainPriorSearch", true);
         context.restore(stateData);
@@ -478,7 +474,7 @@ public:
     bool teardownRequested = false;
     bool singleMode = false;
     bool activityAware = false;
-    bool historyEnabled = false;
+    bool historyEnabled = true;
     bool retainPriorSearch = false;
     QStringList whiteList;
     KConfigWatcher::Ptr watcher;
@@ -818,6 +814,12 @@ void RunnerManager::setPriorSearch(const QString &search)
 bool RunnerManager::historyEnabled()
 {
     return d->historyEnabled;
+}
+
+void RunnerManager::setHistoryEnabled(bool enabled)
+{
+    d->historyEnabled = enabled;
+    Q_EMIT historyEnabledChanged();
 }
 
 bool RunnerManager::retainPriorSearch()

@@ -86,9 +86,12 @@ void RunnerManagerSingleRunnerModeTest::testLoadingDisabledRunner()
     loadTwoRunners();
     // Make sure the runner is disabled in the config
     auto config = KSharedConfig::openConfig();
+    config->deleteGroup("Plugins");
     config->group("Plugins").writeEntry("dbusrunnertestEnabled", false);
     // reset our manager to start clean
-    manager.reset(new RunnerManager());
+    manager.reset(new RunnerManager(config->group("Plugins"), config->group("State"), this));
+    // Ensure no system runners are picked up
+    manager->setAllowedRunners(QStringList{"dbusrunnertest", "dbusrunnertestmulti"});
     // Copy the service files to the appropriate location and only load runners from there
     QString location = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/krunner/dbusplugins/";
     QDir().mkpath(location);

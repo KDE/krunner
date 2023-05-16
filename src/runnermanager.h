@@ -2,6 +2,7 @@
     SPDX-FileCopyrightText: 2006 Aaron Seigo <aseigo@kde.org>
     SPDX-FileCopyrightText: 2007 Ryan P. Bitanga <ryan.bitanga@gmail.com>
     SPDX-FileCopyrightText: 2008 Jordi Polo <mumismo@gmail.com>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnauŋmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -44,7 +45,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     Q_PROPERTY(bool retainPriorSearch READ retainPriorSearch)
     Q_PROPERTY(QString priorSearch READ priorSearch WRITE setPriorSearch)
     Q_PROPERTY(QStringList history READ history)
-    Q_PROPERTY(bool historyEnabled READ historyEnabled NOTIFY historyEnabledChanged)
+    Q_PROPERTY(bool historyEnabled READ historyEnabled WRITE setHistoryEnabled NOTIFY historyEnabledChanged)
 
 public:
     /**
@@ -155,6 +156,14 @@ public:
      * @since 5.78
      */
     bool historyEnabled();
+
+    /**
+     * Enables/disabled the history feature for the RunnerManager instance.
+     * The value will not be persisted and is only kept during the object's lifetime.
+     *
+     * @since 6.0
+     */
+    void setHistoryEnabled(bool enabled);
 
     /**
      * Causes a reload of the current configuration
