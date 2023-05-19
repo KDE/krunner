@@ -7,11 +7,11 @@ Files: autotests/*.desktop
 Copyright: KRunner contributors
 License: CC0-1.0
 
-Files: templates/runnerpython/*
+Files: templates/runner6python/*
 Copyright: Alexander Lohnau
 License: LGPL-2.1-or-later
 
-Files: templates/runner/*
+Files: templates/runner6/*
 Copyright: KDE Contributors
 License: GPL-2.0-or-later
 
