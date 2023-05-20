@@ -157,4 +157,4 @@ install(FILES ${PRI_FILENAME}
 install(FILES
    "data/org.kde.krunner1.xml"
    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
-   RENAME kf5_org.kde.krunner1.xml)
+   RENAME kf6_org.kde.krunner1.xml)
