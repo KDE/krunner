@@ -123,7 +123,6 @@ public:
 #endif
         const KConfigGroup generalConfig = pluginConf.config()->group("General");
         activityAware = generalConfig.readEntry("ActivityAware", true);
-        retainPriorSearch = generalConfig.readEntry("RetainPriorSearch", true);
         context.restore(stateData);
     }
 
@@ -475,10 +474,8 @@ public:
     bool singleMode = false;
     bool activityAware = false;
     bool historyEnabled = true;
-    bool retainPriorSearch = false;
     QStringList whiteList;
     KConfigWatcher::Ptr watcher;
-    QHash<QString, QString> priorSearch;
     QString untrimmedTerm;
     const QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
     KConfigGroup pluginConf;
@@ -801,16 +798,6 @@ KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) 
     return parseMetaDataFromDesktopFile(filename);
 }
 
-QString RunnerManager::priorSearch() const
-{
-    return d->priorSearch.value(d->getActivityKey());
-}
-
-void RunnerManager::setPriorSearch(const QString &search)
-{
-    d->priorSearch.insert(d->getActivityKey(), search);
-}
-
 bool RunnerManager::historyEnabled()
 {
     return d->historyEnabled;
@@ -820,11 +807,6 @@ void RunnerManager::setHistoryEnabled(bool enabled)
 {
     d->historyEnabled = enabled;
     Q_EMIT historyEnabledChanged();
-}
-
-bool RunnerManager::retainPriorSearch()
-{
-    return d->retainPriorSearch;
 }
 
 } // KRunner namespace

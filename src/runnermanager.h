@@ -42,8 +42,6 @@ class RunnerManagerPrivate;
 class KRUNNER_EXPORT RunnerManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool retainPriorSearch READ retainPriorSearch)
-    Q_PROPERTY(QString priorSearch READ priorSearch WRITE setPriorSearch)
     Q_PROPERTY(QStringList history READ history)
     Q_PROPERTY(bool historyEnabled READ historyEnabled WRITE setHistoryEnabled NOTIFY historyEnabledChanged)
 
@@ -130,26 +128,6 @@ public:
      * @since 5.78
      */
     Q_INVOKABLE QString getHistorySuggestion(const QString &typedQuery) const;
-
-    /**
-     * Get the suggested prior search for this runner.
-     * Just like the history this value can be activity specific, depending on the build/config.
-     * @return priorSearch
-     * @since 5.78
-     */
-    QString priorSearch() const;
-
-    /**
-     * Set the prior search for this runner. Setting an empty string will clear this value.
-     * @since 5.78
-     */
-    void setPriorSearch(const QString &search);
-
-    /**
-     * If the prior search should be restored when KRunner is reopened
-     * @since 5.78
-     */
-    bool retainPriorSearch();
 
     /**
      * If history completion is enabled, the default value is true.
