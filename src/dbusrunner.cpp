@@ -227,7 +227,7 @@ void DBusRunner::match(KRunner::RunnerContext &context)
             this,
             [this, service, &context, reply]() {
                 if (reply.isError()) {
-                    qCDebug(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
+                    qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
                     return;
                 }
                 const auto matches = reply.value();
