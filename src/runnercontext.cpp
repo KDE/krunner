@@ -95,7 +95,7 @@ RunnerContext::RunnerContext(QObject *parent)
 }
 
 // copy ctor
-RunnerContext::RunnerContext(RunnerContext &other, QObject *parent)
+RunnerContext::RunnerContext(const RunnerContext &other, QObject *parent)
     : QObject(parent)
 {
     LOCK_FOR_READ(other.d)

@@ -23,8 +23,6 @@ target_sources(KF6Runner PRIVATE
     querymatch.h
     runnercontext.cpp
     runnercontext.h
-    runnerjobs.cpp
-    runnerjobs_p.h
     runnermanager.cpp
     runnermanager.h
     runnersyntax.cpp
@@ -68,7 +66,6 @@ target_link_libraries(KF6Runner
         Qt6::DBus
         Qt6::Gui
         KF6::ConfigCore
-        KF6::ThreadWeaver
         KF6::I18n
         KF6::ItemModels
 )

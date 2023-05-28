@@ -47,15 +47,6 @@ class KRUNNER_EXPORT AbstractRunner : public QObject
     Q_OBJECT
 
 public:
-    /** Specifies a priority for the runner */
-    enum Priority {
-        LowestPriority = 0,
-        LowPriority,
-        NormalPriority,
-        HighPriority,
-        HighestPriority,
-    };
-
     ~AbstractRunner() override;
 
     /**
@@ -118,12 +109,6 @@ public:
      * @param match The actual match to run/execute.
      */
     virtual void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match);
-
-    /**
-     * The priority of the runner.
-     * @see setPriority
-     */
-    Priority priority() const;
 
     /**
      * @return the plugin metadata for this runner that was passed in the constructor
@@ -269,12 +254,6 @@ protected:
     KConfigGroup config() const;
 
     /**
-     * Sets the priority of the runner. Lower priority runners are executed
-     * only after higher priority runners.
-     */
-    void setPriority(Priority newPriority);
-
-    /**
      * A given match can have more than action that can be performed on it.
      * For example, a song match returned by a music player runner can be queued,
      * added to the playlist, or played.
@@ -337,6 +316,9 @@ private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
     KRUNNER_NO_EXPORT bool hasUniqueResults();
     KRUNNER_NO_EXPORT bool hasWeakResults();
+    Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
+    KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished();
+    friend class RunnerManager;
     friend class RunnerContext;
     friend class RunnerContextPrivate;
     friend class QueryMatch;

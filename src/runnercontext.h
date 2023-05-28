@@ -37,7 +37,7 @@ public:
     /**
      * Copy constructor
      */
-    RunnerContext(RunnerContext &other, QObject *parent = nullptr);
+    RunnerContext(const RunnerContext &other, QObject *parent = nullptr);
 
     /**
      * Assignment operator
@@ -138,4 +138,5 @@ private:
 };
 }
 
+Q_DECLARE_METATYPE(KRunner::RunnerContext)
 #endif

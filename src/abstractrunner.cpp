@@ -24,10 +24,8 @@ class AbstractRunnerPrivate
 {
 public:
     explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData);
-    AbstractRunner::Priority priority = AbstractRunner::NormalPriority;
     const KPluginMetaData runnerDescription;
     AbstractRunner *runner;
-    QHash<QString, QAction *> actions;
     QList<RunnerSyntax> syntaxes;
     bool suspendMatching = false;
     int minLetterCount = 0;
@@ -93,16 +91,6 @@ QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
     QMimeData *result = new QMimeData();
     result->setUrls(match.urls());
     return result;
-}
-
-AbstractRunner::Priority AbstractRunner::priority() const
-{
-    return d->priority;
-}
-
-void AbstractRunner::setPriority(Priority priority)
-{
-    d->priority = priority;
 }
 
 void AbstractRunner::run(const KRunner::RunnerContext & /*search*/, const KRunner::QueryMatch & /*action*/)
@@ -221,6 +209,12 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMet
         hasUniqueResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
         hasWeakResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false);
     }
+}
+
+void AbstractRunner::matchInternal(KRunner::RunnerContext context)
+{
+    match(context);
+    Q_EMIT matchInternalFinished();
 }
 
 } // KRunner namespace

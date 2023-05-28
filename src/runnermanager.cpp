@@ -15,6 +15,7 @@
 #include <QMutableListIterator>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QThread>
 #include <QTimer>
 
 #include <KConfigWatcher>
@@ -27,17 +28,24 @@
 #include <KActivities/Consumer>
 #endif
 
-#include <ThreadWeaver/DebuggingAids>
-#include <ThreadWeaver/Queue>
-#include <ThreadWeaver/Thread>
-
 #include "dbusrunner_p.h"
 #include "kpluginmetadata_utils_p.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
-#include "runnerjobs_p.h"
 
-using ThreadWeaver::Queue;
+struct MatchConnection {
+    QString runnerId;
+    KRunner::RunnerContext context;
+};
+inline bool operator==(const MatchConnection &lhs, const MatchConnection &rhs)
+{
+    return lhs.runnerId == rhs.runnerId && lhs.context.query() == rhs.context.query();
+}
+
+inline size_t qHash(const MatchConnection &con, size_t seed)
+{
+    return qHash(con.context.query(), qHash(con.runnerId, seed));
+}
 
 namespace KRunner
 {
@@ -52,16 +60,12 @@ public:
         initializeKNotifyPluginWatcher();
         matchChangeTimer.setSingleShot(true);
         matchChangeTimer.setTimerType(Qt::TimerType::PreciseTimer); // Without this, autotest will fail due to imprecision of this timer
-        delayTimer.setSingleShot(true);
 
         QObject::connect(&matchChangeTimer, &QTimer::timeout, q, [this]() {
             matchesChanged();
         });
         QObject::connect(&context, &RunnerContext::matchesChanged, q, [this]() {
             scheduleMatchesChanged();
-        });
-        QObject::connect(&delayTimer, &QTimer::timeout, q, [this]() {
-            unblockJobs();
         });
 
         // Set up tracking of the last time matchesChanged was signalled
@@ -106,10 +110,6 @@ public:
 
     void loadConfiguration()
     {
-        // Limit the number of instances of a single normal speed runner and all of the slow runners
-        // to half the number of threads
-        DefaultRunnerPolicy::instance().setCap(qMax(2, Queue::instance()->maximumNumberOfThreads() / 2));
-
 #if HAVE_KACTIVITIES
         // Wait for consumer to be ready
         QObject::connect(&activitiesConsumer,
@@ -194,7 +194,7 @@ public:
             }
         }
 
-        if (!deadRunners.isEmpty()) {
+        /*if (!deadRunners.isEmpty()) {
             QSet<QSharedPointer<FindMatchesJob>> deadJobs;
             auto it = searchJobs.begin();
             while (it != searchJobs.end()) {
@@ -224,7 +224,7 @@ public:
             } else {
                 new DelayedJobCleaner(deadJobs, deadRunners);
             }
-        }
+        }*/
 
         // in case we deleted it up above, just to be sure we do not have a dangeling pointer
         currentSingleRunner = nullptr;
@@ -243,7 +243,7 @@ public:
         const QString api = pluginMetaData.value(QStringLiteral("X-Plasma-API"));
 
         if (api.isEmpty()) {
-            auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q, {});
+            auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q);
             if (res) {
                 runner = res.plugin;
             } else {
@@ -251,7 +251,7 @@ public:
                                              << " (library path was:" << pluginMetaData.fileName() << ")";
             }
         } else if (api.startsWith(QLatin1String("DBus"))) {
-            runner = new DBusRunner(q, pluginMetaData, {});
+            runner = new DBusRunner(nullptr, pluginMetaData, {});
         } else {
             qCWarning(KRUNNER) << "Unknown X-Plasma-API requested for runner" << pluginMetaData.fileName();
             return nullptr;
@@ -261,7 +261,13 @@ public:
             QObject::connect(runner, &AbstractRunner::matchingSuspended, q, [this](bool state) {
                 runnerMatchingSuspended(state);
             });
-            runner->init();
+            auto thread = new QThread();
+            thread->start();
+            // By now, runners who do "qobject_cast<Krunner::RunnerManager*>(parent)" should have saved the value
+            // By setting the parrent to a nullptr, we are allowed to move the object to another thread
+            runner->setParent(nullptr);
+            runner->moveToThread(thread);
+            QMetaObject::invokeMethod(runner, &AbstractRunner::init);
             if (prepped) {
                 Q_EMIT runner->prepare();
             }
@@ -276,12 +282,7 @@ public:
             return;
         }
 
-        if (Queue::instance()->isIdle()) {
-            searchJobs.clear();
-            oldSearchJobs.clear();
-        }
-
-        if (searchJobs.isEmpty() && oldSearchJobs.isEmpty()) {
+        if (currentConnections.isEmpty() && oldConnections.isEmpty()) {
             if (allRunnersPrepped) {
                 for (AbstractRunner *runner : std::as_const(runners)) {
                     Q_EMIT runner->teardown();
@@ -303,17 +304,6 @@ public:
         }
     }
 
-    void unblockJobs()
-    {
-        if (searchJobs.isEmpty() && Queue::instance()->isIdle()) {
-            oldSearchJobs.clear();
-            checkTearDown();
-            return;
-        }
-
-        Queue::instance()->reschedule();
-    }
-
     void runnerMatchingSuspended(bool suspended)
     {
         auto *runner = qobject_cast<AbstractRunner *>(q->sender());
@@ -331,35 +321,31 @@ public:
 
     void startJob(AbstractRunner *runner)
     {
-        QSharedPointer<FindMatchesJob> job(new FindMatchesJob(runner, &context, Queue::instance()));
-        QObject::connect(job.data(), &FindMatchesJob::done, q, [this](ThreadWeaver::JobPointer job) {
-            auto runJob = job.dynamicCast<FindMatchesJob>();
+        QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context));
+        QMetaObject::Connection connection;
+        MatchConnection matchConnection{runner->id(), context};
+        // The runner might outlive the manager due to us waiting for the thread to exit
+        connection = q->connect(runner, &AbstractRunner::matchInternalFinished, q, [=]() {
+            QObject::disconnect(connection);
+            if (currentConnections.remove(matchConnection)) {
+                if (currentConnections.isEmpty()) {
+                    // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+                    if (matchChangeTimer.isActive()) {
+                        matchChangeTimer.stop();
+                        Q_EMIT q->matchesChanged(context.matches());
+                    } else if (context.matches().isEmpty()) {
+                        // we finished our run, and there are no valid matches, and so no
+                        // signal will have been sent out. so we need to emit the signal
+                        // ourselves here
+                        Q_EMIT q->matchesChanged(context.matches());
+                    }
 
-            if (!runJob) {
-                return;
-            }
-
-            searchJobs.remove(runJob);
-            oldSearchJobs.remove(runJob);
-
-            if (searchJobs.isEmpty()) {
-                // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
-                if (matchChangeTimer.isActive()) {
-                    matchChangeTimer.stop();
-                    Q_EMIT q->matchesChanged(context.matches());
-                } else if (context.matches().isEmpty()) {
-                    // we finished our run, and there are no valid matches, and so no
-                    // signal will have been sent out. so we need to emit the signal
-                    // ourselves here
-                    Q_EMIT q->matchesChanged(context.matches());
+                    Q_EMIT q->queryFinished();
                 }
-
-                Q_EMIT q->queryFinished();
             }
         });
 
-        Queue::instance()->enqueue(job);
-        searchJobs.insert(job);
+        currentConnections.insert(matchConnection);
     }
 
     // Must only be called once
@@ -453,18 +439,14 @@ public:
         return stateData.group("History").readEntry(getActivityKey(), QStringList());
     }
 
-    // Delay in ms before slow runners are allowed to run
-    static const int slowRunDelay = 400;
-
     RunnerManager *const q;
     RunnerContext context;
     QTimer matchChangeTimer;
-    QTimer delayTimer; // Timer to control when to run slow runners
     QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner *> runners;
     AbstractRunner *currentSingleRunner = nullptr;
-    QSet<QSharedPointer<FindMatchesJob>> searchJobs;
-    QSet<QSharedPointer<FindMatchesJob>> oldSearchJobs;
+    QSet<MatchConnection> currentConnections;
+    QSet<MatchConnection> oldConnections;
     QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped = false;
@@ -504,14 +486,24 @@ RunnerManager::RunnerManager(QObject *parent)
 
 RunnerManager::~RunnerManager()
 {
-    if (!qApp->closingDown() && (!d->searchJobs.isEmpty() || !d->oldSearchJobs.isEmpty())) {
-        const QSet<QSharedPointer<FindMatchesJob>> jobs(d->searchJobs + d->oldSearchJobs);
-        QSet<AbstractRunner *> runners;
-        for (auto &job : jobs) {
-            job->runner()->setParent(nullptr);
-            runners << job->runner();
+    QHash<AbstractRunner *, int> runnerPendingQueries;
+    if (!qApp->closingDown() && (!d->currentConnections.isEmpty() || !d->oldConnections.isEmpty())) {
+        d->currentConnections.unite(d->oldConnections);
+        d->oldConnections.clear();
+        for (const auto &con : std::as_const(d->oldConnections)) {
+            auto oldRunner = runner(con.runnerId);
+            int queries = runnerPendingQueries.value(oldRunner) + 1;
+            runnerPendingQueries.insert(oldRunner, queries);
         }
-        new DelayedJobCleaner(jobs, runners);
+    }
+    for (const auto runner : d->runners) {
+        runner->setParent(nullptr); // The thread is not stopped!
+        if (!runnerPendingQueries.contains(runner)) {
+            runner->thread()->quit();
+            // Clean up the thread and runner objects
+            connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
+            connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+        }
     }
 }
 
@@ -732,15 +724,12 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         d->startJob(r);
     }
     // In the unlikely case that no runner gets queried we have to emit the signals here
-    if (d->searchJobs.isEmpty()) {
+    if (d->currentConnections.isEmpty()) {
         QTimer::singleShot(0, this, [this]() {
             Q_EMIT matchesChanged({});
             Q_EMIT queryFinished();
         });
     }
-
-    // Start timer to unblock slow runners
-    d->delayTimer.start(RunnerManagerPrivate::slowRunDelay);
 }
 
 QString RunnerManager::query() const
@@ -775,20 +764,11 @@ QString RunnerManager::getHistorySuggestion(const QString &typedQuery) const
 
 void RunnerManager::reset()
 {
-    // If ThreadWeaver is idle, it is safe to clear previous jobs
-    if (Queue::instance()->isIdle()) {
-        d->oldSearchJobs.clear();
-    } else {
-        for (auto it = d->searchJobs.constBegin(); it != d->searchJobs.constEnd(); ++it) {
-            Queue::instance()->dequeue((*it));
-        }
-        d->oldSearchJobs += d->searchJobs;
-    }
-
-    d->searchJobs.clear();
+    d->oldConnections.unite(d->currentConnections);
+    d->currentConnections.clear();
 
     d->context.reset();
-    if (!d->oldSearchJobs.empty()) {
+    if (!d->oldConnections.empty()) {
         Q_EMIT queryFinished();
     }
 }
