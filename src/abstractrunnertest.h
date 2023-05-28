@@ -16,6 +16,8 @@
 #if KRUNNER_DBUS_RUNNER_TESTING
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
+#include <QProcess>
+#include <QTimer>
 #endif
 
 namespace
