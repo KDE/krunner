@@ -20,7 +20,7 @@ class DBusRunner : public KRunner::AbstractRunner
     Q_OBJECT
 
 public:
-    explicit DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args);
+    explicit DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData);
     ~DBusRunner() override;
 
     void match(KRunner::RunnerContext &context) override;
@@ -49,4 +49,5 @@ private:
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
     QSet<QString> m_requestedActionServices;
+    QObject *parentForActions;
 };

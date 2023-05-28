@@ -251,7 +251,7 @@ public:
                                              << " (library path was:" << pluginMetaData.fileName() << ")";
             }
         } else if (api.startsWith(QLatin1String("DBus"))) {
-            runner = new DBusRunner(nullptr, pluginMetaData, {});
+            runner = new DBusRunner(q, pluginMetaData);
         } else {
             qCWarning(KRUNNER) << "Unknown X-Plasma-API requested for runner" << pluginMetaData.fileName();
             return nullptr;

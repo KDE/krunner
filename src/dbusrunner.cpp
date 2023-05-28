@@ -23,9 +23,11 @@
 
 #define IFACE_NAME "org.kde.krunner1"
 
-DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args)
-    : KRunner::AbstractRunner(parent, pluginMetaData, args)
+DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
+    : KRunner::AbstractRunner(parent, pluginMetaData)
+    , parentForActions(parent)
 {
+    Q_ASSERT(parent);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
@@ -94,7 +96,13 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     }
 }
 
-DBusRunner::~DBusRunner() = default;
+DBusRunner::~DBusRunner()
+{
+    for (const auto &actionList : std::as_const(m_actions)) {
+        qDeleteAll(actionList);
+    }
+    m_actions.clear();
+}
 
 void DBusRunner::reloadConfiguration()
 {
@@ -114,9 +122,11 @@ void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActio
         qDeleteAll(serviceActions);
         serviceActions.clear();
         for (const RemoteAction &action : actions) {
-            auto a = new QAction(QIcon::fromTheme(action.iconName), action.text, this);
+            // Don't set a parent, because otherwise we can not move it to a different thread
+            auto a = new QAction(QIcon::fromTheme(action.iconName), action.text);
             a->setData(action.id);
-            // serviceActions.append(a);
+            a->moveToThread(parentForActions->thread());
+            serviceActions.append(a);
         }
     }
 }
