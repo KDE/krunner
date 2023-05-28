@@ -276,7 +276,9 @@ void DBusRunner::match(KRunner::RunnerContext &context)
     }
     // we're done matching when every service replies
     for (auto &w : watchers) {
-        w->waitForFinished();
+        if (context.isValid()) {
+            w->waitForFinished();
+        }
     }
 }
 

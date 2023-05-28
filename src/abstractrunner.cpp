@@ -213,8 +213,10 @@ AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMet
 
 void AbstractRunner::matchInternal(KRunner::RunnerContext context)
 {
-    match(context);
-    Q_EMIT matchInternalFinished();
+    if (context.isValid()) { // Otherwise, we would just waste resources
+        match(context);
+    }
+    Q_EMIT matchInternalFinished(context.query());
 }
 
 } // KRunner namespace
