@@ -31,9 +31,7 @@ public:
     void match(RunnerContext &context) override
     {
         QEventLoop l;
-        QTimer::singleShot(50, [&l]() {
-            l.quit();
-        });
+        QTimer::singleShot(50, &l, &QEventLoop::quit);
         l.exec();
         if (context.query().startsWith(QLatin1String("foo"))) {
             context.addMatch(createDummyMatch(QStringLiteral("foo"), 0.1));
