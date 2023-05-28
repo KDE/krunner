@@ -1,6 +1,7 @@
 #include <KRunner/AbstractRunnerTest>
 #include <KRunner/RunnerManager>
 #include <qtest.h>
+#include <qtestcase.h>
 
 using namespace KRunner;
 
@@ -41,6 +42,18 @@ private Q_SLOTS:
         QCOMPARE(changedSpy.count(), 2);
 
         QCOMPARE(manager->matches().size(), 3);
+    }
+
+    void benchmarkQuerying()
+    {
+        QSKIP("Skipped by default");
+        QStandardPaths::setTestModeEnabled(false);
+        manager.reset(new RunnerManager());
+        QBENCHMARK_ONCE {
+            launchQuery("test");
+            launchQuery("spell bla");
+            launchQuery("define test");
+        }
     }
 };
 
