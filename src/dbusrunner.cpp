@@ -27,13 +27,13 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     : KRunner::AbstractRunner(parent, pluginMetaData)
     , parentForActions(parent)
 {
+    setObjectName(pluginMetaData.pluginId());
     Q_ASSERT(parent);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<RemoteAction>();
     qDBusRegisterMetaType<RemoteActions>();
     qDBusRegisterMetaType<RemoteImage>();
-    qRegisterMetaType<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>");
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
@@ -207,84 +207,72 @@ void DBusRunner::requestConfig()
 
 void DBusRunner::match(KRunner::RunnerContext &context)
 {
-    QSet<QString> services;
-    {
-        QMutexLocker lock(&m_mutex);
-        services = m_matchingServices;
-        m_matchWasCalled = true;
+    m_matchWasCalled = true;
 
-        // Request the actions
-        if ((m_requestActionsOnce && !m_actionsOnceRequested) // We only want to fetch the actions once but haven't done so yet
-            || (!m_actionsForSessionRequested)) { // We want to fetch the actions for each match session
-            m_actionsOnceRequested = true;
-            m_actionsForSessionRequested = true;
-            auto actions = requestActions();
-            QMetaObject::invokeMethod(this, "createQActionsFromRemoteActions", QArgument("QMap<QString, RemoteActions>", actions));
-        }
+    // Request the actions
+    if ((m_requestActionsOnce && !m_actionsOnceRequested) // We only want to fetch the actions once but haven't done so yet
+        || (!m_actionsForSessionRequested)) { // We want to fetch the actions for each match session
+        m_actionsOnceRequested = true;
+        m_actionsForSessionRequested = true;
+        createQActionsFromRemoteActions(requestActions());
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
     std::vector<std::unique_ptr<QDBusPendingCallWatcher>> watchers;
 
-    for (const QString &service : std::as_const(services)) {
+    for (const QString &service : std::as_const(m_matchingServices)) {
         auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
 
         watchers.push_back(std::make_unique<QDBusPendingCallWatcher>(reply));
-        connect(
-            watchers.back().get(),
-            &QDBusPendingCallWatcher::finished,
-            this,
-            [this, service, &context, reply]() {
-                if (reply.isError()) {
-                    qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
-                    return;
+        connect(watchers.back().get(), &QDBusPendingCallWatcher::finished, this, [this, service, &context, reply]() {
+            if (reply.isError()) {
+                qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
+                return;
+            }
+            const auto matches = reply.value();
+            for (const RemoteMatch &match : matches) {
+                KRunner::QueryMatch m(this);
+
+                m.setText(match.text);
+                m.setIconName(match.iconName);
+                m.setType(match.type);
+                m.setRelevance(match.relevance);
+
+                // split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
+                m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
+                m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
+                m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
+                const auto actionsIt = match.properties.find(QStringLiteral("actions"));
+                if (actionsIt == match.properties.cend()) {
+                    m.setData(QVariantList({service}));
+                } else {
+                    m.setData(QVariantList({service, actionsIt.value().toStringList()}));
                 }
-                const auto matches = reply.value();
-                for (const RemoteMatch &match : matches) {
-                    KRunner::QueryMatch m(this);
+                m.setId(match.id);
+                m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
 
-                    m.setText(match.text);
-                    m.setIconName(match.iconName);
-                    m.setType(match.type);
-                    m.setRelevance(match.relevance);
-
-                    // split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
-                    m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
-                    m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
-                    m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
-                    const auto actionsIt = match.properties.find(QStringLiteral("actions"));
-                    if (actionsIt == match.properties.cend()) {
-                        m.setData(QVariantList({service}));
-                    } else {
-                        m.setData(QVariantList({service, actionsIt.value().toStringList()}));
-                    }
-                    m.setId(match.id);
-                    m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
-
-                    const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
-                    if (iconData.isValid()) {
-                        const auto iconDataArgument = iconData.value<QDBusArgument>();
-                        if (iconDataArgument.currentType() == QDBusArgument::StructureType
-                            && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
-                            const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
-                            const QImage decodedImage = decodeImage(remoteImage);
-                            if (!decodedImage.isNull()) {
-                                const QPixmap pix = QPixmap::fromImage(decodedImage);
-                                QIcon icon(pix);
-                                m.setIcon(icon);
-                                // iconName normally takes precedence
-                                m.setIconName(QString());
-                            }
-                        } else {
-                            qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
+                const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
+                if (iconData.isValid()) {
+                    const auto iconDataArgument = iconData.value<QDBusArgument>();
+                    if (iconDataArgument.currentType() == QDBusArgument::StructureType && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
+                        const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
+                        const QImage decodedImage = decodeImage(remoteImage);
+                        if (!decodedImage.isNull()) {
+                            const QPixmap pix = QPixmap::fromImage(decodedImage);
+                            QIcon icon(pix);
+                            m.setIcon(icon);
+                            // iconName normally takes precedence
+                            m.setIconName(QString());
                         }
+                    } else {
+                        qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
                     }
+                }
 
-                    context.addMatch(m);
-                };
-            },
-            Qt::DirectConnection); // process reply in the watcher's thread (aka the one running ::match  not the one owning the runner)
+                context.addMatch(m);
+            };
+        });
     }
     // we're done matching when every service replies
     for (auto &w : watchers) {
