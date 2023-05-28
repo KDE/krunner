@@ -31,7 +31,7 @@ public:
             l.quit();
         });
         l.exec();
-        if (context.query() == QLatin1String("foo")) {
+        if (context.query().startsWith(QLatin1String("foo"))) {
             context.addMatch(createDummyMatch(QStringLiteral("foo"), 0.1));
             context.addMatch(createDummyMatch(QStringLiteral("bar"), 0.2));
         }
