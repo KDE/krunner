@@ -39,7 +39,6 @@ public:
         setDynamicSortFilter(true);
         sort(0, Qt::DescendingOrder);
     }
-    ~SortProxyModel() override = default;
 
     void setQueryString(const QString &queryString)
     {
@@ -93,8 +92,6 @@ public:
         : QSortFilterProxyModel(parent)
     {
     }
-    ~CategoryDistributionProxyModel() override = default;
-
     void setSourceModel(QAbstractItemModel *sourceModel) override
     {
         if (this->sourceModel()) {
@@ -192,7 +189,6 @@ public:
         : QSortFilterProxyModel(parent)
     {
     }
-    ~HideRootLevelProxyModel() override = default;
 
     QAbstractItemModel *treeModel() const
     {
@@ -231,7 +227,6 @@ public:
         : QIdentityProxyModel(parent)
     {
     }
-    ~DuplicateDetectorProxyModel() override = default;
 
     QVariant data(const QModelIndex &index, int role) const override
     {

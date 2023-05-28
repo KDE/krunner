@@ -28,8 +28,6 @@ RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, KConfigG
     connect(m_manager, &RunnerManager::requestUpdateQueryString, this, &RunnerResultsModel::queryStringChangeRequested);
 }
 
-RunnerResultsModel::~RunnerResultsModel() = default;
-
 KRunner::QueryMatch RunnerResultsModel::fetchMatch(const QModelIndex &idx) const
 {
     const QString category = m_categories.value(int(idx.internalId() - 1));
