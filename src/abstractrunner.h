@@ -99,7 +99,7 @@ public:
      *
      * @sa run(), RunnerContext::addMatch, RunnerContext::addMatches, QueryMatch
      */
-    virtual void match(KRunner::RunnerContext &context);
+    virtual void match(KRunner::RunnerContext &context) = 0;
 
     /**
      * Called whenever an exact or possible match associated with this

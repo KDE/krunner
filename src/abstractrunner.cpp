@@ -98,10 +98,6 @@ void AbstractRunner::run(const KRunner::RunnerContext & /*search*/, const KRunne
 {
 }
 
-void AbstractRunner::match(KRunner::RunnerContext &)
-{
-}
-
 QString AbstractRunner::name() const
 {
     if (d->runnerDescription.isValid()) {
