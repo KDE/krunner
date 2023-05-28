@@ -241,7 +241,7 @@ protected:
      * @param args for compatibility with KPluginFactory, since 6.0 this can be omitted
      * @since 5.72
      */
-    explicit AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList &args = {});
+    explicit AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData);
 
     /**
      * Sets whether or not the runner is available for match requests. Useful to

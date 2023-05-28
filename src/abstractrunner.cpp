@@ -36,7 +36,7 @@ public:
     bool hasWeakResults = false;
 };
 
-AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData, const QVariantList & /*args*/)
+AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
