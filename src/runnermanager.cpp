@@ -35,16 +35,23 @@
 
 struct MatchConnection {
     QString runnerId;
-    KRunner::RunnerContext context;
+    QString query;
 };
-inline bool operator==(const MatchConnection &lhs, const MatchConnection &rhs)
-{
-    return lhs.runnerId == rhs.runnerId && lhs.context.query() == rhs.context.query();
-}
-
 inline size_t qHash(const MatchConnection &con, size_t seed)
 {
-    return qHash(con.context.query(), qHash(con.runnerId, seed));
+    return qHash(con.query, qHash(con.runnerId, seed));
+}
+inline bool operator==(const MatchConnection &lhs, const MatchConnection &rhs)
+{
+    return lhs.runnerId == rhs.runnerId && lhs.query == rhs.query;
+}
+
+QDebug operator<<(QDebug debug, const QSet<MatchConnection> &connections)
+{
+    for (const auto &connection : connections) {
+        debug << QStringList{connection.runnerId, connection.query};
+    }
+    return debug;
 }
 
 namespace KRunner
@@ -267,6 +274,30 @@ public:
             // By setting the parrent to a nullptr, we are allowed to move the object to another thread
             runner->setParent(nullptr);
             runner->moveToThread(thread);
+
+            // The runner might outlive the manager due to us waiting for the thread to exit
+            q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this, runner](const QString &query) {
+                const MatchConnection matchConnection{runner->metadata().pluginId(), query};
+                if (oldConnections.remove(matchConnection)) {
+                    return;
+                }
+                if (currentConnections.remove(matchConnection)) {
+                    if (currentConnections.isEmpty()) {
+                        // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+                        if (matchChangeTimer.isActive()) {
+                            matchChangeTimer.stop();
+                            Q_EMIT q->matchesChanged(context.matches());
+                        } else if (context.matches().isEmpty()) {
+                            // we finished our runa, and there are no valid matches, and so no
+                            // signal will have been sent out. so we need to emit the signal
+                            // ourselves here
+                            Q_EMIT q->matchesChanged(context.matches());
+                        }
+                        Q_EMIT q->queryFinished();
+                    }
+                }
+            });
+
             QMetaObject::invokeMethod(runner, &AbstractRunner::init);
             if (prepped) {
                 Q_EMIT runner->prepare();
@@ -322,30 +353,7 @@ public:
     void startJob(AbstractRunner *runner)
     {
         QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context));
-        QMetaObject::Connection connection;
-        MatchConnection matchConnection{runner->id(), context};
-        // The runner might outlive the manager due to us waiting for the thread to exit
-        connection = q->connect(runner, &AbstractRunner::matchInternalFinished, q, [=]() {
-            QObject::disconnect(connection);
-            if (currentConnections.remove(matchConnection)) {
-                if (currentConnections.isEmpty()) {
-                    // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
-                    if (matchChangeTimer.isActive()) {
-                        matchChangeTimer.stop();
-                        Q_EMIT q->matchesChanged(context.matches());
-                    } else if (context.matches().isEmpty()) {
-                        // we finished our run, and there are no valid matches, and so no
-                        // signal will have been sent out. so we need to emit the signal
-                        // ourselves here
-                        Q_EMIT q->matchesChanged(context.matches());
-                    }
-
-                    Q_EMIT q->queryFinished();
-                }
-            }
-        });
-
-        currentConnections.insert(matchConnection);
+        currentConnections.insert(MatchConnection{runner->id(), context.query()});
     }
 
     // Must only be called once

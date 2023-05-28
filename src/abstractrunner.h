@@ -317,7 +317,7 @@ private:
     KRUNNER_NO_EXPORT bool hasUniqueResults();
     KRUNNER_NO_EXPORT bool hasWeakResults();
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
-    KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished();
+    KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &query);
     friend class RunnerManager;
     friend class RunnerContext;
     friend class RunnerContextPrivate;
