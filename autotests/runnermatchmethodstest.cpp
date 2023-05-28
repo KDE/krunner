@@ -5,7 +5,7 @@
 */
 
 #include "abstractrunner.h"
-#include "fakerunner.h"
+#include "plugins/fakerunner.h"
 #include "runnermanager.h"
 
 #include <QAction>
@@ -53,8 +53,8 @@ RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
     const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
     qputenv("XDG_DATA_DIRS", modifiedDataDirs);
-    KPluginMetaData data1 = parseMetaDataFromDesktopFile(QFINDTESTDATA("metadatafile1.desktop"));
-    KPluginMetaData data2 = parseMetaDataFromDesktopFile(QFINDTESTDATA("metadatafile2.desktop"));
+    KPluginMetaData data1 = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/metadatafile1.desktop"));
+    KPluginMetaData data2 = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/metadatafile2.desktop"));
     QVERIFY(data1.isValid());
     QVERIFY(data2.isValid());
     runner1 = new FakeRunner(data1);

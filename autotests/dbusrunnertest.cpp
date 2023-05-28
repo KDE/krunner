@@ -111,7 +111,7 @@ void DBusRunnerTest::testMulti()
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
     manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
 
-    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
+    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
     QVERIFY(md.isValid());
     manager->loadRunner(md);
     launchQuery(QStringLiteral("foo"));
@@ -207,7 +207,7 @@ void DBusRunnerTest::testLifecycleMethods()
 {
     QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave"), QString()});
     manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
-    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestruntimeconfig.desktop"));
+    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestruntimeconfig.desktop"));
     manager->loadRunner(md);
     QCOMPARE(manager->runners().count(), 1);
     // Match session should be set up automatically
@@ -238,7 +238,7 @@ void DBusRunnerTest::testRequestActionsOnceWildcards()
 {
     initProperties();
     manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
-    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
+    auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
     QVERIFY(md.isValid());
     manager->loadRunner(md);
     QCOMPARE(manager->runners().count(), 1);

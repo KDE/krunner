@@ -30,7 +30,7 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).toLocal8Bit());
         QCoreApplication::setLibraryPaths(QStringList());
         initProperties();
-        auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("dbusrunnertestmulti.desktop"));
+        auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
         QVERIFY(md.isValid());
         manager->loadRunner(md);
     }
@@ -95,8 +95,8 @@ void RunnerManagerSingleRunnerModeTest::testLoadingDisabledRunner()
     // Copy the service files to the appropriate location and only load runners from there
     QString location = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/krunner/dbusplugins/";
     QDir().mkpath(location);
-    QFile::copy(QFINDTESTDATA("dbusrunnertest.desktop"), location + "dbusrunnertest.desktop");
-    QFile::copy(QFINDTESTDATA("dbusrunnertestmulti.desktop"), location + "dbusrunnertestmulti.desktop");
+    QFile::copy(QFINDTESTDATA("plugins/dbusrunnertest.desktop"), location + "dbusrunnertest.desktop");
+    QFile::copy(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"), location + "dbusrunnertestmulti.desktop");
 
     // Only enabled runner should be loaded and have results
     launchQuery("foo");

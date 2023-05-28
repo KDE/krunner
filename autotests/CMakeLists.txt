@@ -17,7 +17,7 @@ ecm_add_tests(
     LINK_LIBRARIES Qt6::Gui Qt6::DBus Qt6::Test KF6::Runner KF6::ConfigCore
 )
 
-kcoreaddons_add_plugin(fakerunnerplugin SOURCES fakerunnerplugin.cpp INSTALL_NAMESPACE "krunnertest" STATIC)
+kcoreaddons_add_plugin(fakerunnerplugin SOURCES plugins/fakerunnerplugin.cpp INSTALL_NAMESPACE "krunnertest" STATIC)
 target_link_libraries(fakerunnerplugin KF6Runner)
 
 kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
@@ -25,8 +25,8 @@ kcoreaddons_target_static_plugins(runnermanagertest krunnertest)
 kcoreaddons_target_static_plugins(threadingtest krunnertest)
 
 add_executable(testremoterunner)
-qt_add_dbus_adaptor(demoapp_dbus_adaptor_SRCS "../src/data/org.kde.krunner1.xml" testremoterunner.h TestRemoteRunner)
-target_sources(testremoterunner PRIVATE testremoterunner.cpp ${demoapp_dbus_adaptor_SRCS})
+qt_add_dbus_adaptor(demoapp_dbus_adaptor_SRCS "../src/data/org.kde.krunner1.xml" plugins/testremoterunner.h TestRemoteRunner)
+target_sources(testremoterunner PRIVATE plugins/testremoterunner.cpp ${demoapp_dbus_adaptor_SRCS})
 target_link_libraries(testremoterunner
     Qt6::DBus
     Qt6::Gui
@@ -34,10 +34,10 @@ target_link_libraries(testremoterunner
 )
 
 include(../KF6KRunnerMacros.cmake)
-krunner_configure_test(dbusrunnertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
-krunner_configure_test(runnermanagersinglerunnermodetest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
-krunner_configure_test(runnermanagertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
-krunner_configure_test(threadingtest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/dbusrunnertest.desktop")
+krunner_configure_test(dbusrunnertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
+krunner_configure_test(runnermanagersinglerunnermodetest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
+krunner_configure_test(runnermanagertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
+krunner_configure_test(threadingtest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
 
 find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Widgets)
 if (TARGET Qt6::Widgets)
