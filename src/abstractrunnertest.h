@@ -90,6 +90,11 @@ public:
 
         QEventLoop loop;
         connect(&watcher, &QDBusServiceWatcher::serviceRegistered, &loop, &QEventLoop::quit);
+        // Otherwise, we just wait forever without any indication what we are waiting for
+        QTimer::singleShot(1000, &loop, [&loop]() {
+            loop.quit();
+            Q_ASSERT_X(false, "AbstractRunnerTest::startDBusRunnerProcess", "DBus service was not registered within one second");
+        });
         process->start(QStringLiteral(KRUNNER_TEST_DBUS_EXECUTABLE), args);
         loop.exec();
 
