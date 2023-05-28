@@ -18,6 +18,10 @@ public:
     {
         setObjectName("FakeRunner");
     }
+    ~FakeRunner()
+    {
+        // qWarning() << Q_FUNC_INFO;
+    }
     explicit FakeRunner(const KPluginMetaData &metadata = KPluginMetaData(QStringLiteral("metadata.desktop")))
         : FakeRunner(nullptr, metadata)
     {

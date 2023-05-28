@@ -83,9 +83,9 @@ private Q_SLOTS:
         QVERIFY(timer.elapsed() >= 300);
 
         // At this point RunnerManager::jobDone() should have anticipated the final emission.
-        QCOMPARE(spyMatchesChanged.count(), 2); // We had the second matchesChanged emission, now with the query result
         QCOMPARE(manager->matches().count(), 1); // The result is here
         QCOMPARE(spyQueryFinished.count(), 1); // Will have emited queryFinished, job is done
+        QCOMPARE(spyMatchesChanged.count(), 2); // We had the second matchesChanged emission, now with the query result
 
         // Now we will make sure that RunnerManager::scheduleMatchesChanged() emits matchesChanged instantly
         // if we start a query with an empty string. It will never produce results, stalling is meaningless
