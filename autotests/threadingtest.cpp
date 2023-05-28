@@ -1,3 +1,7 @@
+/*
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
+    SPDX-License-Identifier: LGPL-2.1-or-later
+*/
 #include <KRunner/AbstractRunnerTest>
 #include <KRunner/RunnerManager>
 #include <qtest.h>
