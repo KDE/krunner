@@ -40,6 +40,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMet
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
+    setObjectName(pluginMetaData.pluginId());
 }
 
 AbstractRunner::~AbstractRunner() = default;
