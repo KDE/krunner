@@ -22,11 +22,6 @@ public:
     {
         // qWarning() << Q_FUNC_INFO;
     }
-    explicit FakeRunner(const KPluginMetaData &metadata = KPluginMetaData(QStringLiteral("metadata.desktop")))
-        : FakeRunner(nullptr, metadata)
-    {
-        setObjectName("FakeRunner");
-    }
 
     void match(RunnerContext &context) override
     {

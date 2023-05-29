@@ -17,14 +17,11 @@
 
 using namespace KRunner;
 
-namespace
-{
 inline QueryMatch createMatch(const QString &id, AbstractRunner *r = nullptr)
 {
     QueryMatch m(r);
     m.setId(id);
     return m;
-}
 }
 
 class RunnerContextMatchMethodsTest : public QObject
@@ -32,22 +29,21 @@ class RunnerContextMatchMethodsTest : public QObject
     Q_OBJECT
 public:
     RunnerContextMatchMethodsTest();
-    ~RunnerContextMatchMethodsTest() override;
 
     std::unique_ptr<RunnerContext> ctx;
-    FakeRunner *runner1;
-    FakeRunner *runner2;
+    FakeRunner *runner1 = nullptr;
+    FakeRunner *runner2 = nullptr;
 private Q_SLOTS:
-    void init();
+    void init()
+    {
+        ctx.reset(new RunnerContext());
+    }
     void testAdd();
     void testAddMulti();
     void testDuplicateIds();
 };
 
 RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
-    : QObject()
-    , runner1(new FakeRunner())
-    , runner2(new FakeRunner())
 {
     QStandardPaths::setTestModeEnabled(true);
     const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
@@ -57,19 +53,8 @@ RunnerContextMatchMethodsTest::RunnerContextMatchMethodsTest()
     KPluginMetaData data2 = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/metadatafile2.desktop"));
     QVERIFY(data1.isValid());
     QVERIFY(data2.isValid());
-    runner1 = new FakeRunner(data1);
-    runner2 = new FakeRunner(data2);
-}
-
-RunnerContextMatchMethodsTest::~RunnerContextMatchMethodsTest()
-{
-    delete runner1;
-    delete runner2;
-}
-
-void RunnerContextMatchMethodsTest::init()
-{
-    ctx.reset(new RunnerContext());
+    runner1 = new FakeRunner(this, data1);
+    runner2 = new FakeRunner(this, data2);
 }
 
 void RunnerContextMatchMethodsTest::testAdd()
