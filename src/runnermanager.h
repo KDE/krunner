@@ -21,7 +21,7 @@
 
 class QAction;
 class KConfigGroup;
-namespace
+namespace KRunner
 {
 class AbstractRunnerTest;
 }

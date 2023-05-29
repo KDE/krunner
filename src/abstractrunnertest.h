@@ -20,7 +20,7 @@
 #include <QTimer>
 #endif
 
-namespace
+namespace KRunner
 {
 /**
  * This class provides a basic structure for a runner test.
