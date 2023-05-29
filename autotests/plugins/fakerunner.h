@@ -16,7 +16,6 @@ public:
     explicit FakeRunner(QObject *parent, const KPluginMetaData &metadata)
         : AbstractRunner(parent, metadata)
     {
-        setObjectName("FakeRunner");
     }
     ~FakeRunner()
     {

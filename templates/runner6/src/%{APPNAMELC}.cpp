@@ -11,7 +11,6 @@
 %{APPNAME}::%{APPNAME}(QObject *parent, const KPluginMetaData &data)
     : KRunner::AbstractRunner(parent, data)
 {
-    setObjectName(QStringLiteral("%{APPNAME}"));
     // Disallow short queries
     setMinLetterCount(3);
     // Provide usage help for this plugin

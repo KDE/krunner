@@ -40,7 +40,7 @@ AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMet
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
-    setObjectName(pluginMetaData.pluginId());
+    setObjectName(pluginMetaData.pluginId()); // Only for debugging purposes
 }
 
 AbstractRunner::~AbstractRunner() = default;
@@ -101,11 +101,7 @@ void AbstractRunner::run(const KRunner::RunnerContext & /*search*/, const KRunne
 
 QString AbstractRunner::name() const
 {
-    if (d->runnerDescription.isValid()) {
-        return d->runnerDescription.name();
-    }
-
-    return objectName();
+    return d->runnerDescription.name();
 }
 
 QIcon AbstractRunner::icon() const

@@ -27,7 +27,6 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     : KRunner::AbstractRunner(parent, pluginMetaData)
     , parentForActions(parent)
 {
-    setObjectName(pluginMetaData.pluginId());
     Q_ASSERT(parent);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
