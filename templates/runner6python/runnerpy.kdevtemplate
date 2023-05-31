@@ -1,5 +1,15 @@
 [General]
 Name=Python KRunner Plugin (Qt6)
+Name[bg]=Приставка на Python KRunner (Qt6)
+Name[ca]=Connector Python del KRunner (Qt6)
+Name[de]=KRunner-Modul für Python (Qt6)
+Name[eo]=Python KRunner-kromprogramo (Qt6)
+Name[ia]=Plugin de KRunner de Python (Qt6)
+Name[nl]=Python KRunner-plug-in (Qt6)
+Name[sl]=Vtičnik za Python KRunner (Qt6)
+Name[tr]=Python K Çalıştır Eklentisi (Qt6)
+Name[uk]=Додаток до KRunner мовою Python (Qt6)
+Name[x-test]=xxPython KRunner Plugin (Qt6)xx
 Comment=Template for a KRunner Python Plugin using D-Bus
 Comment[ar]=قالب لملحق بايثون لمشغلك باستخدام D-Bus
 Comment[az]=D-Bus ilə istifadə olunan KRunner Python Qoşması üçün nümunə

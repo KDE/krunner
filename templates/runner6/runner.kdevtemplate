@@ -1,6 +1,16 @@
 # KDE Config File
 [General]
 Name=C++ (Qt6)
+Name[bg]=C++ (Qt6)
+Name[ca]=C++ (Qt6)
+Name[de]=C++ (Qt6)
+Name[eo]=C++ (Qt6)
+Name[ia]=C++ (Qt6)
+Name[nl]=C++ (Qt6)
+Name[sl]=C++ (Qt6)
+Name[tr]=C++ (Qt6)
+Name[uk]=C++ (Qt6)
+Name[x-test]=xxC++ (Qt6)xx
 Comment=Plasma Runner Template. A plasma runner template
 Comment[ar]=قالب «مشغّل بلازما». قالب لِ‍«مشغّل بلازما»
 Comment[az]=Plasma başlatma sətri üçün uzantıların şablonu
