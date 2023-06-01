@@ -18,6 +18,7 @@
 #include <KShell>
 
 #include "abstractrunner.h"
+#include "abstractrunner_p.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
 
@@ -54,10 +55,10 @@ public:
 
     void addMatch(const QueryMatch &match)
     {
-        if (match.runner() && match.runner()->hasUniqueResults()) {
+        if (match.runner() && match.runner()->d->hasUniqueResults) {
             if (uniqueIds.contains(match.id())) {
                 const QueryMatch &existentMatch = uniqueIds.value(match.id());
-                if (existentMatch.runner() && existentMatch.runner()->hasWeakResults()) {
+                if (existentMatch.runner() && existentMatch.runner()->d->hasWeakResults) {
                     // There is an existing match with the same ID and we are allowed to replace it
                     matches.removeOne(existentMatch);
                     matches.append(match);

@@ -315,8 +315,6 @@ protected:
 
 private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
-    KRUNNER_NO_EXPORT bool hasUniqueResults();
-    KRUNNER_NO_EXPORT bool hasWeakResults();
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
     KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &query);
     friend class RunnerManager;

@@ -6,6 +6,7 @@
 */
 
 #include "abstractrunner.h"
+#include "abstractrunner_p.h"
 
 #include <QAction>
 #include <QHash>
@@ -21,21 +22,6 @@
 
 namespace KRunner
 {
-class AbstractRunnerPrivate
-{
-public:
-    explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData);
-    const KPluginMetaData runnerDescription;
-    AbstractRunner *runner;
-    QList<RunnerSyntax> syntaxes;
-    bool suspendMatching = false;
-    int minLetterCount = 0;
-    QRegularExpression matchRegex;
-    bool hasMatchRegex = false;
-    bool hasUniqueResults = false;
-    bool hasWeakResults = false;
-};
-
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
@@ -58,16 +44,6 @@ void AbstractRunner::reloadConfiguration()
 void AbstractRunner::addSyntax(const RunnerSyntax &syntax)
 {
     d->syntaxes.append(syntax);
-}
-
-bool AbstractRunner::hasUniqueResults()
-{
-    return d->hasUniqueResults;
-}
-
-bool AbstractRunner::hasWeakResults()
-{
-    return d->hasWeakResults;
 }
 
 void AbstractRunner::setSyntaxes(const QList<RunnerSyntax> &syntaxes)
@@ -187,22 +163,6 @@ void AbstractRunner::setTriggerWords(const QStringList &triggerWords)
 bool AbstractRunner::hasMatchRegex() const
 {
     return d->hasMatchRegex;
-}
-
-AbstractRunnerPrivate::AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData)
-    : runnerDescription(pluginMetaData)
-    , runner(r)
-{
-    minLetterCount = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0);
-    if (runnerDescription.isValid()) {
-        const auto rawData = runnerDescription.rawData();
-        if (rawData.contains(QStringLiteral("X-Plasma-Runner-Match-Regex"))) {
-            matchRegex = QRegularExpression(rawData.value(QStringLiteral("X-Plasma-Runner-Match-Regex")).toString());
-            hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
-        }
-        hasUniqueResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
-        hasWeakResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false);
-    }
 }
 
 void AbstractRunner::matchInternal(KRunner::RunnerContext context)

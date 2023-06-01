@@ -16,6 +16,7 @@
 #include "krunner_debug.h"
 
 #include "abstractrunner.h"
+#include "abstractrunner_p.h"
 
 namespace KRunner
 {
@@ -170,7 +171,7 @@ void QueryMatch::setData(const QVariant &data)
 void QueryMatch::setId(const QString &id)
 {
     QWriteLocker locker(d->lock);
-    if (d->runner && d->runner->hasUniqueResults()) {
+    if (d->runner && d->runner->d->hasUniqueResults) {
         d->id = id;
     } else {
         if (d->runner) {
