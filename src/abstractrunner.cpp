@@ -1,6 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2006-2007 Aaron Seigo <aseigo@kde.org>
-    SPDX-FileCopyrightText: 2020-2023 Alexander Lohnau<alexander.lohnau@gmx.de>
+    SPDX-FileCopyrightText: 2020-2023 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */

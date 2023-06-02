@@ -36,5 +36,6 @@ public:
     bool hasMatchRegex = false;
     bool hasUniqueResults = false;
     bool hasWeakResults = false;
+    QList<QAction *> internalActionsList;
 };
 }

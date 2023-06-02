@@ -9,6 +9,7 @@
 
 #include "runnermanager.h"
 
+#include <QAction>
 #include <QCoreApplication>
 #include <QDir>
 #include <QElapsedTimer>
@@ -28,6 +29,7 @@
 #include <KActivities/Consumer>
 #endif
 
+#include "abstractrunner_p.h"
 #include "dbusrunner_p.h"
 #include "kpluginmetadata_utils_p.h"
 #include "krunner_debug.h"
@@ -273,6 +275,10 @@ public:
             // By now, runners who do "qobject_cast<Krunner::RunnerManager*>(parent)" should have saved the value
             // By setting the parrent to a nullptr, we are allowed to move the object to another thread
             runner->setParent(nullptr);
+            runner->d->internalActionsList = runner->findChildren<QAction *>(Qt::FindDirectChildrenOnly);
+            for (auto action : std::as_const(runner->d->internalActionsList)) {
+                action->setParent(nullptr);
+            }
             runner->moveToThread(thread);
 
             // The runner might outlive the manager due to us waiting for the thread to exit
@@ -494,24 +500,16 @@ RunnerManager::RunnerManager(QObject *parent)
 
 RunnerManager::~RunnerManager()
 {
-    QHash<AbstractRunner *, int> runnerPendingQueries;
-    if (!qApp->closingDown() && (!d->currentConnections.isEmpty() || !d->oldConnections.isEmpty())) {
-        d->currentConnections.unite(d->oldConnections);
-        d->oldConnections.clear();
-        for (const auto &con : std::as_const(d->oldConnections)) {
-            auto oldRunner = runner(con.runnerId);
-            int queries = runnerPendingQueries.value(oldRunner) + 1;
-            runnerPendingQueries.insert(oldRunner, queries);
-        }
-    }
     for (const auto runner : d->runners) {
-        runner->setParent(nullptr); // The thread is not stopped!
-        if (!runnerPendingQueries.contains(runner)) {
-            runner->thread()->quit();
-            // Clean up the thread and runner objects
-            connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
-            connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+        runner->setParent(nullptr); // The thread is not stopped yet!
+        runner->thread()->quit();
+        // Clean up the thread and runner objects
+        for (auto action : std::as_const(runner->d->internalActionsList)) {
+            action->moveToThread(runner->thread());
+            action->setParent(runner);
         }
+        connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
+        connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
     }
 }
 
