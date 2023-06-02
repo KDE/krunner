@@ -500,6 +500,7 @@ RunnerManager::RunnerManager(QObject *parent)
 
 RunnerManager::~RunnerManager()
 {
+    d->context.reset();
     for (const auto runner : d->runners) {
         runner->setParent(nullptr); // The thread is not stopped yet!
         runner->thread()->quit();
