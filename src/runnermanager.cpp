@@ -155,6 +155,21 @@ public:
         }
     }
 
+    void deleteRunners(QList<AbstractRunner *> runners)
+    {
+        for (const auto runner : runners) {
+            runner->setParent(nullptr); // The thread is not stopped yet!
+            runner->thread()->quit();
+            // Clean up the thread and runner objects
+            for (auto action : std::as_const(runner->d->internalActionsList)) {
+                action->moveToThread(runner->thread());
+                action->setParent(runner);
+            }
+            QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
+            QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+        }
+    }
+
     void loadRunners(const QString &singleRunnerId = QString())
     {
         QList<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
@@ -162,7 +177,7 @@ public:
         const bool loadAll = stateData.readEntry("loadAll", false);
         const bool noWhiteList = whiteList.isEmpty();
 
-        QSet<AbstractRunner *> deadRunners;
+        QList<AbstractRunner *> deadRunners;
         QMutableListIterator<KPluginMetaData> it(offers);
         while (it.hasNext()) {
             const KPluginMetaData &description = it.next();
@@ -192,48 +207,18 @@ public:
                         runners.insert(runnerName, runner);
                     } else {
                         runners.remove(runnerName);
-                        deadRunners.insert(runner);
+                        deadRunners.append(runner);
                         qCDebug(KRUNNER) << "Categories not enabled. Removing runner: " << runnerName;
                     }
                 }
             } else if (loaded) {
                 // Remove runner
-                deadRunners.insert(runners.take(runnerName));
+                deadRunners.append(runners.take(runnerName));
                 qCDebug(KRUNNER) << "Plugin disabled. Removing runner: " << runnerName;
             }
         }
 
-        /*if (!deadRunners.isEmpty()) {
-            QSet<QSharedPointer<FindMatchesJob>> deadJobs;
-            auto it = searchJobs.begin();
-            while (it != searchJobs.end()) {
-                auto &job = (*it);
-                if (deadRunners.contains(job->runner())) {
-                    QObject::disconnect(job.data(), &FindMatchesJob::done, q, nullptr);
-                    it = searchJobs.erase(it);
-                    deadJobs.insert(job);
-                } else {
-                    it++;
-                }
-            }
-
-            it = oldSearchJobs.begin();
-            while (it != oldSearchJobs.end()) {
-                auto &job = (*it);
-                if (deadRunners.contains(job->runner())) {
-                    it = oldSearchJobs.erase(it);
-                    deadJobs.insert(job);
-                } else {
-                    it++;
-                }
-            }
-
-            if (deadJobs.isEmpty()) {
-                qDeleteAll(deadRunners);
-            } else {
-                new DelayedJobCleaner(deadJobs, deadRunners);
-            }
-        }*/
+        deleteRunners(deadRunners);
 
         // in case we deleted it up above, just to be sure we do not have a dangeling pointer
         currentSingleRunner = nullptr;
@@ -501,17 +486,7 @@ RunnerManager::RunnerManager(QObject *parent)
 RunnerManager::~RunnerManager()
 {
     d->context.reset();
-    for (const auto runner : d->runners) {
-        runner->setParent(nullptr); // The thread is not stopped yet!
-        runner->thread()->quit();
-        // Clean up the thread and runner objects
-        for (auto action : std::as_const(runner->d->internalActionsList)) {
-            action->moveToThread(runner->thread());
-            action->setParent(runner);
-        }
-        connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
-        connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
-    }
+    d->deleteRunners(d->runners.values());
 }
 
 void RunnerManager::reloadConfiguration()
