@@ -193,22 +193,10 @@ public:
             }
 
             if (selected) {
-                AbstractRunner *runner = nullptr;
                 if (!loaded) {
-                    runner = loadInstalledRunner(description);
-                } else {
-                    runner = runners.value(runnerName);
-                }
-
-                if (runner) {
-                    bool allCategoriesDisabled = true;
-                    if (enabledCategories.isEmpty() || !allCategoriesDisabled) {
+                    if (auto runner = loadInstalledRunner(description)) {
                         qCDebug(KRUNNER) << "Loaded:" << runnerName;
                         runners.insert(runnerName, runner);
-                    } else {
-                        runners.remove(runnerName);
-                        deadRunners.append(runner);
-                        qCDebug(KRUNNER) << "Categories not enabled. Removing runner: " << runnerName;
                     }
                 }
             } else if (loaded) {
@@ -219,10 +207,8 @@ public:
         }
 
         deleteRunners(deadRunners);
-
         // in case we deleted it up above, just to be sure we do not have a dangeling pointer
         currentSingleRunner = nullptr;
-
         qCDebug(KRUNNER) << "All runners loaded, total:" << runners.count();
     }
 
