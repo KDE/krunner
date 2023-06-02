@@ -88,6 +88,7 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
 
 RemoteActions TestRemoteRunner::Actions()
 {
+    std::cout << "Actions" << std::endl;
     RemoteAction action;
     action.id = QStringLiteral("action1");
     action.text = QStringLiteral("Action 1");

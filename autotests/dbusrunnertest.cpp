@@ -41,7 +41,7 @@ private Q_SLOTS:
     void testDBusRunnerSyntaxIntegration();
     void testIconData();
     void testLifecycleMethods();
-    void testRequestActionsOnceWildcards();
+    void testRequestActionsWildcards();
 };
 
 DBusRunnerTest::DBusRunnerTest()
@@ -90,7 +90,7 @@ void DBusRunnerTest::testMatch()
     // relevance can't be compared easily because RunnerContext meddles with it
 
     // verify actions
-    QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(result).count(), 1, 10000);
+    QCOMPARE(manager->actionsForMatch(result).count(), 1);
     auto action = manager->actionsForMatch(result).constFirst();
 
     QCOMPARE(action->text(), QStringLiteral("Action 1"));
@@ -129,19 +129,17 @@ void DBusRunnerTest::testMulti()
 
 void DBusRunnerTest::testRequestActionsOnce()
 {
-    startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
+    QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
     initProperties();
 
-    // Construct a fake match with necessary data
-    QueryMatch fakeMatch(runner);
-    fakeMatch.setId(QStringLiteral("dbusrunnertest_id1"));
-    fakeMatch.setData(QVariantList({QStringLiteral("net.krunnertests.dave"), QStringList({QStringLiteral("action1"), QStringLiteral("action2")})}));
-
-    // The actions should not be fetched before we have set up the match session
-    QCOMPARE(manager->actionsForMatch(fakeMatch).count(), 0);
     launchQuery(QStringLiteral("foo"));
-    // We need to retry this, because the DBus call to fetch the actions is async
-    QTRY_COMPARE_WITH_TIMEOUT(manager->actionsForMatch(fakeMatch).count(), 2, 2500);
+    QVERIFY(!manager->matches().constFirst().actions().isEmpty());
+    manager->matchSessionComplete();
+    launchQuery(QStringLiteral("fooo"));
+    const QString processOutput(process->readAllStandardOutput());
+    QCOMPARE(processOutput.count("Matching"), 2);
+    QCOMPARE(processOutput.count("Actions"), 1);
+    QVERIFY(!manager->matches().constFirst().actions().isEmpty());
 }
 
 void DBusRunnerTest::testFilterProperties_data()
@@ -167,7 +165,7 @@ void DBusRunnerTest::testFilterProperties()
     QVERIFY(process->readAllStandardOutput().isEmpty());
     // accepted query fits those constraints
     launchQuery(acceptedQuery);
-    QCOMPARE(process->readAllStandardOutput().trimmed(), QString(QStringLiteral("Matching:") + acceptedQuery).toLocal8Bit());
+    QCOMPARE(QString(process->readAllStandardOutput()).remove("Actions").trimmed(), QStringLiteral("Matching:") + acceptedQuery);
 }
 
 void DBusRunnerTest::testDBusRunnerSyntaxIntegration()
@@ -221,6 +219,7 @@ void DBusRunnerTest::testLifecycleMethods()
     const QStringList lifeCycleSteps = QString::fromLocal8Bit(process->readAllStandardOutput()).split(QLatin1Char('\n'), Qt::SkipEmptyParts);
     const QStringList expectedLifeCycleSteps = {
         QStringLiteral("Config"),
+        QStringLiteral("Actions"),
         QStringLiteral("Matching:fooo"),
         QStringLiteral("Teardown"),
     };
@@ -234,7 +233,7 @@ void DBusRunnerTest::testLifecycleMethods()
     QVERIFY(manager->matches().isEmpty());
 }
 
-void DBusRunnerTest::testRequestActionsOnceWildcards()
+void DBusRunnerTest::testRequestActionsWildcards()
 {
     initProperties();
     manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
@@ -242,21 +241,15 @@ void DBusRunnerTest::testRequestActionsOnceWildcards()
     QVERIFY(md.isValid());
     manager->loadRunner(md);
     QCOMPARE(manager->runners().count(), 1);
-    launchQuery("foo");
-    QVERIFY(manager->matches().isEmpty());
-    QueryMatch match(manager->runners().constFirst());
-    match.setId("test");
-    match.setData(QStringList{"net.krunnertests.multi.a1"});
-    QVERIFY(manager->actionsForMatch(match).isEmpty());
-    manager->matchSessionComplete();
 
-    // We have started the process later and the actions should now be fetched when the match session is started
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
-    QTest::qWait(500); // Wait a bit for the runner to pick up the new service
+    startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
+    launchQuery("foo");
+    const auto matches = manager->matches();
+    QCOMPARE(matches.count(), 2);
 
-    launchQuery("fooo");
-    QVERIFY(!manager->matches().isEmpty());
-    QVERIFY(!manager->actionsForMatch(match).isEmpty());
+    QCOMPARE(matches.at(0).actions().count(), 1);
+    QCOMPARE_NE(matches.at(0).actions(), matches.at(1).actions());
 }
 
 QTEST_MAIN(DBusRunnerTest)

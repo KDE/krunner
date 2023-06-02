@@ -242,14 +242,24 @@ void DBusRunner::match(KRunner::RunnerContext &context)
                 m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
                 m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
                 m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
-                const auto actionsIt = match.properties.find(QStringLiteral("actions"));
-                if (actionsIt == match.properties.cend()) {
-                    m.setData(QVariantList({service}));
-                } else {
-                    m.setData(QVariantList({service, actionsIt.value().toStringList()}));
-                }
+                m.setData(QVariantList({service}));
                 m.setId(match.id);
                 m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
+
+                const auto actionsIt = match.properties.find(QStringLiteral("actions"));
+                const QList<QAction *> actionList = m_actions.value(service);
+                if (actionsIt == match.properties.cend()) {
+                    m.setActions(actionList);
+                } else {
+                    QList<QAction *> requestedActions;
+                    const QStringList actionIds = actionsIt.value().toStringList();
+                    for (QAction *action : actionList) {
+                        if (actionIds.contains(action->data().toString())) {
+                            requestedActions << action;
+                        }
+                    }
+                    m.setActions(requestedActions);
+                }
 
                 const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
                 if (iconData.isValid()) {
@@ -278,24 +288,6 @@ void DBusRunner::match(KRunner::RunnerContext &context)
         if (context.isValid()) {
             w->waitForFinished();
         }
-    }
-}
-
-QList<QAction *> DBusRunner::actionsForMatch(const KRunner::QueryMatch &match)
-{
-    const QVariantList data = match.data().toList();
-    if (data.count() > 1) {
-        const QStringList actionIds = data.at(1).toStringList();
-        const QList<QAction *> actionList = m_actions.value(data.constFirst().toString());
-        QList<QAction *> requestedActions;
-        for (QAction *action : actionList) {
-            if (actionIds.contains(action->data().toString())) {
-                requestedActions << action;
-            }
-        }
-        return requestedActions;
-    } else {
-        return m_actions.value(data.constFirst().toString());
     }
 }
 

@@ -26,14 +26,11 @@ public:
     void match(KRunner::RunnerContext &context) override;
     void reloadConfiguration() override;
     void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &action) override;
-    QList<QAction *> actionsForMatch(const KRunner::QueryMatch &match) override;
-
-public Q_SLOTS:
-    void teardown();
-    // This method should only be called from the main thread!
-    void createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions);
 
 private:
+    void teardown();
+    void createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions);
+
     // Returns RemoteActions with service name as key
     QMap<QString, RemoteActions> requestActions();
     void requestConfig();
