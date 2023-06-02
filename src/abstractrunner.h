@@ -38,10 +38,12 @@ class AbstractRunnerPrivate;
  *
  * @short An abstract base class for Plasma Runner plugins.
  *
- * Be aware that runners have to be thread-safe. This is due to the fact that
- * each runner is executed in its own thread for each new term. Thus, a runner
- * may be executed more than once at the same time. See match() for details.
- *
+ * Be aware that runners will be moved to their own thread after being instantiated.
+ * This means that except for AbstractRunner::run and the constructor, all methods will be non-blocking
+ * for the UI.
+ * Consider doing heavy resource initialization in the init method instead of the constructor.
+ * Also, QActions should be created in the constructor so that they can be kept in the same thread
+ * as the UI.
  */
 class KRUNNER_EXPORT AbstractRunner : public QObject
 {
@@ -63,9 +65,7 @@ public:
      *
      * The match will be activated via run() if the user selects it.
      *
-     * Each runner is executed in its own thread. Whenever the user input changes this
-     * method is called again. Thus, it needs to be thread-safe. Also, all matches need
-     * to be reported once this method returns. Asynchronous runners therefore need
+     * All matches need to be reported once this method returns. Asynchronous runners therefore need
      * to make use of a local event loop to wait for all matches.
      *
      * It is recommended to use local status data in async runners. The simplest way is
@@ -84,16 +84,9 @@ public:
      *
      * Here MyAsyncWorker creates all the matches and calls RunnerContext::addMatch
      * in some internal slot. It emits the finished() signal once done which will
-     * quit the loop and make the match() method return. The local status is kept
-     * entirely in MyAsyncWorker which makes match() trivially thread-safe.
-     *
-     * If a particular match supports multiple actions, set up the corresponding
-     * actions in the actionsForMatch method. Do not call any of the action methods
-     * within this method!
+     * quit the loop and make the match() method return.
      *
      * Execution of the correct action should be handled in the run method.
-     * @caution This method needs to be thread-safe since KRunner will simply
-     * start a new thread for each new term.
      *
      * @warning Returning from this method means to end execution of the runner.
      *
@@ -137,7 +130,7 @@ public:
     QIcon icon() const;
 
     /**
-     * Signal runner to reload its configuration.
+     * Reloads the runner's configuration. This is called when it's KCM in the PluginSelector is applied.
      */
     virtual void reloadConfiguration();
 
@@ -172,7 +165,7 @@ public:
     void setMinLetterCount(int count);
 
     /**
-     * If this regex is set with a not empty pattern it must match the query in
+     * If this regex is set with a non empty pattern it must match the query in
      * order for the performMatch/match being called.
      * Just like the minLetterCount property this check is ignored when the runner is in the singleRunnerMode.
      * In case both the regex and the letter count is set the letter count is checked first.
@@ -223,12 +216,6 @@ Q_SIGNALS:
      * method.
      */
     void teardown();
-
-    /**
-     * Emitted when the runner enters or exits match suspension
-     * @see matchingSuspended
-     */
-    void matchingSuspended(bool suspended);
 
 protected:
     friend class RunnerManager;
@@ -299,17 +286,15 @@ protected:
     void setSyntaxes(const QList<RunnerSyntax> &syns);
 
     /**
-     * Reimplement this slot to run any initialization routines on first load.
-     * By default, it calls reloadConfiguration(); for scripted Runners this
-     * method also sets up the ScriptEngine.
+     * Reimplement this to run any initialization routines on first load.
+     * Because it is executed in the runner's thread, it will not block the UI and is thus preferred.
+     * By default, it calls reloadConfiguration();
      */
     virtual void init();
 
     /**
-     * Reimplement this slot if you want your runner
-     * to support serialization and drag and drop.
-     * By default, this sets the QMimeData urls
-     * to the ones specified in @ref QueryMatch::urls
+     * Reimplement this if you want your runner to support serialization and drag and drop.
+     * By default, this sets the QMimeData urls to the ones specified in @ref QueryMatch::urls
      */
     virtual QMimeData *mimeDataForMatch(const KRunner::QueryMatch &match);
 
@@ -317,6 +302,7 @@ private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
     KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &query);
+    KRUNNER_NO_EXPORT Q_SIGNAL void matchingSuspended(bool suspended);
     friend class RunnerManager;
     friend class RunnerContext;
     friend class RunnerContextPrivate;
