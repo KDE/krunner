@@ -48,6 +48,18 @@ private Q_SLOTS:
         QCOMPARE(manager->matches().size(), 3);
     }
 
+    void testDeletionOfRunningJob()
+    {
+        manager->launchQuery("foo");
+        manager->launchQuery("foobar");
+        QThread::msleep(1); // Wait for runner to be invoked and query started
+        manager.reset(nullptr);
+        QVERIFY(fakeRunner); // Runner should not be deleted or reset now
+
+        QSignalSpy deletedSpy(fakeRunner, &QObject::destroyed);
+        deletedSpy.wait(500); // Just test that our runner doesn't leak!
+    }
+
     void benchmarkQuerying()
     {
         QSKIP("Skipped by default");
