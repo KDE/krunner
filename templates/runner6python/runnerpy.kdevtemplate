@@ -1,10 +1,12 @@
 [General]
 Name=Python KRunner Plugin (Qt6)
+Name[ar]=ملحقة مشغّلك لبايثون (كيوت6)
 Name[bg]=Приставка на Python KRunner (Qt6)
 Name[ca]=Connector Python del KRunner (Qt6)
 Name[ca@valencia]=Connector en Python de KRunner (Qt6)
 Name[de]=KRunner-Modul für Python (Qt6)
 Name[eo]=Python KRunner-kromprogramo (Qt6)
+Name[fr]=Module externe « KRunner » pour Python (Qt6)
 Name[gl]=Complemento de Python para KRunner (Qt6)
 Name[ia]=Plugin de KRunner de Python (Qt6)
 Name[ka]=KRunner-ის Python-ის დამატება (Qt6)

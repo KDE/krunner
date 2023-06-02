@@ -1,11 +1,13 @@
 # KDE Config File
 [General]
 Name=C++ (Qt6)
+Name[ar]=سي ++ (Qt6)
 Name[bg]=C++ (Qt6)
 Name[ca]=C++ (Qt6)
 Name[ca@valencia]=C++ (Qt6)
 Name[de]=C++ (Qt6)
 Name[eo]=C++ (Qt6)
+Name[fr]=C++ (Qt6)
 Name[gl]=C++ (Qt6)
 Name[ia]=C++ (Qt6)
 Name[ka]=C++ (Qt6)
