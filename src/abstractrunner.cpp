@@ -56,11 +56,6 @@ QList<RunnerSyntax> AbstractRunner::syntaxes() const
     return d->syntaxes;
 }
 
-QList<QAction *> AbstractRunner::actionsForMatch(const KRunner::QueryMatch &match)
-{
-    return match.isValid() ? match.actions() : QList<QAction *>();
-}
-
 QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
 {
     if (match.urls().isEmpty()) {

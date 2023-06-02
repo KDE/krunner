@@ -242,17 +242,6 @@ protected:
     KConfigGroup config() const;
 
     /**
-     * A given match can have more than action that can be performed on it.
-     * For example, a song match returned by a music player runner can be queued,
-     * added to the playlist, or played.
-     *
-     * Call this method to add actions that can be performed by the runner.
-     * Actions must first be added to the runner's action registry.
-     * Note: execution of correct action is left up to the runner.
-     */
-    virtual QList<QAction *> actionsForMatch(const KRunner::QueryMatch &match);
-
-    /**
      * Adds a registered syntax that this runner understands. This is used to
      * display to the user what this runner can understand and how it can be
      * used.

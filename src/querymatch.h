@@ -248,7 +248,7 @@ public:
     /**
      * Set the actions for this match.
      * This method allows you to set the actions inside of the AbstractRunner::match method
-     * and the default implementation of AbstractRunner::actionsForMatch will return these.
+     * @see RunnerManager::actionsForMatch
      * @since 5.75
      */
     void setActions(const QList<QAction *> &actions);

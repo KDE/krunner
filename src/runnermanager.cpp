@@ -557,11 +557,7 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
 
 QList<QAction *> RunnerManager::actionsForMatch(const QueryMatch &match)
 {
-    if (AbstractRunner *runner = match.runner()) {
-        return runner->actionsForMatch(match);
-    }
-
-    return QList<QAction *>();
+    return match.isValid() ? match.actions() : QList<QAction *>();
 }
 
 QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
