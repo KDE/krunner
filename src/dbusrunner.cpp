@@ -181,7 +181,7 @@ void DBusRunner::requestConfig()
         QDBusReply<QVariantMap> reply = *watcher;
         if (!reply.isValid()) {
             suspendMatching(false);
-            qCDebug(KRUNNER) << "Error requesting config; calling" << service << " :" << reply.error().name() << reply.error().message();
+            qCWarning(KRUNNER) << "Error requesting config; calling" << service << " :" << reply.error().name() << reply.error().message();
             return;
         }
         const QVariantMap config = reply.value();
