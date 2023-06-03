@@ -15,14 +15,14 @@ class ThreadingTest : public AbstractRunnerTest
 
     AbstractRunner *fakeRunner = nullptr;
 private Q_SLOTS:
-    void initTestCase()
+    void init()
     {
         initProperties();
         startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
         fakeRunner = manager->loadRunner(KPluginMetaData::findPluginById("krunnertest", "fakerunnerplugin"));
         QCOMPARE(manager->runners().size(), 2);
     }
-    void cleanupTestCase()
+    void cleanup()
     {
         killRunningDBusProcesses();
     }
@@ -58,6 +58,16 @@ private Q_SLOTS:
 
         QSignalSpy deletedSpy(fakeRunner, &QObject::destroyed);
         deletedSpy.wait(500); // Just test that our runner doesn't leak!
+    }
+
+    void testTeardownWhileJobIsRunning()
+    {
+        manager->launchQuery("fooDelay500");
+        manager->matchSessionComplete();
+        QSignalSpy spy(fakeRunner, &AbstractRunner::teardown);
+        QSignalSpy dbusSpy(manager->runners().constFirst(), &AbstractRunner::teardown);
+        spy.wait(100);
+        QCOMPARE(dbusSpy.count(), 0); // Should not be called due to the match fimeout
     }
 
     void benchmarkQuerying()

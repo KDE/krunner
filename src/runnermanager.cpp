@@ -284,38 +284,33 @@ public:
         return runner;
     }
 
-    void checkTearDown()
+    void teardown()
     {
-        if (!prepped || !teardownRequested) {
+        if (!prepped) {
             return;
         }
 
-        if (currentConnections.isEmpty() && oldConnections.isEmpty()) {
-            if (allRunnersPrepped) {
-                for (AbstractRunner *runner : std::as_const(runners)) {
-                    Q_EMIT runner->teardown();
-                }
-
-                allRunnersPrepped = false;
+        if (allRunnersPrepped) {
+            for (AbstractRunner *runner : std::as_const(runners)) {
+                Q_EMIT runner->teardown();
             }
-
-            if (singleRunnerPrepped) {
-                if (currentSingleRunner) {
-                    Q_EMIT currentSingleRunner->teardown();
-                }
-
-                singleRunnerPrepped = false;
-            }
-
-            prepped = false;
-            teardownRequested = false;
+            allRunnersPrepped = false;
         }
+
+        if (singleRunnerPrepped) {
+            if (currentSingleRunner) {
+                Q_EMIT currentSingleRunner->teardown();
+            }
+            singleRunnerPrepped = false;
+        }
+
+        prepped = false;
     }
 
     void runnerMatchingSuspended(bool suspended)
     {
         auto *runner = qobject_cast<AbstractRunner *>(q->sender());
-        if (suspended || !prepped || teardownRequested || !runner) {
+        if (suspended || !prepped || !runner) {
             return;
         }
 
@@ -437,7 +432,6 @@ public:
     bool prepped = false;
     bool allRunnersPrepped = false;
     bool singleRunnerPrepped = false;
-    bool teardownRequested = false;
     bool singleMode = false;
     bool activityAware = false;
     bool historyEnabled = true;
@@ -590,8 +584,6 @@ QList<KPluginMetaData> RunnerManager::runnerMetaDataList()
 
 void RunnerManager::setupMatchSession()
 {
-    d->teardownRequested = false;
-
     if (d->prepped) {
         return;
     }
@@ -619,8 +611,7 @@ void RunnerManager::matchSessionComplete()
         return;
     }
 
-    d->teardownRequested = true;
-    d->checkTearDown();
+    d->teardown();
     // We save the context config after each session, just like the history entries
     // BUG: 424505
     d->context.save(d->stateData);
