@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2006-2007 Aaron Seigo <aseigo@kde.org>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -8,7 +9,6 @@
 
 #include <cmath>
 
-#include <QMimeDatabase>
 #include <QReadWriteLock>
 #include <QRegularExpression>
 #include <QSharedData>
@@ -21,10 +21,6 @@
 #include "abstractrunner_p.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
-
-#define LOCK_FOR_READ(d) d->lock.lockForRead();
-#define LOCK_FOR_WRITE(d) d->lock.lockForWrite();
-#define UNLOCK(d) d->lock.unlock();
 
 namespace KRunner
 {
@@ -99,9 +95,8 @@ RunnerContext::RunnerContext(QObject *parent)
 RunnerContext::RunnerContext(const RunnerContext &other, QObject *parent)
     : QObject(parent)
 {
-    LOCK_FOR_READ(other.d)
+    QReadLocker locker(&other.d->lock);
     d = other.d;
-    UNLOCK(other.d)
 }
 
 RunnerContext::~RunnerContext()
@@ -115,11 +110,9 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
     }
 
     QExplicitlySharedDataPointer<KRunner::RunnerContextPrivate> oldD = d;
-    LOCK_FOR_WRITE(d)
-    LOCK_FOR_READ(other.d)
+    QWriteLocker locker(&d->lock);
+    QReadLocker otherLocker(&other.d->lock);
     d = other.d;
-    UNLOCK(other.d)
-    UNLOCK(oldD)
     return *this;
 }
 
@@ -132,15 +125,16 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
  */
 void RunnerContext::reset()
 {
-    LOCK_FOR_WRITE(d);
-    // We will detach if we are a copy of someone. But we will reset
-    // if we are the 'main' context others copied from. Resetting
-    // one RunnerContext makes all the copies obsolete.
+    {
+        QWriteLocker locker(&d->lock);
+        // We will detach if we are a copy of someone. But we will reset
+        // if we are the 'main' context others copied from. Resetting
+        // one RunnerContext makes all the copies obsolete.
 
-    // We need to mark the q pointer of the detached RunnerContextPrivate
-    // as dirty on detach to avoid receiving results for old queries
-    d->invalidate();
-    UNLOCK(d);
+        // We need to mark the q pointer of the detached RunnerContextPrivate
+        // as dirty on detach to avoid receiving results for old queries
+        d->invalidate();
+    }
 
     d.detach();
 
@@ -185,9 +179,8 @@ QString RunnerContext::query() const
 bool RunnerContext::isValid() const
 {
     // if our qptr is dirty, we aren't useful anymore
-    LOCK_FOR_READ(d)
+    QReadLocker locker(&d->lock);
     const bool valid = (d->q != &(d->s_dummyContext));
-    UNLOCK(d)
     return valid;
 }
 
@@ -198,7 +191,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         return false;
     }
 
-    LOCK_FOR_WRITE(d)
+    QWriteLocker locker(&d->lock);
     for (QueryMatch match : matches) {
         // Give previously launched matches a slight boost in relevance
         // The boost smoothly saturates to 0.5;
@@ -207,7 +200,6 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         }
         d->addMatch(match);
     }
-    UNLOCK(d);
     // A copied searchContext may share the d pointer,
     // we always want to sent the signal of the object that created
     // the d pointer
@@ -223,9 +215,8 @@ bool RunnerContext::addMatch(const QueryMatch &match)
 
 QList<QueryMatch> RunnerContext::matches() const
 {
-    LOCK_FOR_READ(d)
+    QReadLocker locker(&d->lock);
     QList<QueryMatch> matches = d->matches;
-    UNLOCK(d);
     return matches;
 }
 
