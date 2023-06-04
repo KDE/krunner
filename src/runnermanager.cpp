@@ -158,15 +158,13 @@ public:
     void deleteRunners(QList<AbstractRunner *> runners)
     {
         for (const auto runner : runners) {
-            runner->setParent(nullptr); // The thread is not stopped yet!
             runner->thread()->quit();
-            // Clean up the thread and runner objects
-            for (auto action : std::as_const(runner->d->internalActionsList)) {
-                action->moveToThread(runner->thread());
-                action->setParent(runner);
-            }
             QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
             QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+            // Clean up the thread and runner objects
+            for (auto action : std::as_const(runner->d->internalActionsList)) {
+                QObject::connect(runner->thread(), &QThread::finished, action, &QObject::deleteLater);
+            }
         }
     }
 
