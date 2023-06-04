@@ -11,7 +11,6 @@
 #include <QAction>
 #include <QHash>
 #include <QMimeData>
-#include <QMutex>
 #include <QRegularExpression>
 
 #include <KConfigGroup>

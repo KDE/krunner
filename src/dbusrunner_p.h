@@ -12,7 +12,6 @@
 #include <QHash>
 #include <QImage>
 #include <QList>
-#include <QMutex>
 #include <QSet>
 
 class DBusRunner : public KRunner::AbstractRunner
@@ -35,7 +34,6 @@ private:
     QMap<QString, RemoteActions> requestActions();
     void requestConfig();
     static QImage decodeImage(const RemoteImage &remoteImage);
-    QMutex m_mutex; // needed round any variable also accessed from Match
     QString m_path;
     QSet<QString> m_matchingServices;
     QHash<QString, QList<QAction *>> m_actions;

@@ -15,8 +15,6 @@
 #include <QDBusMetaType>
 #include <QDBusPendingReply>
 #include <QIcon>
-#include <QMutexLocker>
-#include <qobjectdefs.h>
 
 #include "dbusutils_p.h"
 #include "krunner_debug.h"
@@ -68,7 +66,6 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
                         // changed owner, but service still exists. Don't need to adjust anything
                         return;
                     }
-                    QMutexLocker lock(&m_mutex);
                     if (!newOwner.isEmpty()) {
                         m_matchingServices.insert(serviceName);
                     }
