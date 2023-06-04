@@ -258,20 +258,18 @@ public:
                 if (oldConnections.remove(matchConnection)) {
                     return;
                 }
-                if (currentConnections.remove(matchConnection)) {
-                    if (currentConnections.isEmpty()) {
-                        // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
-                        if (matchChangeTimer.isActive()) {
-                            matchChangeTimer.stop();
-                            Q_EMIT q->matchesChanged(context.matches());
-                        } else if (context.matches().isEmpty()) {
-                            // we finished our runa, and there are no valid matches, and so no
-                            // signal will have been sent out. so we need to emit the signal
-                            // ourselves here
-                            Q_EMIT q->matchesChanged(context.matches());
-                        }
-                        Q_EMIT q->queryFinished();
+                if (currentConnections.remove(matchConnection) && currentConnections.isEmpty()) {
+                    // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+                    if (matchChangeTimer.isActive()) {
+                        matchChangeTimer.stop();
+                        Q_EMIT q->matchesChanged(context.matches());
+                    } else if (context.matches().isEmpty()) {
+                        // we finished our runa, and there are no valid matches, and so no
+                        // signal will have been sent out. so we need to emit the signal
+                        // ourselves here
+                        Q_EMIT q->matchesChanged(context.matches());
                     }
+                    Q_EMIT q->queryFinished();
                 }
             });
 
