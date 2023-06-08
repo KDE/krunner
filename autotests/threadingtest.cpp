@@ -56,8 +56,16 @@ private Q_SLOTS:
         manager.reset(nullptr);
         QVERIFY(fakeRunner); // Runner should not be deleted or reset now
 
-        QSignalSpy deletedSpy(fakeRunner, &QObject::destroyed);
-        deletedSpy.wait(500); // Just test that our runner doesn't leak!
+        QEventLoop loop;
+        connect(fakeRunner, &QObject::destroyed, this, [&loop]() {
+            loop.quit();
+        });
+
+        QTimer::singleShot(500, fakeRunner, [&loop]() {
+            QFAIL("Timeout reached");
+            loop.quit();
+        });
+        loop.exec();
     }
 
     void testTeardownWhileJobIsRunning()
