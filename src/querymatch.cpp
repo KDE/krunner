@@ -326,4 +326,11 @@ QList<QAction *> QueryMatch::actions() const
     return d->actions;
 }
 
+QDebug operator<<(QDebug debug, const KRunner::QueryMatch &match)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "QueryMatch(category: " << match.matchCategory() << " text:" << match.text() << ")";
+    return debug;
+}
+
 } // KRunner namespace

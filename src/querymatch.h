@@ -294,5 +294,7 @@ private:
     QSharedDataPointer<QueryMatchPrivate> d;
 };
 
+/// @since 6.0
+KRUNNER_EXPORT QDebug operator<<(QDebug debug, const KRunner::QueryMatch &match);
 }
 #endif
