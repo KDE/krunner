@@ -42,7 +42,7 @@ class AbstractRunnerPrivate;
  * This means that except for AbstractRunner::run and the constructor, all methods will be non-blocking
  * for the UI.
  * Consider doing heavy resource initialization in the init method instead of the constructor.
- * Also, QActions should be created in the constructor so that they can be kept in the same thread
+ * @note QActions should be created in the constructor so that they can be kept in the same thread
  * as the UI.
  */
 class KRUNNER_EXPORT AbstractRunner : public QObject
