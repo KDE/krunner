@@ -3,9 +3,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#include "abstractrunner.h"
-
-#include <QAction>
+#include <KRunner/AbstractRunner>
+#include <KRunner/Action>
 #include <QEventLoop>
 #include <QThread>
 #include <QTimer>
@@ -17,7 +16,7 @@ class FakeRunner : public AbstractRunner
 public:
     explicit FakeRunner(QObject *parent, const KPluginMetaData &metadata)
         : AbstractRunner(parent, metadata)
-        , m_action(new QAction(this))
+        , m_action("someid", "sometext", "dialog-ok")
     {
     }
     ~FakeRunner()
@@ -45,5 +44,5 @@ private:
         queryMatch.setActions({m_action});
         return queryMatch;
     }
-    QAction *m_action;
+    KRunner::Action m_action;
 };

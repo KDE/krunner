@@ -138,10 +138,6 @@ public:
             runner->thread()->quit();
             QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
             QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
-            // Clean up the thread and runner objects
-            for (auto action : std::as_const(runner->d->internalActionsList)) {
-                QObject::connect(runner->thread(), &QThread::finished, action, &QObject::deleteLater);
-            }
         }
     }
 
@@ -221,10 +217,6 @@ public:
             // By now, runners who do "qobject_cast<Krunner::RunnerManager*>(parent)" should have saved the value
             // By setting the parrent to a nullptr, we are allowed to move the object to another thread
             runner->setParent(nullptr);
-            runner->d->internalActionsList = runner->findChildren<QAction *>(Qt::FindDirectChildrenOnly);
-            for (auto action : std::as_const(runner->d->internalActionsList)) {
-                action->setParent(nullptr);
-            }
             runner->moveToThread(thread);
 
             // The runner might outlive the manager due to us waiting for the thread to exit
@@ -418,6 +410,7 @@ public:
 #if HAVE_KACTIVITIES
     const KActivities::Consumer activitiesConsumer;
 #endif
+    QHash<QString /*runnerId*/, QHash<QString /*actionId*/, QAction *>> mappedRunnerActions;
 };
 
 RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateConfigGroup, QObject *parent)
@@ -506,7 +499,7 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
 
     // Modify the match and run it
     QueryMatch m = match;
-    m.setSelectedAction(selectedAction);
+    m.setSelectedAction(selectedAction ? selectedAction->data().value<KRunner::Action>() : KRunner::Action());
     m.runner()->run(d->context, m);
     // To allow the RunnerContext to increase the relevance of often launched apps
     d->context.increaseLaunchCount(m);
@@ -524,7 +517,24 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
 
 QList<QAction *> RunnerManager::actionsForMatch(const QueryMatch &match)
 {
-    return match.isValid() ? match.actions() : QList<QAction *>();
+    QList<QAction *> actions;
+    if (!match.isValid()) {
+        return actions;
+    }
+    const auto matchActions = match.actions();
+    for (const auto &krunnerAction : matchActions) {
+        auto &runnerActions = d->mappedRunnerActions[match.runner()->id()];
+        QAction *action = runnerActions.value(krunnerAction.id(), nullptr);
+        if (!action) {
+            action = new QAction(this);
+            action->setText(krunnerAction.text());
+            action->setIcon(krunnerAction.icon().isNull() ? QIcon::fromTheme(krunnerAction.iconName()) : krunnerAction.icon());
+            action->setData(QVariant::fromValue(krunnerAction));
+            runnerActions.insert(krunnerAction.id(), action);
+        }
+        actions << action;
+    }
+    return actions;
 }
 
 QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const

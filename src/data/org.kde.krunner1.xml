@@ -43,7 +43,7 @@
          - IconName
     -->
     <method name="Actions">
-      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="RemoteActions" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="KRunner::Actions" />
       <arg name="matches" type="a(sss)" direction="out">
       </arg>
     </method>

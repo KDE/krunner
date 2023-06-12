@@ -22,8 +22,8 @@ TestRemoteRunner::TestRemoteRunner(const QString &serviceName, bool showLifecycl
     new Krunner1Adaptor(this);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
-    qDBusRegisterMetaType<RemoteAction>();
-    qDBusRegisterMetaType<RemoteActions>();
+    qDBusRegisterMetaType<KRunner::Action>();
+    qDBusRegisterMetaType<KRunner::Actions>();
     qDBusRegisterMetaType<RemoteImage>();
     const bool connected = QDBusConnection::sessionBus().registerService(serviceName);
     Q_ASSERT(connected);
@@ -86,20 +86,13 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
     return ms;
 }
 
-RemoteActions TestRemoteRunner::Actions()
+KRunner::Actions TestRemoteRunner::Actions()
 {
     std::cout << "Actions" << std::endl;
-    RemoteAction action;
-    action.id = QStringLiteral("action1");
-    action.text = QStringLiteral("Action 1");
-    action.iconName = QStringLiteral("document-browser");
+    KRunner::Action action("action1", "Action 1", "document-browser");
 
-    RemoteAction action2;
-    action2.id = QStringLiteral("action2");
-    action2.text = QStringLiteral("Action 2");
-    action2.iconName = QStringLiteral("document-browser");
-
-    return RemoteActions({action, action2});
+    KRunner::Action action2("action2", "Action 2", "document-browser");
+    return QList<KRunner::Action>{action, action2};
 }
 
 void TestRemoteRunner::Run(const QString &id, const QString &actionId)

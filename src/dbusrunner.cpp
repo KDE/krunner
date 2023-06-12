@@ -8,7 +8,6 @@
 
 #include "dbusrunner_p.h"
 
-#include <QAction>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDBusMessage>
@@ -28,8 +27,8 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     Q_ASSERT(parent);
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
-    qDBusRegisterMetaType<RemoteAction>();
-    qDBusRegisterMetaType<RemoteActions>();
+    qDBusRegisterMetaType<KRunner::Action>();
+    qDBusRegisterMetaType<KRunner::Actions>();
     qDBusRegisterMetaType<RemoteImage>();
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
@@ -92,13 +91,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
     }
 }
 
-DBusRunner::~DBusRunner()
-{
-    for (const auto &actionList : std::as_const(m_actions)) {
-        qDeleteAll(actionList);
-    }
-    m_actions.clear();
-}
+DBusRunner::~DBusRunner() = default;
 
 void DBusRunner::reloadConfiguration()
 {
@@ -106,24 +99,6 @@ void DBusRunner::reloadConfiguration()
     if (m_callLifecycleMethods) {
         suspendMatching(true);
         requestConfig();
-    }
-}
-
-void DBusRunner::createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions)
-{
-    for (auto it = remoteActions.begin(), end = remoteActions.end(); it != end; it++) {
-        const QString service = it.key();
-        const RemoteActions actions = it.value();
-        auto &serviceActions = m_actions[service];
-        qDeleteAll(serviceActions);
-        serviceActions.clear();
-        for (const RemoteAction &action : actions) {
-            // Don't set a parent, because otherwise we can not move it to a different thread
-            auto a = new QAction(QIcon::fromTheme(action.iconName), action.text);
-            a->setData(action.id);
-            a->moveToThread(parentForActions->thread());
-            serviceActions.append(a);
-        }
     }
 }
 
@@ -139,11 +114,10 @@ void DBusRunner::teardown()
     m_matchWasCalled = false;
 }
 
-QMap<QString, RemoteActions> DBusRunner::requestActions()
+void DBusRunner::requestActions()
 {
     // in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
     // then match together in matchForAction()
-    QMap<QString, RemoteActions> returnedActions;
     for (const QString &service : std::as_const(m_matchingServices)) {
         // if we only want to request the actions once and have done so we want to skip the service
         // but in case it got newly loaded we need to request the actions, BUG: 435350
@@ -156,14 +130,13 @@ QMap<QString, RemoteActions> DBusRunner::requestActions()
         }
 
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
-        QDBusPendingReply<RemoteActions> reply = QDBusConnection::sessionBus().call(getActionsMethod);
+        QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().call(getActionsMethod);
         if (!reply.isValid()) {
             qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
         } else {
-            returnedActions.insert(service, reply.value());
+            m_actions[service] = reply.value();
         }
     }
-    return returnedActions;
 }
 
 void DBusRunner::requestConfig()
@@ -191,8 +164,7 @@ void DBusRunner::requestConfig()
             } else if (it.key() == QLatin1String("TriggerWords")) {
                 setTriggerWords(it.value().toStringList());
             } else if (it.key() == QLatin1String("Actions")) {
-                const auto remoteActions = it.value().value<RemoteActions>();
-                createQActionsFromRemoteActions(QMap<QString, RemoteActions>{{service, remoteActions}});
+                m_actions[service] = it.value().value<QList<KRunner::Action>>();
                 m_actionsOnceRequested = true;
                 m_actionsForSessionRequested = true;
             }
@@ -210,7 +182,7 @@ void DBusRunner::match(KRunner::RunnerContext &context)
         || (!m_actionsForSessionRequested)) { // We want to fetch the actions for each match session
         m_actionsOnceRequested = true;
         m_actionsForSessionRequested = true;
-        createQActionsFromRemoteActions(requestActions());
+        requestActions();
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
     std::vector<std::unique_ptr<QDBusPendingCallWatcher>> watchers;
@@ -244,14 +216,14 @@ void DBusRunner::match(KRunner::RunnerContext &context)
                 m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
 
                 const auto actionsIt = match.properties.find(QStringLiteral("actions"));
-                const QList<QAction *> actionList = m_actions.value(service);
+                const KRunner::Actions actionList = m_actions.value(service);
                 if (actionsIt == match.properties.cend()) {
                     m.setActions(actionList);
                 } else {
-                    QList<QAction *> requestedActions;
+                    KRunner::Actions requestedActions;
                     const QStringList actionIds = actionsIt.value().toStringList();
-                    for (QAction *action : actionList) {
-                        if (actionIds.contains(action->data().toString())) {
+                    for (const auto &action : actionList) {
+                        if (actionIds.contains(action.id())) {
                             requestedActions << action;
                         }
                     }
@@ -300,7 +272,7 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
     const QString service = match.data().toList().constFirst().toString();
 
     if (match.selectedAction()) {
-        actionId = match.selectedAction()->data().toString();
+        actionId = match.selectedAction().id();
     }
 
     auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));

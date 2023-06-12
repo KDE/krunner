@@ -28,15 +28,14 @@ public:
 
 private:
     void teardown();
-    void createQActionsFromRemoteActions(const QMap<QString, RemoteActions> &remoteActions);
 
     // Returns RemoteActions with service name as key
-    QMap<QString, RemoteActions> requestActions();
+    void requestActions();
     void requestConfig();
     static QImage decodeImage(const RemoteImage &remoteImage);
     QString m_path;
     QSet<QString> m_matchingServices;
-    QHash<QString, QList<QAction *>> m_actions;
+    QHash<QString, QList<KRunner::Action>> m_actions;
     bool m_hasUniqueResults = false;
     bool m_requestActionsOnce = false;
     bool m_actionsOnceRequested = false;

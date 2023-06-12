@@ -8,7 +8,6 @@
 #include "plugins/fakerunner.h"
 #include "runnermanager.h"
 
-#include <QAction>
 #include <QObject>
 #include <QStandardPaths>
 #include <QTest>

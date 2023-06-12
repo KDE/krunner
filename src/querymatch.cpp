@@ -5,8 +5,8 @@
 */
 
 #include "querymatch.h"
+#include "action.h"
 
-#include <QAction>
 #include <QIcon>
 #include <QPointer>
 #include <QReadWriteLock>
@@ -69,10 +69,10 @@ public:
     QString iconName;
     QVariant data;
     qreal relevance = .7;
-    QAction *selAction = nullptr;
+    KRunner::Action selAction;
+    KRunner::Actions actions;
     bool enabled = true;
     bool idSetByData = false;
-    QList<QAction *> actions;
     bool multiLine = false;
 };
 
@@ -248,12 +248,12 @@ bool QueryMatch::isEnabled() const
     return d->enabled && d->runner;
 }
 
-QAction *QueryMatch::selectedAction() const
+KRunner::Action QueryMatch::selectedAction() const
 {
     return d->selAction;
 }
 
-void QueryMatch::setSelectedAction(QAction *action)
+void QueryMatch::setSelectedAction(const KRunner::Action &action)
 {
     d->selAction = action;
 }
@@ -308,19 +308,19 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
     return (d != other.d);
 }
 
-void QueryMatch::setActions(const QList<QAction *> &actions)
+void QueryMatch::setActions(const KRunner::Actions &actions)
 {
     QWriteLocker locker(d->lock);
     d->actions = actions;
 }
 
-void QueryMatch::addAction(QAction *action)
+void QueryMatch::addAction(const KRunner::Action &action)
 {
     QWriteLocker locker(d->lock);
     d->actions << action;
 }
 
-QList<QAction *> QueryMatch::actions() const
+KRunner::Actions QueryMatch::actions() const
 {
     QReadLocker locker(d->lock);
     return d->actions;

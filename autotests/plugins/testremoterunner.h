@@ -17,7 +17,7 @@ public:
     explicit TestRemoteRunner(const QString &serviceName, bool showLifecycleMethodCalls);
 
 public Q_SLOTS:
-    RemoteActions Actions();
+    KRunner::Actions Actions();
     RemoteMatches Match(const QString &searchTerm);
     void Run(const QString &id, const QString &actionId);
     void Teardown();

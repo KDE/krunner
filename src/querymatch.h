@@ -13,13 +13,14 @@
 
 #include "krunner_export.h"
 
-class QAction;
 class QIcon;
 class QString;
 class QVariant;
 
 namespace KRunner
 {
+class Action;
+using Actions = QList<Action>;
 class RunnerContext;
 class AbstractRunner;
 class QueryMatchPrivate;
@@ -251,27 +252,27 @@ public:
      * @see RunnerManager::actionsForMatch
      * @since 5.75
      */
-    void setActions(const QList<QAction *> &actions);
+    void setActions(const KRunner::Actions &actions);
 
     /**
      * Adds an action to this match
      * @since 5.75
      * @see setActions
      */
-    void addAction(QAction *actions);
+    void addAction(const KRunner::Action &action);
 
     /**
      * List of actions set for this match
      * @return actions
      * @since 5.75
      */
-    QList<QAction *> actions() const;
+    QList<KRunner::Action> actions() const;
 
     /**
      * The action that the user has selected when running the match.
      * This returns a nullptr if no action was selected.
      */
-    QAction *selectedAction() const;
+    KRunner::Action selectedAction() const;
 
     /**
      * Set if the text should be displayed as a multiLine string
@@ -289,7 +290,7 @@ public:
     bool isMultiLine() const;
 
 private:
-    KRUNNER_NO_EXPORT void setSelectedAction(QAction *action);
+    KRUNNER_NO_EXPORT void setSelectedAction(const KRunner::Action &action);
     friend class RunnerManager;
     QSharedDataPointer<QueryMatchPrivate> d;
 };

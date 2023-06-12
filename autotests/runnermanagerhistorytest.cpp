@@ -8,7 +8,6 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include <QAction>
 #include <QObject>
 #include <QProcess>
 #include <QSignalSpy>

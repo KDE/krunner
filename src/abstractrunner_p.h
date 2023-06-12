@@ -27,6 +27,7 @@ public:
         }
     }
 
+    QObject *initialParent;
     const KPluginMetaData runnerDescription;
     AbstractRunner *runner;
     QList<RunnerSyntax> syntaxes;
@@ -36,6 +37,5 @@ public:
     bool hasMatchRegex = false;
     bool hasUniqueResults = false;
     bool hasWeakResults = false;
-    QList<QAction *> internalActionsList;
 };
 }

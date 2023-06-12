@@ -246,6 +246,7 @@ private:
 
     friend class RunnerManagerPrivate;
     friend AbstractRunnerTest;
+    friend AbstractRunner;
 };
 
 }

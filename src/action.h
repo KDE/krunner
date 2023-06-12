@@ -12,7 +12,7 @@
 namespace KRunner
 {
 class ActionPrivate;
-class KRUNNER_EXPORT Action
+class KRUNNER_EXPORT Action final
 {
 public:
     /**
@@ -27,7 +27,7 @@ public:
     /// Empty constructor
     Action();
 
-    virtual ~Action();
+    ~Action();
 
     /**
      *

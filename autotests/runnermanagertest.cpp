@@ -6,7 +6,6 @@
 #include "runnermanager.h"
 
 #include <KSharedConfig>
-#include <QAction>
 #include <QCoreApplication>
 #include <QObject>
 #include <QProcess>

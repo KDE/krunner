@@ -8,8 +8,8 @@
 #include "abstractrunner.h"
 #include "abstractrunner_p.h"
 
-#include <QAction>
 #include <QHash>
+#include <QIcon>
 #include <QMimeData>
 #include <QRegularExpression>
 
@@ -25,7 +25,9 @@ AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMet
     : QObject(parent)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
+    Q_ASSERT(parent);
     setObjectName(pluginMetaData.pluginId()); // Only for debugging purposes
+    d->initialParent = parent;
 }
 
 AbstractRunner::~AbstractRunner() = default;

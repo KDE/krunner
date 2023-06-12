@@ -7,7 +7,6 @@
 
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include <QAction>
 #include <QCoreApplication>
 #include <QObject>
 #include <QProcess>

@@ -27,6 +27,8 @@ target_sources(KF6Runner PRIVATE
     runnermanager.h
     runnersyntax.cpp
     runnersyntax.h
+    action.h
+    action.cpp
 
     model/runnerresultsmodel.cpp
     model/runnerresultsmodel_p.h
@@ -76,6 +78,7 @@ endif()
 ecm_generate_headers(KRunner_CamelCase_HEADERS
   HEADER_NAMES
     AbstractRunner
+    Action
     RunnerContext
     RunnerManager
     RunnerSyntax
