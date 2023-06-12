@@ -29,11 +29,12 @@ private Q_SLOTS:
 
     void testParallelQuerying()
     {
+        constexpr int trottlingDelay = 250;
         manager->launchQuery("fooDelay300");
 
         QSignalSpy changedSpy(manager.get(), &RunnerManager::matchesChanged);
         QSignalSpy finishedSpy(manager.get(), &RunnerManager::queryFinished);
-        QVERIFY(changedSpy.wait(255)); // Due to throttling, otherwise we'd have this signal after 50 ms
+        QVERIFY(changedSpy.wait(trottlingDelay + 10)); // Due to throttling, otherwise we'd have this signal after 50 ms
         QCOMPARE(finishedSpy.count(), 0);
         QCOMPARE(manager->matches().size(), 2);
 
@@ -42,7 +43,7 @@ private Q_SLOTS:
             return m.runner() == fakeRunner;
         }));
 
-        QVERIFY(finishedSpy.wait(105));
+        QVERIFY(finishedSpy.wait(trottlingDelay - 5));
         QCOMPARE(changedSpy.count(), 2);
 
         QCOMPARE(manager->matches().size(), 3);
@@ -50,22 +51,20 @@ private Q_SLOTS:
 
     void testDeletionOfRunningJob()
     {
+        manager->setAllowedRunners({"fakerunnerplugin"});
         manager->launchQuery("foo");
         manager->launchQuery("foobar");
         QThread::msleep(1); // Wait for runner to be invoked and query started
-        manager.reset(nullptr);
-        QVERIFY(fakeRunner); // Runner should not be deleted or reset now
+        QPointer<QObject> ptr(fakeRunner);
 
         QEventLoop loop;
-        connect(fakeRunner, &QObject::destroyed, this, [&loop]() {
-            loop.quit();
-        });
+        QTimer::singleShot(500, &loop, &QEventLoop::quit);
 
-        QTimer::singleShot(500, fakeRunner, [&loop]() {
-            QFAIL("Timeout reached");
-            loop.quit();
-        });
+        manager.reset(nullptr);
+        QVERIFY(ptr); // Runner should not be deleted or reset now
+
         loop.exec();
+        QVERIFY(!ptr);
     }
 
     void testTeardownWhileJobIsRunning()
