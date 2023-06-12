@@ -35,27 +35,6 @@
 #include "krunner_debug.h"
 #include "querymatch.h"
 
-struct MatchConnection {
-    QString runnerId;
-    QString query;
-};
-inline size_t qHash(const MatchConnection &con, size_t seed)
-{
-    return qHash(con.query, qHash(con.runnerId, seed));
-}
-inline bool operator==(const MatchConnection &lhs, const MatchConnection &rhs)
-{
-    return lhs.runnerId == rhs.runnerId && lhs.query == rhs.query;
-}
-
-QDebug operator<<(QDebug debug, const QSet<MatchConnection> &connections)
-{
-    for (const auto &connection : connections) {
-        debug << QStringList{connection.runnerId, connection.query};
-    }
-    return debug;
-}
-
 namespace KRunner
 {
 class RunnerManagerPrivate
@@ -251,12 +230,11 @@ public:
             runner->moveToThread(thread);
 
             // The runner might outlive the manager due to us waiting for the thread to exit
-            q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this, runner](const QString &query) {
-                const MatchConnection matchConnection{runner->metadata().pluginId(), query};
-                if (oldConnections.remove(matchConnection)) {
+            q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this](const QString &jobId) {
+                if (oldJobs.remove(jobId)) {
                     return;
                 }
-                if (currentConnections.remove(matchConnection) && currentConnections.isEmpty()) {
+                if (currentJobs.remove(jobId) && currentJobs.isEmpty()) {
                     // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
                     if (matchChangeTimer.isActive()) {
                         matchChangeTimer.stop();
@@ -320,8 +298,9 @@ public:
 
     void startJob(AbstractRunner *runner)
     {
-        QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context));
-        currentConnections.insert(MatchConnection{runner->id(), context.query()});
+        const QString jobId = QLatin1String("%1-%2-%3").arg(runner->id(), context.query(), QString::number(QDateTime::currentMSecsSinceEpoch()));
+        QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context), Q_ARG(QString, jobId));
+        currentJobs.insert(jobId);
     }
 
     // Must only be called once
@@ -421,8 +400,8 @@ public:
     QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner *> runners;
     AbstractRunner *currentSingleRunner = nullptr;
-    QSet<MatchConnection> currentConnections;
-    QSet<MatchConnection> oldConnections;
+    QSet<QString> currentJobs;
+    QSet<QString> oldJobs;
     QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped = false;
@@ -675,7 +654,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         d->startJob(r);
     }
     // In the unlikely case that no runner gets queried we have to emit the signals here
-    if (d->currentConnections.isEmpty()) {
+    if (d->currentJobs.isEmpty()) {
         QTimer::singleShot(0, this, [this]() {
             Q_EMIT matchesChanged({});
             Q_EMIT queryFinished();
@@ -715,11 +694,11 @@ QString RunnerManager::getHistorySuggestion(const QString &typedQuery) const
 
 void RunnerManager::reset()
 {
-    d->oldConnections.unite(d->currentConnections);
-    d->currentConnections.clear();
+    d->oldJobs.unite(d->currentJobs);
+    d->currentJobs.clear();
 
     d->context.reset();
-    if (!d->oldConnections.empty()) {
+    if (!d->oldJobs.empty()) {
         Q_EMIT queryFinished();
     }
 }

@@ -289,8 +289,8 @@ protected:
 
 private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
-    Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
-    KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &query);
+    KRUNNER_NO_EXPORT Q_INVOKABLE void matchInternal(KRunner::RunnerContext context, const QString &jobId);
+    KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &jobId);
     KRUNNER_NO_EXPORT Q_SIGNAL void matchingSuspended(bool suspended);
     friend class RunnerManager;
     friend class RunnerContext;

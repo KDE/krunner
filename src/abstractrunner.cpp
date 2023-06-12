@@ -159,12 +159,12 @@ bool AbstractRunner::hasMatchRegex() const
     return d->hasMatchRegex;
 }
 
-void AbstractRunner::matchInternal(KRunner::RunnerContext context)
+void AbstractRunner::matchInternal(KRunner::RunnerContext context, const QString &jobId)
 {
     if (context.isValid()) { // Otherwise, we would just waste resources
         match(context);
     }
-    Q_EMIT matchInternalFinished(context.query());
+    Q_EMIT matchInternalFinished(jobId);
 }
 
 } // KRunner namespace
