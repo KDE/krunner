@@ -9,9 +9,9 @@ requests matches and it does not need to be autostarted.
 
 If you want to run the plugin manually to debug it you can do the following:  
 ```bash
-mkdir -p ~/.local/share/kservices5/krunner/dbusplugins/
-cp plasma-runner-%{APPNAMELC}.desktop ~/.local/share/kservices5/krunner/dbusplugins/
-kquitapp5 krunner
+mkdir -p ~/.local/share/kservices6/krunner/dbusplugins/
+cp plasma-runner-%{APPNAMELC}.desktop ~/.local/share/kservices6/krunner/dbusplugins/
+kquitapp6 krunner
 python3 %{APPNAMELC}.py
 ```
 
