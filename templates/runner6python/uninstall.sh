@@ -3,13 +3,10 @@
 # Exit if something fails
 set -e
 
-if [[ -z "$XDG_DATA_HOME" ]]; then
-    prefix=~/.local/share
-else
-    prefix="$XDG_DATA_HOME"
-fi
+prefix="${XDG_DATA_HOME:-$HOME/.local/share}"
+krunner_dbusdir="$prefix/krunner/dbusplugins"
 
-rm $prefix/kservices6/krunner/dbusplugins/plasma-runner-%{APPNAMELC}.desktop
 rm $prefix/dbus-1/services/org.kde.%{APPNAMELC}.service
+rm $krunner_dbusdir/plasma-runner-%{APPNAMELC}.desktop
 kquitapp6 krunner
 
