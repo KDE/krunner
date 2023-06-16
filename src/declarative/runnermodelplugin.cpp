@@ -6,7 +6,7 @@
 
 #include "runnermodelplugin.h"
 
-#include <QtQml>
+#include <QQmlEngine>
 
 #include "krunner_debug.h"
 
