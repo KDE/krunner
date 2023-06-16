@@ -5,8 +5,6 @@
 
 # define so that deprecated API is not skipped
 PREDEFINED += \
-    "KSERVICE_BUILD_DEPRECATED_SINCE(x, y)=1" \
-    "PLASMA_ENABLE_DEPRECATED_SINCE(x, y)=1" \
     "KRUNNER_ENABLE_DEPRECATED_SINCE(x, y)=1" \
     "KRUNNER_BUILD_DEPRECATED_SINCE(x, y)=1" \
     "KRUNNER_DEPRECATED_VERSION(x, y, t)=" \
