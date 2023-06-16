@@ -1,7 +1,6 @@
 [Desktop Entry]
 Name=%{APPNAME}
 Comment=%{APPNAME} Runner written in Python
-X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
 Icon=planetkde
 X-KDE-PluginInfo-Author=%{AUTHOR}
