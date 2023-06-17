@@ -8,4 +8,4 @@ sudo make uninstall
 
 # KRunner needs to be restarted for the changes to be applied
 # we can just kill it and it will be started when the shortcut is invoked
-kquitapp5 krunner
+kquitapp6 krunner

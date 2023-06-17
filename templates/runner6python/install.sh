@@ -13,5 +13,5 @@ mkdir -p $services_dir
 cp %{APPNAMELC}.desktop $krunner_dbusdir
 sed "s|%{PROJECTDIR}/%{APPNAMELC}.py|${PWD}/%{APPNAMELC}.py|" "org.kde.%{APPNAMELC}.service" > $services_dir/org.kde.%{APPNAMELC}.service
 
-kquitapp5 krunner
+kquitapp6 krunner
 
