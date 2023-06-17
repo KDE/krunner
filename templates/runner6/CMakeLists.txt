@@ -11,6 +11,7 @@ find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui)
 find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Runner I18n)
 
 include(KDEInstallDirs)
+include(KDEClangFormat)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
