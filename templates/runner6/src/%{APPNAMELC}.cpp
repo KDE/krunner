@@ -18,15 +18,14 @@
     addSyntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
 }
 
-%{APPNAME}::~%{APPNAME}()
-{
-}
-
-
 void %{APPNAME}::match(KRunner::RunnerContext &context)
 {
     const QString term = context.query();
-    // TODO
+    if (term.compare(QLatin1String("hello"), Qt::CaseInsensitive) == 0) {
+        KRunner::QueryMatch match(this);
+        match.setText(i18n("Hello from %{APPNAME}"));
+        context.addMatch(match);
+    }
 }
 
 void %{APPNAME}::run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match)

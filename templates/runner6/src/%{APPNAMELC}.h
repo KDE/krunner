@@ -15,7 +15,6 @@ class %{APPNAME} : public KRunner::AbstractRunner
 
 public:
     %{APPNAME}(QObject *parent, const KPluginMetaData &data);
-    ~%{APPNAME}() override;
 
     // KRunner::AbstractRunner API
     void match(KRunner::RunnerContext &context) override;
