@@ -8,7 +8,7 @@
 #define KRUNNER_RUNNERCONTEXT_H
 
 #include <QList>
-#include <QObject>
+#include <QMetaType>
 #include <QSharedDataPointer>
 
 #include "krunner_export.h"
@@ -17,6 +17,7 @@ class KConfigGroup;
 
 namespace KRunner
 {
+class RunnerManager;
 class QueryMatch;
 class AbstractRunner;
 class RunnerContextPrivate;
@@ -27,24 +28,22 @@ class RunnerContextPrivate;
  * @short The RunnerContext class provides information related to a search,
  *        including the search term and collected matches.
  */
-class KRUNNER_EXPORT RunnerContext : public QObject
+class KRUNNER_EXPORT RunnerContext
 {
-    Q_OBJECT
-
 public:
-    explicit RunnerContext(QObject *parent = nullptr);
+    explicit RunnerContext(RunnerManager *manager = nullptr);
 
     /**
      * Copy constructor
      */
-    RunnerContext(const RunnerContext &other, QObject *parent = nullptr);
+    RunnerContext(const RunnerContext &other);
 
     /**
      * Assignment operator
      */
     RunnerContext &operator=(const RunnerContext &other);
 
-    ~RunnerContext() override;
+    virtual ~RunnerContext();
 
     /**
      * Sets the query term for this object and attempts to determine
@@ -115,9 +114,6 @@ public:
      * @since 5.90
      */
     void ignoreCurrentMatchForHistory() const;
-
-Q_SIGNALS:
-    void matchesChanged();
 
 private:
     KRUNNER_NO_EXPORT void increaseLaunchCount(const QueryMatch &match);

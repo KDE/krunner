@@ -238,8 +238,9 @@ Q_SIGNALS:
     void historyEnabledChanged();
 
 private:
-    KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
     // exported for dbusrunnertest
+    KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
+    KRUNNER_NO_EXPORT Q_INVOKABLE void onMatchesChanged();
 
     std::unique_ptr<RunnerManagerPrivate> d;
 

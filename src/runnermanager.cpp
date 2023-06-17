@@ -42,6 +42,7 @@ class RunnerManagerPrivate
 public:
     RunnerManagerPrivate(const KConfigGroup &configurationGroup, KConfigGroup stateConfigGroup, RunnerManager *parent)
         : q(parent)
+        , context(parent)
         , pluginConf(configurationGroup)
         , stateData(stateConfigGroup)
     {
@@ -51,9 +52,6 @@ public:
 
         QObject::connect(&matchChangeTimer, &QTimer::timeout, q, [this]() {
             matchesChanged();
-        });
-        QObject::connect(&context, &RunnerContext::matchesChanged, q, [this]() {
-            scheduleMatchesChanged();
         });
 
         // Set up tracking of the last time matchesChanged was signalled
@@ -717,6 +715,12 @@ void RunnerManager::setHistoryEnabled(bool enabled)
 {
     d->historyEnabled = enabled;
     Q_EMIT historyEnabledChanged();
+}
+
+// Gets called by RunnerContext to inform that we got new matches
+void RunnerManager::onMatchesChanged()
+{
+    d->scheduleMatchesChanged();
 }
 
 } // KRunner namespace

@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include <QPointer>
 #include <QReadWriteLock>
 #include <QRegularExpression>
 #include <QSharedData>
@@ -21,22 +22,23 @@
 #include "abstractrunner_p.h"
 #include "krunner_debug.h"
 #include "querymatch.h"
+#include "runnermanager.h"
 
 namespace KRunner
 {
 class RunnerContextPrivate : public QSharedData
 {
 public:
-    explicit RunnerContextPrivate(RunnerContext *context)
+    explicit RunnerContextPrivate(RunnerManager *manager)
         : QSharedData()
-        , q(context)
+        , m_manager(manager)
     {
     }
 
     explicit RunnerContextPrivate(const RunnerContextPrivate &p)
         : QSharedData()
+        , m_manager(p.m_manager)
         , launchCounts(p.launchCounts)
-        , q(p.q)
     {
     }
 
@@ -46,7 +48,7 @@ public:
 
     void invalidate()
     {
-        q = &s_dummyContext;
+        m_isValid = false;
     }
 
     void addMatch(const QueryMatch &match)
@@ -70,12 +72,19 @@ public:
         }
     }
 
+    void matchesChanged()
+    {
+        if (m_manager) {
+            QMetaObject::invokeMethod(m_manager, "onMatchesChanged");
+        }
+    }
+
     QReadWriteLock lock;
+    QPointer<RunnerManager> m_manager;
+    bool m_isValid = true;
     QList<QueryMatch> matches;
     QHash<QString, int> launchCounts;
     QString term;
-    RunnerContext *q;
-    static RunnerContext s_dummyContext;
     bool singleRunnerQueryMode = false;
     bool shouldIgnoreCurrentMatchForHistory = false;
     QMap<QString, QueryMatch> uniqueIds;
@@ -83,17 +92,13 @@ public:
     int requestedCursorPosition = 0;
 };
 
-RunnerContext RunnerContextPrivate::s_dummyContext;
-
-RunnerContext::RunnerContext(QObject *parent)
-    : QObject(parent)
-    , d(new RunnerContextPrivate(this))
+RunnerContext::RunnerContext(RunnerManager *manager)
+    : d(new RunnerContextPrivate(manager))
 {
 }
 
 // copy ctor
-RunnerContext::RunnerContext(const RunnerContext &other, QObject *parent)
-    : QObject(parent)
+RunnerContext::RunnerContext(const RunnerContext &other)
 {
     QReadLocker locker(&other.d->lock);
     d = other.d;
@@ -109,7 +114,7 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
         return *this;
     }
 
-    QExplicitlySharedDataPointer<KRunner::RunnerContextPrivate> oldD = d;
+    auto oldD = d; // To avoid the old ptr getting destroyed while the mutex is locked
     QWriteLocker locker(&d->lock);
     QReadLocker otherLocker(&other.d->lock);
     d = other.d;
@@ -137,17 +142,15 @@ void RunnerContext::reset()
     }
 
     d.detach();
-
-    // Now that we detached the d pointer we need to reset its q pointer
-
-    d->q = this;
+    // But out detached version is valid!
+    d->m_isValid = true;
 
     // we still have to remove all the matches, since if the
     // ref count was 1 (e.g. only the RunnerContext is using
     // the dptr) then we won't get a copy made
     d->matches.clear();
     d->term.clear();
-    Q_EMIT matchesChanged();
+    d->matchesChanged();
 
     d->uniqueIds.clear();
     d->singleRunnerQueryMode = false;
@@ -178,10 +181,8 @@ QString RunnerContext::query() const
 
 bool RunnerContext::isValid() const
 {
-    // if our qptr is dirty, we aren't useful anymore
     QReadLocker locker(&d->lock);
-    const bool valid = (d->q != &(d->s_dummyContext));
-    return valid;
+    return d->m_isValid;
 }
 
 bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
@@ -203,7 +204,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
     // A copied searchContext may share the d pointer,
     // we always want to sent the signal of the object that created
     // the d pointer
-    Q_EMIT d->q->matchesChanged();
+    d->matchesChanged();
 
     return true;
 }
