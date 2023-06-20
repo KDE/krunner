@@ -16,10 +16,10 @@
 #include <KPluginMetaData>
 
 #include "abstractrunner.h"
+#include "action.h"
 #include "krunner_export.h"
 #include <memory>
 
-class QAction;
 class KConfigGroup;
 namespace KRunner
 {
@@ -92,14 +92,7 @@ public:
      * @return if the RunnerWindow should close
      * @since 6.0
      */
-    bool run(const QueryMatch &match, QAction *selectedAction = nullptr);
-
-    /**
-     * Retrieves the list of actions, if any, for a match
-     *
-     * @see QueryMatch::setActions
-     */
-    QList<QAction *> actionsForMatch(const QueryMatch &match);
+    bool run(const QueryMatch &match, const KRunner::Action &action = {});
 
     /**
      * @return the current query term set in @ref launchQuery

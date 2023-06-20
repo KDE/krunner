@@ -7,7 +7,6 @@
 
 #include "runnerresultsmodel_p.h"
 
-#include <QAction>
 #include <QSet>
 
 #include <KRunner/RunnerManager>
@@ -209,12 +208,11 @@ bool RunnerResultsModel::runAction(const QModelIndex &idx, int actionNumber)
         return false;
     }
 
-    const auto actions = m_manager->actionsForMatch(match);
-    if (actionNumber < 0 || actionNumber >= actions.count()) {
+    if (actionNumber < 0 || actionNumber >= match.actions().count()) {
         return false;
     }
 
-    return m_manager->run(match, actions.at(actionNumber));
+    return m_manager->run(match, match.actions().at(actionNumber));
 }
 
 int RunnerResultsModel::columnCount(const QModelIndex &parent) const
@@ -280,15 +278,11 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
         case ResultsModel::MultiLineRole:
             return match.isMultiLine();
         case ResultsModel::ActionsRole: {
-            const auto actions = m_manager->actionsForMatch(match);
-            if (actions.isEmpty()) {
-                return QVariantList();
-            }
-
+            const auto actions = match.actions();
             QVariantList actionsList;
             actionsList.reserve(actions.size());
 
-            for (QAction *action : actions) {
+            for (const KRunner::Action &action : actions) {
                 actionsList.append(QVariant::fromValue(action));
             }
 

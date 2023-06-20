@@ -89,9 +89,9 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
 KRunner::Actions TestRemoteRunner::Actions()
 {
     std::cout << "Actions" << std::endl;
-    KRunner::Action action("action1", "Action 1", "document-browser");
+    KRunner::Action action("action1", "document-browser", "Action 1");
 
-    KRunner::Action action2("action2", "Action 2", "document-browser");
+    KRunner::Action action2("action2", "document-browser", "Action 2");
     return QList<KRunner::Action>{action, action2};
 }
 

@@ -24,11 +24,11 @@ public:
     const QIcon m_icon;
 };
 
-Action::Action(const QString &id, const QString &text, const QString &iconName)
+Action::Action(const QString &id, const QString &iconName, const QString &text)
     : d(new ActionPrivate(id, text, iconName, QIcon()))
 {
 }
-Action::Action(const QString &id, const QString &text, const QIcon &icon)
+Action::Action(const QString &id, const QIcon &icon, const QString &text)
     : d(new ActionPrivate(id, text, QString(), icon))
 {
 }

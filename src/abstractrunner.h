@@ -13,9 +13,8 @@
 #include <QObject>
 #include <QStringList>
 
-#include <KPluginMetaData>
-
 #include <KPluginFactory>
+#include <KPluginMetaData>
 
 #include <memory>
 
@@ -24,7 +23,6 @@
 #include "runnersyntax.h"
 
 class KConfigGroup;
-class QAction;
 class QMimeData;
 class QRegularExpression;
 class QIcon;

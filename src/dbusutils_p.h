@@ -87,7 +87,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, KRunner::A
     argument >> text;
     argument >> iconName;
     argument.endStructure();
-    action = KRunner::Action(id, text, iconName);
+    action = KRunner::Action(id, iconName, text);
     return argument;
 }
 
@@ -119,7 +119,6 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, RemoteImag
     return argument;
 }
 
-Q_DECLARE_METATYPE(KRunner::Action)
 Q_DECLARE_METATYPE(QList<KRunner::Action>)
 Q_DECLARE_METATYPE(RemoteMatch)
 Q_DECLARE_METATYPE(RemoteMatches)

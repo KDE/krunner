@@ -6,7 +6,6 @@
 
 #include <KRunner/Action>
 #include <KRunner/RunnerManager>
-#include <QAction>
 #include <QObject>
 #include <QProcess>
 #include <QSignalSpy>
@@ -17,17 +16,6 @@
 
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
-
-template<typename T, typename Q, typename _UnaryOperation>
-static T kTransform(const Q &input, _UnaryOperation op)
-{
-    T ret;
-    ret.reserve(input.size());
-    for (const auto &v : input) {
-        ret += op(v);
-    }
-    return ret;
-}
 
 using namespace KRunner;
 
@@ -101,10 +89,10 @@ void DBusRunnerTest::testMatch()
     // relevance can't be compared easily because RunnerContext meddles with it
 
     // verify actions
-    QCOMPARE(manager->actionsForMatch(result).count(), 1);
-    auto action = manager->actionsForMatch(result).constFirst();
+    QCOMPARE(result.actions().size(), 1);
+    auto action = result.actions().constFirst();
 
-    QCOMPARE(action->text(), QStringLiteral("Action 1"));
+    QCOMPARE(action.text(), QStringLiteral("Action 1"));
 
     QSignalSpy processSpy(process, &QProcess::readyRead);
     manager->run(result);
@@ -260,12 +248,7 @@ void DBusRunnerTest::testRequestActionsWildcards()
     QCOMPARE(matches.count(), 2);
 
     QCOMPARE(matches.at(0).actions().count(), 1);
-    const auto getId = [](const KRunner::Action &action) {
-        return action.id();
-    };
-    QCOMPARE(kTransform<QStringList>(matches.at(0).actions(), getId), kTransform<QStringList>(matches.at(1).actions(), getId));
-    // The QAction objects should be reused, because the ID is the same
-    QCOMPARE(manager->actionsForMatch(matches.at(0)), manager->actionsForMatch(matches.at(1)));
+    QCOMPARE(matches.at(0).actions(), matches.at(1).actions());
 }
 
 QTEST_MAIN(DBusRunnerTest)

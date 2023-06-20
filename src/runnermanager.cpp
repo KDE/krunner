@@ -9,7 +9,6 @@
 
 #include "runnermanager.h"
 
-#include <QAction>
 #include <QCoreApplication>
 #include <QDir>
 #include <QElapsedTimer>
@@ -410,7 +409,6 @@ public:
 #if HAVE_KACTIVITIES
     const KActivities::Consumer activitiesConsumer;
 #endif
-    QHash<QString /*runnerId*/, QHash<QString /*actionId*/, QAction *>> mappedRunnerActions;
 };
 
 RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateConfigGroup, QObject *parent)
@@ -491,7 +489,7 @@ QList<QueryMatch> RunnerManager::matches() const
     return d->context.matches();
 }
 
-bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
+bool RunnerManager::run(const QueryMatch &match, const KRunner::Action &selectedAction)
 {
     if (!match.isValid() || !match.isEnabled()) { // The model should prevent this
         return false;
@@ -499,7 +497,7 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
 
     // Modify the match and run it
     QueryMatch m = match;
-    m.setSelectedAction(selectedAction ? selectedAction->data().value<KRunner::Action>() : KRunner::Action());
+    m.setSelectedAction(selectedAction);
     m.runner()->run(d->context, m);
     // To allow the RunnerContext to increase the relevance of often launched apps
     d->context.increaseLaunchCount(m);
@@ -513,28 +511,6 @@ bool RunnerManager::run(const QueryMatch &match, QAction *selectedAction)
         Q_EMIT requestUpdateQueryString(d->context.requestedQueryString(), d->context.requestedCursorPosition());
         return false;
     }
-}
-
-QList<QAction *> RunnerManager::actionsForMatch(const QueryMatch &match)
-{
-    QList<QAction *> actions;
-    if (!match.isValid()) {
-        return actions;
-    }
-    const auto matchActions = match.actions();
-    for (const auto &krunnerAction : matchActions) {
-        auto &runnerActions = d->mappedRunnerActions[match.runner()->id()];
-        QAction *action = runnerActions.value(krunnerAction.id(), nullptr);
-        if (!action) {
-            action = new QAction(this);
-            action->setText(krunnerAction.text());
-            action->setIcon(krunnerAction.icon().isNull() ? QIcon::fromTheme(krunnerAction.iconName()) : krunnerAction.icon());
-            action->setData(QVariant::fromValue(krunnerAction));
-            runnerActions.insert(krunnerAction.id(), action);
-        }
-        actions << action;
-    }
-    return actions;
 }
 
 QMimeData *RunnerManager::mimeDataForMatch(const QueryMatch &match) const
