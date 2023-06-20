@@ -9,27 +9,21 @@ namespace KRunner
 class ActionPrivate
 {
 public:
-    explicit ActionPrivate(const QString id, const QString text, const QString iconName, const QIcon icon)
+    explicit ActionPrivate(const QString id, const QString text, const QString iconName)
         : m_id(id)
         , m_text(text)
-        , m_iconName(iconName)
-        , m_icon(icon)
+        , m_iconSource(iconName)
     {
     }
     explicit ActionPrivate() = default;
     explicit ActionPrivate(const ActionPrivate &action) = default;
     const QString m_id;
     const QString m_text;
-    const QString m_iconName;
-    const QIcon m_icon;
+    const QString m_iconSource;
 };
 
 Action::Action(const QString &id, const QString &iconName, const QString &text)
-    : d(new ActionPrivate(id, text, iconName, QIcon()))
-{
-}
-Action::Action(const QString &id, const QIcon &icon, const QString &text)
-    : d(new ActionPrivate(id, text, QString(), icon))
+    : d(new ActionPrivate(id, text, iconName))
 {
 }
 Action::Action(const Action &action)
@@ -56,12 +50,8 @@ QString Action::text() const
 {
     return d->m_text;
 }
-QString Action::iconName() const
+QString Action::iconSource() const
 {
-    return d->m_iconName;
-}
-QIcon Action::icon() const
-{
-    return d->m_icon;
+    return d->m_iconSource;
 }
 }

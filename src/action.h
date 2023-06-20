@@ -15,7 +15,7 @@ namespace KRunner
 class ActionPrivate;
 /**
  * This class represents an action that will be shown next to a match.
- * The goal is to make it more reliable, because QIcon::fromThemei which is often needed in a QAction constructor is not thread safe.
+ * The goal is to make it more reliable, because QIcon::fromTheme which is often needed in a QAction constructor is not thread safe.
  * Also, it makes the API more consistent with the org.kde.krunner1 DBus interface and forces consumers to set an icon.
  *
  * @since 6.0
@@ -25,21 +25,15 @@ class KRUNNER_EXPORT Action final
     Q_GADGET
     /// User-visible text
     Q_PROPERTY(QString text READ text CONSTANT)
-    /// Icon for the action. Only use QIcon::fromTheme in case you are in the constructor and thus the main thread
-    Q_PROPERTY(QIcon icon READ icon CONSTANT)
-    /// iconName, this will internally load an icon from the theme
-    Q_PROPERTY(QString iconName READ iconName CONSTANT)
+    /// Source for the icon: Name of the icon from a theme, file path or file URL
+    Q_PROPERTY(QString iconSource READ iconSource CONSTANT)
 public:
     /**
      * Constructs a new action
      * @param id ID which identifies the action uniquely within the context of the respective runner plugin
+     * @param iconSource name for the icon, that can be passed in to QIcon::fromTheme or file path/URL
      */
-    explicit Action(const QString &id, const QString &iconName, const QString &text);
-    /**
-     * Constructs a new action
-     * @param id ID which identifies the action uniquely within the context of the respective runner plugin
-     */
-    explicit Action(const QString &id, const QIcon &icon, const QString &text);
+    explicit Action(const QString &id, const QString &iconSource, const QString &text);
 
     /// Empty constructor creating invalid action
     Action();
@@ -67,8 +61,7 @@ public:
 
     QString id() const;
     QString text() const;
-    QString iconName() const;
-    QIcon icon() const;
+    QString iconSource() const;
 
 private:
     std::unique_ptr<ActionPrivate> d;

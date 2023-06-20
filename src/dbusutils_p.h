@@ -72,7 +72,7 @@ inline QDBusArgument &operator<<(QDBusArgument &argument, const KRunner::Action 
     argument.beginStructure();
     argument << action.id();
     argument << action.text();
-    argument << action.iconName();
+    argument << action.iconSource();
     argument.endStructure();
     return argument;
 }
