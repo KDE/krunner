@@ -131,7 +131,7 @@ public:
         }
     }
 
-    void deleteRunners(QList<AbstractRunner *> runners)
+    void deleteRunners(const QList<AbstractRunner *> &runners)
     {
         for (const auto runner : runners) {
             runner->thread()->quit();
@@ -220,9 +220,6 @@ public:
 
             // The runner might outlive the manager due to us waiting for the thread to exit
             q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this](const QString &jobId) {
-                if (oldJobs.remove(jobId)) {
-                    return;
-                }
                 if (currentJobs.remove(jobId) && currentJobs.isEmpty()) {
                     // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
                     if (matchChangeTimer.isActive()) {
@@ -390,7 +387,6 @@ public:
     QHash<QString, AbstractRunner *> runners;
     AbstractRunner *currentSingleRunner = nullptr;
     QSet<QString> currentJobs;
-    QSet<QString> oldJobs;
     QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped = false;
@@ -678,13 +674,11 @@ QString RunnerManager::getHistorySuggestion(const QString &typedQuery) const
 
 void RunnerManager::reset()
 {
-    d->oldJobs.unite(d->currentJobs);
-    d->currentJobs.clear();
-
-    d->context.reset();
-    if (!d->oldJobs.empty()) {
+    if (!d->currentJobs.empty()) {
         Q_EMIT queryFinished();
+        d->currentJobs.clear();
     }
+    d->context.reset();
 }
 
 KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) const
