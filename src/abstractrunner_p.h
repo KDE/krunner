@@ -4,38 +4,37 @@
 */
 #include "abstractrunner.h"
 #include "runnersyntax.h"
+#include <QReadWriteLock>
 #include <QRegularExpression>
+#include <optional>
 
 namespace KRunner
 {
 class AbstractRunnerPrivate
 {
 public:
-    explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &pluginMetaData)
-        : runnerDescription(pluginMetaData)
+    explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &data)
+        : runnerDescription(data)
         , runner(r)
+        , minLetterCount(data.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0))
+        , hasUniqueResults(data.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false))
+        , hasWeakResults(data.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false))
     {
-        minLetterCount = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0);
-        if (runnerDescription.isValid()) {
-            const auto rawData = runnerDescription.rawData();
-            if (rawData.contains(QStringLiteral("X-Plasma-Runner-Match-Regex"))) {
-                matchRegex = QRegularExpression(rawData.value(QStringLiteral("X-Plasma-Runner-Match-Regex")).toString());
-                hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
-            }
-            hasUniqueResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
-            hasWeakResults = runnerDescription.value(QStringLiteral("X-Plasma-Runner-Weak-Results"), false);
+        if (const QString regexStr = data.value(QStringLiteral("X-Plasma-Runner-Match-Regex")); !regexStr.isEmpty()) {
+            matchRegex = QRegularExpression(regexStr);
+            hasMatchRegex = matchRegex.isValid() && !matchRegex.pattern().isEmpty();
         }
     }
 
-    QObject *initialParent;
+    QReadWriteLock lock;
     const KPluginMetaData runnerDescription;
-    AbstractRunner *runner;
+    const AbstractRunner *runner;
     QList<RunnerSyntax> syntaxes;
-    bool suspendMatching = false;
+    std::optional<bool> suspendMatching;
     int minLetterCount = 0;
     QRegularExpression matchRegex;
     bool hasMatchRegex = false;
-    bool hasUniqueResults = false;
-    bool hasWeakResults = false;
+    const bool hasUniqueResults = false;
+    const bool hasWeakResults = false;
 };
 }
