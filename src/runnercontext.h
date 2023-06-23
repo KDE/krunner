@@ -28,7 +28,7 @@ class RunnerContextPrivate;
  * @short The RunnerContext class provides information related to a search,
  *        including the search term and collected matches.
  */
-class KRUNNER_EXPORT RunnerContext
+class KRUNNER_EXPORT RunnerContext final
 {
 public:
     explicit RunnerContext(RunnerManager *manager = nullptr);
@@ -43,7 +43,7 @@ public:
      */
     RunnerContext &operator=(const RunnerContext &other);
 
-    virtual ~RunnerContext();
+    ~RunnerContext();
 
     /**
      * Sets the query term for this object and attempts to determine
