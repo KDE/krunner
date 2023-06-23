@@ -127,6 +127,9 @@ public:
 
     /**
      * Reloads the runner's configuration. This is called when it's KCM in the PluginSelector is applied.
+     * This function may be used to set for example using setMatchRegex, setMinLetterCount or setTriggerWords.
+     * Also, syntaxes should be updated when this method is called.
+     * While reloading the config, matching is suspended.
      */
     virtual void reloadConfiguration();
 
@@ -137,7 +140,7 @@ public:
 
     /**
      * @return true if the runner is currently busy with non-interuptable work, signaling that
-     * new threads should not be created for it at this time
+     * the RunnerManager may not query it or read it's config properties
      */
     bool isMatchingSuspended() const;
 
@@ -228,7 +231,9 @@ protected:
 
     /**
      * Sets whether or not the runner is available for match requests. Useful to
-     * prevent more thread spawning when the thread is in a busy state.
+     * prevent queries when the runner is in a busy state.
+     * @note Do not permanently suspend the runner. This is only intended as a temporary measure to
+     * avoid useless queries being launched or async fetching of config/data being interfered with.
      */
     void suspendMatching(bool suspend);
 
@@ -274,6 +279,8 @@ protected:
      * Reimplement this to run any initialization routines on first load.
      * Because it is executed in the runner's thread, it will not block the UI and is thus preferred.
      * By default, it calls reloadConfiguration();
+     *
+     * Until the runner is initialized, it will not be queried by the RunnerManager.
      */
     virtual void init();
 
@@ -286,8 +293,9 @@ protected:
 private:
     std::unique_ptr<AbstractRunnerPrivate> const d;
     KRUNNER_NO_EXPORT Q_INVOKABLE void matchInternal(KRunner::RunnerContext context, const QString &jobId);
+    KRUNNER_NO_EXPORT Q_INVOKABLE void reloadConfigurationInternal();
     KRUNNER_NO_EXPORT Q_SIGNAL void matchInternalFinished(const QString &jobId);
-    KRUNNER_NO_EXPORT Q_SIGNAL void matchingSuspended(bool suspended);
+    KRUNNER_NO_EXPORT Q_SIGNAL void matchingResumed();
     friend class RunnerManager;
     friend class RunnerContext;
     friend class RunnerContextPrivate;

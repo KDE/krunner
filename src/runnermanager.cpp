@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QMutableListIterator>
+#include <QPointer>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <QThread>
@@ -208,34 +209,21 @@ public:
         }
 
         if (runner) {
-            QObject::connect(runner, &AbstractRunner::matchingSuspended, q, [this](bool state) {
-                runnerMatchingSuspended(state);
+            QPointer<AbstractRunner> ptr(runner);
+            q->connect(runner, &AbstractRunner::matchingResumed, q, [this, ptr]() {
+                if (ptr) {
+                    runnerMatchingResumed(ptr.get());
+                }
             });
             auto thread = new QThread();
             thread->start();
-            // By now, runners who do "qobject_cast<Krunner::RunnerManager*>(parent)" should have saved the value
-            // By setting the parrent to a nullptr, we are allowed to move the object to another thread
-            runner->setParent(nullptr);
             runner->moveToThread(thread);
 
             // The runner might outlive the manager due to us waiting for the thread to exit
             q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this](const QString &jobId) {
-                if (currentJobs.remove(jobId) && currentJobs.isEmpty()) {
-                    // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
-                    if (matchChangeTimer.isActive()) {
-                        matchChangeTimer.stop();
-                        Q_EMIT q->matchesChanged(context.matches());
-                    } else if (context.matches().isEmpty()) {
-                        // we finished our runa, and there are no valid matches, and so no
-                        // signal will have been sent out. so we need to emit the signal
-                        // ourselves here
-                        Q_EMIT q->matchesChanged(context.matches());
-                    }
-                    Q_EMIT q->queryFinished();
-                }
+                onRunnerJobFinished(jobId);
             });
 
-            QMetaObject::invokeMethod(runner, &AbstractRunner::init);
             if (prepped) {
                 Q_EMIT runner->prepare();
             }
@@ -244,12 +232,25 @@ public:
         return runner;
     }
 
+    void onRunnerJobFinished(const QString &jobId)
+    {
+        if (currentJobs.remove(jobId) && currentJobs.isEmpty()) {
+            // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
+            if (matchChangeTimer.isActive()) {
+                matchChangeTimer.stop();
+                Q_EMIT q->matchesChanged(context.matches());
+            } else if (context.matches().isEmpty()) {
+                // we finished our run, and there are no valid matches, and so no
+                // signal will have been sent out, so we need to emit the signal ourselves here
+                Q_EMIT q->matchesChanged(context.matches());
+            }
+            Q_EMIT q->queryFinished();
+        }
+    }
+
     void teardown()
     {
-        if (!prepped) {
-            return;
-        }
-
+        pendingJobsAfterSuspend.clear(); // Do not start old jobs when the match session is over
         if (allRunnersPrepped) {
             for (AbstractRunner *runner : std::as_const(runners)) {
                 Q_EMIT runner->teardown();
@@ -267,26 +268,38 @@ public:
         prepped = false;
     }
 
-    void runnerMatchingSuspended(bool suspended)
+    void runnerMatchingResumed(AbstractRunner *runner)
     {
-        auto *runner = qobject_cast<AbstractRunner *>(q->sender());
-        if (suspended || !prepped || !runner) {
+        Q_ASSERT(runner);
+        const QString jobId = pendingJobsAfterSuspend.value(runner);
+        if (jobId.isEmpty()) {
+            qDebug() << runner << "was not scheduled for current query";
+            return;
+        }
+        // Ignore this runner
+        if (singleMode && runner->id() != singleModeRunnerId) {
+            qDebug() << runner << "did not match requested singlerunnermode ID";
             return;
         }
 
         const QString query = context.query();
-        if (singleMode || runner->minLetterCount() <= query.size()) {
-            if (singleMode || !runner->hasMatchRegex() || runner->matchRegex().match(query).hasMatch()) {
-                startJob(runner);
-            }
+        bool matchesCount = singleMode || runner->minLetterCount() <= query.size();
+        bool matchesRegex = singleMode || !runner->hasMatchRegex() || runner->matchRegex().match(query).hasMatch();
+
+        if (matchesCount && matchesRegex) {
+            startJob(runner, jobId);
+        } else {
+            onRunnerJobFinished(jobId);
         }
     }
 
-    void startJob(AbstractRunner *runner)
+    inline QString getJobId(AbstractRunner *runner)
     {
-        const QString jobId = QLatin1String("%1-%2-%3").arg(runner->id(), context.query(), QString::number(QDateTime::currentMSecsSinceEpoch()));
+        return QLatin1String("%1-%2-%3").arg(runner->id(), context.query(), QString::number(QDateTime::currentMSecsSinceEpoch()));
+    }
+    void startJob(AbstractRunner *runner, const QString &jobId)
+    {
         QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context), Q_ARG(QString, jobId));
-        currentJobs.insert(jobId);
     }
 
     // Must only be called once
@@ -300,16 +313,16 @@ public:
                 q->reloadConfiguration();
             } else if (groupName == QLatin1String("Runners")) {
                 for (auto *runner : std::as_const(runners)) {
-                    // Signals from the KCM contain the component name, which is the X-KDE-PluginInfo-Name property
+                    // Signals from the KCM contain the component name, which is the KRunner plugin's id
                     if (changedNames.contains(runner->metadata().pluginId().toUtf8())) {
-                        runner->reloadConfiguration();
+                        QMetaObject::invokeMethod(runner, "reloadConfigurationInternal");
                     }
                 }
             } else if (group.parent().isValid() && group.parent().name() == QLatin1String("Runners")) {
                 for (auto *runner : std::as_const(runners)) {
                     // If the same config group has been modified which gets created in AbstractRunner::config()
                     if (groupName == runner->id()) {
-                        runner->reloadConfiguration();
+                        QMetaObject::invokeMethod(runner, "reloadConfigurationInternal");
                     }
                 }
             }
@@ -385,9 +398,9 @@ public:
     QTimer matchChangeTimer;
     QElapsedTimer lastMatchChangeSignalled;
     QHash<QString, AbstractRunner *> runners;
+    QHash<AbstractRunner *, QString> pendingJobsAfterSuspend;
     AbstractRunner *currentSingleRunner = nullptr;
     QSet<QString> currentJobs;
-    QStringList enabledCategories;
     QString singleModeRunnerId;
     bool prepped = false;
     bool allRunnersPrepped = false;
@@ -574,6 +587,7 @@ void RunnerManager::matchSessionComplete()
 
 void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &runnerName)
 {
+    d->pendingJobsAfterSuspend.clear(); // Do not start old jobs when we got a new query
     setupMatchSession();
     QString term = untrimmedTerm.trimmed();
     const QString prevSingleRunner = d->singleModeRunnerId;
@@ -613,7 +627,10 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 
     const int queryLetterCount = term.length();
     for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
+        const QString &jobId = d->getJobId(r);
         if (r->isMatchingSuspended()) {
+            d->pendingJobsAfterSuspend.insert(r, jobId);
+            d->currentJobs.insert(jobId);
             continue;
         }
         // If this runner is loaded but disabled
@@ -631,7 +648,8 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
             continue;
         }
 
-        d->startJob(r);
+        d->currentJobs.insert(jobId);
+        d->startJob(r, jobId);
     }
     // In the unlikely case that no runner gets queried we have to emit the signals here
     if (d->currentJobs.isEmpty()) {

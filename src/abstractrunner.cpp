@@ -12,6 +12,7 @@
 #include <QIcon>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QTimer>
 
 #include <KConfigGroup>
 #include <KLocalizedString>
@@ -22,12 +23,22 @@
 namespace KRunner
 {
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
-    : QObject(parent)
+    : QObject(nullptr)
     , d(new AbstractRunnerPrivate(this, pluginMetaData))
 {
+    // By now, runners who do "qobject_cast<Krunner::RunnerManager*>(parent)" should have saved the value
+    // By setting the parent to a nullptr, we are allowed to move the object to another thread
     Q_ASSERT(parent);
     setObjectName(pluginMetaData.pluginId()); // Only for debugging purposes
-    d->initialParent = parent;
+
+    // Suspend matching while we initialize the runner. Once it is ready, the last query will be run
+    QTimer::singleShot(0, this, [this]() {
+        init();
+        // In case the runner didn't specify anything explicitly, we resume matching after the initialization
+        if (!d->suspendMatching.has_value()) {
+            suspendMatching(false);
+        }
+    });
 }
 
 AbstractRunner::~AbstractRunner() = default;
@@ -103,17 +114,21 @@ void AbstractRunner::init()
 
 bool AbstractRunner::isMatchingSuspended() const
 {
-    return d->suspendMatching;
+    QReadLocker lock(&d->lock);
+    return d->suspendMatching.value_or(true);
 }
 
 void AbstractRunner::suspendMatching(bool suspend)
 {
-    if (d->suspendMatching == suspend) {
+    QWriteLocker lock(&d->lock);
+    if (d->suspendMatching.value_or(true) == suspend) {
         return;
     }
 
     d->suspendMatching = suspend;
-    Q_EMIT matchingSuspended(suspend);
+    if (!suspend) {
+        Q_EMIT matchingResumed();
+    }
 }
 
 int AbstractRunner::minLetterCount() const
@@ -167,6 +182,14 @@ void AbstractRunner::matchInternal(KRunner::RunnerContext context, const QString
         match(context);
     }
     Q_EMIT matchInternalFinished(jobId);
+}
+// Suspend the runner while reloading the config
+void AbstractRunner::reloadConfigurationInternal()
+{
+    bool isSuspended = isMatchingSuspended();
+    suspendMatching(true);
+    reloadConfiguration();
+    suspendMatching(isSuspended);
 }
 
 } // KRunner namespace

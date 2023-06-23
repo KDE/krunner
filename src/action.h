@@ -5,7 +5,6 @@
 
 #include "krunner_export.h"
 
-#include <QIcon>
 #include <QMetaType>
 #include <QString>
 #include <memory>

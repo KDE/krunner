@@ -20,8 +20,12 @@ ecm_add_tests(
 kcoreaddons_add_plugin(fakerunnerplugin SOURCES plugins/fakerunnerplugin.cpp INSTALL_NAMESPACE "krunnertest" STATIC)
 target_link_libraries(fakerunnerplugin KF6Runner Qt6::Gui)
 
+kcoreaddons_add_plugin(suspendedrunnerplugin SOURCES plugins/suspendedrunner.cpp INSTALL_NAMESPACE "krunnertest2" STATIC)
+target_link_libraries(suspendedrunnerplugin KF6Runner)
+
 kcoreaddons_target_static_plugins(runnermanagerhistorytest krunnertest)
 kcoreaddons_target_static_plugins(runnermanagertest krunnertest)
+kcoreaddons_target_static_plugins(runnermanagertest krunnertest2)
 kcoreaddons_target_static_plugins(threadingtest krunnertest)
 
 add_executable(testremoterunner)

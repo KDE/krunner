@@ -11,6 +11,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTest>
+#include <qtestcase.h>
 
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
@@ -142,6 +143,26 @@ private Q_SLOTS:
         manager.matchSessionComplete();
         QCOMPARE(stateGrp.readEntry("LaunchCounts"), "1 foo");
         QCOMPARE(stateGrp.config()->groupList().size(), 1);
+    }
+
+    void testRunnerSuspendWhileReloadingConfig()
+    {
+        int initialized = QDateTime::currentMSecsSinceEpoch();
+        RunnerManager manager;
+        manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest2"), QStringLiteral("suspendedrunnerplugin")));
+        QCOMPARE(manager.runners().size(), 1);
+
+        AbstractRunner *runner = manager.runners().constFirst();
+        QVERIFY(runner->isMatchingSuspended());
+
+        QSignalSpy spy(&manager, &KRunner::RunnerManager::queryFinished);
+        manager.launchQuery("foo");
+        QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
+
+        QCOMPARE(manager.matches().size(), 1);
+        qWarning() << manager.matches();
+
+        QVERIFY(!runner->isMatchingSuspended());
     }
 };
 
