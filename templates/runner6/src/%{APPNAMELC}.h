@@ -4,8 +4,7 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#ifndef %{APPNAMEUC}_H
-#define %{APPNAMEUC}_H
+#pragma once
 
 #include <KRunner/AbstractRunner>
 
@@ -20,5 +19,3 @@ public:
     void match(KRunner::RunnerContext &context) override;
     void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;
 };
-
-#endif
