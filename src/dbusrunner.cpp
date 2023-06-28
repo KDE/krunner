@@ -195,8 +195,10 @@ void DBusRunner::match(KRunner::RunnerContext &context)
                 qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
                 return;
             }
-            const auto matches = reply.value();
-            for (const RemoteMatch &match : matches) {
+
+            QList<KRunner::QueryMatch> matches;
+            const auto remoteMatches = reply.value();
+            for (const RemoteMatch &match : remoteMatches) {
                 KRunner::QueryMatch m(this);
 
                 m.setText(match.text);
@@ -244,9 +246,9 @@ void DBusRunner::match(KRunner::RunnerContext &context)
                         qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
                     }
                 }
-
-                context.addMatch(m);
-            };
+                matches.append(m);
+            }
+            context.addMatches(matches);
         });
     }
     // we're done matching when every service replies
