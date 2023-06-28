@@ -192,18 +192,17 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         return false;
     }
 
-    QWriteLocker locker(&d->lock);
-    for (QueryMatch match : matches) {
-        // Give previously launched matches a slight boost in relevance
-        // The boost smoothly saturates to 0.5;
-        if (int count = d->launchCounts.value(match.id())) {
-            match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
+    {
+        QWriteLocker locker(&d->lock);
+        for (QueryMatch match : matches) {
+            // Give previously launched matches a slight boost in relevance
+            // The boost smoothly saturates to 0.5;
+            if (int count = d->launchCounts.value(match.id())) {
+                match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
+            }
+            d->addMatch(match);
         }
-        d->addMatch(match);
     }
-    // A copied searchContext may share the d pointer,
-    // we always want to sent the signal of the object that created
-    // the d pointer
     d->matchesChanged();
 
     return true;
