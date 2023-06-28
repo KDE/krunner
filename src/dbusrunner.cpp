@@ -14,30 +14,30 @@
 #include <QDBusMetaType>
 #include <QDBusPendingReply>
 #include <QIcon>
+#include <set>
 
 #include "dbusutils_p.h"
 #include "krunner_debug.h"
 
-#define IFACE_NAME "org.kde.krunner1"
-
-DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
-    : KRunner::AbstractRunner(parent, pluginMetaData)
-    , parentForActions(parent)
+namespace KRunner
 {
-    Q_ASSERT(parent);
+DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
+    : KRunner::AbstractRunner(parent, data)
+    , m_path(data.value(QStringLiteral("X-Plasma-DBusRunner-Path")))
+    , m_hasUniqueResults(data.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false))
+    , m_requestActionsOnce(data.value(QStringLiteral("X-Plasma-Request-Actions-Once"), false))
+    , m_callLifecycleMethods(data.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2"))
+    , m_ifaceName(QStringLiteral("org.kde.krunner1"))
+{
     qDBusRegisterMetaType<RemoteMatch>();
     qDBusRegisterMetaType<RemoteMatches>();
     qDBusRegisterMetaType<KRunner::Action>();
     qDBusRegisterMetaType<KRunner::Actions>();
     qDBusRegisterMetaType<RemoteImage>();
 
-    QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
-    m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
-    m_hasUniqueResults = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
-    m_callLifecycleMethods = pluginMetaData.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2");
-
+    QString requestedServiceName = data.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
     if (requestedServiceName.isEmpty() || m_path.isEmpty()) {
-        qCWarning(KRUNNER) << "Invalid entry:" << pluginMetaData.name();
+        qCWarning(KRUNNER) << "Invalid entry:" << data;
         return;
     }
 
@@ -77,12 +77,11 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
         m_matchingServices << requestedServiceName;
     }
 
-    m_requestActionsOnce = pluginMetaData.value(QStringLiteral("X-Plasma-Request-Actions-Once"), false);
     connect(this, &AbstractRunner::teardown, this, &DBusRunner::teardown);
 
     // Load the runner syntaxes
-    const QStringList syntaxes = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Syntaxes"), QStringList());
-    const QStringList syntaxDescriptions = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions"), QStringList());
+    const QStringList syntaxes = data.value(QStringLiteral("X-Plasma-Runner-Syntaxes"), QStringList());
+    const QStringList syntaxDescriptions = data.value(QStringLiteral("X-Plasma-Runner-Syntax-Descriptions"), QStringList());
     const int descriptionCount = syntaxDescriptions.count();
     for (int i = 0; i < syntaxes.count(); ++i) {
         const QString &query = syntaxes.at(i);
@@ -90,8 +89,6 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData)
         addSyntax(query, description);
     }
 }
-
-DBusRunner::~DBusRunner() = default;
 
 void DBusRunner::reloadConfiguration()
 {
@@ -106,7 +103,7 @@ void DBusRunner::teardown()
 {
     if (m_matchWasCalled) {
         for (const QString &service : std::as_const(m_matchingServices)) {
-            auto method = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Teardown"));
+            auto method = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Teardown"));
             QDBusConnection::sessionBus().asyncCall(method);
         }
     }
@@ -129,7 +126,7 @@ void DBusRunner::requestActions()
             }
         }
 
-        auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Actions"));
+        auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Actions"));
         QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().call(getActionsMethod);
         if (!reply.isValid()) {
             qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
@@ -142,7 +139,7 @@ void DBusRunner::requestActions()
 void DBusRunner::requestConfig()
 {
     const QString service = *m_matchingServices.constBegin();
-    auto getConfigMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Config"));
+    auto getConfigMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Config"));
     QDBusPendingReply<QVariantMap> reply = QDBusConnection::sessionBus().asyncCall(getConfigMethod);
 
     auto watcher = new QDBusPendingCallWatcher(reply);
@@ -188,7 +185,7 @@ void DBusRunner::match(KRunner::RunnerContext &context)
     std::vector<std::unique_ptr<QDBusPendingCallWatcher>> watchers;
 
     for (const QString &service : std::as_const(m_matchingServices)) {
-        auto matchMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Match"));
+        auto matchMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
 
@@ -275,7 +272,7 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
         actionId = match.selectedAction().id();
     }
 
-    auto runMethod = QDBusMessage::createMethodCall(service, m_path, QStringLiteral(IFACE_NAME), QStringLiteral("Run"));
+    auto runMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Run"));
     runMethod.setArguments(QList<QVariant>({matchId, actionId}));
     QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
 }

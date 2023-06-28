@@ -19,8 +19,7 @@ class DBusRunner : public KRunner::AbstractRunner
     Q_OBJECT
 
 public:
-    explicit DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData);
-    ~DBusRunner() override;
+    explicit DBusRunner(QObject *parent, const KPluginMetaData &data);
 
     void match(KRunner::RunnerContext &context) override;
     void reloadConfiguration() override;
@@ -33,15 +32,16 @@ private:
     void requestActions();
     void requestConfig();
     static QImage decodeImage(const RemoteImage &remoteImage);
-    QString m_path;
     QSet<QString> m_matchingServices;
     QHash<QString, QList<KRunner::Action>> m_actions;
-    bool m_hasUniqueResults = false;
-    bool m_requestActionsOnce = false;
+    const QString m_path;
+    const bool m_hasUniqueResults;
+    const bool m_requestActionsOnce;
     bool m_actionsOnceRequested = false;
     bool m_actionsForSessionRequested = false;
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
+    const QString m_ifaceName;
     QSet<QString> m_requestedActionServices;
-    QObject *parentForActions;
+    const QString ifaceName = QStringLiteral("org.kde.krunner1");
 };
