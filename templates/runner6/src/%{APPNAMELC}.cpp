@@ -41,3 +41,5 @@ K_PLUGIN_CLASS_WITH_JSON(%{APPNAME}, "%{APPNAMELC}.json")
 
 // needed for the QObject subclass declared as part of K_PLUGIN_CLASS_WITH_JSON
 #include "%{APPNAMELC}.moc"
+
+#include "moc_%{APPNAMELC}.cpp"

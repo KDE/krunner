@@ -374,3 +374,5 @@ KRunner::RunnerManager *RunnerResultsModel::runnerManager() const
 }
 
 }
+
+#include "moc_runnerresultsmodel_p.cpp"

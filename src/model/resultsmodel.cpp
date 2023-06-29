@@ -441,4 +441,5 @@ KRunner::QueryMatch ResultsModel::getQueryMatch(const QModelIndex &idx) const
     return resultIdx.isValid() ? d->resultsModel->fetchMatch(resultIdx) : QueryMatch();
 }
 
+#include "moc_resultsmodel.cpp"
 #include "resultsmodel.moc"

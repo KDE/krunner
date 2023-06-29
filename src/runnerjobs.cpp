@@ -138,3 +138,5 @@ void DelayedJobCleaner::checkIfFinished()
 }
 
 } // KRunner namespace
+
+#include "moc_runnerjobs_p.cpp"
