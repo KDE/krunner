@@ -15,6 +15,7 @@
 #include <QTest>
 #if KRUNNER_DBUS_RUNNER_TESTING
 #include <QDBusConnection>
+#include <QDBusConnectionInterface>
 #include <QDBusServiceWatcher>
 #include <QProcess>
 #include <QTimer>
@@ -88,10 +89,17 @@ public:
         if (serviceToWatch.isEmpty()) {
             serviceToWatch = md.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
         }
-        QDBusServiceWatcher watcher(serviceToWatch, QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForRegistration);
-
         QEventLoop loop;
-        connect(&watcher, &QDBusServiceWatcher::serviceRegistered, &loop, &QEventLoop::quit);
+        // Wait for the service to show up. Same logic as the dbusrunner
+        connect(QDBusConnection::sessionBus().interface(),
+                &QDBusConnectionInterface::serviceOwnerChanged,
+                &loop,
+                [&loop, serviceToWatch](const QString &serviceName, const QString &, const QString &newOwner) {
+                    if (serviceName == serviceToWatch && !newOwner.isEmpty()) {
+                        loop.quit();
+                    }
+                });
+
         // Otherwise, we just wait forever without any indication what we are waiting for
         QTimer::singleShot(10000, &loop, [&loop, process]() {
             loop.quit();
@@ -104,6 +112,7 @@ public:
         });
         process->start(QStringLiteral(KRUNNER_TEST_DBUS_EXECUTABLE), args);
         loop.exec();
+        process->waitForStarted(5);
 
         Q_ASSERT(process->state() == QProcess::ProcessState::Running);
         m_runningProcesses << process;
