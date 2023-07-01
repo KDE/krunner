@@ -31,3 +31,5 @@ void RunnerModelPlugin::registerTypes(const char *uri)
     QT_WARNING_POP
     qRegisterMetaType<Plasma::QueryMatch *>("QueryMatch");
 }
+
+#include "moc_runnermodelplugin.cpp"

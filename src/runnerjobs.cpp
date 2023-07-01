@@ -194,3 +194,5 @@ void DelayedJobCleaner::checkIfFinished()
 }
 
 } // Plasma namespace
+
+#include "moc_runnerjobs_p.cpp"

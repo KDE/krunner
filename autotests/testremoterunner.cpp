@@ -136,3 +136,5 @@ int main(int argc, char **argv)
     TestRemoteRunner r(arguments[1], arguments.count() == 3);
     app.exec();
 }
+
+#include "moc_testremoterunner.cpp"

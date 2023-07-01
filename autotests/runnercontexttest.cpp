@@ -63,3 +63,5 @@ void RunnerContextTest::typeDetection()
 }
 
 QTEST_MAIN(RunnerContextTest)
+
+#include "moc_runnercontexttest.cpp"

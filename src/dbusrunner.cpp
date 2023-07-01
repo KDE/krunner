@@ -378,3 +378,5 @@ QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)
 
     return image;
 }
+
+#include "moc_dbusrunner_p.cpp"

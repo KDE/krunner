@@ -42,3 +42,5 @@ K_EXPORT_PLASMA_RUNNER_WITH_JSON(%{APPNAME}, "plasma-runner-%{APPNAMELC}.json")
 
 // needed for the QObject subclass declared as part of K_EXPORT_PLASMA_RUNNER_WITH_JSON
 #include "%{APPNAMELC}.moc"
+
+#include "moc_%{APPNAMELC}.cpp"
