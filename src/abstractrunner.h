@@ -300,6 +300,7 @@ private:
     friend class RunnerContext;
     friend class RunnerContextPrivate;
     friend class QueryMatch;
+    friend class DBusRunner; // Because it "overrides" matchInternal
 };
 
 } // KRunner namespace

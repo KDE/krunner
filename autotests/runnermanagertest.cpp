@@ -104,6 +104,7 @@ private Q_SLOTS:
         QSignalSpy spyQueryFinished(manager.get(), &KRunner::RunnerManager::queryFinished);
 
         manager->launchQuery("fooDelay1000");
+        QTest::qSleep(500);
         QCOMPARE(spyQueryFinished.size(), 0);
 
         manager->launchQuery("fooDelay300");
@@ -147,7 +148,6 @@ private Q_SLOTS:
 
     void testRunnerSuspendWhileReloadingConfig()
     {
-        int initialized = QDateTime::currentMSecsSinceEpoch();
         RunnerManager manager;
         manager.loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest2"), QStringLiteral("suspendedrunnerplugin")));
         QCOMPARE(manager.runners().size(), 1);

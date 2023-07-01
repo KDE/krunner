@@ -127,12 +127,15 @@ void DBusRunner::requestActions()
         }
 
         auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Actions"));
-        QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().call(getActionsMethod);
-        if (!reply.isValid()) {
-            qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
-        } else {
-            m_actions[service] = reply.value();
-        }
+        QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
+        connect(new QDBusPendingCallWatcher(reply), &QDBusPendingCallWatcher::finished, this, [this, service, reply](auto watcher) {
+            watcher->deleteLater();
+            if (!reply.isValid()) {
+                qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
+            } else {
+                m_actions[service] = reply.value();
+            }
+        });
     }
 }
 
@@ -170,8 +173,11 @@ void DBusRunner::requestConfig()
     });
 }
 
-void DBusRunner::match(KRunner::RunnerContext &context)
+void DBusRunner::matchInternal(KRunner::RunnerContext context, const QString &jobId)
 {
+    if (m_matchingServices.isEmpty()) {
+        Q_EMIT matchInternalFinished(jobId);
+    }
     m_matchWasCalled = true;
 
     // Request the actions
@@ -182,15 +188,19 @@ void DBusRunner::match(KRunner::RunnerContext &context)
         requestActions();
     }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
-    std::vector<std::unique_ptr<QDBusPendingCallWatcher>> watchers;
+    std::shared_ptr<std::set<QDBusPendingCallWatcher *>> watchers(new std::set<QDBusPendingCallWatcher *>);
 
     for (const QString &service : std::as_const(m_matchingServices)) {
         auto matchMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Match"));
         matchMethod.setArguments(QList<QVariant>({context.query()}));
         QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
 
-        watchers.push_back(std::make_unique<QDBusPendingCallWatcher>(reply));
-        connect(watchers.back().get(), &QDBusPendingCallWatcher::finished, this, [this, service, &context, reply]() {
+        auto watcher = new QDBusPendingCallWatcher(reply);
+        watchers->insert(watcher);
+
+        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, service, context, reply, jobId, watchers, watcher]() mutable {
+            watcher->deleteLater();
+            watchers->erase(watcher);
             if (reply.isError()) {
                 qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
                 return;
@@ -249,13 +259,11 @@ void DBusRunner::match(KRunner::RunnerContext &context)
                 matches.append(m);
             }
             context.addMatches(matches);
+            // We are finished when all watchers finished
+            if (watchers->size() == 0) {
+                Q_EMIT matchInternalFinished(jobId);
+            }
         });
-    }
-    // we're done matching when every service replies
-    for (auto &w : watchers) {
-        if (context.isValid()) {
-            w->waitForFinished();
-        }
     }
 }
 
@@ -332,5 +340,5 @@ QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)
 
     return image;
 }
-
+}
 #include "moc_dbusrunner_p.cpp"

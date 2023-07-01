@@ -14,6 +14,8 @@
 #include <QList>
 #include <QSet>
 
+namespace KRunner
+{
 class DBusRunner : public KRunner::AbstractRunner
 {
     Q_OBJECT
@@ -21,9 +23,14 @@ class DBusRunner : public KRunner::AbstractRunner
 public:
     explicit DBusRunner(QObject *parent, const KPluginMetaData &data);
 
-    void match(KRunner::RunnerContext &context) override;
+    // matchInternal is overwritten. Meaning we do not need the original match
+    void match(KRunner::RunnerContext &) override
+    {
+    }
     void reloadConfiguration() override;
     void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &action) override;
+
+    Q_INVOKABLE void matchInternal(KRunner::RunnerContext context, const QString &jobId);
 
 private:
     void teardown();
@@ -43,5 +50,5 @@ private:
     bool m_callLifecycleMethods = false;
     const QString m_ifaceName;
     QSet<QString> m_requestedActionServices;
-    const QString ifaceName = QStringLiteral("org.kde.krunner1");
 };
+}

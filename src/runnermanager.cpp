@@ -135,9 +135,14 @@ public:
     void deleteRunners(const QList<AbstractRunner *> &runners)
     {
         for (const auto runner : runners) {
-            runner->thread()->quit();
-            QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
-            QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+            if (qobject_cast<DBusRunner *>(runner)) {
+                runner->deleteLater();
+            } else {
+                Q_ASSERT(runner->thread() != q->thread());
+                runner->thread()->quit();
+                QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
+                QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
+            }
         }
     }
 
@@ -192,8 +197,9 @@ public:
         AbstractRunner *runner = nullptr;
 
         const QString api = pluginMetaData.value(QStringLiteral("X-Plasma-API"));
+        const bool isCppPlugin = api.isEmpty();
 
-        if (api.isEmpty()) {
+        if (isCppPlugin) {
             auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q);
             if (res) {
                 runner = res.plugin;
@@ -215,10 +221,11 @@ public:
                     runnerMatchingResumed(ptr.get());
                 }
             });
-            auto thread = new QThread();
-            thread->start();
-            runner->moveToThread(thread);
-
+            if (isCppPlugin) {
+                auto thread = new QThread();
+                thread->start();
+                runner->moveToThread(thread);
+            }
             // The runner might outlive the manager due to us waiting for the thread to exit
             q->connect(runner, &AbstractRunner::matchInternalFinished, q, [this](const QString &jobId) {
                 onRunnerJobFinished(jobId);
@@ -238,11 +245,11 @@ public:
             // If there are any new matches scheduled to be notified, we should anticipate it and just refresh right now
             if (matchChangeTimer.isActive()) {
                 matchChangeTimer.stop();
-                Q_EMIT q->matchesChanged(context.matches());
+                matchesChanged();
             } else if (context.matches().isEmpty()) {
                 // we finished our run, and there are no valid matches, and so no
                 // signal will have been sent out, so we need to emit the signal ourselves here
-                Q_EMIT q->matchesChanged(context.matches());
+                matchesChanged();
             }
             Q_EMIT q->queryFinished();
         }
@@ -625,7 +632,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runnable = d->runners;
     }
 
-    const int queryLetterCount = term.length();
+    const int queryLetterCount = term.isEmpty() ? -1 : term.length();
     for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
         const QString &jobId = d->getJobId(r);
         if (r->isMatchingSuspended()) {
@@ -654,6 +661,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
     // In the unlikely case that no runner gets queried we have to emit the signals here
     if (d->currentJobs.isEmpty()) {
         QTimer::singleShot(0, this, [this]() {
+            d->currentJobs.clear();
             Q_EMIT matchesChanged({});
             Q_EMIT queryFinished();
         });

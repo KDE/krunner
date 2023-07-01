@@ -35,7 +35,12 @@ AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMet
     QTimer::singleShot(0, this, [this]() {
         init();
         // In case the runner didn't specify anything explicitly, we resume matching after the initialization
-        if (!d->suspendMatching.has_value()) {
+        bool doesNotHaveExplicitSuspend = true;
+        {
+            QReadLocker l(&d->lock);
+            doesNotHaveExplicitSuspend = !d->suspendMatching.has_value();
+        }
+        if (doesNotHaveExplicitSuspend) {
             suspendMatching(false);
         }
     });
@@ -121,7 +126,7 @@ bool AbstractRunner::isMatchingSuspended() const
 void AbstractRunner::suspendMatching(bool suspend)
 {
     QWriteLocker lock(&d->lock);
-    if (d->suspendMatching.value_or(true) == suspend) {
+    if (d->suspendMatching.has_value() && d->suspendMatching.value() == suspend) {
         return;
     }
 
