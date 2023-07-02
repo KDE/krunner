@@ -36,9 +36,9 @@ private Q_SLOTS:
         QSignalSpy finishedSpy(manager.get(), &RunnerManager::queryFinished);
         QVERIFY(changedSpy.wait(trottlingDelay + 10)); // Due to throttling, otherwise we'd have this signal after 50 ms
         QCOMPARE(finishedSpy.count(), 0);
-        QCOMPARE(manager->matches().size(), 2);
 
         const auto matches = manager->matches();
+        QCOMPARE(matches.size(), 2);
         QVERIFY(std::all_of(matches.begin(), matches.end(), [this](QueryMatch m) {
             return m.runner() == fakeRunner;
         }));

@@ -73,10 +73,9 @@ void DBusRunnerTest::testMatch()
 {
     QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
     initProperties();
-    launchQuery(QStringLiteral("foo"));
+    const auto matches = launchQuery(QStringLiteral("foo"));
 
     // verify matches
-    const QList<QueryMatch> matches = manager->matches();
     QCOMPARE(matches.count(), 1);
     auto result = matches.first();
 
@@ -113,10 +112,9 @@ void DBusRunnerTest::testMulti()
     auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
     QVERIFY(md.isValid());
     manager->loadRunner(md);
-    launchQuery(QStringLiteral("foo"));
+    const auto matches = launchQuery(QStringLiteral("foo"));
 
     // verify matches, must be one from each
-    const QList<QueryMatch> matches = manager->matches();
     QCOMPARE(matches.count(), 2);
 
     const QString first = matches.at(0).data().toList().constFirst().toString();
@@ -187,9 +185,7 @@ void DBusRunnerTest::testIconData()
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
     initProperties();
 
-    launchQuery(QStringLiteral("fooCostomIcon"));
-
-    const auto matches = manager->matches();
+    const auto matches = launchQuery(QStringLiteral("fooCostomIcon"));
     QCOMPARE(matches.count(), 1);
     auto result = matches.first();
 
@@ -243,8 +239,7 @@ void DBusRunnerTest::testRequestActionsWildcards()
 
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
-    launchQuery("foo");
-    const auto matches = manager->matches();
+    const auto matches = launchQuery("foo");
     QCOMPARE(matches.count(), 2);
 
     QCOMPARE(matches.at(0).actions().count(), 1);

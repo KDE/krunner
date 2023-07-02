@@ -98,26 +98,26 @@ void RunnerManagerSingleRunnerModeTest::testLoadingDisabledRunner()
     QFile::copy(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"), location + "dbusrunnertestmulti.desktop");
 
     // Only enabled runner should be loaded and have results
-    launchQuery("foo");
+    auto matches = launchQuery("foo");
     QCOMPARE(manager->runners().count(), 1);
     QCOMPARE(manager->runners().constFirst()->id(), "dbusrunnertestmulti");
-    QCOMPARE(manager->matches().count(), 1);
-    QCOMPARE(manager->matches().constFirst().runner()->id(), "dbusrunnertestmulti");
+    QCOMPARE(matches.count(), 1);
+    QCOMPARE(matches.constFirst().runner()->id(), "dbusrunnertestmulti");
 
     // Only enabled runner should be loaded and have results
-    launchQuery("foo", "dbusrunnertest");
+    matches = launchQuery("foo", "dbusrunnertest");
     QCOMPARE(manager->runners().count(), 2);
     const QStringList ids{manager->runners().at(0)->id(), manager->runners().at(1)->id()};
     QVERIFY(ids.contains("dbusrunnertestmulti"));
     QVERIFY(ids.contains("dbusrunnertest"));
-    QCOMPARE(manager->matches().count(), 1);
-    QCOMPARE(manager->matches().constFirst().runner()->id(), "dbusrunnertest");
+    QCOMPARE(matches.count(), 1);
+    QCOMPARE(matches.constFirst().runner()->id(), "dbusrunnertest");
 
     // Only enabled runner should used for querying
-    launchQuery("foo");
+    matches = launchQuery("foo");
     QCOMPARE(manager->runners().count(), 2);
-    QCOMPARE(manager->matches().count(), 1);
-    QCOMPARE(manager->matches().constFirst().runner()->id(), "dbusrunnertestmulti");
+    QCOMPARE(matches.count(), 1);
+    QCOMPARE(matches.constFirst().runner()->id(), "dbusrunnertestmulti");
 }
 
 QTEST_MAIN(RunnerManagerSingleRunnerModeTest)

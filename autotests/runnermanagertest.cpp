@@ -160,9 +160,15 @@ private Q_SLOTS:
         QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
 
         QCOMPARE(manager.matches().size(), 1);
-        qWarning() << manager.matches();
 
         QVERIFY(!runner->isMatchingSuspended());
+    }
+
+    void testAbstractRunnerTestTimeout()
+    {
+        QEXPECT_FAIL("", "This test is expected to fail", Continue);
+        const auto matches = launchQuery("fooDelay6000");
+        QVERIFY(matches.isEmpty());
     }
 };
 

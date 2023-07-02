@@ -66,12 +66,16 @@ public:
      * Launch a query and wait for the RunnerManager to finish
      * @param query
      * @param runnerName
+     * @return matches of the current query
      */
-    void launchQuery(const QString &query, const QString &runnerName = QString())
+    QList<QueryMatch> launchQuery(const QString &query, const QString &runnerName = QString())
     {
         QSignalSpy spy(manager.get(), &KRunner::RunnerManager::queryFinished);
         manager->launchQuery(query, runnerName);
-        QVERIFY2(spy.wait(), "RunnerManager did not emit the queryFinished signal");
+        if (!QTest::qVerify(spy.wait(), "spy.wait()", "RunnerManager did not emit the queryFinished signal", __FILE__, __LINE__)) {
+            return {};
+        }
+        return manager->matches();
     }
 #if KRUNNER_DBUS_RUNNER_TESTING
     /**
