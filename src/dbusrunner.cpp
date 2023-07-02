@@ -111,32 +111,32 @@ void DBusRunner::teardown()
     m_matchWasCalled = false;
 }
 
-void DBusRunner::requestActions()
+void DBusRunner::requestActionsForService(const QString &service, const std::function<void()> &finishedCallback)
 {
-    // in the multi-services case, register separate actions from each plugin in case they happen to be somehow different
-    // then match together in matchForAction()
-    for (const QString &service : std::as_const(m_matchingServices)) {
-        // if we only want to request the actions once and have done so we want to skip the service
-        // but in case it got newly loaded we need to request the actions, BUG: 435350
-        if (m_requestActionsOnce) {
-            if (m_requestedActionServices.contains(service)) {
-                continue;
-            } else {
-                m_requestedActionServices << service;
-            }
-        }
-
-        auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Actions"));
-        QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
-        connect(new QDBusPendingCallWatcher(reply), &QDBusPendingCallWatcher::finished, this, [this, service, reply](auto watcher) {
-            watcher->deleteLater();
-            if (!reply.isValid()) {
-                qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
-            } else {
-                m_actions[service] = reply.value();
-            }
-        });
+    if (m_actionsForSessionRequested) {
+        finishedCallback();
+        return; // only once per match session
     }
+    if (m_requestActionsOnce) {
+        if (m_requestedActionServices.contains(service)) {
+            finishedCallback();
+            return;
+        } else {
+            m_requestedActionServices << service;
+        }
+    }
+
+    auto getActionsMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Actions"));
+    QDBusPendingReply<QList<KRunner::Action>> reply = QDBusConnection::sessionBus().asyncCall(getActionsMethod);
+    connect(new QDBusPendingCallWatcher(reply), &QDBusPendingCallWatcher::finished, this, [this, service, reply, finishedCallback](auto watcher) {
+        watcher->deleteLater();
+        if (!reply.isValid()) {
+            qCDebug(KRUNNER) << "Error requesting actions; calling" << service << " :" << reply.error().name() << reply.error().message();
+        } else {
+            m_actions[service] = reply.value();
+        }
+        finishedCallback();
+    });
 }
 
 void DBusRunner::requestConfig()
@@ -165,14 +165,68 @@ void DBusRunner::requestConfig()
                 setTriggerWords(it.value().toStringList());
             } else if (it.key() == QLatin1String("Actions")) {
                 m_actions[service] = it.value().value<QList<KRunner::Action>>();
-                m_actionsOnceRequested = true;
-                m_actionsForSessionRequested = true;
+                m_requestedActionServices << service;
             }
         }
         suspendMatching(false);
     });
 }
 
+QList<QueryMatch> DBusRunner::convertMatches(const QString &service, const RemoteMatches &remoteMatches)
+{
+    QList<KRunner::QueryMatch> matches;
+    for (const RemoteMatch &match : remoteMatches) {
+        KRunner::QueryMatch m(this);
+
+        m.setText(match.text);
+        m.setIconName(match.iconName);
+        m.setType(match.type);
+        m.setRelevance(match.relevance);
+
+        // split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
+        m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
+        m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
+        m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
+        m.setData(QVariantList({service}));
+        m.setId(match.id);
+        m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
+
+        const auto actionsIt = match.properties.find(QStringLiteral("actions"));
+        const KRunner::Actions actionList = m_actions.value(service);
+        if (actionsIt == match.properties.cend()) {
+            m.setActions(actionList);
+        } else {
+            KRunner::Actions requestedActions;
+            const QStringList actionIds = actionsIt.value().toStringList();
+            for (const auto &action : actionList) {
+                if (actionIds.contains(action.id())) {
+                    requestedActions << action;
+                }
+            }
+            m.setActions(requestedActions);
+        }
+
+        const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
+        if (iconData.isValid()) {
+            const auto iconDataArgument = iconData.value<QDBusArgument>();
+            if (iconDataArgument.currentType() == QDBusArgument::StructureType && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
+                const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
+                const QImage decodedImage = decodeImage(remoteImage);
+                if (!decodedImage.isNull()) {
+                    const QPixmap pix = QPixmap::fromImage(decodedImage);
+                    QIcon icon(pix);
+                    m.setIcon(icon);
+                    // iconName normally takes precedence
+                    m.setIconName(QString());
+                }
+            } else {
+                qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
+            }
+        }
+        matches.append(m);
+    }
+    return matches;
+}
 void DBusRunner::matchInternal(KRunner::RunnerContext context, const QString &jobId)
 {
     if (m_matchingServices.isEmpty()) {
@@ -180,91 +234,36 @@ void DBusRunner::matchInternal(KRunner::RunnerContext context, const QString &jo
     }
     m_matchWasCalled = true;
 
-    // Request the actions
-    if ((m_requestActionsOnce && !m_actionsOnceRequested) // We only want to fetch the actions once but haven't done so yet
-        || (!m_actionsForSessionRequested)) { // We want to fetch the actions for each match session
-        m_actionsOnceRequested = true;
-        m_actionsForSessionRequested = true;
-        requestActions();
-    }
     // we scope watchers to make sure the lambda that captures context by reference definitely gets disconnected when this function ends
-    std::shared_ptr<std::set<QDBusPendingCallWatcher *>> watchers(new std::set<QDBusPendingCallWatcher *>);
+    std::shared_ptr<std::set<QString>> pendingServices(new std::set<QString>);
 
     for (const QString &service : std::as_const(m_matchingServices)) {
-        auto matchMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Match"));
-        matchMethod.setArguments(QList<QVariant>({context.query()}));
-        QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
+        pendingServices->insert(service);
 
-        auto watcher = new QDBusPendingCallWatcher(reply);
-        watchers->insert(watcher);
+        const auto onActionsFinished = [=]() {
+            auto matchMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Match"));
+            matchMethod.setArguments(QList<QVariant>({context.query()}));
+            QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
 
-        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, service, context, reply, jobId, watchers, watcher]() mutable {
-            watcher->deleteLater();
-            watchers->erase(watcher);
-            if (reply.isError()) {
-                qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
-                return;
-            }
+            auto watcher = new QDBusPendingCallWatcher(reply);
 
-            QList<KRunner::QueryMatch> matches;
-            const auto remoteMatches = reply.value();
-            for (const RemoteMatch &match : remoteMatches) {
-                KRunner::QueryMatch m(this);
-
-                m.setText(match.text);
-                m.setIconName(match.iconName);
-                m.setType(match.type);
-                m.setRelevance(match.relevance);
-
-                // split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)
-                m.setUrls(QUrl::fromStringList(match.properties.value(QStringLiteral("urls")).toStringList()));
-                m.setMatchCategory(match.properties.value(QStringLiteral("category")).toString());
-                m.setSubtext(match.properties.value(QStringLiteral("subtext")).toString());
-                m.setData(QVariantList({service}));
-                m.setId(match.id);
-                m.setMultiLine(match.properties.value(QStringLiteral("multiline")).toBool());
-
-                const auto actionsIt = match.properties.find(QStringLiteral("actions"));
-                const KRunner::Actions actionList = m_actions.value(service);
-                if (actionsIt == match.properties.cend()) {
-                    m.setActions(actionList);
-                } else {
-                    KRunner::Actions requestedActions;
-                    const QStringList actionIds = actionsIt.value().toStringList();
-                    for (const auto &action : actionList) {
-                        if (actionIds.contains(action.id())) {
-                            requestedActions << action;
-                        }
-                    }
-                    m.setActions(requestedActions);
+            connect(watcher, &QDBusPendingCallWatcher::finished, this, [this, service, context, reply, jobId, pendingServices, watcher]() mutable {
+                watcher->deleteLater();
+                pendingServices->erase(service);
+                if (reply.isError()) {
+                    qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
+                    return;
                 }
-
-                const QVariant iconData = match.properties.value(QStringLiteral("icon-data"));
-                if (iconData.isValid()) {
-                    const auto iconDataArgument = iconData.value<QDBusArgument>();
-                    if (iconDataArgument.currentType() == QDBusArgument::StructureType && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
-                        const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
-                        const QImage decodedImage = decodeImage(remoteImage);
-                        if (!decodedImage.isNull()) {
-                            const QPixmap pix = QPixmap::fromImage(decodedImage);
-                            QIcon icon(pix);
-                            m.setIcon(icon);
-                            // iconName normally takes precedence
-                            m.setIconName(QString());
-                        }
-                    } else {
-                        qCWarning(KRUNNER) << "Invalid signature of icon-data property:" << iconDataArgument.currentSignature();
-                    }
+                context.addMatches(convertMatches(service, reply.value()));
+                // We are finished when all watchers finished
+                if (pendingServices->size() == 0) {
+                    Q_EMIT matchInternalFinished(jobId);
                 }
-                matches.append(m);
-            }
-            context.addMatches(matches);
-            // We are finished when all watchers finished
-            if (watchers->size() == 0) {
-                Q_EMIT matchInternalFinished(jobId);
-            }
-        });
+            });
+        };
+        requestActionsForService(service, onActionsFinished);
     }
+    m_actionsForSessionRequested = true;
 }
 
 void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::QueryMatch &match)

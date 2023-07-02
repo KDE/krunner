@@ -37,6 +37,8 @@ private:
 
     // Returns RemoteActions with service name as key
     void requestActions();
+    void requestActionsForService(const QString &service, const std::function<void()> &finishedCallback);
+    QList<QueryMatch> convertMatches(const QString &service, const RemoteMatches &remoteMatches);
     void requestConfig();
     static QImage decodeImage(const RemoteImage &remoteImage);
     QSet<QString> m_matchingServices;
@@ -44,7 +46,6 @@ private:
     const QString m_path;
     const bool m_hasUniqueResults;
     const bool m_requestActionsOnce;
-    bool m_actionsOnceRequested = false;
     bool m_actionsForSessionRequested = false;
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
