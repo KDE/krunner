@@ -31,9 +31,6 @@ private Q_SLOTS:
         qputenv("XDG_DATA_DIRS", QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).toLocal8Bit());
         QCoreApplication::setLibraryPaths(QStringList());
         initProperties();
-        auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
-        QVERIFY(md.isValid());
-        manager->loadRunner(md);
         qRegisterMetaType<QList<KRunner::QueryMatch>>();
     }
 
