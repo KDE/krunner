@@ -609,6 +609,11 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         reset();
         return;
     }
+    if (term.isEmpty()) {
+        QTimer::singleShot(0, this, &RunnerManager::queryFinished);
+        reset();
+        return;
+    }
 
     if (d->context.query() == term && prevSingleRunner == runnerName) {
         // we already are searching for this!
@@ -632,7 +637,6 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runnable = d->runners;
     }
 
-    const int queryLetterCount = term.isEmpty() ? -1 : term.length();
     for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
         const QString &jobId = d->getJobId(r);
         if (r->isMatchingSuspended()) {
@@ -646,7 +650,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         }
         // The runners can set the min letter count as a property, this way we don't
         // have to spawn threads just for the runner to reject the query, because it is too short
-        if (!d->singleMode && queryLetterCount < r->minLetterCount()) {
+        if (!d->singleMode && term.length() < r->minLetterCount()) {
             continue;
         }
         // If the runner has one ore more trigger words it can set the matchRegex to prevent
