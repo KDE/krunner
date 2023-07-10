@@ -280,12 +280,12 @@ public:
         Q_ASSERT(runner);
         const QString jobId = pendingJobsAfterSuspend.value(runner);
         if (jobId.isEmpty()) {
-            qDebug() << runner << "was not scheduled for current query";
+            qCDebug(KRUNNER) << runner << "was not scheduled for current query";
             return;
         }
         // Ignore this runner
         if (singleMode && runner->id() != singleModeRunnerId) {
-            qDebug() << runner << "did not match requested singlerunnermode ID";
+            qCDebug(KRUNNER) << runner << "did not match requested singlerunnermode ID";
             return;
         }
 
