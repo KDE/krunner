@@ -240,7 +240,7 @@ void DBusRunner::matchInternal(KRunner::RunnerContext context, const QString &jo
     for (const QString &service : std::as_const(m_matchingServices)) {
         pendingServices->insert(service);
 
-        const auto onActionsFinished = [=]() {
+        const auto onActionsFinished = [=]() mutable {
             auto matchMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Match"));
             matchMethod.setArguments(QList<QVariant>({context.query()}));
             QDBusPendingReply<RemoteMatches> reply = QDBusConnection::sessionBus().asyncCall(matchMethod);
