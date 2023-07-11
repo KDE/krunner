@@ -55,3 +55,5 @@ QString Action::iconSource() const
     return d->m_iconSource;
 }
 }
+
+#include "moc_action.cpp"
