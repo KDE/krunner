@@ -1,0 +1,2 @@
+MetaDataFile=%{APPNAMELC}.desktop
+Exec=python3 %{PROJECTDIR}/main.py

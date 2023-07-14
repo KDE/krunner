@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.kde.%{APPNAMELC}
-Exec=/usr/bin/python3 "%{PROJECTDIR}/%{APPNAMELC}.py"
