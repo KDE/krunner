@@ -301,5 +301,3 @@ int RunnerContext::requestedCursorPosition() const
 }
 
 } // KRunner namespace
-
-#include "moc_runnercontext.cpp"
