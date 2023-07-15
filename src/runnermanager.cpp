@@ -305,7 +305,7 @@ public:
     }
     void startJob(AbstractRunner *runner, const QString &jobId)
     {
-        QMetaObject::invokeMethod(runner, "matchInternal", Q_ARG(KRunner::RunnerContext, context), Q_ARG(QString, jobId));
+        QMetaObject::invokeMethod(runner, "matchInternal", Qt::QueuedConnection, Q_ARG(KRunner::RunnerContext, context), Q_ARG(QString, jobId));
     }
 
     // Must only be called once
