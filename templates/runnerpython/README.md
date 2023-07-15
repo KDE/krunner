@@ -18,7 +18,7 @@ python3 %{APPNAMELC}.py
 After that you should see your runner when typing `hello` in KRunner.
 
 More information can be found here:  
-https://cgit.kde.org/krunner.git/plain/src/data/org.kde.krunner1.xml  
+https://invent.kde.org/frameworks/krunner/-/blob/master/src/data/org.kde.krunner1.xml
 https://techbase.kde.org/Development/Tutorials/D-Bus/Introduction
 
 
