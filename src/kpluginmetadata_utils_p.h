@@ -38,6 +38,7 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     QJsonObject root;
     root.insert(QLatin1String("KPlugin"), kplugin);
 
+    root.insert(QLatin1String("X-KRunner-Private-MainThread"), true);
     copyIfExists(grp, root, "X-Plasma-DBusRunner-Service");
     copyIfExists(grp, root, "X-Plasma-DBusRunner-Path");
     copyIfExists(grp, root, "X-Plasma-Runner-Unique-Results", false);

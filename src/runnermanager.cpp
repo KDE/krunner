@@ -135,10 +135,10 @@ public:
     void deleteRunners(const QList<AbstractRunner *> &runners)
     {
         for (const auto runner : runners) {
-            if (qobject_cast<DBusRunner *>(runner)) {
+            if (runner->metadata().value(QStringLiteral("X-KRunner-Private-MainThread"), false)) {
                 runner->deleteLater();
             } else {
-                Q_ASSERT(runner->thread() != q->thread());
+                Q_ASSERT_X(runner->thread() != q->thread(), Q_FUNC_INFO, qPrintable(runner->objectName() + QLatin1String(" was not in expected thread")));
                 runner->thread()->quit();
                 QObject::connect(runner->thread(), &QThread::finished, runner->thread(), &QObject::deleteLater);
                 QObject::connect(runner->thread(), &QThread::finished, runner, &QObject::deleteLater);
@@ -198,7 +198,6 @@ public:
 
         const QString api = pluginMetaData.value(QStringLiteral("X-Plasma-API"));
         const bool isCppPlugin = api.isEmpty();
-
         if (isCppPlugin) {
             if (auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q)) {
                 runner = res.plugin;
@@ -220,7 +219,7 @@ public:
                     runnerMatchingResumed(ptr.get());
                 }
             });
-            if (isCppPlugin) {
+            if (!pluginMetaData.value(QStringLiteral("X-KRunner-Private-MainThread"), false)) {
                 auto thread = new QThread();
                 thread->start();
                 runner->moveToThread(thread);
