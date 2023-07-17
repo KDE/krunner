@@ -124,11 +124,15 @@ private:
     KRUNNER_NO_EXPORT void setSingleRunnerQueryMode(bool enabled);
 
     friend class RunnerManager;
+    friend class AbstractRunner;
+    friend class DBusRunner;
     friend class RunnerManagerPrivate;
 
     KRUNNER_NO_EXPORT void restore(const KConfigGroup &config);
     KRUNNER_NO_EXPORT void save(KConfigGroup &config);
     KRUNNER_NO_EXPORT void reset();
+    KRUNNER_NO_EXPORT void setJobStartTs(qint64 queryStartTs);
+    KRUNNER_NO_EXPORT QString runnerJobId(AbstractRunner *runner) const;
 
     QExplicitlySharedDataPointer<RunnerContextPrivate> d;
 };

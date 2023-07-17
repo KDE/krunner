@@ -227,8 +227,9 @@ QList<QueryMatch> DBusRunner::convertMatches(const QString &service, const Remot
     }
     return matches;
 }
-void DBusRunner::matchInternal(KRunner::RunnerContext context, const QString &jobId)
+void DBusRunner::matchInternal(KRunner::RunnerContext context)
 {
+    const QString jobId = context.runnerJobId(this);
     if (m_matchingServices.isEmpty()) {
         Q_EMIT matchInternalFinished(jobId);
     }
