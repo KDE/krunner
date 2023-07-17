@@ -181,12 +181,12 @@ bool AbstractRunner::hasMatchRegex() const
     return d->hasMatchRegex;
 }
 
-void AbstractRunner::matchInternal(KRunner::RunnerContext context, const QString &jobId)
+void AbstractRunner::matchInternal(KRunner::RunnerContext context)
 {
     if (context.isValid()) { // Otherwise, we would just waste resources
         match(context);
     }
-    Q_EMIT matchInternalFinished(jobId);
+    Q_EMIT matchInternalFinished(context.runnerJobId(this));
 }
 // Suspend the runner while reloading the config
 void AbstractRunner::reloadConfigurationInternal()

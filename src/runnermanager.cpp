@@ -296,19 +296,15 @@ public:
         bool matchesRegex = singleMode || !runner->hasMatchRegex() || runner->matchRegex().match(query).hasMatch();
 
         if (matchesCount && matchesRegex) {
-            startJob(runner, jobId);
+            startJob(runner);
         } else {
             onRunnerJobFinished(jobId);
         }
     }
 
-    inline QString getJobId(AbstractRunner *runner)
+    void startJob(AbstractRunner *runner)
     {
-        return QLatin1String("%1-%2-%3").arg(runner->id(), context.query(), QString::number(QDateTime::currentMSecsSinceEpoch()));
-    }
-    void startJob(AbstractRunner *runner, const QString &jobId)
-    {
-        QMetaObject::invokeMethod(runner, "matchInternal", Qt::QueuedConnection, Q_ARG(KRunner::RunnerContext, context), Q_ARG(QString, jobId));
+        QMetaObject::invokeMethod(runner, "matchInternal", Qt::QueuedConnection, Q_ARG(KRunner::RunnerContext, context));
     }
 
     // Must only be called once
@@ -639,8 +635,10 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         runnable = d->runners;
     }
 
+    qint64 startTs = QDateTime::currentMSecsSinceEpoch();
+    d->context.setJobStartTs(startTs);
     for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
-        const QString &jobId = d->getJobId(r);
+        const QString &jobId = d->context.runnerJobId(r);
         if (r->isMatchingSuspended()) {
             d->pendingJobsAfterSuspend.insert(r, jobId);
             d->currentJobs.insert(jobId);
@@ -662,7 +660,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
         }
 
         d->currentJobs.insert(jobId);
-        d->startJob(r, jobId);
+        d->startJob(r);
     }
     // In the unlikely case that no runner gets queried we have to emit the signals here
     if (d->currentJobs.isEmpty()) {

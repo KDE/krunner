@@ -90,6 +90,7 @@ public:
     QMap<QString, QueryMatch> uniqueIds;
     QString requestedText;
     int requestedCursorPosition = 0;
+    qint64 queryStartTs = 0;
 };
 
 RunnerContext::RunnerContext(RunnerManager *manager)
@@ -298,6 +299,15 @@ QString RunnerContext::requestedQueryString() const
 int RunnerContext::requestedCursorPosition() const
 {
     return d->requestedCursorPosition;
+}
+
+void RunnerContext::setJobStartTs(qint64 queryStartTs)
+{
+    d->queryStartTs = queryStartTs;
+}
+QString RunnerContext::runnerJobId(AbstractRunner *runner) const
+{
+    return QLatin1String("%1-%2-%3").arg(runner->id(), query(), QString::number(d->queryStartTs));
 }
 
 } // KRunner namespace
