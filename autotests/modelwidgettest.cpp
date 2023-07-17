@@ -22,7 +22,11 @@ public:
     {
         ResultsModel *model = new ResultsModel(this);
         // Comment this line out to load all the system runners
-        model->runnerManager()->loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
+        if (KPluginMetaData data(QStringLiteral("kf6/krunner/krunner_services")); data.isValid()) {
+            model->runnerManager()->loadRunner(data);
+        } else {
+            qFatal("Invalid metadata object");
+        }
 
         QListView *view = new QListView(this);
         view->setModel(model);
@@ -30,7 +34,7 @@ public:
 
         QLineEdit *edit = new QLineEdit(this);
         connect(edit, &QLineEdit::textChanged, model, &ResultsModel::setQueryString);
-        edit->setText("foo");
+        edit->setFocus(Qt::OtherFocusReason);
 
         QVBoxLayout *l = new QVBoxLayout(this);
         l->addWidget(edit);
