@@ -49,8 +49,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
      * Defaults to empty string which means all runners
      */
     Q_PROPERTY(QString singleRunner READ singleRunner WRITE setSingleRunner NOTIFY singleRunnerChanged)
-    Q_PROPERTY(QString singleRunnerName READ singleRunnerName NOTIFY singleRunnerChanged)
-    Q_PROPERTY(QIcon singleRunnerIcon READ singleRunnerIcon NOTIFY singleRunnerChanged)
+    Q_PROPERTY(KPluginMetaData singleRunnerMetaData READ singleRunnerMetaData NOTIFY singleRunnerChanged)
 
     Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager CONSTANT)
 
@@ -88,8 +87,7 @@ public:
     void setSingleRunner(const QString &runner);
     Q_SIGNAL void singleRunnerChanged();
 
-    QString singleRunnerName() const;
-    QIcon singleRunnerIcon() const;
+    KPluginMetaData singleRunnerMetaData() const;
 
     QHash<int, QByteArray> roleNames() const override;
 

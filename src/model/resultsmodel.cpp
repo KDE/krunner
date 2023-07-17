@@ -367,14 +367,9 @@ void ResultsModel::setSingleRunner(const QString &runnerId)
     Q_EMIT singleRunnerChanged();
 }
 
-QString ResultsModel::singleRunnerName() const
+KPluginMetaData ResultsModel::singleRunnerMetaData() const
 {
-    return d->runner ? d->runner->name() : QString();
-}
-
-QIcon ResultsModel::singleRunnerIcon() const
-{
-    return d->runner ? d->runner->icon() : QIcon();
+    return d->runner ? d->runner->metadata() : KPluginMetaData();
 }
 
 QHash<int, QByteArray> ResultsModel::roleNames() const
