@@ -200,8 +200,7 @@ public:
         const bool isCppPlugin = api.isEmpty();
 
         if (isCppPlugin) {
-            auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q);
-            if (res) {
+            if (auto res = KPluginFactory::instantiatePlugin<AbstractRunner>(pluginMetaData, q)) {
                 runner = res.plugin;
             } else {
                 qCWarning(KRUNNER).nospace() << "Could not load runner " << pluginMetaData.name() << ":" << res.errorString
