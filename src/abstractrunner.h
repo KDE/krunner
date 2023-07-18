@@ -164,8 +164,7 @@ public:
     void setMinLetterCount(int count);
 
     /**
-     * If this regex is set with a non empty pattern it must match the query in
-     * order for the performMatch/match being called.
+     * If this regex is set with a non empty pattern it must match the query in order for match being called.
      * Just like the minLetterCount property this check is ignored when the runner is in the singleRunnerMode.
      * In case both the regex and the letter count is set the letter count is checked first.
      * @return matchRegex property
@@ -193,7 +192,7 @@ public:
 
     /**
      * If the runner has a valid regex and non empty regex
-     * @return hasMatchRegex
+     * @internal
      * @since 5.75
      */
     bool hasMatchRegex() const;
@@ -202,9 +201,8 @@ Q_SIGNALS:
     /**
      * This signal is emitted when matching is about to commence, giving runners
      * an opportunity to prepare themselves, e.g. loading data sets or preparing
-     * IPC or network connections. This method should be fast so as not to cause
-     * slow downs. Things that take longer or which should be loaded once and
-     * remain extant for the lifespan of the AbstractRunner should be done in init().
+     * IPC or network connections. Things that should be loaded once and remain
+     * extant for the lifespan of the AbstractRunner should be done in init().
      * @see init()
      */
     void prepare();
