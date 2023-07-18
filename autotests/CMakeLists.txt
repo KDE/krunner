@@ -48,4 +48,7 @@ if (TARGET Qt6::Widgets)
     add_executable(modelwidgettest modelwidgettest.cpp)
     target_link_libraries(modelwidgettest KF6::Runner Qt6::Widgets)
     kcoreaddons_target_static_plugins(modelwidgettest krunnertest)
+
 endif()
+add_executable(pluginbenchmarker pluginbenchmarker.cpp)
+target_link_libraries(pluginbenchmarker KF6::Runner)
