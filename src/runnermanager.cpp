@@ -252,6 +252,9 @@ public:
             }
             Q_EMIT q->queryFinished();
         }
+        if (!currentJobs.isEmpty()) {
+            qCDebug(KRUNNER) << "Current jobs are" << currentJobs;
+        }
     }
 
     void teardown()
