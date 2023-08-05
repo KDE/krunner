@@ -212,45 +212,6 @@ private:
     QAbstractItemModel *m_treeModel = nullptr;
 };
 
-/**
- * Populates the IsDuplicateRole of an item
- *
- * The IsDuplicateRole returns true for each item if there is two or more
- * elements in the model with the same DisplayRole as the item.
- */
-class DuplicateDetectorProxyModel : public QIdentityProxyModel
-{
-    Q_OBJECT
-
-public:
-    DuplicateDetectorProxyModel(QObject *parent)
-        : QIdentityProxyModel(parent)
-    {
-    }
-
-    QVariant data(const QModelIndex &index, int role) const override
-    {
-        if (role != ResultsModel::DuplicateRole) {
-            return QIdentityProxyModel::data(index, role);
-        }
-
-        int duplicatesCount = 0;
-        const QString display = index.data(Qt::DisplayRole).toString();
-
-        for (int i = 0; i < sourceModel()->rowCount(); ++i) {
-            if (sourceModel()->index(i, 0).data(Qt::DisplayRole) == display) {
-                ++duplicatesCount;
-
-                if (duplicatesCount == 2) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-};
-
 class KRunner::ResultsModelPrivate
 {
 public:
@@ -269,7 +230,6 @@ public:
     CategoryDistributionProxyModel *const distributionModel = new CategoryDistributionProxyModel(q);
     KDescendantsProxyModel *const flattenModel = new KDescendantsProxyModel(q);
     HideRootLevelProxyModel *const hideRootModel = new HideRootLevelProxyModel(q);
-    DuplicateDetectorProxyModel *const duplicateDetectorModel = new DuplicateDetectorProxyModel(q);
     const KModelIndexProxyMapper mapper{q, resultsModel};
 };
 
@@ -301,7 +261,6 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateCo
     //     - CategoryDistributionProxyModel
     //       - KDescendantsProxyModel
     //         - HideRootLevelProxyModel
-    //           - DuplicateDetectorProxyModel
 
     d->sortModel->setSourceModel(d->resultsModel);
 
@@ -312,9 +271,7 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateCo
     d->hideRootModel->setSourceModel(d->flattenModel);
     d->hideRootModel->setTreeModel(d->resultsModel);
 
-    d->duplicateDetectorModel->setSourceModel(d->hideRootModel);
-
-    setSourceModel(d->duplicateDetectorModel);
+    setSourceModel(d->hideRootModel);
 }
 
 ResultsModel::~ResultsModel() = default;
@@ -381,7 +338,6 @@ QHash<int, QByteArray> ResultsModel::roleNames() const
     names[RelevanceRole] = QByteArrayLiteral("relevance");
     names[CategoryRole] = QByteArrayLiteral("category");
     names[SubtextRole] = QByteArrayLiteral("subtext");
-    names[DuplicateRole] = QByteArrayLiteral("isDuplicate");
     names[ActionsRole] = QByteArrayLiteral("actions");
     names[MultiLineRole] = QByteArrayLiteral("multiLine");
     return names;

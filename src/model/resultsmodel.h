@@ -65,7 +65,6 @@ public:
         EnabledRole,
         CategoryRole,
         SubtextRole,
-        DuplicateRole,
         ActionsRole,
         MultiLineRole,
     };
