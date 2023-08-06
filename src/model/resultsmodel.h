@@ -70,6 +70,7 @@ public:
         MultiLineRole,
         QueryMatchRole, /// @internal
         FavoriteIndexRole, /// @internal
+        MimeDataRole, /**< A variant map with key mime type and value mime data @since 6.0 */
     };
     Q_ENUM(Roles)
 

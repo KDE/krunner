@@ -7,7 +7,9 @@
 
 #include "runnerresultsmodel_p.h"
 
+#include <QMimeData>
 #include <QSet>
+#include <QVariantMap>
 
 #include <KRunner/RunnerManager>
 
@@ -290,6 +292,35 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
         }
         case ResultsModel::QueryMatchRole:
             return QVariant::fromValue(match);
+        case ResultsModel::MimeDataRole: {
+            const std::unique_ptr<QMimeData> data{runnerManager()->mimeDataForMatch(match)};
+            if (!data) {
+                return {};
+            }
+            QVariantMap dataMap;
+            if (data->hasText()) {
+                dataMap.insert(QStringLiteral("text/plain"), data->text());
+            }
+            if (data->hasHtml()) {
+                dataMap.insert(QStringLiteral("text/html"), data->html());
+            }
+            if (data->hasUrls()) {
+                const QList<QUrl> urls = data->urls();
+                dataMap.insert(QStringLiteral("text/uri-list"), QVariantList(urls.cbegin(), urls.cend()));
+            }
+            if (data->hasImage()) {
+                dataMap.insert(QStringLiteral("image/png"), data->imageData());
+            }
+            const QStringList formats = data->formats();
+            for (const QString &format : formats) {
+                if (format == QLatin1String("text/plain") || format == QLatin1String("text/html")
+                    || format == QLatin1String("text/uri-list") || format.startsWith(QLatin1String("image/"))) {
+                    continue;
+                }
+                dataMap.insert(format, data->data(format));
+            }
+            return dataMap;
+        }
         }
 
         return QVariant();
