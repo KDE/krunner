@@ -26,6 +26,7 @@ Name[tr]=Python K Çalıştır Eklentisi (Qt6)
 Name[uk]=Додаток до KRunner мовою Python (Qt6)
 Name[x-test]=xxPython KRunner Plugin (Qt6)xx
 Name[zh_CN]=Python KRunner 插件 (Qt6)
+Name[zh_TW]=Python KRunner 外掛程式 (Qt6)
 Comment=Template for a KRunner Python Plugin using D-Bus
 Comment[ar]=قالب لملحق بايثون لمشغلك باستخدام D-Bus
 Comment[az]=D-Bus ilə istifadə olunan KRunner Python Qoşması üçün nümunə
