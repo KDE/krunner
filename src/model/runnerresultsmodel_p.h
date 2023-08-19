@@ -55,6 +55,7 @@ public:
     KRunner::RunnerManager *runnerManager() const;
     KRunner::QueryMatch fetchMatch(const QModelIndex &idx) const;
 
+    QStringList m_favoriteIds;
 Q_SIGNALS:
     void queryStringChangeRequested(const QString &queryString, int pos);
 

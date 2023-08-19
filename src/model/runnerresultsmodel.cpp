@@ -288,6 +288,8 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
 
             return actionsList;
         }
+        case ResultsModel::QueryMatchRole:
+            return QVariant::fromValue(match);
         }
 
         return QVariant();
@@ -302,6 +304,18 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         return m_categories.at(index.row());
 
+    case ResultsModel::FavoriteIndexRole: {
+        for (int i = 0; i < rowCount(index); ++i) {
+            auto match = this->index(i, 0, index).data(ResultsModel::QueryMatchRole).value<KRunner::QueryMatch>();
+            if (match.isValid()) {
+                const QString id = match.runner()->id();
+                int idx = m_favoriteIds.indexOf(id);
+                return idx == -1 ? m_favoriteIds.size() : idx;
+            }
+        }
+        // Any match that is not a favorite will have a greater index than an actual favorite
+        return m_favoriteIds.size();
+    }
     // Returns the highest type/role within the group
     case ResultsModel::TypeRole: {
         int highestType = 0;

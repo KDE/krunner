@@ -52,6 +52,16 @@ public:
 protected:
     bool lessThan(const QModelIndex &sourceA, const QModelIndex &sourceB) const override
     {
+        bool isCategoryComparison = !sourceA.internalId() && !sourceB.internalId();
+        Q_ASSERT((bool)sourceA.internalId() == (bool)sourceB.internalId());
+        // Only check the favorite index if we compare categories. For individual matches, they will always be the same
+        if (isCategoryComparison) {
+            const int favoriteA = sourceA.data(ResultsModel::FavoriteIndexRole).toInt();
+            const int favoriteB = sourceB.data(ResultsModel::FavoriteIndexRole).toInt();
+            if (favoriteA != favoriteB) {
+                return favoriteA > favoriteB;
+            }
+        }
         const int typeA = sourceA.data(ResultsModel::TypeRole).toInt();
         const int typeB = sourceB.data(ResultsModel::TypeRole).toInt();
 
@@ -69,7 +79,7 @@ protected:
         return QSortFilterProxyModel::lessThan(sourceA, sourceB);
     }
 
-private:
+public:
     QStringList m_words;
 };
 
@@ -275,6 +285,17 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateCo
 }
 
 ResultsModel::~ResultsModel() = default;
+
+void ResultsModel::setFavoriteIds(const QStringList &ids)
+{
+    d->resultsModel->m_favoriteIds = ids;
+    Q_EMIT favoriteIdsChanged();
+}
+
+QStringList ResultsModel::favoriteIds() const
+{
+    return d->resultsModel->m_favoriteIds;
+}
 
 QString ResultsModel::queryString() const
 {

@@ -52,6 +52,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
     Q_PROPERTY(KPluginMetaData singleRunnerMetaData READ singleRunnerMetaData NOTIFY singleRunnerChanged)
 
     Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager CONSTANT)
+    Q_PROPERTY(QStringList favoriteIds READ favoriteIds WRITE setFavoriteIds NOTIFY favoriteIdsChanged)
 
 public:
     explicit ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent = nullptr);
@@ -67,12 +68,22 @@ public:
         SubtextRole,
         ActionsRole,
         MultiLineRole,
+        QueryMatchRole, /// @internal
+        FavoriteIndexRole, /// @internal
     };
     Q_ENUM(Roles)
 
     QString queryString() const;
     void setQueryString(const QString &queryString);
     Q_SIGNAL void queryStringChanged(const QString &queryString);
+
+    /**
+     * IDs of favorite plugins. Those plugins are always in a fixed order before the other ones.
+     * @param ids KPluginMetaData::pluginId values of plugins
+     */
+    void setFavoriteIds(const QStringList &ids);
+    QStringList favoriteIds() const;
+    Q_SIGNAL void favoriteIdsChanged();
 
     int limit() const;
     void setLimit(int limit);
