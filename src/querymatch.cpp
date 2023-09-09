@@ -306,7 +306,7 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
     return (d != other.d);
 }
 
-void QueryMatch::setActions(const KRunner::Actions &actions)
+void QueryMatch::setActions(const QList<KRunner::Action> &actions)
 {
     QWriteLocker locker(&d->lock);
     d->actions = actions;

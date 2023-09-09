@@ -20,7 +20,6 @@ class QVariant;
 namespace KRunner
 {
 class Action;
-using Actions = QList<Action>;
 class RunnerContext;
 class AbstractRunner;
 class QueryMatchPrivate;
@@ -252,7 +251,7 @@ public:
      * @see RunnerManager::actionsForMatch
      * @since 5.75
      */
-    void setActions(const KRunner::Actions &actions);
+    void setActions(const QList<KRunner::Action> &actions);
 
     /**
      * Adds an action to this match
