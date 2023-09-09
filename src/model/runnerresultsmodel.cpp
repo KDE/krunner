@@ -263,8 +263,8 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
                 return match.iconName();
             }
             return match.icon();
-        case ResultsModel::TypeRole:
-            return match.type();
+        case ResultsModel::CategoryRelevanceRole:
+            return match.categoryRelevance();
         case ResultsModel::RelevanceRole:
             return match.relevance();
         case ResultsModel::IdRole:
@@ -317,10 +317,10 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
         return m_favoriteIds.size();
     }
     // Returns the highest type/role within the group
-    case ResultsModel::TypeRole: {
+    case ResultsModel::CategoryRelevanceRole: {
         int highestType = 0;
         for (int i = 0; i < rowCount(index); ++i) {
-            const int type = this->index(i, 0, index).data(ResultsModel::TypeRole).toInt();
+            const int type = this->index(i, 0, index).data(ResultsModel::CategoryRelevanceRole).toInt();
             if (type > highestType) {
                 highestType = type;
             }

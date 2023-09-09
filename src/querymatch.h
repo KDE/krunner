@@ -68,7 +68,6 @@ public:
     QueryMatch &operator=(const QueryMatch &other);
     bool operator==(const QueryMatch &other) const;
     bool operator!=(const QueryMatch &other) const;
-    bool operator<(const QueryMatch &other) const;
 
     /**
      * @return the runner associated with this action
@@ -91,6 +90,22 @@ public:
      * The type of action this is. Defaults to PossibleMatch.
      */
     Type type() const;
+
+    /**
+     * Relevance for matches in the category. The match with the highest relevance is respected for the entire category.
+     * This value only affects the sorting of categories and not the sorting within the category. Use @ref setRelevance for this.
+     * The value should be from 0 to 100.
+     *
+     * @since 6.0
+     */
+    void setCategoryRelevance(qreal relevance);
+
+    /**
+     * Category relevance for this match
+     *
+     * @since 6.0
+     */
+    qreal categoryRelevance() const;
 
     /**
      * Sets information about the type of the match which is

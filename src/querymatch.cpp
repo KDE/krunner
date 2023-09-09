@@ -34,7 +34,7 @@ public:
     {
         QReadLocker l(&other.lock);
         runner = other.runner;
-        type = other.type;
+        categoryRelevance = other.categoryRelevance;
         relevance = other.relevance;
         selAction = other.selAction;
         enabled = other.enabled;
@@ -68,7 +68,6 @@ public:
 
     mutable QReadWriteLock lock;
     QPointer<AbstractRunner> runner;
-    QueryMatch::Type type = QueryMatch::ExactMatch;
     QString matchCategory;
     QString id;
     QString text;
@@ -78,6 +77,7 @@ public:
     QIcon icon;
     QString iconName;
     QVariant data;
+    qreal categoryRelevance = 50;
     qreal relevance = .7;
     KRunner::Action selAction;
     KRunner::Actions actions;
@@ -114,12 +114,22 @@ QString QueryMatch::id() const
 
 void QueryMatch::setType(Type type)
 {
-    d->type = type;
+    d->categoryRelevance = type;
 }
 
 QueryMatch::Type QueryMatch::type() const
 {
-    return d->type;
+    return (QueryMatch::Type)d->categoryRelevance;
+}
+
+void QueryMatch::setCategoryRelevance(qreal relevance)
+{
+    d->categoryRelevance = qBound(0.0, relevance, 100.0);
+}
+
+qreal QueryMatch::categoryRelevance() const
+{
+    return d->categoryRelevance;
 }
 
 void QueryMatch::setMatchCategory(const QString &category)
@@ -254,27 +264,6 @@ KRunner::Action QueryMatch::selectedAction() const
 void QueryMatch::setSelectedAction(const KRunner::Action &action)
 {
     d->selAction = action;
-}
-
-bool QueryMatch::operator<(const QueryMatch &other) const
-{
-    if (d->type == other.d->type) {
-        if (isEnabled() != other.isEnabled()) {
-            return other.isEnabled();
-        }
-
-        if (!qFuzzyCompare(d->relevance, other.d->relevance)) {
-            return d->relevance < other.d->relevance;
-        }
-
-        QReadLocker locker(&d->lock);
-        QReadLocker otherLocker(&other.d->lock);
-        // when resorting to sort by alpha, we want the
-        // reverse sort order!
-        return d->text > other.d->text;
-    }
-
-    return d->type < other.d->type;
 }
 
 void QueryMatch::setMultiLine(bool multiLine)

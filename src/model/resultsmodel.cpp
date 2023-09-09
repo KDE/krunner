@@ -62,11 +62,9 @@ protected:
             if (favoriteA != favoriteB) {
                 return favoriteA > favoriteB;
             }
-        }
-        const int typeA = sourceA.data(ResultsModel::TypeRole).toInt();
-        const int typeB = sourceB.data(ResultsModel::TypeRole).toInt();
 
-        if (typeA != typeB) {
+            const int typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toReal();
+            const int typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toReal();
             return typeA < typeB;
         }
 
@@ -362,8 +360,6 @@ QHash<int, QByteArray> ResultsModel::roleNames() const
     auto names = QAbstractItemModel::roleNames();
     names[IdRole] = QByteArrayLiteral("matchId"); // "id" is QML-reserved
     names[EnabledRole] = QByteArrayLiteral("enabled");
-    names[TypeRole] = QByteArrayLiteral("type");
-    names[RelevanceRole] = QByteArrayLiteral("relevance");
     names[CategoryRole] = QByteArrayLiteral("category");
     names[SubtextRole] = QByteArrayLiteral("subtext");
     names[ActionsRole] = QByteArrayLiteral("actions");
