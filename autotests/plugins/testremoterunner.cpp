@@ -52,7 +52,7 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
         RemoteMatch m;
         m.id = QStringLiteral("id2");
         m.text = QStringLiteral("Match 1");
-        m.type = KRunner::QueryMatch::ExactMatch;
+        m.categoryRelevance = KRunner::QueryMatch::CategoryRelevance::Highest;
         m.relevance = 0.8;
         QImage icon(10, 10, QImage::Format_RGBA8888);
         icon.fill(Qt::blue);
@@ -67,7 +67,7 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
         m.id = QStringLiteral("id3");
         m.text = QStringLiteral("Match 1");
         m.iconName = QStringLiteral("icon1");
-        m.type = KRunner::QueryMatch::ExactMatch;
+        m.categoryRelevance = KRunner::QueryMatch::CategoryRelevance::Highest;
         m.relevance = 0.8;
         m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
         QThread::msleep(requestedDelayMs);
@@ -77,7 +77,7 @@ RemoteMatches TestRemoteRunner::Match(const QString &searchTerm)
         m.id = QStringLiteral("id1");
         m.text = QStringLiteral("Match 1");
         m.iconName = QStringLiteral("icon1");
-        m.type = KRunner::QueryMatch::ExactMatch;
+        m.categoryRelevance = KRunner::QueryMatch::CategoryRelevance::Highest;
         m.relevance = 0.8;
         m.properties[QStringLiteral("actions")] = QStringList(QStringLiteral("action1"));
         m.properties[QStringLiteral("multiline")] = true;

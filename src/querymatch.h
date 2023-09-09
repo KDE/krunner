@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2006-2007 Aaron Seigo <aseigo@kde.org>
+    SPDX-FileCopyrightText: 2023 Alexander Lohnau <alexander.lohnau@gmx.de>
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
@@ -14,13 +15,11 @@
 #include "krunner_export.h"
 
 class QIcon;
-class QString;
 class QVariant;
 
 namespace KRunner
 {
 class Action;
-class RunnerContext;
 class AbstractRunner;
 class QueryMatchPrivate;
 
@@ -90,6 +89,21 @@ public:
      * The type of action this is. Defaults to PossibleMatch.
      */
     Type type() const;
+
+    /**
+     * Helper for reading standardized category relevance values
+     */
+    class CategoryRelevance
+    {
+    public:
+        enum {
+            Lowest = 0,
+            Low = 30,
+            Moderate = 50,
+            High = 70,
+            Highest = 100,
+        };
+    };
 
     /**
      * Relevance for matches in the category. The match with the highest relevance is respected for the entire category.

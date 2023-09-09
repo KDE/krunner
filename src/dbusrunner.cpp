@@ -180,7 +180,7 @@ QList<QueryMatch> DBusRunner::convertMatches(const QString &service, const Remot
 
         m.setText(match.text);
         m.setIconName(match.iconName);
-        m.setType(match.type);
+        m.setCategoryRelevance(match.categoryRelevance);
         m.setRelevance(match.relevance);
 
         // split is essential items are as native DBus types, optional extras are in the property map (which is obviously a lot slower to parse)

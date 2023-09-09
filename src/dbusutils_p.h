@@ -16,11 +16,11 @@
 #include <QVariantMap>
 
 struct RemoteMatch {
-    // sssuda{sv}
+    // sssida{sv}
     QString id;
     QString text;
     QString iconName;
-    KRunner::QueryMatch::Type type = KRunner::QueryMatch::NoMatch;
+    int categoryRelevance = KRunner::QueryMatch::CategoryRelevance::Lowest;
     qreal relevance = 0;
     QVariantMap properties;
 };
@@ -44,7 +44,7 @@ inline QDBusArgument &operator<<(QDBusArgument &argument, const RemoteMatch &mat
     argument << match.id;
     argument << match.text;
     argument << match.iconName;
-    argument << match.type;
+    argument << match.categoryRelevance;
     argument << match.relevance;
     argument << match.properties;
     argument.endStructure();
@@ -57,9 +57,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &argument, RemoteMatc
     argument >> match.id;
     argument >> match.text;
     argument >> match.iconName;
-    int type;
-    argument >> type;
-    match.type = static_cast<KRunner::QueryMatch::Type>(type);
+    argument >> match.categoryRelevance;
     argument >> match.relevance;
     argument >> match.properties;
     argument.endStructure();
