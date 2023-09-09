@@ -30,7 +30,6 @@ public:
     ~DBusRunnerTest() override;
 
 private Q_SLOTS:
-    void initTestCase();
     void cleanup();
     void testMatch();
     void testMulti();
@@ -47,20 +46,11 @@ DBusRunnerTest::DBusRunnerTest()
     : AbstractRunnerTest()
 {
     qRegisterMetaType<QList<KRunner::QueryMatch>>();
+    QStandardPaths::setTestModeEnabled(true);
 }
 
 DBusRunnerTest::~DBusRunnerTest()
 {
-}
-
-void DBusRunnerTest::initTestCase()
-{
-    // Set up a layer in the bin dir so ksycoca & KPluginMetaData find the Plasma/Runner service type
-    const QByteArray defaultDataDirs = qEnvironmentVariableIsSet("XDG_DATA_DIRS") ? qgetenv("XDG_DATA_DIRS") : QByteArray("/usr/local:/usr");
-    const QByteArray modifiedDataDirs = QFile::encodeName(QCoreApplication::applicationDirPath()) + QByteArrayLiteral("/data:") + defaultDataDirs;
-    qputenv("XDG_DATA_DIRS", modifiedDataDirs);
-
-    QStandardPaths::setTestModeEnabled(true);
 }
 
 void DBusRunnerTest::cleanup()
