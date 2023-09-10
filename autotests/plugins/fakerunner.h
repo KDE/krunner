@@ -24,6 +24,16 @@ public:
         // qWarning() << Q_FUNC_INFO;
     }
 
+    void init() override
+    {
+        connect(this, &AbstractRunner::prepare, this, [this]() {
+            setProperty("prepareCalled", true);
+        });
+        connect(this, &AbstractRunner::teardown, this, [this]() {
+            setProperty("teardownCalled", true);
+        });
+    }
+
     void match(RunnerContext &context) override
     {
         // Do not use nested event loop, because that would be quit when quitting the QThread's event loop

@@ -296,6 +296,9 @@ public:
         bool matchesRegex = singleMode || !runner->hasMatchRegex() || runner->matchRegex().match(query).hasMatch();
 
         if (matchesCount && matchesRegex) {
+            if (allRunnersPrepped) {
+                Q_EMIT runner->prepare();
+            }
             startJob(runner);
         } else {
             onRunnerJobFinished(jobId);
@@ -572,7 +575,8 @@ void RunnerManager::setupMatchSession()
         }
     } else {
         for (AbstractRunner *runner : std::as_const(d->runners)) {
-            if (!d->disabledRunnerIds.contains(runner->name())) {
+            // In case it is suspended, we will emit prepare when it resumed
+            if (!d->disabledRunnerIds.contains(runner->name()) && !runner->isMatchingSuspended()) {
                 Q_EMIT runner->prepare();
             }
         }
