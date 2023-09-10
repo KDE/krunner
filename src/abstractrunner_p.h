@@ -15,6 +15,7 @@ class AbstractRunnerPrivate
 public:
     explicit AbstractRunnerPrivate(AbstractRunner *r, const KPluginMetaData &data)
         : runnerDescription(data)
+        , translatedName(data.name())
         , runner(r)
         , minLetterCount(data.value(QStringLiteral("X-Plasma-Runner-Min-Letter-Count"), 0))
         , hasUniqueResults(data.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false))
@@ -28,6 +29,8 @@ public:
 
     QReadWriteLock lock;
     const KPluginMetaData runnerDescription;
+    // We can easily call this a few hundred times for a few queries. Thus just reuse the value and not do a lookup of the translated string every time
+    const QString translatedName;
     const AbstractRunner *runner;
     QList<RunnerSyntax> syntaxes;
     std::optional<bool> suspendMatching;

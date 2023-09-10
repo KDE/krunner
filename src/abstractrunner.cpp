@@ -89,7 +89,7 @@ void AbstractRunner::run(const KRunner::RunnerContext & /*search*/, const KRunne
 
 QString AbstractRunner::name() const
 {
-    return d->runnerDescription.name();
+    return d->translatedName;
 }
 
 QString AbstractRunner::id() const
