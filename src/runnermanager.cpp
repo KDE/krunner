@@ -490,6 +490,9 @@ AbstractRunner *RunnerManager::runner(const QString &pluginId) const
 
 QList<AbstractRunner *> RunnerManager::runners() const
 {
+    if (d->runners.isEmpty()) {
+        d->loadRunners();
+    }
     return d->runners.values();
 }
 

@@ -18,6 +18,7 @@
 #include <KDescendantsProxyModel>
 #include <KModelIndexProxyMapper>
 #include <KRunner/AbstractRunner>
+#include <QTimer>
 #include <cmath>
 
 using namespace KRunner;
@@ -282,6 +283,12 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateCo
     d->hideRootModel->setTreeModel(d->resultsModel);
 
     setSourceModel(d->hideRootModel);
+
+    // Initialize the runners, this will speed the first query up.
+    // While there were lots of optimizations, instantiating plugins, creating threads and AbstractRunner::init is still heavy work
+    QTimer::singleShot(0, this, [this]() {
+        runnerManager()->runners();
+    });
 }
 
 ResultsModel::~ResultsModel() = default;
