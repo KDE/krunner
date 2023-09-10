@@ -263,15 +263,12 @@ void RunnerContext::restore(const KConfigGroup &config)
 {
     const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
 
-    static const QRegularExpression re(QStringLiteral("(\\d*) (.+)"));
     for (const QString &entry : cfgList) {
-        const QRegularExpressionMatch match = re.match(entry);
-        if (!match.hasMatch()) {
-            continue;
+        if (int idx = entry.indexOf(QLatin1Char(' ')); idx != -1) {
+            const int count = entry.mid(0, idx).toInt();
+            const QString id = entry.mid(idx + 1);
+            d->launchCounts[id] = count;
         }
-        const int count = match.captured(1).toInt();
-        const QString id = match.captured(2);
-        d->launchCounts[id] = count;
     }
 }
 
@@ -282,11 +279,8 @@ void RunnerContext::save(KConfigGroup &config)
     }
     d->changedLaunchCounts = 0;
     QStringList countList;
-
-    typedef QHash<QString, int>::const_iterator Iterator;
-    Iterator end = d->launchCounts.constEnd();
-    for (Iterator i = d->launchCounts.constBegin(); i != end; ++i) {
-        countList << QStringLiteral("%2 %1").arg(i.key()).arg(i.value());
+    for (auto it = d->launchCounts.cbegin(), end = d->launchCounts.cend(); it != end; ++it) {
+        countList << QStringLiteral("%2 %1").arg(it.key()).arg(it.value());
     }
 
     config.writeEntry("LaunchCounts", countList);
