@@ -20,6 +20,10 @@ Q_DECLARE_METATYPE(KRunner::QueryMatch)
 Q_DECLARE_METATYPE(QList<KRunner::QueryMatch>)
 
 using namespace KRunner;
+namespace KRunner
+{
+extern int __changeCountBeforeSaving;
+}
 
 class RunnerManagerTest : public AbstractRunnerTest
 {
@@ -27,6 +31,7 @@ class RunnerManagerTest : public AbstractRunnerTest
 private Q_SLOTS:
     void initTestCase()
     {
+        __changeCountBeforeSaving = 1;
         startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave")});
         qputenv("XDG_DATA_DIRS", QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation).toLocal8Bit());
         QCoreApplication::setLibraryPaths(QStringList());

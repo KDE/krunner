@@ -13,15 +13,18 @@
 #include <QSignalSpy>
 #include <QStandardPaths>
 #include <QTest>
-
+namespace KRunner
+{
+extern int __changeCountBeforeSaving;
+}
 using namespace KRunner;
-
 class RunnerManagerHistoryTest : public QObject
 {
     Q_OBJECT
 public:
     RunnerManagerHistoryTest()
     {
+        __changeCountBeforeSaving = 1;
         QStandardPaths::setTestModeEnabled(true);
         stateConfigFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "krunnerstaterc";
     }

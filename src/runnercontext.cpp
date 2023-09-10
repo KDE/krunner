@@ -26,6 +26,7 @@
 
 namespace KRunner
 {
+KRUNNER_EXPORT int __changeCountBeforeSaving = 5; // For tests
 class RunnerContextPrivate : public QSharedData
 {
 public:
@@ -84,6 +85,7 @@ public:
     bool m_isValid = true;
     QList<QueryMatch> matches;
     QHash<QString, int> launchCounts;
+    int changedLaunchCounts = 0; // We want to sync them while the app is running, but for each query it is overkill
     QString term;
     bool singleRunnerQueryMode = false;
     bool shouldIgnoreCurrentMatchForHistory = false;
@@ -275,6 +277,10 @@ void RunnerContext::restore(const KConfigGroup &config)
 
 void RunnerContext::save(KConfigGroup &config)
 {
+    if (d->changedLaunchCounts < __changeCountBeforeSaving) {
+        return;
+    }
+    d->changedLaunchCounts = 0;
     QStringList countList;
 
     typedef QHash<QString, int>::const_iterator Iterator;
@@ -290,6 +296,7 @@ void RunnerContext::save(KConfigGroup &config)
 void RunnerContext::increaseLaunchCount(const QueryMatch &match)
 {
     ++d->launchCounts[match.id()];
+    ++d->changedLaunchCounts;
 }
 
 QString RunnerContext::requestedQueryString() const
