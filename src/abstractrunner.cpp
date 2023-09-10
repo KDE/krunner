@@ -92,19 +92,9 @@ QString AbstractRunner::name() const
     return d->runnerDescription.name();
 }
 
-QIcon AbstractRunner::icon() const
-{
-    return QIcon::fromTheme(d->runnerDescription.iconName());
-}
-
 QString AbstractRunner::id() const
 {
     return d->runnerDescription.pluginId();
-}
-
-QString AbstractRunner::description() const
-{
-    return d->runnerDescription.description();
 }
 
 KPluginMetaData AbstractRunner::metadata() const

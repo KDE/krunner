@@ -116,16 +116,6 @@ public:
     QString id() const;
 
     /**
-     * @return the translated description from the runner's metadata'
-     */
-    QString description() const;
-
-    /**
-     * @return the icon from the runner's metadata'
-     */
-    QIcon icon() const;
-
-    /**
      * Reloads the runner's configuration. This is called when it's KCM in the PluginSelector is applied.
      * This function may be used to set for example using setMatchRegex, setMinLetterCount or setTriggerWords.
      * Also, syntaxes should be updated when this method is called.
