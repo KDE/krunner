@@ -222,6 +222,7 @@ public:
             });
             if (isCppPlugin) {
                 auto thread = new QThread();
+                thread->setObjectName(pluginMetaData.pluginId());
                 thread->start();
                 runner->moveToThread(thread);
             }
