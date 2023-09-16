@@ -211,9 +211,8 @@ QList<QueryMatch> DBusRunner::convertMatches(const QString &service, const Remot
             const auto iconDataArgument = iconData.value<QDBusArgument>();
             if (iconDataArgument.currentType() == QDBusArgument::StructureType && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
                 const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
-                const QImage decodedImage = decodeImage(remoteImage);
-                if (!decodedImage.isNull()) {
-                    const QPixmap pix = QPixmap::fromImage(decodedImage);
+                if (QImage decodedImage = decodeImage(remoteImage); !decodedImage.isNull()) {
+                    const QPixmap pix = QPixmap::fromImage(std::move(decodedImage));
                     QIcon icon(pix);
                     m.setIcon(icon);
                     // iconName normally takes precedence
