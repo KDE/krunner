@@ -10,7 +10,7 @@ else
     prefix="$XDG_DATA_HOME"
 fi
 
-mkdir -p $prefix/kservices5/krunner/dbusplugins/
+mkdir -p $prefix/krunner/dbusplugins/
 mkdir -p $prefix/dbus-1/services/
 
 cp plasma-runner-%{APPNAMELC}.desktop $prefix/krunner/dbusplugins/

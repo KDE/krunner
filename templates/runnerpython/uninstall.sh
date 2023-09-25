@@ -9,7 +9,7 @@ else
     prefix="$XDG_DATA_HOME"
 fi
 
-rm $prefix/kservices5/krunner/dbusplugins/plasma-runner-%{APPNAMELC}.desktop
+rm $prefix/krunner/dbusplugins/plasma-runner-%{APPNAMELC}.desktop
 rm $prefix/dbus-1/services/org.kde.%{APPNAMELC}.service
 kquitapp5 krunner
 
