@@ -287,7 +287,7 @@ private:
     friend class RunnerManager;
     friend class RunnerContext;
     friend class RunnerContextPrivate;
-    friend class QueryMatch;
+    friend class QueryMatchPrivate;
     friend class DBusRunner; // Because it "overrides" matchInternal
 };
 

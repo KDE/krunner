@@ -32,7 +32,7 @@ public:
     QueryMatchPrivate(const QueryMatchPrivate &other)
         : QSharedData(other)
     {
-        QReadLocker l(other.lock);
+        QReadLocker l(&other.lock);
         runner = other.runner;
         type = other.type;
         relevance = other.relevance;
@@ -51,12 +51,22 @@ public:
         multiLine = other.multiLine;
     }
 
-    ~QueryMatchPrivate()
+    void setId(const QString &newId)
     {
-        delete lock;
+        if (runner && runner->d->hasUniqueResults) {
+            id = newId;
+        } else {
+            if (runner) {
+                id = runner.data()->id();
+            }
+            if (!id.isEmpty()) {
+                id.append(QLatin1Char('_')).append(newId);
+            }
+        }
+        idSetByData = false;
     }
 
-    QReadWriteLock *lock = new QReadWriteLock(QReadWriteLock::Recursive);
+    mutable QReadWriteLock lock;
     QPointer<AbstractRunner> runner;
     QueryMatch::Type type = QueryMatch::ExactMatch;
     QString matchCategory;
@@ -86,9 +96,7 @@ QueryMatch::QueryMatch(const QueryMatch &other)
 {
 }
 
-QueryMatch::~QueryMatch()
-{
-}
+QueryMatch::~QueryMatch() = default;
 
 bool QueryMatch::isValid() const
 {
@@ -144,25 +152,25 @@ AbstractRunner *QueryMatch::runner() const
 
 void QueryMatch::setText(const QString &text)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->text = text;
 }
 
 void QueryMatch::setSubtext(const QString &subtext)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->subtext = subtext;
 }
 
 void QueryMatch::setData(const QVariant &data)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->data = data;
 
     if (d->id.isEmpty() || d->idSetByData) {
         const QString matchId = data.toString();
         if (!matchId.isEmpty()) {
-            setId(matchId);
+            d->setId(matchId);
             d->idSetByData = true;
         }
     }
@@ -170,71 +178,61 @@ void QueryMatch::setData(const QVariant &data)
 
 void QueryMatch::setId(const QString &id)
 {
-    QWriteLocker locker(d->lock);
-    if (d->runner && d->runner->d->hasUniqueResults) {
-        d->id = id;
-    } else {
-        if (d->runner) {
-            d->id = d->runner.data()->id();
-        }
-        if (!id.isEmpty()) {
-            d->id.append(QLatin1Char('_')).append(id);
-        }
-    }
-    d->idSetByData = false;
+    QWriteLocker locker(&d->lock);
+    d->setId(id);
 }
 
 void QueryMatch::setIcon(const QIcon &icon)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->icon = icon;
 }
 
 void QueryMatch::setIconName(const QString &iconName)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->iconName = iconName;
 }
 
 QVariant QueryMatch::data() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->data;
 }
 
 QString QueryMatch::text() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->text;
 }
 
 QString QueryMatch::subtext() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->subtext;
 }
 
 QIcon QueryMatch::icon() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->icon;
 }
 
 QString QueryMatch::iconName() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->iconName;
 }
 
 void QueryMatch::setUrls(const QList<QUrl> &urls)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->urls = urls;
 }
 
 QList<QUrl> QueryMatch::urls() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->urls;
 }
 
@@ -269,8 +267,8 @@ bool QueryMatch::operator<(const QueryMatch &other) const
             return d->relevance < other.d->relevance;
         }
 
-        QReadLocker locker(d->lock);
-        QReadLocker otherLocker(other.d->lock);
+        QReadLocker locker(&d->lock);
+        QReadLocker otherLocker(&other.d->lock);
         // when resorting to sort by alpha, we want the
         // reverse sort order!
         return d->text > other.d->text;
@@ -310,19 +308,19 @@ bool QueryMatch::operator!=(const QueryMatch &other) const
 
 void QueryMatch::setActions(const KRunner::Actions &actions)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->actions = actions;
 }
 
 void QueryMatch::addAction(const KRunner::Action &action)
 {
-    QWriteLocker locker(d->lock);
+    QWriteLocker locker(&d->lock);
     d->actions << action;
 }
 
 KRunner::Actions QueryMatch::actions() const
 {
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
     return d->actions;
 }
 
