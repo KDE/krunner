@@ -279,8 +279,9 @@ void RunnerContext::save(KConfigGroup &config)
     }
     d->changedLaunchCounts = 0;
     QStringList countList;
+    countList.reserve(d->launchCounts.size());
     for (auto it = d->launchCounts.cbegin(), end = d->launchCounts.cend(); it != end; ++it) {
-        countList << QStringLiteral("%2 %1").arg(it.key()).arg(it.value());
+        countList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
     }
 
     config.writeEntry("LaunchCounts", countList);
