@@ -5,6 +5,7 @@
  *
  */
 
+#include "runnermanager.h"
 #include "runnerresultsmodel_p.h"
 
 #include <QSet>
@@ -35,6 +36,13 @@ KRunner::QueryMatch RunnerResultsModel::fetchMatch(const QModelIndex &idx) const
 
 void RunnerResultsModel::onMatchesChanged(const QList<KRunner::QueryMatch> &matches)
 {
+    qDebug() << "krunner:";
+    qDebug() << "krunner:"
+             << "matches changed" << matches.count() << "matches";
+    for (const auto &match : matches) {
+        qDebug() << "krunner:"
+                 << "match" << match.text() << match.matchCategory() << match.type() << match.relevance();
+    }
     // Build the list of new categories and matches
     QSet<QString> newCategories;
     // here we use QString as key since at this point we don't care about the order
