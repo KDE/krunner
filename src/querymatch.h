@@ -93,22 +93,28 @@ public:
     /**
      * Helper for reading standardized category relevance values
      */
-    class CategoryRelevance
-    {
-    public:
-        enum {
-            Lowest = 0,
-            Low = 30,
-            Moderate = 50,
-            High = 70,
-            Highest = 100,
-        };
+    enum class CategoryRelevance {
+        Lowest = 0,
+        Low = 30,
+        Moderate = 50,
+        High = 70,
+        Highest = 100,
     };
 
     /**
      * Relevance for matches in the category. The match with the highest relevance is respected for the entire category.
      * This value only affects the sorting of categories and not the sorting within the category. Use @ref setRelevance for this.
      * The value should be from 0 to 100.
+     *
+     * @since 6.0
+     */
+    void setCategoryRelevance(CategoryRelevance relevance)
+    {
+        setCategoryRelevance(qToUnderlying(relevance));
+    }
+
+    /**
+     * @internal Internal for now, consumers should utilize CategoryRelevance enum
      *
      * @since 6.0
      */

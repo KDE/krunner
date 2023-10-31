@@ -20,7 +20,7 @@ struct RemoteMatch {
     QString id;
     QString text;
     QString iconName;
-    int categoryRelevance = KRunner::QueryMatch::CategoryRelevance::Lowest;
+    int categoryRelevance = qToUnderlying(KRunner::QueryMatch::CategoryRelevance::Lowest);
     qreal relevance = 0;
     QVariantMap properties;
 };

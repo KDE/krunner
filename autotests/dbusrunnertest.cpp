@@ -73,7 +73,7 @@ void DBusRunnerTest::testMatch()
     QCOMPARE(result.id(), QStringLiteral("dbusrunnertest_id1")); // note the runner name is prepended
     QCOMPARE(result.text(), QStringLiteral("Match 1"));
     QCOMPARE(result.iconName(), QStringLiteral("icon1"));
-    QCOMPARE(result.categoryRelevance(), KRunner::QueryMatch::CategoryRelevance::Highest);
+    QCOMPARE(result.categoryRelevance(), qToUnderlying(KRunner::QueryMatch::CategoryRelevance::Highest));
     QCOMPARE(result.isMultiLine(), true);
     // relevance can't be compared easily because RunnerContext meddles with it
 
