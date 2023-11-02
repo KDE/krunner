@@ -275,6 +275,8 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
             return match.matchCategory();
         case ResultsModel::SubtextRole:
             return match.subtext();
+        case ResultsModel::UrlsRole:
+          return QVariant::fromValue(match.urls());
         case ResultsModel::MultiLineRole:
             return match.isMultiLine();
         case ResultsModel::ActionsRole: {

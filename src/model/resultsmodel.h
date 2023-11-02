@@ -68,6 +68,7 @@ public:
         SubtextRole,
         ActionsRole,
         MultiLineRole,
+        UrlsRole,
         QueryMatchRole, /// @internal
         FavoriteIndexRole, /// @internal
     };

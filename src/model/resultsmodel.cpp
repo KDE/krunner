@@ -362,6 +362,7 @@ QHash<int, QByteArray> ResultsModel::roleNames() const
     names[EnabledRole] = QByteArrayLiteral("enabled");
     names[CategoryRole] = QByteArrayLiteral("category");
     names[SubtextRole] = QByteArrayLiteral("subtext");
+    names[UrlsRole] = QByteArrayLiteral("urls");
     names[ActionsRole] = QByteArrayLiteral("actions");
     names[MultiLineRole] = QByteArrayLiteral("multiLine");
     return names;
