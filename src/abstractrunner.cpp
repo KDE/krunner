@@ -50,7 +50,7 @@ AbstractRunner::~AbstractRunner() = default;
 
 KConfigGroup AbstractRunner::config() const
 {
-    KConfigGroup runners(KSharedConfig::openConfig(QStringLiteral("krunnerrc")), "Runners");
+    KConfigGroup runners(KSharedConfig::openConfig(QStringLiteral("krunnerrc")), QStringLiteral("Runners"));
     return runners.group(id());
 }
 

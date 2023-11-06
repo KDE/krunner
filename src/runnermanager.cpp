@@ -107,7 +107,7 @@ public:
                              }
                          });
 #endif
-        const KConfigGroup generalConfig = pluginConf.config()->group("General");
+        const KConfigGroup generalConfig = pluginConf.config()->group(QStringLiteral("General"));
         activityAware = generalConfig.readEntry("ActivityAware", true);
         context.restore(stateData);
     }
@@ -373,14 +373,14 @@ public:
 
     void writeActivityHistory(const QStringList &historyEntries)
     {
-        stateData.group("History").writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
+        stateData.group(QStringLiteral("History")).writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
         stateData.sync();
     }
 
 #if HAVE_KACTIVITIES
     void deleteHistoryOfDeletedActivities()
     {
-        KConfigGroup historyGroup = stateData.group("History");
+        KConfigGroup historyGroup = stateData.group(QStringLiteral("History"));
         QStringList historyEntries = historyGroup.keyList();
         historyEntries.removeOne(nulluuid);
 
@@ -399,7 +399,7 @@ public:
 
     inline QStringList readHistoryForCurrentActivity()
     {
-        return stateData.group("History").readEntry(getActivityKey(), QStringList());
+        return stateData.group(QStringLiteral("History")).readEntry(getActivityKey(), QStringList());
     }
 
     RunnerManager *const q;
@@ -442,7 +442,7 @@ RunnerManager::RunnerManager(QObject *parent)
 {
     auto defaultStatePtr = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation);
     auto configPtr = KSharedConfig::openConfig(QStringLiteral("krunnerrc"), KConfig::NoGlobals);
-    d.reset(new RunnerManagerPrivate(configPtr->group("Plugins"), defaultStatePtr->group("PlasmaRunnerManager"), this));
+    d.reset(new RunnerManagerPrivate(configPtr->group(QStringLiteral("Plugins")), defaultStatePtr->group(QStringLiteral("PlasmaRunnerManager")), this));
 }
 
 RunnerManager::~RunnerManager()
