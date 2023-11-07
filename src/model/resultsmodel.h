@@ -30,7 +30,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
     /**
      * The preferred maximum number of matches in the model
      *
-     * If there are lots of results from different catergories,
+     * If there are lots of results from different categories,
      * the limit can be slightly exceeded.
      *
      * Default is 0, which means no limit.
