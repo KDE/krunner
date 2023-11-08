@@ -210,6 +210,10 @@ protected:
 
     /**
      * Constructor for a KRunner plugin
+     *
+     * @note You should connect here to the prepare/teardown signals. However, avoid doing heavy initialization here
+     * in favor of doing it in AbstractRunner::init
+     *
      * @param parent parent object for this runner
      * @param pluginMetaData metadata that was embedded in the runner
      * @param args for compatibility with KPluginFactory, since 6.0 this can be omitted
