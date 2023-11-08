@@ -601,7 +601,6 @@ void RunnerManager::matchSessionComplete()
 void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &runnerName)
 {
     d->pendingJobsAfterSuspend.clear(); // Do not start old jobs when we got a new query
-    setupMatchSession();
     QString term = untrimmedTerm.trimmed();
     const QString prevSingleRunner = d->singleModeRunnerId;
     d->untrimmedTerm = untrimmedTerm;
@@ -645,6 +644,7 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
 
     qint64 startTs = QDateTime::currentMSecsSinceEpoch();
     d->context.setJobStartTs(startTs);
+    setupMatchSession();
     for (KRunner::AbstractRunner *r : std::as_const(runnable)) {
         const QString &jobId = d->context.runnerJobId(r);
         if (r->isMatchingSuspended()) {
