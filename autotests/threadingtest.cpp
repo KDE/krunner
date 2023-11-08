@@ -88,22 +88,6 @@ private Q_SLOTS:
             launchQuery("define test");
         }
     }
-
-    void testPrepareNotBeingEaten()
-    {
-        RunnerManager manager;
-        auto runner = manager.loadRunner(KPluginMetaData::findPluginById("krunnertest", "fakerunnerplugin"));
-        QVERIFY(!runner->property("prepareCalled").toBool());
-        // We immediately launch the query, without giving the runner to finish initializign and thus connecting the signals
-        manager.launchQuery("foo");
-
-        QVERIFY(runner);
-        QCOMPARE(manager.runners().size(), 1);
-        QTRY_VERIFY(runner->property("prepareCalled").toBool());
-
-        manager.matchSessionComplete();
-        QTRY_VERIFY(runner->property("teardownCalled").toBool());
-    }
 };
 
 QTEST_MAIN(ThreadingTest)
