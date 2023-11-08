@@ -112,16 +112,6 @@ QString QueryMatch::id() const
     return d->id;
 }
 
-void QueryMatch::setType(Type type)
-{
-    d->categoryRelevance = type;
-}
-
-QueryMatch::Type QueryMatch::type() const
-{
-    return (QueryMatch::Type)d->categoryRelevance;
-}
-
 void QueryMatch::setCategoryRelevance(qreal relevance)
 {
     d->categoryRelevance = qBound(0.0, relevance, 100.0);

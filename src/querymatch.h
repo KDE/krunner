@@ -32,25 +32,6 @@ class KRUNNER_EXPORT QueryMatch
 {
 public:
     /**
-     * The type of match. Value is important here as it is used for sorting
-     */
-    enum Type {
-        NoMatch = 0, /**< Null match */
-        CompletionMatch = 10, /**< Possible completion for the data of the query */
-        PossibleMatch = 30, /**< Something that may match the query */
-        /**
-         * A match that represents an action not directly related
-         * to activating the given search term, such as a search
-         * in an external tool or a command learning trigger. Helper
-         * matches tend to be generic to the query and should not
-         * be autoactivated just because the user hits "Enter"
-         * while typing.
-         */
-        HelperMatch = 70,
-        ExactMatch = 100, /**< An exact match to the query */
-    };
-
-    /**
      * Constructs a PossibleMatch associated with a given RunnerContext
      * and runner.
      *
@@ -78,17 +59,6 @@ public:
      *         an invalid match does not have an associated AbstractRunner
      */
     bool isValid() const;
-
-    /**
-     * Sets the type of match this action represents.
-     * This value is used for sorting the different categories
-     */
-    void setType(Type type);
-
-    /**
-     * The type of action this is. Defaults to PossibleMatch.
-     */
-    Type type() const;
 
     /**
      * Helper for reading standardized category relevance values
