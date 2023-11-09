@@ -58,7 +58,7 @@ find_package(KF6CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6ItemModels ${KF_DEP_VERSION})
 
-find_package(KF6Activities ${KF_DEP_VERSION})
+find_package(KF6Activities)
 set_package_properties(KF6Activities PROPERTIES
         DESCRIPTION "Library for Activities"
         PURPOSE "Required for activities support (optional)"
