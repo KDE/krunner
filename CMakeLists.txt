@@ -34,7 +34,6 @@ set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprec
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
-option(KRUNNER_USE_QML "Build the QML plugin that exposes the KRunner model" ON)
 
 set(krunner_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/krunner_version.h")
 ecm_setup_version(PROJECT
