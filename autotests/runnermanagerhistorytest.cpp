@@ -137,6 +137,7 @@ void RunnerManagerHistoryTest::testRelevanceForOftenLaunched()
     launchQuery(QStringLiteral("foo"), manager.get());
     const auto newMatches = manager->matches();
     QCOMPARE(newMatches.size(), 2);
+    QCOMPARE(newMatches.at(0).type(), QueryMatch::ExactMatch);
     QVERIFY(newMatches.at(0).relevance() < newMatches.at(1).relevance());
 }
 

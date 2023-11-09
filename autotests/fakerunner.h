@@ -44,6 +44,7 @@ private:
         queryMatch.setId(text);
         queryMatch.setText(text);
         queryMatch.setRelevance(relevance);
+        queryMatch.setCategoryRelevance(QueryMatch::CategoryRelevance::Highest);
         return queryMatch;
     }
 };

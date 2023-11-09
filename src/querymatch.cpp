@@ -129,6 +129,11 @@ QString QueryMatch::matchCategory() const
     return d->matchCategory;
 }
 
+void QueryMatch::setCategoryRelevance(CategoryRelevance relevance)
+{
+    setType((Type) static_cast<int>(relevance));
+}
+
 void QueryMatch::setRelevance(qreal relevance)
 {
     d->relevance = qMax(qreal(0.0), relevance);

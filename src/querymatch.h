@@ -114,6 +114,26 @@ public:
     Type type() const;
 
     /**
+     * Helper for reading standardized category relevance values
+     */
+    enum class CategoryRelevance {
+        Lowest = 0,
+        Low = 30,
+        Moderate = 51,
+        High = 70,
+        Highest = 100,
+    };
+
+    /**
+     * Relevance for matches in the category. The match with the highest relevance is respected for the entire category.
+     * This value only affects the sorting of categories and not the sorting within the category. Use @ref setRelevance for this.
+     * The value should be from 0 to 100.
+     *
+     * @since 5.113
+     */
+    void setCategoryRelevance(CategoryRelevance relevance);
+
+    /**
      * Sets information about the type of the match which can
      * be used to categorize the match.
      *
