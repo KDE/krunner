@@ -103,10 +103,13 @@ public:
      */
     bool isValid() const;
 
+#if KRUNNER_ENABLE_DEPRECATED_SINCE(5, 113)
     /**
      * Sets the type of match this action represents.
      */
+    KRUNNER_DEPRECATED_VERSION(5, 113, "Use setCategoryRelevance instead")
     void setType(Type type);
+#endif
 
     /**
      * The type of action this is. Defaults to PossibleMatch.

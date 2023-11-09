@@ -106,10 +106,12 @@ QString QueryMatch::id() const
     return d->id;
 }
 
+#if KRUNNER_BUILD_DEPRECATED_SINCE(5, 113)
 void QueryMatch::setType(Type type)
 {
     d->type = type;
 }
+#endif
 
 QueryMatch::Type QueryMatch::type() const
 {
