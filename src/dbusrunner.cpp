@@ -23,7 +23,7 @@ namespace KRunner
 {
 DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
     : KRunner::AbstractRunner(parent, data)
-    , m_path(data.value(QStringLiteral("X-Plasma-DBusRunner-Path")))
+    , m_path(data.value(QStringLiteral("X-Plasma-DBusRunner-Path"), QStringLiteral("/runner")))
     , m_hasUniqueResults(data.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false))
     , m_requestActionsOnce(data.value(QStringLiteral("X-Plasma-Request-Actions-Once"), false))
     , m_callLifecycleMethods(data.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2"))
