@@ -234,7 +234,7 @@ public:
                 // signal will have been sent out, so we need to emit the signal ourselves here
                 matchesChanged();
             }
-            Q_EMIT q->queryFinished();
+            Q_EMIT q->queryFinished(); // NOLINT(readability-misleading-indentation)
         }
         if (!currentJobs.isEmpty()) {
             qCDebug(KRUNNER) << "Current jobs are" << currentJobs;
