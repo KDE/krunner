@@ -34,7 +34,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &pluginMetaData, c
     qRegisterMetaType<QMap<QString, RemoteActions>>("QMap<QString, RemoteActions>");
 
     QString requestedServiceName = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Service"));
-    m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"));
+    m_path = pluginMetaData.value(QStringLiteral("X-Plasma-DBusRunner-Path"), QStringLiteral("/runner"));
     m_hasUniqueResults = pluginMetaData.value(QStringLiteral("X-Plasma-Runner-Unique-Results"), false);
     m_callLifecycleMethods = pluginMetaData.value(QStringLiteral("X-Plasma-API")) == QLatin1String("DBus2");
 
