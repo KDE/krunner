@@ -205,6 +205,13 @@ public Q_SLOTS:
      */
     void reset();
 
+    /**
+     * Set the environment identifier for recording history and launch counts
+     * @internal
+     * @since 6.0
+     */
+    Q_INVOKABLE void setHistoryEnvironmentIdentifier(const QString &identifier);
+
 Q_SIGNALS:
     /**
      * Emitted each time a new match is added to the list

@@ -1,8 +1,6 @@
 # SPDX-FileCopyrightText: KDE Contributors
 # SPDX-License-Identifier: BSD-2-Clause
 
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-
 add_library(KF6Runner SHARED)
 add_library(KF6::Runner ALIAS KF6Runner)
 
@@ -71,10 +69,6 @@ target_link_libraries(KF6Runner
         KF6::I18n
         KF6::ItemModels
 )
-if(HAVE_KACTIVITIES)
-    target_link_libraries(KF6Runner PRIVATE Plasma::Activities)
-endif()
-
 ecm_generate_headers(KRunner_CamelCase_HEADERS
   HEADER_NAMES
     AbstractRunner

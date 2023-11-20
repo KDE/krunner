@@ -24,11 +24,6 @@
 #include <KPluginMetaData>
 #include <KSharedConfig>
 
-#include "config.h"
-#if HAVE_KACTIVITIES
-#include <PlasmaActivities/Consumer>
-#endif
-
 #include "abstractrunner_p.h"
 #include "dbusrunner_p.h"
 #include "kpluginmetadata_utils_p.h"
@@ -96,19 +91,7 @@ public:
 
     void loadConfiguration()
     {
-#if HAVE_KACTIVITIES
-        // Wait for consumer to be ready
-        QObject::connect(&activitiesConsumer,
-                         &KActivities::Consumer::serviceStatusChanged,
-                         &activitiesConsumer,
-                         [this](KActivities::Consumer::ServiceStatus status) {
-                             if (status == KActivities::Consumer::Running) {
-                                 deleteHistoryOfDeletedActivities();
-                             }
-                         });
-#endif
         const KConfigGroup generalConfig = pluginConf.config()->group(QStringLiteral("General"));
-        activityAware = generalConfig.readEntry("ActivityAware", true);
         context.restore(stateData);
     }
 
@@ -335,17 +318,6 @@ public:
         });
     }
 
-    inline QString getActivityKey()
-    {
-#if HAVE_KACTIVITIES
-        if (activityAware) {
-            const QString currentActivity = activitiesConsumer.currentActivity();
-            return currentActivity.isEmpty() ? nulluuid : currentActivity;
-        }
-#endif
-        return nulluuid;
-    }
-
     void addToHistory()
     {
         const QString term = context.query();
@@ -353,7 +325,7 @@ public:
         if (!historyEnabled || term.isEmpty() || untrimmedTerm.startsWith(QLatin1Char(' '))) {
             return;
         }
-        QStringList historyEntries = readHistoryForCurrentActivity();
+        QStringList historyEntries = readHistoryForCurrentEnv();
         // Avoid removing the same item from the front and prepending it again
         if (!historyEntries.isEmpty() && historyEntries.constFirst() == term) {
             return;
@@ -365,40 +337,21 @@ public:
         while (historyEntries.count() > 50) { // we don't want to store more than 50 entries
             historyEntries.removeLast();
         }
-        writeActivityHistory(historyEntries);
+        writeHistory(historyEntries);
     }
 
-    void writeActivityHistory(const QStringList &historyEntries)
+    void writeHistory(const QStringList &historyEntries)
     {
-        stateData.group(QStringLiteral("History")).writeEntry(getActivityKey(), historyEntries, KConfig::Notify);
+        stateData.group(QStringLiteral("History")).writeEntry(historyEnvironmentIdentifier, historyEntries, KConfig::Notify);
         stateData.sync();
     }
 
-#if HAVE_KACTIVITIES
-    void deleteHistoryOfDeletedActivities()
+    inline QStringList readHistoryForCurrentEnv()
     {
-        KConfigGroup historyGroup = stateData.group(QStringLiteral("History"));
-        QStringList historyEntries = historyGroup.keyList();
-        historyEntries.removeOne(nulluuid);
-
-        // Check if history still exists
-        const QStringList activities = activitiesConsumer.activities();
-        for (const auto &a : activities) {
-            historyEntries.removeOne(a);
-        }
-
-        for (const QString &deletedActivity : std::as_const(historyEntries)) {
-            historyGroup.deleteEntry(deletedActivity);
-        }
-        historyGroup.sync();
-    }
-#endif
-
-    inline QStringList readHistoryForCurrentActivity()
-    {
-        return stateData.group(QStringLiteral("History")).readEntry(getActivityKey(), QStringList());
+        return stateData.group(QStringLiteral("History")).readEntry(historyEnvironmentIdentifier, QStringList());
     }
 
+    QString historyEnvironmentIdentifier = QStringLiteral("default");
     RunnerManager *const q;
     RunnerContext context;
     QTimer matchChangeTimer;
@@ -412,18 +365,13 @@ public:
     bool allRunnersPrepped = false;
     bool singleRunnerPrepped = false;
     bool singleMode = false;
-    bool activityAware = false;
     bool historyEnabled = true;
     QStringList whiteList;
     KConfigWatcher::Ptr watcher;
     QString untrimmedTerm;
-    const QString nulluuid = QStringLiteral("00000000-0000-0000-0000-000000000000");
     KConfigGroup pluginConf;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
-#if HAVE_KACTIVITIES
-    const KActivities::Consumer activitiesConsumer;
-#endif
 };
 
 RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateConfigGroup, QObject *parent)
@@ -683,7 +631,7 @@ QString RunnerManager::query() const
 
 QStringList RunnerManager::history() const
 {
-    return d->readHistoryForCurrentActivity();
+    return d->readHistoryForCurrentEnv();
 }
 
 void RunnerManager::removeFromHistory(int index)
@@ -691,7 +639,7 @@ void RunnerManager::removeFromHistory(int index)
     QStringList changedHistory = history();
     if (index < changedHistory.length()) {
         changedHistory.removeAt(index);
-        d->writeActivityHistory(changedHistory);
+        d->writeHistory(changedHistory);
     }
 }
 
@@ -735,6 +683,11 @@ void RunnerManager::setHistoryEnabled(bool enabled)
 void RunnerManager::onMatchesChanged()
 {
     d->scheduleMatchesChanged();
+}
+void RunnerManager::setHistoryEnvironmentIdentifier(const QString &identifier)
+{
+    Q_ASSERT(!identifier.isEmpty());
+    d->historyEnvironmentIdentifier = identifier;
 }
 
 } // KRunner namespace
