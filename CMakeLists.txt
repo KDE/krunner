@@ -58,13 +58,13 @@ find_package(KF6CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6ItemModels ${KF_DEP_VERSION})
 
-find_package(KF6Activities)
-set_package_properties(KF6Activities PROPERTIES
+find_package(PlasmaActivities)
+set_package_properties(PlasmaActivities PROPERTIES
         DESCRIPTION "Library for Activities"
         PURPOSE "Required for activities support (optional)"
         TYPE OPTIONAL
         )
-if(KF6Activities_FOUND)
+if(PlasmaActivities_FOUND)
     set(HAVE_KACTIVITIES TRUE)
 endif()
 

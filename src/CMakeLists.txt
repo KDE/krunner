@@ -72,7 +72,7 @@ target_link_libraries(KF6Runner
         KF6::ItemModels
 )
 if(HAVE_KACTIVITIES)
-    target_link_libraries(KF6Runner PRIVATE KF6::Activities)
+    target_link_libraries(KF6Runner PRIVATE Plasma::Activities)
 endif()
 
 ecm_generate_headers(KRunner_CamelCase_HEADERS

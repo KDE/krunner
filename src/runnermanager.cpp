@@ -26,7 +26,7 @@
 
 #include "config.h"
 #if HAVE_KACTIVITIES
-#include <KActivities/Consumer>
+#include <PlasmaActivities/Consumer>
 #endif
 
 #include "abstractrunner_p.h"
