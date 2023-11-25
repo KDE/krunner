@@ -10,7 +10,7 @@ Dependencies:
     'frameworks/kservice' : '@same'
     'frameworks/threadweaver' : '@same'
     'frameworks/ki18n' : '@same'
-    'plasma/plasma-framework' : '@same'
+    'plasma/libplasma' : '@same'
 
 Options:
   test-before-installing: True
