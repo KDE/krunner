@@ -72,7 +72,9 @@ protected:
             const double typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toReal() * favoriteAMultiplicationFactor;
             const double favoriteBMultiplicationFactor = (favoriteB ? 1 + ((favoritesCount - favoriteB) * 0.2) : 1);
             const double typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toReal() * favoriteBMultiplicationFactor;
-            return typeA < typeB;
+            if (typeA != typeB) {
+                return typeA < typeB;
+            }
         }
 
         const qreal relevanceA = sourceA.data(ResultsModel::RelevanceRole).toReal();
