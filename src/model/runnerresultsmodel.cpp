@@ -161,7 +161,7 @@ void RunnerResultsModel::setQueryString(const QString &queryString, const QStrin
         m_manager->launchQuery(queryString, runner);
         setQuerying(true);
     }
-    Q_EMIT queryStringChanged(queryString);
+    Q_EMIT queryStringChanged(queryString); // NOLINT(readability-misleading-indentation)
 }
 
 bool RunnerResultsModel::querying() const
