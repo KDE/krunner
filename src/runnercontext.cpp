@@ -20,7 +20,6 @@
 
 #include "abstractrunner.h"
 #include "abstractrunner_p.h"
-#include "krunner_debug.h"
 #include "querymatch.h"
 #include "runnermanager.h"
 

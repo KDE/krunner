@@ -13,8 +13,6 @@
 #include <QSharedData>
 #include <QVariant>
 
-#include "krunner_debug.h"
-
 #include "abstractrunner.h"
 #include "abstractrunner_p.h"
 

@@ -18,8 +18,6 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 
-#include "krunner_debug.h"
-
 namespace KRunner
 {
 AbstractRunner::AbstractRunner(QObject *parent, const KPluginMetaData &pluginMetaData)

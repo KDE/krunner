@@ -4,8 +4,7 @@
 */
 #include <KRunner/AbstractRunnerTest>
 #include <KRunner/RunnerManager>
-#include <qtest.h>
-#include <qtestcase.h>
+#include <QTest>
 
 using namespace KRunner;
 

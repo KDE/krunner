@@ -11,7 +11,6 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTest>
-#include <qtestcase.h>
 
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
