@@ -35,8 +35,8 @@ public:
     {
     }
 
-    explicit RunnerContextPrivate(const RunnerContextPrivate &p)
-        : QSharedData()
+    RunnerContextPrivate(const RunnerContextPrivate &p)
+        : QSharedData(p)
         , m_manager(p.m_manager)
         , launchCounts(p.launchCounts)
     {

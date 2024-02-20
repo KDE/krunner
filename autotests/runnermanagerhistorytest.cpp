@@ -13,6 +13,7 @@
 #include <QSignalSpy>
 #include <QStandardPaths>
 #include <QTest>
+#include <memory>
 namespace KRunner
 {
 extern int __changeCountBeforeSaving;
@@ -132,7 +133,7 @@ void RunnerManagerHistoryTest::testRelevanceForOftenLaunched()
         cfg.sync();
         KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation)->reparseConfiguration();
     }
-    manager.reset(new RunnerManager());
+    manager = std::make_unique<RunnerManager>();
     manager->setAllowedRunners({QStringLiteral("fakerunnerplugin")});
     manager->loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
 

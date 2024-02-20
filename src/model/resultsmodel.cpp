@@ -34,7 +34,7 @@ class SortProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    SortProxyModel(QObject *parent)
+    explicit SortProxyModel(QObject *parent)
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
@@ -97,7 +97,7 @@ class CategoryDistributionProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    CategoryDistributionProxyModel(QObject *parent)
+    explicit CategoryDistributionProxyModel(QObject *parent)
         : QSortFilterProxyModel(parent)
     {
     }
@@ -194,7 +194,7 @@ class HideRootLevelProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    HideRootLevelProxyModel(QObject *parent)
+    explicit HideRootLevelProxyModel(QObject *parent)
         : QSortFilterProxyModel(parent)
     {
     }
@@ -224,7 +224,7 @@ private:
 class KRunner::ResultsModelPrivate
 {
 public:
-    ResultsModelPrivate(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, ResultsModel *q)
+    explicit ResultsModelPrivate(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, ResultsModel *q)
         : q(q)
         , resultsModel(new RunnerResultsModel(configGroup, stateConfigGroup, q))
     {
@@ -246,7 +246,7 @@ ResultsModel::ResultsModel(QObject *parent)
     : ResultsModel(KConfigGroup(), KConfigGroup(), parent)
 {
 }
-ResultsModel::ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent)
+ResultsModel::ResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QSortFilterProxyModel(parent)
     , d(new ResultsModelPrivate(configGroup, stateConfigGroup, this))
 {
@@ -357,7 +357,7 @@ KPluginMetaData ResultsModel::singleRunnerMetaData() const
 
 QHash<int, QByteArray> ResultsModel::roleNames() const
 {
-    auto names = QAbstractItemModel::roleNames();
+    auto names = QAbstractProxyModel::roleNames();
     names[IdRole] = QByteArrayLiteral("matchId"); // "id" is QML-reserved
     names[EnabledRole] = QByteArrayLiteral("enabled");
     names[CategoryRole] = QByteArrayLiteral("category");

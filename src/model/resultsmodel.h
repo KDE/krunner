@@ -55,7 +55,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
     Q_PROPERTY(QStringList favoriteIds READ favoriteIds WRITE setFavoriteIds NOTIFY favoriteIdsChanged)
 
 public:
-    explicit ResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent = nullptr);
+    explicit ResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent = nullptr);
     explicit ResultsModel(QObject *parent = nullptr);
     ~ResultsModel() override;
 

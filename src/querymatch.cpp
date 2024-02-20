@@ -21,7 +21,7 @@ namespace KRunner
 class QueryMatchPrivate : public QSharedData
 {
 public:
-    QueryMatchPrivate(AbstractRunner *r)
+    explicit QueryMatchPrivate(AbstractRunner *r)
         : QSharedData()
         , runner(r)
     {

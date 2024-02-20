@@ -12,6 +12,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QTest>
+#include <memory>
 
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
@@ -88,7 +89,7 @@ void RunnerManagerSingleRunnerModeTest::testLoadingDisabledRunner()
     config->deleteGroup("Plugins");
     config->group("Plugins").writeEntry("dbusrunnertestEnabled", false);
     // reset our manager to start clean
-    manager.reset(new RunnerManager(config->group("Plugins"), config->group("State"), this));
+    manager = std::make_unique<RunnerManager>(config->group("Plugins"), config->group("State"), this);
     // Ensure no system runners are picked up
     manager->setAllowedRunners(QStringList{"dbusrunnertest", "dbusrunnertestmulti"});
     // Copy the service files to the appropriate location and only load runners from there

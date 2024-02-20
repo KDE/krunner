@@ -265,7 +265,7 @@ protected:
      *
      * @param the syntaxes to register for this runner
      */
-    void setSyntaxes(const QList<RunnerSyntax> &syns);
+    void setSyntaxes(const QList<RunnerSyntax> &syntaxes);
 
     /**
      * Reimplement this to run any initialization routines on first load.

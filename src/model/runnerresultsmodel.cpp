@@ -15,7 +15,7 @@
 
 namespace KRunner
 {
-RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent)
+RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QAbstractItemModel(parent)
     // Invalid groups are passed in to avoid unneeded overloads and such
     , m_manager(configGroup.isValid() && stateConfigGroup.isValid() ? new RunnerManager(configGroup, stateConfigGroup, this) : new RunnerManager(this))
@@ -276,7 +276,7 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
         case ResultsModel::SubtextRole:
             return match.subtext();
         case ResultsModel::UrlsRole:
-          return QVariant::fromValue(match.urls());
+            return QVariant::fromValue(match.urls());
         case ResultsModel::MultiLineRole:
             return match.isMultiLine();
         case ResultsModel::ActionsRole: {

@@ -28,7 +28,7 @@ public:
     {
     }
     void reloadConfiguration() override;
-    void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &action) override;
+    void run(const KRunner::RunnerContext &context, const KRunner::QueryMatch &match) override;
 
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
 

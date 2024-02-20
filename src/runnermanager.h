@@ -52,7 +52,7 @@ public:
      * @param stateGroup Config group used for storing history
      * @since 6.0
      */
-    explicit RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateGroup, QObject *parent);
+    explicit RunnerManager(const KConfigGroup &pluginConfigGroup, const KConfigGroup &stateGroup, QObject *parent);
 
     /**
      * Constructs a RunnerManager using the default locations for state/plugin config

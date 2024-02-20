@@ -27,7 +27,7 @@ class RunnerResultsModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    explicit RunnerResultsModel(const KConfigGroup &configGroup, KConfigGroup stateConfigGroup, QObject *parent = nullptr);
+    explicit RunnerResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent = nullptr);
 
     QString queryString() const;
     void setQueryString(const QString &queryString, const QString &runner);

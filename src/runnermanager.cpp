@@ -23,6 +23,7 @@
 #include <KFileUtils>
 #include <KPluginMetaData>
 #include <KSharedConfig>
+#include <memory>
 
 #include "abstractrunner_p.h"
 #include "dbusrunner_p.h"
@@ -35,7 +36,7 @@ namespace KRunner
 class RunnerManagerPrivate
 {
 public:
-    RunnerManagerPrivate(const KConfigGroup &configurationGroup, KConfigGroup stateConfigGroup, RunnerManager *parent)
+    RunnerManagerPrivate(const KConfigGroup &configurationGroup, const KConfigGroup &stateConfigGroup, RunnerManager *parent)
         : q(parent)
         , context(parent)
         , pluginConf(configurationGroup)
@@ -374,7 +375,7 @@ public:
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
 };
 
-RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, KConfigGroup stateConfigGroup, QObject *parent)
+RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QObject(parent)
     , d(new RunnerManagerPrivate(pluginConfigGroup, stateConfigGroup, this))
 {
@@ -387,7 +388,9 @@ RunnerManager::RunnerManager(QObject *parent)
 {
     auto defaultStatePtr = KSharedConfig::openConfig(QStringLiteral("krunnerstaterc"), KConfig::NoGlobals, QStandardPaths::GenericDataLocation);
     auto configPtr = KSharedConfig::openConfig(QStringLiteral("krunnerrc"), KConfig::NoGlobals);
-    d.reset(new RunnerManagerPrivate(configPtr->group(QStringLiteral("Plugins")), defaultStatePtr->group(QStringLiteral("PlasmaRunnerManager")), this));
+    d = std::make_unique<RunnerManagerPrivate>(configPtr->group(QStringLiteral("Plugins")),
+                                               defaultStatePtr->group(QStringLiteral("PlasmaRunnerManager")),
+                                               this);
 }
 
 RunnerManager::~RunnerManager()
