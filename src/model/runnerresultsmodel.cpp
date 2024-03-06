@@ -312,12 +312,14 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
             if (match.isValid()) {
                 const QString id = match.runner()->id();
                 int idx = m_favoriteIds.indexOf(id);
-                return idx == -1 ? m_favoriteIds.size() : idx;
+                return idx;
             }
         }
         // Any match that is not a favorite will have a greater index than an actual favorite
         return m_favoriteIds.size();
     }
+    case ResultsModel::FavoriteCountRole:
+        return m_favoriteIds.size();
     // Returns the highest type/role within the group
     case ResultsModel::CategoryRelevanceRole: {
         int highestType = 0;
