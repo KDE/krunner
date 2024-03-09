@@ -13,6 +13,7 @@
 #include <QDBusMessage>
 #include <QDBusMetaType>
 #include <QDBusPendingReply>
+#include <QDBusServiceWatcher>
 #include <QIcon>
 #include <set>
 
@@ -54,24 +55,20 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
             }
         }
         // and watch for changes
-        connect(QDBusConnection::sessionBus().interface(),
-                &QDBusConnectionInterface::serviceOwnerChanged,
-                this,
-                [this, requestedServiceName](const QString &serviceName, const QString &oldOwner, const QString &newOwner) {
-                    if (!serviceName.startsWith(requestedServiceName)) {
-                        return;
-                    }
-                    if (!oldOwner.isEmpty() && !newOwner.isEmpty()) {
-                        // changed owner, but service still exists. Don't need to adjust anything
-                        return;
-                    }
-                    if (!newOwner.isEmpty()) {
-                        m_matchingServices.insert(serviceName);
-                    }
-                    if (!oldOwner.isEmpty()) {
-                        m_matchingServices.remove(serviceName);
-                    }
-                });
+        auto watcher =
+            new QDBusServiceWatcher(requestedServiceName + QLatin1Char('*'), QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForOwnerChange, this);
+        connect(watcher, &QDBusServiceWatcher::serviceOwnerChanged, this, [this](const QString &serviceName, const QString &oldOwner, const QString &newOwner) {
+            if (!oldOwner.isEmpty() && !newOwner.isEmpty()) {
+                // changed owner, but service still exists. Don't need to adjust anything
+                return;
+            }
+            if (!newOwner.isEmpty()) {
+                m_matchingServices.insert(serviceName);
+            }
+            if (!oldOwner.isEmpty()) {
+                m_matchingServices.remove(serviceName);
+            }
+        });
     } else {
         // don't check when not wildcarded, as it could be used with DBus-activation
         m_matchingServices << requestedServiceName;
