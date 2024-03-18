@@ -19,6 +19,14 @@
 namespace KRunner
 {
 class ResultsModelPrivate;
+
+/**
+ * @class ResultsModel resultsmodel.h <KRunner/ResultsModel>
+ *
+ * A model that exposes and sorts results for a given query.
+ *
+ * @since 6.0
+ */
 class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
