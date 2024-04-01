@@ -252,9 +252,9 @@ void DBusRunner::matchInternal(KRunner::RunnerContext context)
                 pendingServices->erase(service);
                 if (reply.isError()) {
                     qCWarning(KRUNNER) << "Error requesting matches; calling" << service << " :" << reply.error().name() << reply.error().message();
-                    return;
+                } else {
+                    context.addMatches(convertMatches(service, reply.value()));
                 }
-                context.addMatches(convertMatches(service, reply.value()));
                 // We are finished when all watchers finished
                 if (pendingServices->size() == 0) {
                     Q_EMIT matchInternalFinished(jobId);
