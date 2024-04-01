@@ -48,7 +48,7 @@ public:
     Action &operator=(const Action &other);
 
     /// Check if the action is valid
-    operator bool() const
+    explicit operator bool() const
     {
         return !id().isEmpty();
     }
