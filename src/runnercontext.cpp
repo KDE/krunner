@@ -38,7 +38,8 @@ public:
     RunnerContextPrivate(const RunnerContextPrivate &p)
         : QSharedData(p)
         , m_manager(p.m_manager)
-        , launchCounts(p.launchCounts)
+        , matchLaunchCounts(p.matchLaunchCounts)
+        , categoryLaunchCounts(p.categoryLaunchCounts)
         , changedLaunchCounts(p.changedLaunchCounts)
     {
     }
@@ -84,7 +85,8 @@ public:
     QPointer<RunnerManager> m_manager;
     bool m_isValid = true;
     QList<QueryMatch> matches;
-    QHash<QString, int> launchCounts;
+    QHash<QString, int> matchLaunchCounts;
+    QHash<QString, int> categoryLaunchCounts;
     int changedLaunchCounts = 0; // We want to sync them while the app is running, but for each query it is overkill
     QString term;
     bool singleRunnerQueryMode = false;
@@ -200,8 +202,11 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
         for (QueryMatch match : matches) {
             // Give previously launched matches a slight boost in relevance
             // The boost smoothly saturates to 0.5;
-            if (int count = d->launchCounts.value(match.id())) {
+            if (int count = d->matchLaunchCounts.value(match.id())) {
                 match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
+            }
+            if (int count = d->categoryLaunchCounts.value(match.matchCategory())) {
+                match.setRelevance(match.relevance() + 0.25 * (1 - exp(-count * 0.3)));
             }
             d->addMatch(match);
         }
@@ -267,7 +272,17 @@ void RunnerContext::restore(const KConfigGroup &config)
         if (int idx = entry.indexOf(QLatin1Char(' ')); idx != -1) {
             const int count = entry.mid(0, idx).toInt();
             const QString id = entry.mid(idx + 1);
-            d->launchCounts[id] = count;
+            d->matchLaunchCounts[id] = count;
+        }
+    }
+
+    const QStringList catCfgList = config.readEntry("CategoryLaunchCounts", QStringList());
+
+    for (const QString &entry : catCfgList) {
+        if (int idx = entry.indexOf(QLatin1Char(' ')); idx != -1) {
+            const int count = entry.mid(0, idx).toInt();
+            const QString id = entry.mid(idx + 1);
+            d->categoryLaunchCounts[id] = count;
         }
     }
 }
@@ -278,19 +293,26 @@ void RunnerContext::save(KConfigGroup &config)
         return;
     }
     d->changedLaunchCounts = 0;
-    QStringList countList;
-    countList.reserve(d->launchCounts.size());
-    for (auto it = d->launchCounts.cbegin(), end = d->launchCounts.cend(); it != end; ++it) {
-        countList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
+    QStringList matchCountList;
+    matchCountList.reserve(d->matchLaunchCounts.size());
+    for (auto it = d->matchLaunchCounts.cbegin(), end = d->matchLaunchCounts.cend(); it != end; ++it) {
+        matchCountList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
+    }
+    QStringList categoryCountList;
+    categoryCountList.reserve(d->categoryLaunchCounts.size());
+    for (auto it = d->categoryLaunchCounts.cbegin(), end = d->categoryLaunchCounts.cend(); it != end; ++it) {
+        categoryCountList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
     }
 
-    config.writeEntry("LaunchCounts", countList);
+    config.writeEntry("LaunchCounts", matchCountList);
+    config.writeEntry("CategoryLaunchCounts", categoryCountList);
     config.sync();
 }
 
 void RunnerContext::increaseLaunchCount(const QueryMatch &match)
 {
-    ++d->launchCounts[match.id()];
+    ++d->matchLaunchCounts[match.id()];
+    ++d->categoryLaunchCounts[match.matchCategory()];
     ++d->changedLaunchCounts;
 }
 
