@@ -183,6 +183,12 @@ void RunnerResultsModel::clear()
     m_manager->matchSessionComplete();
 
     setQuerying(false);
+    // When our session is over, the term is also no longer relevant
+    // If the same term is used again, the RunnerManager should be asked again
+    if (!m_queryString.isEmpty()) {
+        m_queryString.clear();
+        Q_EMIT queryStringChanged(m_queryString);
+    }
 
     beginResetModel();
     m_categories.clear();
