@@ -474,6 +474,7 @@ bool RunnerManager::run(const QueryMatch &match, const KRunner::Action &selected
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
     }
+    d->context.save(d->stateData);
     if (d->context.requestedQueryString().isEmpty()) {
         return true;
     } else {
