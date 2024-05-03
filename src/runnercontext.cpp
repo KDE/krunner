@@ -39,6 +39,7 @@ public:
         : QSharedData(p)
         , m_manager(p.m_manager)
         , launchCounts(p.launchCounts)
+        , changedLaunchCounts(p.changedLaunchCounts)
     {
     }
 
