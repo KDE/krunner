@@ -17,9 +17,11 @@
 
 #include <KConfigGroup>
 #include <KShell>
+#include <qloggingcategory.h>
 
 #include "abstractrunner.h"
 #include "abstractrunner_p.h"
+#include "krunner_debug.h"
 #include "querymatch.h"
 #include "runnermanager.h"
 
@@ -289,6 +291,7 @@ void RunnerContext::restore(const KConfigGroup &config)
 
 void RunnerContext::save(KConfigGroup &config)
 {
+    qCDebug(KRUNNER) << "Saving launch counts";
     if (d->changedLaunchCounts < __changeCountBeforeSaving) {
         return;
     }
@@ -299,9 +302,11 @@ void RunnerContext::save(KConfigGroup &config)
         matchCountList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
     }
     QStringList categoryCountList;
+    qCDebug(KRUNNER) << "Saving category counts";
     categoryCountList.reserve(d->categoryLaunchCounts.size());
     for (auto it = d->categoryLaunchCounts.cbegin(), end = d->categoryLaunchCounts.cend(); it != end; ++it) {
         categoryCountList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
+        qCDebug(KRUNNER) << it.key() << it.value();
     }
 
     config.writeEntry("LaunchCounts", matchCountList);

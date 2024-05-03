@@ -24,6 +24,7 @@
 #include <KPluginMetaData>
 #include <KSharedConfig>
 #include <memory>
+#include <qloggingcategory.h>
 
 #include "abstractrunner_p.h"
 #include "dbusrunner_p.h"
@@ -460,6 +461,7 @@ QList<QueryMatch> RunnerManager::matches() const
 
 bool RunnerManager::run(const QueryMatch &match, const KRunner::Action &selectedAction)
 {
+    qCDebug(KRUNNER) << "Running match" << match.id() << "with action" << selectedAction.id();
     if (!match.isValid() || !match.isEnabled()) { // The model should prevent this
         return false;
     }
@@ -468,9 +470,11 @@ bool RunnerManager::run(const QueryMatch &match, const KRunner::Action &selected
     QueryMatch m = match;
     m.setSelectedAction(selectedAction);
     m.runner()->run(d->context, m);
-    // To allow the RunnerContext to increase the relevance of often launched apps
+    // To allow the RunnerContext to increase the relevance of often launched apps and categories
+    qCDebug(KRUNNER) << "Increasing launch count for" << m.id();
     d->context.increaseLaunchCount(m);
 
+    qCDebug(KRUNNER) << "saving state";
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
     }
