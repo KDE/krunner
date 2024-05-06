@@ -231,6 +231,8 @@ protected:
 
     /**
      * Provides access to the runner's configuration object.
+     * This config is saved in the "krunnerrrc" file in the [Runners][<pluginId>] config group
+     * Settings should be written in a KDE config module. See https://develop.kde.org/docs/plasma/krunner/#runner-configuration
      */
     KConfigGroup config() const;
 
