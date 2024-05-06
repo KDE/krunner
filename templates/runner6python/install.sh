@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Exit if something fails
+# Standalone install script for copying files
+
 set -e
 
 prefix="${XDG_DATA_HOME:-$HOME/.local/share}"
