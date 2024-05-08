@@ -46,6 +46,7 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     copyIfExists(grp, root, "X-Plasma-Request-Actions-Once", false);
     copyIfExists(grp, root, "X-Plasma-Runner-Min-Letter-Count", 0);
     copyIfExists(grp, root, "X-Plasma-Runner-Match-Regex");
+    copyIfExists(grp, root, "X-KDE-ConfigModule"); // DBus-Runners may also specify KCMs
     root.insert(QLatin1String("X-Plasma-Runner-Syntaxes"), QJsonArray::fromStringList(grp.readEntry("X-Plasma-Runner-Syntaxes", QStringList())));
     root.insert(QLatin1String("X-Plasma-Runner-Syntax-Descriptions"),
                 QJsonArray::fromStringList(grp.readEntry("X-Plasma-Runner-Syntax-Descriptions", QStringList())));
