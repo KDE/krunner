@@ -419,5 +419,11 @@ KRunner::QueryMatch ResultsModel::getQueryMatch(const QModelIndex &idx) const
     return resultIdx.isValid() ? d->resultsModel->fetchMatch(resultIdx) : QueryMatch();
 }
 
+void ResultsModel::setRunnerManager(KRunner::RunnerManager *manager)
+{
+    d->resultsModel->setRunnerManager(manager);
+    Q_EMIT runnerManagerChanged();
+}
+
 #include "moc_resultsmodel.cpp"
 #include "resultsmodel.moc"

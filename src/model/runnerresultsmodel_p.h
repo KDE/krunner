@@ -36,6 +36,8 @@ public:
     bool querying() const;
     Q_SIGNAL void queryingChanged();
 
+    void setRunnerManager(KRunner::RunnerManager *manager);
+
     /**
      * Clears the model content and resets the runner context, i.e. no new items will appear.
      */

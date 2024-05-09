@@ -383,6 +383,17 @@ KRunner::RunnerManager *RunnerResultsModel::runnerManager() const
     return m_manager;
 }
 
+void RunnerResultsModel::setRunnerManager(KRunner::RunnerManager *manager)
+{
+    m_manager = manager;
+    disconnect(m_manager);
+
+    connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
+    connect(m_manager, &RunnerManager::queryFinished, this, [this] {
+        setQuerying(false);
+    });
+    connect(m_manager, &RunnerManager::requestUpdateQueryString, this, &RunnerResultsModel::queryStringChangeRequested);
+}
 }
 
 #include "moc_runnerresultsmodel_p.cpp"
