@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: none
 # SPDX-License-Identifier: CC0-1.0
 
-maintainer: alex
 description: Parallelized query system
 tier: 3
 type: solution
