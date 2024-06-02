@@ -50,7 +50,8 @@ public:
 #else
         const QString pluginId = QFileInfo(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_NAME)).completeBaseName();
         auto metaData = KPluginMetaData::findPluginById(QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_DIR), pluginId);
-        QVERIFY2(metaData.isValid(), qPrintable("Could not find plugin " + pluginId + " in folder " + KRUNNER_TEST_RUNNER_PLUGIN_DIR));
+        QVERIFY2(metaData.isValid(),
+                 qPrintable(QStringLiteral("Could not find plugin %1 in folder %2").arg(pluginId, QStringLiteral(KRUNNER_TEST_RUNNER_PLUGIN_DIR))));
 
         // Set internal variables
         manager->loadRunner(metaData);
