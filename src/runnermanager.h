@@ -43,6 +43,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QStringList history READ history)
+    Q_PROPERTY(bool querying READ querying NOTIFY queryingChanged)
     Q_PROPERTY(bool historyEnabled READ historyEnabled WRITE setHistoryEnabled NOTIFY historyEnabledChanged)
 
 public:
@@ -126,6 +127,12 @@ public:
      * @since 5.78
      */
     bool historyEnabled();
+
+    /**
+     * If the RunnerManager is currently querying
+     * @since 6.5
+     */
+    bool querying() const;
 
     /**
      * Enables/disabled the history feature for the RunnerManager instance.
@@ -222,6 +229,12 @@ Q_SIGNALS:
      * Emitted when the launchQuery finish
      */
     void queryFinished();
+
+    /**
+     * @since 6.5
+     */
+
+    void queryingChanged();
 
     /**
      * Put the given search term in the KRunner search field
