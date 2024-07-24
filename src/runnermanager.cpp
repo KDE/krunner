@@ -235,7 +235,8 @@ public:
                 // signal will have been sent out, so we need to emit the signal ourselves here
                 matchesChanged();
             }
-            Q_EMIT q->queryFinished(); // NOLINT(readability-misleading-indentation)
+            setQuerying(false);
+            Q_EMIT q->queryFinished();
         }
         if (!currentJobs.isEmpty()) {
             qCDebug(KRUNNER) << "Current jobs are" << currentJobs;
@@ -319,6 +320,14 @@ public:
         });
     }
 
+    void setQuerying(bool querying)
+    {
+        if (m_querying != querying) {
+            m_querying = querying;
+            Q_EMIT q->queryingChanged();
+        }
+    }
+
     void addToHistory()
     {
         const QString term = context.query();
@@ -354,6 +363,7 @@ public:
 
     QString historyEnvironmentIdentifier = QStringLiteral("default");
     RunnerManager *const q;
+    bool m_querying = false;
     RunnerContext context;
     QTimer matchChangeTimer;
     QElapsedTimer lastMatchChangeSignalled;
@@ -624,6 +634,9 @@ void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &run
             Q_EMIT matchesChanged({});
             Q_EMIT queryFinished();
         });
+        d->setQuerying(false);
+    } else {
+        d->setQuerying(true);
     }
 }
 
@@ -674,6 +687,11 @@ KPluginMetaData RunnerManager::convertDBusRunnerToJson(const QString &filename) 
 bool RunnerManager::historyEnabled()
 {
     return d->historyEnabled;
+}
+
+bool RunnerManager::querying() const
+{
+    return d->m_querying;
 }
 
 void RunnerManager::setHistoryEnabled(bool enabled)

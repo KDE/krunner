@@ -258,7 +258,7 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, const KConfigGroup &
     , d(new ResultsModelPrivate(configGroup, stateConfigGroup, this))
 {
     connect(d->resultsModel, &RunnerResultsModel::queryStringChanged, this, &ResultsModel::queryStringChanged);
-    connect(d->resultsModel, &RunnerResultsModel::queryingChanged, this, &ResultsModel::queryingChanged);
+    connect(runnerManager(), &RunnerManager::queryingChanged, this, &ResultsModel::queryingChanged);
     connect(d->resultsModel, &RunnerResultsModel::queryStringChangeRequested, this, &ResultsModel::queryStringChangeRequested);
 
     // The matches for the old query string remain on display until the first set of matches arrive for the new query string.
@@ -336,7 +336,7 @@ void ResultsModel::resetLimit()
 
 bool ResultsModel::querying() const
 {
-    return d->resultsModel->querying();
+    return runnerManager()->querying();
 }
 
 QString ResultsModel::singleRunner() const

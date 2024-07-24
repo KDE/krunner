@@ -21,9 +21,6 @@ RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, const KC
     , m_manager(configGroup.isValid() && stateConfigGroup.isValid() ? new RunnerManager(configGroup, stateConfigGroup, this) : new RunnerManager(this))
 {
     connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
-    connect(m_manager, &RunnerManager::queryFinished, this, [this] {
-        setQuerying(false);
-    });
     connect(m_manager, &RunnerManager::requestUpdateQueryString, this, &RunnerResultsModel::queryStringChangeRequested);
 }
 
@@ -159,22 +156,8 @@ void RunnerResultsModel::setQueryString(const QString &queryString, const QStrin
         clear();
     } else if (!queryString.trimmed().isEmpty()) {
         m_manager->launchQuery(queryString, runner);
-        setQuerying(true);
     }
     Q_EMIT queryStringChanged(queryString); // NOLINT(readability-misleading-indentation)
-}
-
-bool RunnerResultsModel::querying() const
-{
-    return m_querying;
-}
-
-void RunnerResultsModel::setQuerying(bool querying)
-{
-    if (m_querying != querying) {
-        m_querying = querying;
-        Q_EMIT queryingChanged();
-    }
 }
 
 void RunnerResultsModel::clear()
@@ -182,7 +165,6 @@ void RunnerResultsModel::clear()
     m_manager->reset();
     m_manager->matchSessionComplete();
 
-    setQuerying(false);
     // When our session is over, the term is also no longer relevant
     // If the same term is used again, the RunnerManager should be asked again
     if (!m_queryString.isEmpty()) {

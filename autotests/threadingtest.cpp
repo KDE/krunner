@@ -50,15 +50,15 @@ private Q_SLOTS:
 
     void testDeletionOfRunningJob()
     {
+        QPointer<QObject> ptr(fakeRunner);
         manager->setAllowedRunners({"fakerunnerplugin"});
         manager->launchQuery("foo");
-        manager->launchQuery("foobar");
         QThread::msleep(1); // Wait for runner to be invoked and query started
-        QPointer<QObject> ptr(fakeRunner);
 
         QEventLoop loop;
         QTimer::singleShot(500, &loop, &QEventLoop::quit);
 
+        QVERIFY(manager->querying());
         manager.reset(nullptr);
         QVERIFY(ptr); // Runner should not be deleted or reset now
 

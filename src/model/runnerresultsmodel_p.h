@@ -33,9 +33,6 @@ public:
     void setQueryString(const QString &queryString, const QString &runner);
     Q_SIGNAL void queryStringChanged(const QString &queryString);
 
-    bool querying() const;
-    Q_SIGNAL void queryingChanged();
-
     /**
      * Clears the model content and resets the runner context, i.e. no new items will appear.
      */
@@ -62,19 +59,12 @@ Q_SIGNALS:
     void matchesChanged();
 
 private:
-    void setQuerying(bool querying);
-
     void onMatchesChanged(const QList<KRunner::QueryMatch> &matches);
 
     KRunner::RunnerManager *m_manager;
-
     QString m_queryString;
-    bool m_querying = false;
-
     QString m_prevRunner;
-
     bool m_hasMatches = false;
-
     QStringList m_categories;
     QHash<QString /*category*/, QList<KRunner::QueryMatch>> m_matches;
 };
