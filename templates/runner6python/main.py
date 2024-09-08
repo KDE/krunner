@@ -1,37 +1,35 @@
 #!/usr/bin/python3
 
-import dbus.service
-from dbus.mainloop.glib import DBusGMainLoop
-from gi.repository import GLib
-
-DBusGMainLoop(set_as_default=True)
-
-objpath = "/runner" # Default value for X-Plasma-DBusRunner-Path metadata property
-iface = "org.kde.krunner1"
+from typing import List
+from krunnerdbusutils import krunner_actions, krunner_match, krunner_run, \
+    AbstractRunner, Action, Match, run_event_loop
 
 
-class Runner(dbus.service.Object):
+class Runner(AbstractRunner):
     def __init__(self):
-        dbus.service.Object.__init__(self, dbus.service.BusName("org.kde.%{APPNAMELC}", dbus.SessionBus()), objpath)
+        super().__init__("org.kde.%{APPNAMELC}")
 
-    @dbus.service.method(iface, in_signature='s', out_signature='a(sssida{sv})')
-    def Match(self, query: str):
+    @krunner_match
+    def Match(self, query: str) -> List[Match]:
         """This method is used to get the matches and it returns a list of tupels"""
+        matches: List[Match] = []
         if query == "hello":
-            # data, text, icon, type (KRunner::QueryType), relevance (0-1), properties (subtext, category, multiline(bool) and urls)
-            return [("Hello", "Hello from %{APPNAME}!", "document-edit", 100, 1.0, {'subtext': 'Demo Subtext'})]
-        return []
+            match = Match()  # Or utilize keyword constructor
+            match.id = "hello_match"
+            match.text = "Hello There!"
+            match.subtext = "Example"
+            match.icon = "planetkde"
+            matches.append(match)
+        return matches
 
-    @dbus.service.method(iface, out_signature='a(sss)')
-    def Actions(self):
-        # id, text, icon
-        return [("id", "Tooltip", "planetkde")]
+    @krunner_actions
+    def Actions(self) -> List[Action]:
+        return [Action(id="id", text="Action Tooltip", icon="planetkde")]
 
-    @dbus.service.method(iface, in_signature='ss')
+    @krunner_run
     def Run(self, data: str, action_id: str):
         print(data, action_id)
 
 
-runner = Runner()
-loop = GLib.MainLoop()
-loop.run()
+if __name__ == "__main__":
+    run_event_loop(Runner)
