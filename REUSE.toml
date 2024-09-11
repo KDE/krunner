@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Alexander Lohnau
+# SPDX-License-Identifier: CC0-1.0
+
+version = 1
+SPDX-PackageName = "krunner"
+SPDX-PackageSupplier = "Alexander Lohnau <alexander.lohnau@gmx.de>"
+SPDX-PackageDownloadLocation = "https://invent.kde.org/frameworks/krunner"
+
+[[annotations]]
+path = "autotests/**.desktop"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "KRunner contributors"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "templates/runner6python/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Alexander Lohnau"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
+
+[[annotations]]
+path = "templates/runner6/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "KDE Contributors"
+SPDX-License-Identifier = "LGPL-2.1-or-later"
