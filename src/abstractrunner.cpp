@@ -78,6 +78,14 @@ QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
     }
     QMimeData *result = new QMimeData();
     result->setUrls(match.urls());
+
+    const bool hasDesktop = std::ranges::any_of(match.urls(), [](const auto &url) {
+        return url.toString().endsWith(QLatin1String(".desktop"));
+    });
+    if (hasDesktop) {
+        result->setData(QLatin1String("application/x-kde-abstract-item"), QByteArray("application/x-kde-abstract-item"));
+    }
+
     return result;
 }
 
