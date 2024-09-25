@@ -260,6 +260,9 @@ ResultsModel::ResultsModel(const KConfigGroup &configGroup, const KConfigGroup &
     connect(d->resultsModel, &RunnerResultsModel::queryStringChanged, this, &ResultsModel::queryStringChanged);
     connect(runnerManager(), &RunnerManager::queryingChanged, this, &ResultsModel::queryingChanged);
     connect(d->resultsModel, &RunnerResultsModel::queryStringChangeRequested, this, &ResultsModel::queryStringChangeRequested);
+    connect(d->resultsModel, &RunnerResultsModel::runnerManagerChanged, this, [this]() {
+        connect(runnerManager(), &RunnerManager::queryingChanged, this, &ResultsModel::queryingChanged);
+    });
 
     // The matches for the old query string remain on display until the first set of matches arrive for the new query string.
     // Therefore we must not update the query string inside RunnerResultsModel exactly when the query string changes, otherwise it would
@@ -417,6 +420,12 @@ KRunner::QueryMatch ResultsModel::getQueryMatch(const QModelIndex &idx) const
 {
     const QModelIndex resultIdx = d->mapper.mapLeftToRight(idx);
     return resultIdx.isValid() ? d->resultsModel->fetchMatch(resultIdx) : QueryMatch();
+}
+
+void ResultsModel::setRunnerManager(KRunner::RunnerManager *manager)
+{
+    d->resultsModel->setRunnerManager(manager);
+    Q_EMIT runnerManagerChanged();
 }
 
 #include "moc_resultsmodel.cpp"

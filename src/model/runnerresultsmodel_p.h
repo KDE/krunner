@@ -33,6 +33,9 @@ public:
     void setQueryString(const QString &queryString, const QString &runner);
     Q_SIGNAL void queryStringChanged(const QString &queryString);
 
+    void setRunnerManager(KRunner::RunnerManager *manager);
+    Q_SIGNAL void runnerManagerChanged();
+
     /**
      * Clears the model content and resets the runner context, i.e. no new items will appear.
      */
@@ -61,7 +64,7 @@ Q_SIGNALS:
 private:
     void onMatchesChanged(const QList<KRunner::QueryMatch> &matches);
 
-    KRunner::RunnerManager *m_manager;
+    KRunner::RunnerManager *m_manager = nullptr;
     QString m_queryString;
     QString m_prevRunner;
     bool m_hasMatches = false;
