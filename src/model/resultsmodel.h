@@ -59,7 +59,7 @@ class KRUNNER_EXPORT ResultsModel : public QSortFilterProxyModel
     Q_PROPERTY(QString singleRunner READ singleRunner WRITE setSingleRunner NOTIFY singleRunnerChanged)
     Q_PROPERTY(KPluginMetaData singleRunnerMetaData READ singleRunnerMetaData NOTIFY singleRunnerChanged)
 
-    Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager CONSTANT)
+    Q_PROPERTY(KRunner::RunnerManager *runnerManager READ runnerManager WRITE setRunnerManager NOTIFY runnerManagerChanged)
     Q_PROPERTY(QStringList favoriteIds READ favoriteIds WRITE setFavoriteIds NOTIFY favoriteIdsChanged)
 
 public:
@@ -136,6 +136,10 @@ public:
     KRunner::QueryMatch getQueryMatch(const QModelIndex &idx) const;
 
     KRunner::RunnerManager *runnerManager() const;
+    /// @since 6.9
+    void setRunnerManager(KRunner::RunnerManager *manager);
+    /// @since 6.9
+    Q_SIGNAL void runnerManagerChanged();
 
 Q_SIGNALS:
     /**

@@ -17,11 +17,9 @@ namespace KRunner
 {
 RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QAbstractItemModel(parent)
-    // Invalid groups are passed in to avoid unneeded overloads and such
-    , m_manager(configGroup.isValid() && stateConfigGroup.isValid() ? new RunnerManager(configGroup, stateConfigGroup, this) : new RunnerManager(this))
 {
-    connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
-    connect(m_manager, &RunnerManager::requestUpdateQueryString, this, &RunnerResultsModel::queryStringChangeRequested);
+    // Invalid groups are passed in to avoid unneeded overloads and such
+    setRunnerManager(configGroup.isValid() && stateConfigGroup.isValid() ? new RunnerManager(configGroup, stateConfigGroup, this) : new RunnerManager(this));
 }
 
 KRunner::QueryMatch RunnerResultsModel::fetchMatch(const QModelIndex &idx) const
@@ -371,6 +369,15 @@ KRunner::RunnerManager *RunnerResultsModel::runnerManager() const
     return m_manager;
 }
 
+void RunnerResultsModel::setRunnerManager(KRunner::RunnerManager *manager)
+{
+    disconnect(m_manager);
+    m_manager = manager;
+
+    connect(m_manager, &RunnerManager::matchesChanged, this, &RunnerResultsModel::onMatchesChanged);
+    connect(m_manager, &RunnerManager::requestUpdateQueryString, this, &RunnerResultsModel::queryStringChangeRequested);
+    Q_EMIT runnerManagerChanged();
+}
 }
 
 #include "moc_runnerresultsmodel_p.cpp"
