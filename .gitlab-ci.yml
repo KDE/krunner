@@ -8,3 +8,5 @@ include:
       - /gitlab-templates/linux-qt6-next.yml
       - /gitlab-templates/reuse-lint.yml
       - /gitlab-templates/freebsd-qt6.yml
+      - /gitlab-templates/xml-lint.yml
+      - /gitlab-templates/yaml-lint.yml

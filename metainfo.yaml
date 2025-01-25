@@ -11,7 +11,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - cmake: "KF6::Runner"
+    - cmake: "KF6::Runner"
 cmakename: KF6Runner
 
 public_lib: true

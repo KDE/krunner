@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: CC0-1.0
 
 Dependencies:
-- 'on': ['Linux', 'FreeBSD', 'Windows', 'macOS']
-  'require':
+ - 'on': ['Linux', 'FreeBSD', 'Windows', 'macOS']
+   'require':
     'frameworks/extra-cmake-modules': '@same'
-    'frameworks/kconfig' : '@same'
-    'frameworks/kcoreaddons' : '@same'
-    'frameworks/threadweaver' : '@same'
-    'frameworks/ki18n' : '@same'
-    'frameworks/kitemmodels' : '@same'
+    'frameworks/kconfig': '@same'
+    'frameworks/kcoreaddons': '@same'
+    'frameworks/threadweaver': '@same'
+    'frameworks/ki18n': '@same'
+    'frameworks/kitemmodels': '@same'
 
 Options:
-  test-before-installing: True
-  require-passing-tests-on: [ 'Linux', 'FreeBSD' ]
-  cppcheck-ignore-files: ['templates/']
+ test-before-installing: True
+ require-passing-tests-on: ['Linux', 'FreeBSD']
+ cppcheck-ignore-files: ['templates/']
