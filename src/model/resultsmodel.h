@@ -79,7 +79,6 @@ public:
         UrlsRole,
         QueryMatchRole, /// @internal
         FavoriteIndexRole, /// @internal
-        FavoriteCountRole, /// @internal
     };
     Q_ENUM(Roles)
 

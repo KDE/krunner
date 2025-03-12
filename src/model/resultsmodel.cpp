@@ -59,19 +59,12 @@ protected:
         if (isCategoryComparison) {
             const int favoriteA = sourceA.data(ResultsModel::FavoriteIndexRole).toInt();
             const int favoriteB = sourceB.data(ResultsModel::FavoriteIndexRole).toInt();
-            bool isFavoriteA = favoriteA != -1;
-            bool isFavoriteB = favoriteB != -1;
-            if (isFavoriteA && !isFavoriteB) {
-                return false;
-            } else if (!isFavoriteA && isFavoriteB) {
-                return true;
+            if (favoriteA != favoriteB) {
+                return favoriteA > favoriteB;
             }
 
-            const int favoritesCount = sourceA.data(ResultsModel::FavoriteCountRole).toInt();
-            const double favoriteAMultiplicationFactor = (favoriteA ? 1 + ((favoritesCount - favoriteA) * 0.2) : 1);
-            const double typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toReal() * favoriteAMultiplicationFactor;
-            const double favoriteBMultiplicationFactor = (favoriteB ? 1 + ((favoritesCount - favoriteB) * 0.2) : 1);
-            const double typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toReal() * favoriteBMultiplicationFactor;
+            const int typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toReal();
+            const int typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toReal();
             return typeA < typeB;
         }
 
