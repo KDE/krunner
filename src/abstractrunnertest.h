@@ -23,10 +23,9 @@
 
 namespace KRunner
 {
-/**
+/*
  * This class provides a basic structure for a runner test.
  * The compile definitions should be configured using the `krunner_configure_test` cmake macro
- * @since 5.80
  */
 class AbstractRunnerTest : public QObject
 {
@@ -35,7 +34,7 @@ public:
     std::unique_ptr<KRunner::RunnerManager> manager = nullptr;
     KRunner::AbstractRunner *runner = nullptr;
 
-    /**
+    /*
      * Load the runner and set the manager and runner properties.
      */
     void initProperties()
@@ -63,7 +62,7 @@ public:
         QVERIFY(runner);
     }
 
-    /**
+    /*
      * Launch a query and wait for the RunnerManager to finish
      * @param query
      * @param runnerName
@@ -79,7 +78,7 @@ public:
         return manager->matches();
     }
 #if KRUNNER_DBUS_RUNNER_TESTING
-    /**
+    /*
      * Launch the configured DBus executable with the given arguments and wait for the process to be started.
      * @param args
      * @param waitForService Wait for this service to be registered, this will default to the service from the metadata
@@ -124,7 +123,7 @@ public:
         return process;
     }
 
-    /**
+    /*
      * Kill all processes that got started with the startDBusRunnerProcess
      */
     void killRunningDBusProcesses()

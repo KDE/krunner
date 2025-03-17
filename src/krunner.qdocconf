@@ -1,0 +1,27 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = KRunner
+description = Framework for Plasma runners
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += kde qtcore qtgui
+
+qhp.projects            = KRunner
+
+qhp.KRunner.file                = krunner.qhp
+qhp.KRunner.namespace           = org.kde.krunner.$QT_VERSION_TAG
+qhp.KRunner.virtualFolder       = krunner
+qhp.KRunner.indexTitle          = KRunner
+qhp.KRunner.indexRoot           =
+
+qhp.KRunner.subprojects         = classes
+qhp.KRunner.subprojects.classes.title = C++ Classes
+qhp.KRunner.subprojects.classes.indexTitle = KRunner C++ Classes
+qhp.KRunner.subprojects.classes.selectors = class fake:headerfile
+qhp.KRunner.subprojects.classes.sortPages = true

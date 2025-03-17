@@ -22,18 +22,15 @@ include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMGenerateExportHeader)
 include(ECMSetupVersion)
 include(ECMGenerateHeaders)
-include(ECMAddQch)
 include(CMakePackageConfigHelpers)
 include(KDEPackageAppTemplates)
 include(ECMQtDeclareLoggingCategory)
 include(ECMSetupQtPluginMacroNames)
 include(ECMDeprecationSettings)
 include(KDEGitCommitHooks)
+include(ECMGenerateQDoc)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
-
-option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
-add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
 set(krunner_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/krunner_version.h")
 ecm_setup_version(PROJECT
@@ -67,16 +64,6 @@ add_subdirectory(templates)
 
 # Create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6Runner")
-
-if (BUILD_QCH)
-    ecm_install_qch_export(
-        TARGETS KF6Runner_QCH
-        FILE KF6RunnerQchTargets.cmake
-        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        COMPONENT Devel
-    )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6RunnerQchTargets.cmake\")")
-endif()
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KF6RunnerConfig.cmake.in"

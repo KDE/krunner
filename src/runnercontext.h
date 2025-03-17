@@ -22,42 +22,41 @@ class QueryMatch;
 class AbstractRunner;
 class RunnerContextPrivate;
 
-/**
- * @class RunnerContext runnercontext.h <KRunner/RunnerContext>
+/*!
+ * \class KRunner::RunnerContext
+ * \inheaderfile KRunner/RunnerContext
+ * \inmodule KRunner
  *
- * @short The RunnerContext class provides information related to a search,
+ * \brief The RunnerContext class provides information related to a search,
  *        including the search term and collected matches.
  */
 class KRUNNER_EXPORT RunnerContext final
 {
 public:
+    /*!
+     *
+     */
     explicit RunnerContext(RunnerManager *manager = nullptr);
 
-    /**
-     * Copy constructor
-     */
     RunnerContext(const RunnerContext &other);
 
-    /**
-     * Assignment operator
-     */
     RunnerContext &operator=(const RunnerContext &other);
 
     ~RunnerContext();
 
-    /**
+    /*!
      * Sets the query term for this object and attempts to determine
      * the type of the search.
      */
     void setQuery(const QString &term);
 
-    /**
-     * @return the current search query term.
+    /*!
+     * Returns the current search query term.
      */
     QString query() const;
 
-    /**
-     * @returns true if this context is no longer valid and therefore
+    /*!
+     * Returnss true if this context is no longer valid and therefore
      * matching using it should abort.
      * While not required to be used within runners, it provides a nice way
      * to avoid unnecessary processing in runners that may run for an extended
@@ -65,53 +64,56 @@ public:
      */
     bool isValid() const;
 
-    /**
+    /*!
      * Appends lists of matches to the list of matches.
      *
-     * @param matches the matches to add
-     * @return true if matches were added, false if matches were e.g. outdated
+     * \a matches the matches to add
+     *
+     * Returns true if matches were added, false if matches were e.g. outdated
      */
     bool addMatches(const QList<QueryMatch> &matches);
 
-    /**
+    /*!
      * Appends a match to the existing list of matches.
      *
      * If you are going to be adding multiple matches, it is
-     * more performant to use @see addMatches instead.
+     * more performant to use addMatches instead.
      *
-     * @param match the match to add
-     * @return true if the match was added, false otherwise.
+     * \a match the match to add
+     *
+     * Returns true if the match was added, false otherwise.
      */
     bool addMatch(const QueryMatch &match);
 
-    /**
+    /*!
      * Retrieves all available matches for the current search term.
      *
-     * @return a list of matches
+     * Returns a list of matches
      */
     QList<QueryMatch> matches() const;
 
-    /**
+    /*!
      * Request that KRunner updates the query string and stasy open, even after running a match.
      * This method is const so it can be called in a const context.
      *
-     * @param text Text that will be displayed in the search field
-     * @param cursorPosition Position of the cursor, if this is different than the length of the text,
+     * \a text Text that will be displayed in the search field
+     *
+     * \a cursorPosition Position of the cursor, if this is different than the length of the text,
      * the characters between the position and text will be selected
      *
-     * @since 5.90
+     * \since 5.90
      */
     void requestQueryStringUpdate(const QString &text, int cursorPosition) const;
 
-    /**
-     * @return true if the current query is a single runner query
+    /*!
+     * Returns true if the current query is a single runner query
      */
     bool singleRunnerQueryMode() const;
 
-    /**
+    /*!
      * Set this to true in the AbstractRunner::run method to prevent the entry
      * from being saved to the history.
-     * @since 5.90
+     * \since 5.90
      */
     void ignoreCurrentMatchForHistory() const;
 

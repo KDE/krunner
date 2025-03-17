@@ -23,7 +23,7 @@
 
 using namespace KRunner;
 
-/**
+/*
  * Sorts the matches and categories by their type and relevance
  *
  * A category gets type and relevance of the highest
@@ -82,7 +82,7 @@ public:
     QStringList m_words;
 };
 
-/**
+/*
  * Distributes the number of matches shown per category
  *
  * Each category may occupy a maximum of 1/(n+1) of the given @c limit,
@@ -180,7 +180,7 @@ private:
     int m_limit = 0;
 };
 
-/**
+/*
  * This model hides the root items of data originally in a tree structure
  *
  * KDescendantsProxyModel collapses the items but keeps all items in tact.

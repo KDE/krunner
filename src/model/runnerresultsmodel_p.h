@@ -36,7 +36,7 @@ public:
     void setRunnerManager(KRunner::RunnerManager *manager);
     Q_SIGNAL void runnerManagerChanged();
 
-    /**
+    /*
      * Clears the model content and resets the runner context, i.e. no new items will appear.
      */
     void clear();
