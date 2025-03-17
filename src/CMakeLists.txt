@@ -111,34 +111,7 @@ ecm_qt_install_logging_categories(
     DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
 )
 
-
-if(BUILD_QCH)
-    ecm_add_qch(
-        KF6Runner_QCH
-        NAME KRunner
-        BASE_NAME KF6Runner
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${KRunner_HEADERS}
-        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
-        LINK_QCHS
-            Qt6Core_QCH
-            KF6CoreAddons_QCH
-        INCLUDE_DIRS
-            ${KRunner_BUILD_INCLUDE_DIRS}
-        BLANK_MACROS
-            KRUNNER_EXPORT
-            KRUNNER_DEPRECATED
-            KRUNNER_DEPRECATED_EXPORT
-            "KRUNNER_DEPRECATED_VERSION(x, y, t)"
-            "KRUNNER_DEPRECATED_VERSION_BELATED(x, y, xt, yt, t)"
-            "KRUNNER_ENUMERATOR_DEPRECATED_VERSION(x, y, t)"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
+ecm_generate_qdoc(KF6Runner krunner.qdocconf)
 
 install(FILES
    "data/org.kde.krunner1.xml"

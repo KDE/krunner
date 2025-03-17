@@ -44,7 +44,7 @@ private Q_SLOTS:
         killRunningDBusProcesses();
     }
 
-    /**
+    /*
      * This will test the mechanismm that stalls for 250ms before emiting any result in RunnerManager::scheduleMatchesChanged()
      * and the mechanism that anticipates the last results emission in RunnerManager::jobDone().
      */
@@ -97,7 +97,7 @@ private Q_SLOTS:
         QVERIFY(spyQueryFinished.wait());
     }
 
-    /**
+    /*
      * This will test queryFinished signal from reset() is emitted when the previous runners are
      * still running.
      */
@@ -116,7 +116,7 @@ private Q_SLOTS:
         QCOMPARE(spyQueryFinished.size(), 2);
     }
 
-    /**
+    /*
      * When we delete the RunnerManager while a job is still running, we should not crash
      */
     void testNotCrashWhenDeletingRunnerManager()

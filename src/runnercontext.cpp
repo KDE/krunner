@@ -124,7 +124,7 @@ RunnerContext &RunnerContext::operator=(const RunnerContext &other)
     return *this;
 }
 
-/**
+/*!
  * Resets the search term for this object.
  * This removes all current matches in the process and
  * turns off single runner query mode.
@@ -249,7 +249,7 @@ bool RunnerContext::shouldIgnoreCurrentMatchForHistory() const
     return d->shouldIgnoreCurrentMatchForHistory;
 }
 
-/**
+/*!
  * Sets the launch counts for the associated match ids
  *
  * If a runner adds a match to this context, the context will check if the
