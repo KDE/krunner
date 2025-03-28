@@ -7,6 +7,7 @@
 
 #include <KSharedConfig>
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QObject>
 #include <QProcess>
 #include <QStandardPaths>
