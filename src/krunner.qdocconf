@@ -10,6 +10,8 @@ sourcedirs += .
 
 outputformats = HTML
 
+navigation.landingpage = "KRunner"
+
 depends += kde qtcore qtgui
 
 qhp.projects            = KRunner
