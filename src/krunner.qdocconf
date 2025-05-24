@@ -30,3 +30,5 @@ qhp.KRunner.subprojects.classes.title = C++ Classes
 qhp.KRunner.subprojects.classes.indexTitle = KRunner C++ Classes
 qhp.KRunner.subprojects.classes.selectors = class fake:headerfile
 qhp.KRunner.subprojects.classes.sortPages = true
+
+tagfile = krunner.tags
