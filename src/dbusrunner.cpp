@@ -77,7 +77,16 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
         m_matchingServices << requestedServiceName;
     }
 
-    connect(this, &AbstractRunner::teardown, this, &DBusRunner::teardown);
+    connect(this, &AbstractRunner::teardown, this, [this]() {
+        if (m_matchWasCalled) {
+            for (const QString &service : std::as_const(m_matchingServices)) {
+                auto method = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Teardown"));
+                QDBusConnection::sessionBus().asyncCall(method);
+            }
+        }
+        m_actionsForSessionRequested = false;
+        m_matchWasCalled = false;
+    });
 
     // Load the runner syntaxes
     const QStringList syntaxes = data.value(QStringLiteral("X-Plasma-Runner-Syntaxes"), QStringList());
@@ -97,18 +106,6 @@ void DBusRunner::reloadConfiguration()
         suspendMatching(true);
         requestConfig();
     }
-}
-
-void DBusRunner::teardown()
-{
-    if (m_matchWasCalled) {
-        for (const QString &service : std::as_const(m_matchingServices)) {
-            auto method = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Teardown"));
-            QDBusConnection::sessionBus().asyncCall(method);
-        }
-    }
-    m_actionsForSessionRequested = false;
-    m_matchWasCalled = false;
 }
 
 void DBusRunner::requestActionsForService(const QString &service, const std::function<void()> &finishedCallback)
