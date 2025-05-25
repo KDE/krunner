@@ -265,7 +265,7 @@ void RunnerContext::restore(const KConfigGroup &config)
 
     for (const QString &entry : cfgList) {
         if (int idx = entry.indexOf(QLatin1Char(' ')); idx != -1) {
-            const int count = entry.mid(0, idx).toInt();
+            const int count = QStringView(entry).mid(0, idx).toInt();
             const QString id = entry.mid(idx + 1);
             d->launchCounts[id] = count;
         }
