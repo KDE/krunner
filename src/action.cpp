@@ -9,7 +9,7 @@ namespace KRunner
 class ActionPrivate
 {
 public:
-    explicit ActionPrivate(const QString id, const QString text, const QString iconName)
+    explicit ActionPrivate(const QString &id, const QString &text, const QString &iconName)
         : m_id(id)
         , m_text(text)
         , m_iconSource(iconName)
