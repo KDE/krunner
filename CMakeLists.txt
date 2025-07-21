@@ -46,7 +46,7 @@ set(REQUIRED_QT_VERSION 6.7.0)
 find_package(Qt6 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui)
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.9.0
+    QT 6.10.0
     KF 6.14.0
 )
 
