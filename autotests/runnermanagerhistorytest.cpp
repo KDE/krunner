@@ -14,10 +14,6 @@
 #include <QStandardPaths>
 #include <QTest>
 #include <memory>
-namespace KRunner
-{
-extern int __changeCountBeforeSaving;
-}
 using namespace KRunner;
 class RunnerManagerHistoryTest : public QObject
 {
@@ -25,7 +21,6 @@ class RunnerManagerHistoryTest : public QObject
 public:
     RunnerManagerHistoryTest()
     {
-        __changeCountBeforeSaving = 1;
         QStandardPaths::setTestModeEnabled(true);
         stateConfigFile = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QDir::separator() + "krunnerstaterc";
     }

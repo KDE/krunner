@@ -25,7 +25,6 @@
 
 namespace KRunner
 {
-KRUNNER_EXPORT int __changeCountBeforeSaving = 5; // For tests
 class RunnerContextPrivate : public QSharedData
 {
 public:
@@ -274,7 +273,7 @@ void RunnerContext::restore(const KConfigGroup &config)
 
 void RunnerContext::save(KConfigGroup &config)
 {
-    if (d->changedLaunchCounts < __changeCountBeforeSaving) {
+    if (d->changedLaunchCounts == 0) {
         return;
     }
     d->changedLaunchCounts = 0;
