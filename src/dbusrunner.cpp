@@ -13,8 +13,12 @@
 #include <QDBusMessage>
 #include <QDBusMetaType>
 #include <QDBusPendingReply>
+#include <QGuiApplication>
 #include <QIcon>
 #include <set>
+
+#include <KWaylandExtras>
+#include <KWindowSystem>
 
 #include "dbusutils_p.h"
 #include "krunner_debug.h"
@@ -278,9 +282,33 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
         actionId = match.selectedAction().id();
     }
 
-    auto runMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Run"));
-    runMethod.setArguments(QList<QVariant>({matchId, actionId}));
-    QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+    auto run = [this, service, matchId, actionId] {
+        auto runMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Run"));
+        runMethod.setArguments(QList<QVariant>({matchId, actionId}));
+        QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+    };
+
+    if (KWindowSystem::isPlatformWayland() && qGuiApp->focusWindow()) {
+        const int launchedSerial = KWaylandExtras::lastInputSerial(qGuiApp->focusWindow());
+        connect(
+            KWaylandExtras::self(),
+            &KWaylandExtras::xdgActivationTokenArrived,
+            this,
+            [this, launchedSerial, service, matchId, actionId, run](int tokenSerial, const QString &token) {
+                Q_UNUSED(tokenSerial);
+                if (!token.isEmpty()) {
+                    auto activationTokenMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("SetActivationToken"));
+                    activationTokenMethod.setArguments(QList<QVariant>{token});
+                    QDBusConnection::sessionBus().call(activationTokenMethod, QDBus::NoBlock);
+                }
+
+                run();
+            },
+            Qt::SingleShotConnection);
+        KWaylandExtras::requestXdgActivationToken(qGuiApp->focusWindow(), launchedSerial, {});
+    } else {
+        run();
+    }
 }
 
 QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)

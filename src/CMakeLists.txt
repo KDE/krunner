@@ -68,6 +68,7 @@ target_link_libraries(KF6Runner
         KF6::ConfigCore
         KF6::I18n
         KF6::ItemModels
+        KF6::WindowSystem
 )
 ecm_generate_headers(KRunner_CamelCase_HEADERS
   HEADER_NAMES

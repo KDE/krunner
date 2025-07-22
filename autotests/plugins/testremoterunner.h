@@ -19,6 +19,7 @@ public:
 public Q_SLOTS:
     KRunner::Actions Actions();
     RemoteMatches Match(const QString &searchTerm);
+    void SetActivationToken(const QString &token);
     void Run(const QString &id, const QString &actionId);
     void Teardown();
     QVariantMap Config();

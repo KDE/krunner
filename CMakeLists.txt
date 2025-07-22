@@ -54,6 +54,7 @@ find_package(KF6Config ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6CoreAddons ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6I18n ${KF_DEP_VERSION} REQUIRED)
 find_package(KF6ItemModels ${KF_DEP_VERSION})
+find_package(KF6WindowSystem ${KF_DEP_VERSION} REQUIRED)
 
 # Subdirectories
 add_subdirectory(src)

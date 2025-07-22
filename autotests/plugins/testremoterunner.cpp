@@ -95,6 +95,11 @@ KRunner::Actions TestRemoteRunner::Actions()
     return QList<KRunner::Action>{action, action2};
 }
 
+void TestRemoteRunner::SetActivationToken(const QString &token)
+{
+    std::cout << "Activation Token:" << qPrintable(token) << std::endl;
+}
+
 void TestRemoteRunner::Run(const QString &id, const QString &actionId)
 {
     std::cout << "Running:" << qPrintable(id) << ":" << qPrintable(actionId) << std::endl;
