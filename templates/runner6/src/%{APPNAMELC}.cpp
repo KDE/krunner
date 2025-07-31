@@ -11,8 +11,6 @@
 %{APPNAME}::%{APPNAME}(QObject *parent, const KPluginMetaData &data)
     : KRunner::AbstractRunner(parent, data)
 {
-    // Disallow short queries
-    setMinLetterCount(3);
     // Provide usage help for this plugin
     addSyntax(QStringLiteral("sometriggerword :q:"), i18n("Description for this syntax"));
 }
