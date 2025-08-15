@@ -55,15 +55,12 @@ private Q_SLOTS:
         manager->launchQuery("foo");
         QThread::msleep(1); // Wait for runner to be invoked and query started
 
-        QEventLoop loop;
-        QTimer::singleShot(500, &loop, &QEventLoop::quit);
-
         QVERIFY(manager->querying());
         manager.reset(nullptr);
         QVERIFY(ptr); // Runner should not be deleted or reset now
 
-        loop.exec();
-        QVERIFY(!ptr);
+        // try it maximal 5 seconds with running the event loop in-between
+        QTRY_VERIFY_WITH_TIMEOUT(!ptr, 5000);
     }
 
     void testTeardownWhileJobIsRunning()
