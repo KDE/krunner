@@ -53,10 +53,7 @@ ecm_generate_export_header(KF6Runner
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
-set(KRunner_BUILD_INCLUDE_DIRS ${KRunner_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(KF6Runner INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KRunner>")
-target_include_directories(KF6Runner PUBLIC "$<BUILD_INTERFACE:${KRunner_BUILD_INCLUDE_DIRS}>")
-
 
 target_link_libraries(KF6Runner
     PUBLIC
