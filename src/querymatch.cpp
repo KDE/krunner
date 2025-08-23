@@ -55,7 +55,7 @@ public:
             id = newId;
         } else {
             if (runner) {
-                id = runner.data()->id();
+                id = runner->id();
             }
             if (!id.isEmpty()) {
                 id.append(QLatin1Char('_')).append(newId);
@@ -104,7 +104,7 @@ bool QueryMatch::isValid() const
 QString QueryMatch::id() const
 {
     if (d->id.isEmpty() && d->runner) {
-        return d->runner.data()->id();
+        return d->runner->id();
     }
 
     return d->id;
