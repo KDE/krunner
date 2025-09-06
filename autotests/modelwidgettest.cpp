@@ -20,19 +20,19 @@ public:
     explicit TestObject()
         : QWidget()
     {
-        ResultsModel *model = new ResultsModel(this);
+        auto *model = new ResultsModel(this);
         // Comment this line out to load all the system runners
         model->runnerManager()->loadRunner(KPluginMetaData::findPluginById(QStringLiteral("krunnertest"), QStringLiteral("fakerunnerplugin")));
 
-        QListView *view = new QListView(this);
+        auto *view = new QListView(this);
         view->setModel(model);
         view->setAlternatingRowColors(true);
 
-        QLineEdit *edit = new QLineEdit(this);
+        auto *edit = new QLineEdit(this);
         connect(edit, &QLineEdit::textChanged, model, &ResultsModel::setQueryString);
         edit->setText("foo");
 
-        QVBoxLayout *l = new QVBoxLayout(this);
+        auto *l = new QVBoxLayout(this);
         l->addWidget(edit);
         l->addWidget(view);
     }

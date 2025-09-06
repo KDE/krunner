@@ -76,7 +76,7 @@ QMimeData *AbstractRunner::mimeDataForMatch(const QueryMatch &match)
     if (match.urls().isEmpty()) {
         return nullptr;
     }
-    QMimeData *result = new QMimeData();
+    auto *result = new QMimeData();
     result->setUrls(match.urls());
     return result;
 }

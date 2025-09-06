@@ -8,6 +8,7 @@
 #include "runnersyntax.h"
 
 #include <KLocalizedString>
+#include <memory>
 
 namespace KRunner
 {
@@ -52,7 +53,7 @@ RunnerSyntax::~RunnerSyntax() = default;
 
 RunnerSyntax &RunnerSyntax::operator=(const RunnerSyntax &rhs)
 {
-    d.reset(new RunnerSyntaxPrivate(*rhs.d));
+    d = std::make_unique<RunnerSyntaxPrivate>(*rhs.d);
     return *this;
 }
 

@@ -3,6 +3,7 @@
 #include "action.h"
 
 #include <QIcon>
+#include <memory>
 
 namespace KRunner
 {
@@ -38,7 +39,7 @@ Action::Action()
 Action::~Action() = default;
 Action &Action::operator=(const Action &other)
 {
-    d.reset(new ActionPrivate(*other.d));
+    d = std::make_unique<ActionPrivate>(*other.d);
     return *this;
 }
 

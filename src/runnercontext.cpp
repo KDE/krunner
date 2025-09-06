@@ -42,9 +42,7 @@ public:
     {
     }
 
-    ~RunnerContextPrivate()
-    {
-    }
+    ~RunnerContextPrivate() = default;
 
     void invalidate()
     {
@@ -106,9 +104,7 @@ RunnerContext::RunnerContext(const RunnerContext &other)
     d = other.d;
 }
 
-RunnerContext::~RunnerContext()
-{
-}
+RunnerContext::~RunnerContext() = default;
 
 RunnerContext &RunnerContext::operator=(const RunnerContext &other)
 {

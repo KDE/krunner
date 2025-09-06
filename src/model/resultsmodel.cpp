@@ -51,7 +51,7 @@ public:
     }
 
 protected:
-    bool lessThan(const QModelIndex &sourceA, const QModelIndex &sourceB) const override
+    [[nodiscard]] bool lessThan(const QModelIndex &sourceA, const QModelIndex &sourceB) const override
     {
         bool isCategoryComparison = !sourceA.internalId() && !sourceB.internalId();
         Q_ASSERT((bool)sourceA.internalId() == (bool)sourceB.internalId());
@@ -116,7 +116,7 @@ public:
         }
     }
 
-    int limit() const
+    [[nodiscard]] int limit() const
     {
         return m_limit;
     }
@@ -135,7 +135,7 @@ Q_SIGNALS:
     void limitChanged();
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
+    [[nodiscard]] bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
     {
         if (m_limit <= 0) {
             return true;
@@ -199,7 +199,7 @@ public:
     {
     }
 
-    QAbstractItemModel *treeModel() const
+    [[nodiscard]] QAbstractItemModel *treeModel() const
     {
         return m_treeModel;
     }
@@ -210,7 +210,7 @@ public:
     }
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
+    [[nodiscard]] bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
     {
         KModelIndexProxyMapper mapper(sourceModel(), m_treeModel);
         const QModelIndex treeIdx = mapper.mapLeftToRight(sourceModel()->index(sourceRow, 0, sourceParent));

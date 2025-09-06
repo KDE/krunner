@@ -228,17 +228,17 @@ int RunnerResultsModel::rowCount(const QModelIndex &parent) const
 QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
-        return QVariant();
+        return {};
     }
 
     if (index.internalId()) { // runner match
         if (int(index.internalId() - 1) >= m_categories.count()) {
-            return QVariant();
+            return {};
         }
 
         KRunner::QueryMatch match = fetchMatch(index);
         if (!match.isValid()) {
-            return QVariant();
+            return {};
         }
 
         switch (role) {
@@ -280,12 +280,12 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
             return QVariant::fromValue(match);
         }
 
-        return QVariant();
+        return {};
     }
 
     // category
     if (index.row() >= m_categories.count()) {
-        return QVariant();
+        return {};
     }
 
     switch (role) {
@@ -327,13 +327,13 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
     }
     }
 
-    return QVariant();
+    return {};
 }
 
 QModelIndex RunnerResultsModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (row < 0 || column != 0) {
-        return QModelIndex();
+        return {};
     }
 
     if (parent.isValid()) {
@@ -343,14 +343,14 @@ QModelIndex RunnerResultsModel::index(int row, int column, const QModelIndex &pa
             return createIndex(row, column, int(parent.row() + 1));
         }
 
-        return QModelIndex();
+        return {};
     }
 
     if (row < m_categories.count()) {
         return createIndex(row, column, nullptr);
     }
 
-    return QModelIndex();
+    return {};
 }
 
 QModelIndex RunnerResultsModel::parent(const QModelIndex &child) const
@@ -359,7 +359,7 @@ QModelIndex RunnerResultsModel::parent(const QModelIndex &child) const
         return createIndex(int(child.internalId() - 1), 0, nullptr);
     }
 
-    return QModelIndex();
+    return {};
 }
 
 KRunner::RunnerManager *RunnerResultsModel::runnerManager() const

@@ -5,6 +5,7 @@
 #include <KRunner/AbstractRunnerTest>
 #include <KRunner/RunnerManager>
 #include <QTest>
+#include <memory>
 
 using namespace KRunner;
 
@@ -38,7 +39,7 @@ private Q_SLOTS:
 
         const auto matches = manager->matches();
         QCOMPARE(matches.size(), 2);
-        QVERIFY(std::all_of(matches.begin(), matches.end(), [this](QueryMatch m) {
+        QVERIFY(std::ranges::all_of(matches, [this](QueryMatch m) {
             return m.runner() == fakeRunner;
         }));
 
@@ -77,7 +78,7 @@ private Q_SLOTS:
     {
         QSKIP("Skipped by default");
         QStandardPaths::setTestModeEnabled(false);
-        manager.reset(new RunnerManager());
+        manager = std::make_unique<RunnerManager>();
         QBENCHMARK_ONCE {
             launchQuery("test");
             launchQuery("spell bla");

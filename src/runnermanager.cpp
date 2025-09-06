@@ -667,7 +667,7 @@ QString RunnerManager::getHistorySuggestion(const QString &typedQuery) const
             return entry;
         }
     }
-    return QString();
+    return {};
 }
 
 void RunnerManager::reset()

@@ -90,9 +90,8 @@ QueryMatch::QueryMatch(AbstractRunner *runner)
 }
 
 QueryMatch::QueryMatch(const QueryMatch &other)
-    : d(other.d)
-{
-}
+
+    = default;
 
 QueryMatch::~QueryMatch() = default;
 

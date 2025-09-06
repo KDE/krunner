@@ -13,6 +13,7 @@
 #include <QTest>
 #include <QTime>
 #include <QTimer>
+#include <memory>
 
 #include "abstractrunnertest.h"
 #include "kpluginmetadata_utils_p.h"
@@ -49,9 +50,7 @@ DBusRunnerTest::DBusRunnerTest()
     QStandardPaths::setTestModeEnabled(true);
 }
 
-DBusRunnerTest::~DBusRunnerTest()
-{
-}
+DBusRunnerTest::~DBusRunnerTest() = default;
 
 void DBusRunnerTest::cleanup()
 {
@@ -97,7 +96,7 @@ void DBusRunnerTest::testMulti()
 {
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a1")}, QStringLiteral("net.krunnertests.multi.a1"));
     startDBusRunnerProcess({QStringLiteral("net.krunnertests.multi.a2")}, QStringLiteral("net.krunnertests.multi.a2"));
-    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
+    manager = std::make_unique<RunnerManager>(); // This case is special, because we want to load the runners manually
 
     auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
     QVERIFY(md.isValid());
@@ -189,7 +188,7 @@ void DBusRunnerTest::testIconData()
 void DBusRunnerTest::testLifecycleMethods()
 {
     QProcess *process = startDBusRunnerProcess({QStringLiteral("net.krunnertests.dave"), QString()});
-    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
+    manager = std::make_unique<RunnerManager>(); // This case is special, because we want to load the runners manually
     auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestruntimeconfig.desktop"));
     manager->loadRunner(md);
     QCOMPARE(manager->runners().count(), 1);
@@ -221,7 +220,7 @@ void DBusRunnerTest::testLifecycleMethods()
 void DBusRunnerTest::testRequestActionsWildcards()
 {
     initProperties();
-    manager.reset(new RunnerManager()); // This case is special, because we want to load the runners manually
+    manager = std::make_unique<RunnerManager>(); // This case is special, because we want to load the runners manually
     auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/dbusrunnertestmulti.desktop"));
     QVERIFY(md.isValid());
     manager->loadRunner(md);

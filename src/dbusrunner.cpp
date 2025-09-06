@@ -211,7 +211,7 @@ QList<QueryMatch> DBusRunner::convertMatches(const QString &service, const Remot
         if (iconData.isValid()) {
             const auto iconDataArgument = iconData.value<QDBusArgument>();
             if (iconDataArgument.currentType() == QDBusArgument::StructureType && iconDataArgument.currentSignature() == QLatin1String("(iiibiiay)")) {
-                const RemoteImage remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
+                const auto remoteImage = qdbus_cast<RemoteImage>(iconDataArgument);
                 if (QImage decodedImage = decodeImage(remoteImage); !decodedImage.isNull()) {
                     const QPixmap pix = QPixmap::fromImage(std::move(decodedImage));
                     QIcon icon(pix);
@@ -330,7 +330,7 @@ QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)
     if (remoteImage.width <= 0 || remoteImage.width >= 2048 || remoteImage.height <= 0 || remoteImage.height >= 2048 || remoteImage.rowStride <= 0) {
         qCWarning(KRUNNER) << "Invalid image metadata (width:" << remoteImage.width << "height:" << remoteImage.height << "rowStride:" << remoteImage.rowStride
                            << ")";
-        return QImage();
+        return {};
     }
 
     QImage::Format format = QImage::Format_Invalid;
@@ -347,7 +347,7 @@ QImage DBusRunner::decodeImage(const RemoteImage &remoteImage)
     if (format == QImage::Format_Invalid) {
         qCWarning(KRUNNER) << "Unsupported image format (hasAlpha:" << remoteImage.hasAlpha << "bitsPerSample:" << remoteImage.bitsPerSample
                            << "channels:" << remoteImage.channels << ")";
-        return QImage();
+        return {};
     }
 
     QImage image(remoteImage.width, remoteImage.height, format);

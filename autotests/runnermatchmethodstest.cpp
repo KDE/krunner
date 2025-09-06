@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QStandardPaths>
 #include <QTest>
+#include <memory>
 
 #include "kpluginmetadata_utils_p.h"
 
@@ -35,7 +36,7 @@ public:
 private Q_SLOTS:
     void init()
     {
-        ctx.reset(new RunnerContext());
+        ctx = std::make_unique<RunnerContext>();
     }
     void testAdd();
     void testAddMulti();
