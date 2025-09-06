@@ -294,7 +294,7 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
             KWaylandExtras::self(),
             &KWaylandExtras::xdgActivationTokenArrived,
             this,
-            [this, launchedSerial, service, matchId, actionId, run](int tokenSerial, const QString &token) {
+            [this, service, matchId, actionId, run](int tokenSerial, const QString &token) {
                 Q_UNUSED(tokenSerial);
                 if (!token.isEmpty()) {
                     auto activationTokenMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("SetActivationToken"));
