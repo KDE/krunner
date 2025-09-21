@@ -3,7 +3,6 @@
 #include "action.h"
 
 #include <QIcon>
-#include <memory>
 
 namespace KRunner
 {

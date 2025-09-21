@@ -23,7 +23,6 @@
 #include <KFileUtils>
 #include <KPluginMetaData>
 #include <KSharedConfig>
-#include <memory>
 
 #include "abstractrunner_p.h"
 #include "dbusrunner_p.h"

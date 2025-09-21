@@ -8,7 +8,6 @@
 #include "runnersyntax.h"
 
 #include <KLocalizedString>
-#include <memory>
 
 namespace KRunner
 {
