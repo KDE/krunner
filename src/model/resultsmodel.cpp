@@ -38,7 +38,7 @@ public:
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
-        sort(0, Qt::DescendingOrder);
+        sort(0, Qt::AscendingOrder);
     }
 
     void setQueryString(const QString &queryString)
