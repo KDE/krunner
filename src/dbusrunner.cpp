@@ -289,23 +289,15 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
     };
 
     if (KWindowSystem::isPlatformWayland() && qGuiApp->focusWindow()) {
-        const int launchedSerial = KWaylandExtras::lastInputSerial(qGuiApp->focusWindow());
-        connect(
-            KWaylandExtras::self(),
-            &KWaylandExtras::xdgActivationTokenArrived,
-            this,
-            [this, service, matchId, actionId, run](int tokenSerial, const QString &token) {
-                Q_UNUSED(tokenSerial);
-                if (!token.isEmpty()) {
-                    auto activationTokenMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("SetActivationToken"));
-                    activationTokenMethod.setArguments(QList<QVariant>{token});
-                    QDBusConnection::sessionBus().call(activationTokenMethod, QDBus::NoBlock);
-                }
-
-                run();
-            },
-            Qt::SingleShotConnection);
-        KWaylandExtras::requestXdgActivationToken(qGuiApp->focusWindow(), launchedSerial, {});
+        auto tokenFuture = KWaylandExtras::xdgActivationToken(qGuiApp->focusWindow(), {});
+        tokenFuture.then(this, [this, service, matchId, actionId, run](const QString &token) {
+            if (!token.isEmpty()) {
+                auto activationTokenMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("SetActivationToken"));
+                activationTokenMethod.setArguments(QList<QVariant>{token});
+                QDBusConnection::sessionBus().call(activationTokenMethod, QDBus::NoBlock);
+            }
+            run();
+        });
     } else {
         run();
     }
