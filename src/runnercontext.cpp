@@ -37,8 +37,6 @@ public:
     RunnerContextPrivate(const RunnerContextPrivate &p)
         : QSharedData(p)
         , m_manager(p.m_manager)
-        , launchCounts(p.launchCounts)
-        , changedLaunchCounts(p.changedLaunchCounts)
     {
     }
 
@@ -81,8 +79,6 @@ public:
     QPointer<RunnerManager> m_manager;
     bool m_isValid = true;
     QList<QueryMatch> matches;
-    QHash<QString, int> launchCounts;
-    int changedLaunchCounts = 0; // We want to sync them while the app is running, but for each query it is overkill
     QString term;
     bool singleRunnerQueryMode = false;
     bool shouldIgnoreCurrentMatchForHistory = false;
@@ -192,12 +188,7 @@ bool RunnerContext::addMatches(const QList<QueryMatch> &matches)
 
     {
         QWriteLocker locker(&d->lock);
-        for (QueryMatch match : matches) {
-            // Give previously launched matches a slight boost in relevance
-            // The boost smoothly saturates to 0.5;
-            if (int count = d->launchCounts.value(match.id())) {
-                match.setRelevance(match.relevance() + 0.5 * (1 - exp(-count * 0.3)));
-            }
+        for (const QueryMatch &match : matches) {
             d->addMatch(match);
         }
     }
@@ -244,49 +235,19 @@ bool RunnerContext::shouldIgnoreCurrentMatchForHistory() const
     return d->shouldIgnoreCurrentMatchForHistory;
 }
 
-/*!
- * Sets the launch counts for the associated match ids
- *
- * If a runner adds a match to this context, the context will check if the
- * match id has been launched before and increase the matches relevance
- * correspondingly. In this manner, any front end can implement adaptive search
- * by sorting items according to relevance.
- *
- * @param config the config group where launch data was stored
- */
-void RunnerContext::restore(const KConfigGroup &config)
+void RunnerContext::restore([[maybe_unused]] const KConfigGroup &config)
 {
-    const QStringList cfgList = config.readEntry("LaunchCounts", QStringList());
-
-    for (const QString &entry : cfgList) {
-        if (int idx = entry.indexOf(QLatin1Char(' ')); idx != -1) {
-            const int count = QStringView(entry).mid(0, idx).toInt();
-            const QString id = entry.mid(idx + 1);
-            d->launchCounts[id] = count;
-        }
-    }
+    // TODO KF7: Drop
 }
 
-void RunnerContext::save(KConfigGroup &config)
+void RunnerContext::save([[maybe_unused]] KConfigGroup &config)
 {
-    if (d->changedLaunchCounts == 0) {
-        return;
-    }
-    d->changedLaunchCounts = 0;
-    QStringList countList;
-    countList.reserve(d->launchCounts.size());
-    for (auto it = d->launchCounts.cbegin(), end = d->launchCounts.cend(); it != end; ++it) {
-        countList << QString::number(it.value()) + QLatin1Char(' ') + it.key();
-    }
-
-    config.writeEntry("LaunchCounts", countList);
-    config.sync();
+    // TODO KF7: Drop
 }
 
-void RunnerContext::increaseLaunchCount(const QueryMatch &match)
+void RunnerContext::increaseLaunchCount([[maybe_unused]] const QueryMatch &match)
 {
-    ++d->launchCounts[match.id()];
-    ++d->changedLaunchCounts;
+    // TODO KF7: Drop
 }
 
 QString RunnerContext::requestedQueryString() const

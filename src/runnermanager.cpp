@@ -54,7 +54,6 @@ public:
         QObject::connect(q, &RunnerManager::matchesChanged, q, [&] {
             lastMatchChangeSignalled.restart();
         });
-        loadConfiguration();
     }
 
     void scheduleMatchesChanged()
@@ -87,12 +86,6 @@ public:
     void matchesChanged()
     {
         Q_EMIT q->matchesChanged(context.matches());
-    }
-
-    void loadConfiguration()
-    {
-        const KConfigGroup generalConfig = pluginConf.config()->group(QStringLiteral("General"));
-        context.restore(stateData);
     }
 
     void loadSingleRunner()
@@ -412,7 +405,6 @@ void RunnerManager::reloadConfiguration()
 {
     d->pluginConf.config()->reparseConfiguration();
     d->stateData.config()->reparseConfiguration();
-    d->loadConfiguration();
     d->loadRunners();
 }
 
@@ -477,8 +469,6 @@ bool RunnerManager::run(const QueryMatch &match, const KRunner::Action &selected
     QueryMatch m = match;
     m.setSelectedAction(selectedAction);
     m.runner()->run(d->context, m);
-    // To allow the RunnerContext to increase the relevance of often launched apps
-    d->context.increaseLaunchCount(m);
 
     if (!d->context.shouldIgnoreCurrentMatchForHistory()) {
         d->addToHistory();
@@ -549,9 +539,6 @@ void RunnerManager::matchSessionComplete()
     }
 
     d->teardown();
-    // We save the context config after each session, just like the history entries
-    // BUG: 424505
-    d->context.save(d->stateData);
 }
 
 void RunnerManager::launchQuery(const QString &untrimmedTerm, const QString &runnerName)

@@ -139,8 +139,6 @@ private Q_SLOTS:
         spyQueryFinished.wait();
         manager.run(manager.matches().constFirst());
         manager.matchSessionComplete();
-        QCOMPARE(stateGrp.readEntry("LaunchCounts"), "1 foo");
-        QCOMPARE(stateGrp.config()->groupList().size(), 1);
     }
 
     void testRunnerSuspendWhileReloadingConfig()
