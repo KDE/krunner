@@ -10,7 +10,6 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 function(krunner_configure_test TEST_TARGET RUNNER_TARGET)
-    include(CMakeParseArguments)
     set(options)
     set(oneValueArgs DESKTOP_FILE)
     set(multiValueArgs)
