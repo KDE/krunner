@@ -13,6 +13,7 @@
 #include <QList>
 #include <QObject>
 
+#include <KConfigWatcher>
 #include <KPluginMetaData>
 
 #include "abstractrunner.h"
@@ -48,7 +49,7 @@ class KRUNNER_EXPORT RunnerManager : public QObject
     /*!
      * \property KRunner::RunnerManager::history
      */
-    Q_PROPERTY(QStringList history READ history)
+    Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
     /*!
      * \property KRunner::RunnerManager::querying
@@ -285,12 +286,20 @@ Q_SIGNALS:
      */
     void historyEnabledChanged();
 
+    /*!
+     * Emitted when the history has changed
+     * \since 6.21
+     */
+
+    void historyChanged();
+
 private:
     // exported for dbusrunnertest
     KPluginMetaData convertDBusRunnerToJson(const QString &filename) const;
     KRUNNER_NO_EXPORT Q_INVOKABLE void onMatchesChanged();
 
     std::unique_ptr<RunnerManagerPrivate> d;
+    KConfigWatcher::Ptr m_stateWatcher;
 
     friend class RunnerManagerPrivate;
     friend AbstractRunnerTest;

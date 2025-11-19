@@ -346,6 +346,7 @@ public:
     {
         stateData.group(QStringLiteral("History")).writeEntry(historyEnvironmentIdentifier, historyEntries, KConfig::Notify);
         stateData.sync();
+        Q_EMIT q->historyChanged();
     }
 
     inline QStringList readHistoryForCurrentEnv()
@@ -393,6 +394,10 @@ RunnerManager::RunnerManager(QObject *parent)
     d = std::make_unique<RunnerManagerPrivate>(configPtr->group(QStringLiteral("Plugins")),
                                                defaultStatePtr->group(QStringLiteral("PlasmaRunnerManager")),
                                                this);
+    m_stateWatcher = KConfigWatcher::create(defaultStatePtr);
+    connect(m_stateWatcher.data(), &KConfigWatcher::configChanged, this, [this]() {
+        Q_EMIT historyChanged();
+    });
 }
 
 RunnerManager::~RunnerManager()
