@@ -13,6 +13,7 @@
 
 #include <KRunner/RunnerManager>
 #include <QIcon>
+#include <QMimeData>
 #include <QSortFilterProxyModel>
 #include <memory>
 
