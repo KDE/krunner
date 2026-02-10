@@ -47,7 +47,7 @@ find_package(Qt6 ${REQUIRED_QT_VERSION} NO_MODULE REQUIRED Gui)
 
 ecm_set_disabled_deprecation_versions(
     QT 6.11.0
-    KF 6.21.0
+    KF 6.23.0
 )
 
 find_package(KF6Config ${KF_DEP_VERSION} REQUIRED)
