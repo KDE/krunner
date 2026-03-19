@@ -43,7 +43,7 @@ krunner_configure_test(runnermanagersinglerunnermodetest testremoterunner DESKTO
 krunner_configure_test(runnermanagertest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
 krunner_configure_test(threadingtest testremoterunner DESKTOP_FILE "${CMAKE_CURRENT_SOURCE_DIR}/plugins/dbusrunnertest.desktop")
 
-find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Widgets)
+find_package(Qt6 ${REQUIRED_QT_VERSION} OPTIONAL_COMPONENTS Widgets)
 if (TARGET Qt6::Widgets)
     add_executable(modelwidgettest modelwidgettest.cpp)
     target_link_libraries(modelwidgettest KF6::Runner Qt6::Widgets)
