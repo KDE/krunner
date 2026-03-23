@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: KDE Contributors
 # SPDX-License-Identifier: BSD-2-Clause
 
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.29)
 
 set(KF_VERSION "6.25.0") # handled by release scripts
 set(KF_DEP_VERSION "6.24.0") # handled by release scripts
