@@ -124,15 +124,12 @@ public:
 
     void loadRunners(const QString &singleRunnerId = QString())
     {
-        QList<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
-
         const bool loadAll = stateData.readEntry("loadAll", false);
         const bool noWhiteList = whiteList.isEmpty();
 
+        const QList<KPluginMetaData> offers = RunnerManager::runnerMetaDataList();
         QList<AbstractRunner *> deadRunners;
-        QMutableListIterator<KPluginMetaData> it(offers);
-        while (it.hasNext()) {
-            const KPluginMetaData &description = it.next();
+        for (const auto &description : offers) {
             qCDebug(KRUNNER) << "Loading runner: " << description.pluginId();
 
             const QString runnerName = description.pluginId();
