@@ -63,8 +63,8 @@ protected:
                 return favoriteA > favoriteB;
             }
 
-            const int typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toReal();
-            const int typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toReal();
+            const int typeA = sourceA.data(ResultsModel::CategoryRelevanceRole).toInt();
+            const int typeB = sourceB.data(ResultsModel::CategoryRelevanceRole).toInt();
             return typeA < typeB;
         }
 
