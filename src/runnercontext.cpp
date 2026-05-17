@@ -82,7 +82,7 @@ public:
     QString term;
     bool singleRunnerQueryMode = false;
     bool shouldIgnoreCurrentMatchForHistory = false;
-    QMap<QString, QueryMatch> uniqueIds;
+    QHash<QString, QueryMatch> uniqueIds;
     QString requestedText;
     int requestedCursorPosition = 0;
     qint64 queryStartTs = 0;
