@@ -13,7 +13,6 @@
 #include <QList>
 #include <QObject>
 
-#include <KConfigWatcher>
 #include <KPluginMetaData>
 
 #include "abstractrunner.h"
@@ -299,7 +298,6 @@ private:
     KRUNNER_NO_EXPORT Q_INVOKABLE void onMatchesChanged();
 
     std::unique_ptr<RunnerManagerPrivate> d;
-    KConfigWatcher::Ptr m_stateWatcher;
 
     friend class RunnerManagerPrivate;
     friend AbstractRunnerTest;

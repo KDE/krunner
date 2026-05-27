@@ -35,7 +35,10 @@ namespace KRunner
 class RunnerManagerPrivate
 {
 public:
-    RunnerManagerPrivate(const KConfigGroup &configurationGroup, const KConfigGroup &stateConfigGroup, RunnerManager *parent)
+    RunnerManagerPrivate(const KConfigGroup &configurationGroup,
+                         const KConfigGroup &stateConfigGroup,
+                         const KSharedConfig::Ptr &defaultStatePtr,
+                         RunnerManager *parent)
         : q(parent)
         , context(parent)
         , pluginConf(configurationGroup)
@@ -54,6 +57,13 @@ public:
         QObject::connect(q, &RunnerManager::matchesChanged, q, [&] {
             lastMatchChangeSignalled.restart();
         });
+
+        if (defaultStatePtr) {
+            defaultStateWatcher = KConfigWatcher::create(defaultStatePtr);
+            QObject::connect(defaultStateWatcher.data(), &KConfigWatcher::configChanged, q, [this]() {
+                Q_EMIT q->historyChanged();
+            });
+        }
     }
 
     void scheduleMatchesChanged()
@@ -373,11 +383,12 @@ public:
     KConfigGroup pluginConf;
     KConfigGroup stateData;
     QSet<QString> disabledRunnerIds; // Runners that are disabled but were loaded as single runners
+    KConfigWatcher::Ptr defaultStateWatcher;
 };
 
 RunnerManager::RunnerManager(const KConfigGroup &pluginConfigGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QObject(parent)
-    , d(new RunnerManagerPrivate(pluginConfigGroup, stateConfigGroup, this))
+    , d(new RunnerManagerPrivate(pluginConfigGroup, stateConfigGroup, KSharedConfig::Ptr(), this)) // TODO: need to watch stateconfig also here?
 {
     Q_ASSERT(pluginConfigGroup.isValid());
     Q_ASSERT(stateConfigGroup.isValid());
@@ -390,11 +401,8 @@ RunnerManager::RunnerManager(QObject *parent)
     auto configPtr = KSharedConfig::openConfig(QStringLiteral("krunnerrc"), KConfig::NoGlobals);
     d = std::make_unique<RunnerManagerPrivate>(configPtr->group(QStringLiteral("Plugins")),
                                                defaultStatePtr->group(QStringLiteral("PlasmaRunnerManager")),
+                                               defaultStatePtr,
                                                this);
-    m_stateWatcher = KConfigWatcher::create(defaultStatePtr);
-    connect(m_stateWatcher.data(), &KConfigWatcher::configChanged, this, [this]() {
-        Q_EMIT historyChanged();
-    });
 }
 
 RunnerManager::~RunnerManager()
