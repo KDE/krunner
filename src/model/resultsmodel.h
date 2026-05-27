@@ -12,7 +12,6 @@
 #include "krunner_export.h"
 
 #include <KRunner/RunnerManager>
-#include <QIcon>
 #include <QMimeData>
 #include <QSortFilterProxyModel>
 #include <memory>

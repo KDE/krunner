@@ -7,6 +7,7 @@
 
 #include "runnerresultsmodel_p.h"
 
+#include <QIcon>
 #include <QSet>
 
 #include <KRunner/RunnerManager>
