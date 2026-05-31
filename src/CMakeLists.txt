@@ -4,6 +4,13 @@
 add_library(KF6Runner SHARED)
 add_library(KF6::Runner ALIAS KF6Runner)
 
+qt_extract_metatypes(KF6Runner OUTPUT_FILES METATYPES_FILE)
+
+# see https://qt-project.atlassian.net/browse/QTBUG-123052
+# might be replaced with proper Qt API once that exists
+get_filename_component(METATYPES_FILE_NAME ${METATYPES_FILE} NAME)
+target_sources(KF6Runner INTERFACE $<INSTALL_INTERFACE:${KDE_INSTALL_QTMETATYPESDIR}/${METATYPES_FILE_NAME}>)
+
 set_target_properties(KF6Runner PROPERTIES
     VERSION     ${KRUNNER_VERSION}
     SOVERSION   ${KRUNNER_SOVERSION}
@@ -110,6 +117,8 @@ ecm_qt_install_logging_categories(
 )
 
 ecm_generate_qdoc(KF6Runner krunner.qdocconf)
+
+install(FILES ${METATYPES_FILE} DESTINATION ${KDE_INSTALL_QTMETATYPESDIR})
 
 install(FILES
    "data/org.kde.krunner1.xml"
