@@ -20,6 +20,8 @@
 #include <KRunner/AbstractRunner>
 #include <QTimer>
 #include <cmath>
+#include <qsortfilterproxymodel.h>
+#include <qtdeprecationdefinitions.h>
 
 using namespace KRunner;
 
@@ -110,9 +112,14 @@ public:
         QSortFilterProxyModel::setSourceModel(sourceModel);
 
         if (sourceModel) {
-            connect(sourceModel, &QAbstractItemModel::rowsInserted, this, &CategoryDistributionProxyModel::invalidateFilter);
-            connect(sourceModel, &QAbstractItemModel::rowsMoved, this, &CategoryDistributionProxyModel::invalidateFilter);
-            connect(sourceModel, &QAbstractItemModel::rowsRemoved, this, &CategoryDistributionProxyModel::invalidateFilter);
+            // As a filter input, we have the rows from the parent model. When new rows (categories) are inserted, we need to filter existing ones too
+            const auto invalidate = [this]() {
+                beginFilterChange();
+                endFilterChange(QSortFilterProxyModel::Direction::Rows);
+            };
+            connect(sourceModel, &QAbstractItemModel::rowsInserted, this, invalidate);
+            connect(sourceModel, &QAbstractItemModel::rowsMoved, this, invalidate);
+            connect(sourceModel, &QAbstractItemModel::rowsRemoved, this, invalidate);
         }
     }
 
@@ -126,8 +133,9 @@ public:
         if (m_limit == limit) {
             return;
         }
+        beginFilterChange();
         m_limit = limit;
-        invalidateFilter();
+        endFilterChange(QSortFilterProxyModel::Direction::Rows);
         Q_EMIT limitChanged();
     }
 
@@ -205,8 +213,9 @@ public:
     }
     void setTreeModel(QAbstractItemModel *treeModel)
     {
+        beginFilterChange();
         m_treeModel = treeModel;
-        invalidateFilter();
+        endFilterChange(QSortFilterProxyModel::Direction::Rows);
     }
 
 protected:
