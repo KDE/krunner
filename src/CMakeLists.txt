@@ -124,3 +124,20 @@ install(FILES
    "data/org.kde.krunner1.xml"
    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
    RENAME kf6_org.kde.krunner1.xml)
+
+ecm_add_installed_library_check(KF6Runner
+    PACKAGE_NAME "KF6Runner"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+
+# AbstractRunnerTest is header-only, would need QTest to link
+list(FILTER KRunner_CamelCase_HEADERS EXCLUDE REGEX AbstractRunnerTest)
+
+ecm_installed_library_check_include_strings(KF6Runner
+    HEADERS ${KRunner_CamelCase_HEADERS}
+    PREFIX KRunner
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6Runner
+    PREFIX KRUNNER
+)
