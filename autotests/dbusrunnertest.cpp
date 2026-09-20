@@ -181,7 +181,7 @@ void DBusRunnerTest::testIconData()
     QImage expectedIcon(10, 10, QImage::Format_RGBA8888);
     expectedIcon.fill(Qt::blue);
 
-    QCOMPARE(result.icon().availableSizes().first(), QSize(10, 10));
+    QCOMPARE(result.icon().availableSizes().constFirst(), QSize(10, 10));
     QCOMPARE(result.icon().pixmap(QSize(10, 10)), QPixmap::fromImage(expectedIcon));
 }
 
