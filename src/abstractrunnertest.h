@@ -13,6 +13,7 @@
 
 #include <QSignalSpy>
 #include <QTest>
+#include <memory>
 #if KRUNNER_DBUS_RUNNER_TESTING
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -40,7 +41,7 @@ public:
     void initProperties()
     {
         qputenv("LC_ALL", "C.utf-8");
-        manager.reset(new KRunner::RunnerManager());
+        manager = std::make_unique<KRunner::RunnerManager>();
 
 #if KRUNNER_DBUS_RUNNER_TESTING
         auto md = manager->convertDBusRunnerToJson(QStringLiteral(KRUNNER_TEST_DESKTOP_FILE));
