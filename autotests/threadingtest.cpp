@@ -4,6 +4,7 @@
 */
 #include <KRunner/AbstractRunnerTest>
 #include <KRunner/RunnerManager>
+#include <QSignalSpy>
 #include <QTest>
 #include <memory>
 
@@ -53,10 +54,13 @@ private Q_SLOTS:
     {
         QPointer<QObject> ptr(fakeRunner);
         manager->setAllowedRunners({"fakerunnerplugin"});
-        manager->launchQuery("foo");
-        QThread::msleep(1); // Wait for runner to be invoked and query started
+        manager->launchQuery("fooblock");
 
-        QVERIFY(manager->querying());
+        QVERIFY2(manager->querying(), "manager should know we are querying right away");
+        QSignalSpy spy(manager.get(), &RunnerManager::matchesChanged);
+        QVERIFY2(spy.wait(500), "no matches were emitted from runner");
+        QVERIFY2(manager->querying(), "runner should still simulate blocking action");
+
         manager.reset(nullptr);
         QVERIFY(ptr); // Runner should not be deleted or reset now
 

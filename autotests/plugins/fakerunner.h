@@ -32,6 +32,9 @@ public:
             context.addMatch(createDummyMatch(QStringLiteral("foo"), 0.1));
             context.addMatch(createDummyMatch(QStringLiteral("bar"), 0.2));
         }
+        if (context.query() == QLatin1String("fooblock")) {
+            QThread::msleep(1000);
+        }
     }
 
 private:
