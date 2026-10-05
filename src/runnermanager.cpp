@@ -122,7 +122,7 @@ public:
     {
         for (const auto runner : runners) {
             if (qobject_cast<DBusRunner *>(runner)) {
-                runner->deleteLater();
+                delete runner;
             } else {
                 Q_ASSERT(runner->thread() != q->thread());
                 runner->thread()->quit();
