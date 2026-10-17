@@ -4,6 +4,7 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
+#include <KAboutPerson>
 #include <KRunner/Action>
 #include <KRunner/RunnerManager>
 #include <QObject>
@@ -41,6 +42,7 @@ private Q_SLOTS:
     void testIconData();
     void testLifecycleMethods();
     void testRequestActionsWildcards();
+    void testMetaDataFields();
 };
 
 DBusRunnerTest::DBusRunnerTest()
@@ -111,6 +113,22 @@ void DBusRunnerTest::testMulti()
     QVERIFY(first != second);
     QVERIFY(first == QLatin1String("net.krunnertests.multi.a1") || first == QStringLiteral("net.krunnertests.multi.a2"));
     QVERIFY(second == QLatin1String("net.krunnertests.multi.a1") || second == QStringLiteral("net.krunnertests.multi.a2"));
+}
+
+void DBusRunnerTest::testMetaDataFields()
+{
+    const auto md = parseMetaDataFromDesktopFile(QFINDTESTDATA("plugins/plasma-runner-dbusrunnertest.desktop"));
+    QVERIFY(md.isValid());
+    QCOMPARE(md.name(), QStringLiteral("DBus runner test"));
+    QCOMPARE(md.version(), QStringLiteral("1.0"));
+    QCOMPARE(md.license(), QStringLiteral("LGPL"));
+    QCOMPARE(md.copyrightText(), QStringLiteral("Copyright (c) 2021 Some Developer"));
+    QCOMPARE(md.website(), QStringLiteral("https://example.com"));
+    const auto authors = md.authors();
+    QCOMPARE(authors.count(), 1);
+    QCOMPARE(authors.constFirst().name(), QStringLiteral("Some Developer"));
+    QCOMPARE(authors.constFirst().emailAddress(), QStringLiteral("kde@example.com"));
+    QCOMPARE(authors.constFirst().webAddress(), QStringLiteral("https://example.com"));
 }
 
 void DBusRunnerTest::testRequestActionsOnce()
