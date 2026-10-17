@@ -35,6 +35,19 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-Name", "Id", QString());
     copyAndRenameIfExists(grp, kplugin, "Comment", "Description", QString());
     copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-EnabledByDefault", "EnabledByDefault", false);
+    copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-Version", "Version", QString());
+    copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-License", "License", QString());
+    copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-Copyright", "Copyright", QString());
+    copyAndRenameIfExists(grp, kplugin, "X-KDE-PluginInfo-Website", "Website", QString());
+
+    QJsonObject author;
+    author.insert(QLatin1String("Name"), grp.readEntry("X-KDE-PluginInfo-Author"));
+    author.insert(QLatin1String("Email"), grp.readEntry("X-KDE-PluginInfo-Email"));
+    author.insert(QLatin1String("Website"), grp.readEntry("X-KDE-PluginInfo-Website"));
+    if (!author.value(QLatin1String("Name")).toString().isEmpty()) {
+        kplugin.insert(QLatin1String("Authors"), QJsonArray{author});
+    }
+
     QJsonObject root;
     root.insert(QLatin1String("KPlugin"), kplugin);
 
@@ -50,10 +63,6 @@ inline KPluginMetaData parseMetaDataFromDesktopFile(const QString &fileName)
     root.insert(QLatin1String("X-Plasma-Runner-Syntaxes"), QJsonArray::fromStringList(grp.readEntry("X-Plasma-Runner-Syntaxes", QStringList())));
     root.insert(QLatin1String("X-Plasma-Runner-Syntax-Descriptions"),
                 QJsonArray::fromStringList(grp.readEntry("X-Plasma-Runner-Syntax-Descriptions", QStringList())));
-    QJsonObject author;
-    author.insert(QLatin1String("Name"), grp.readEntry("X-KDE-PluginInfo-Author"));
-    author.insert(QLatin1String("Email"), grp.readEntry("X-KDE-PluginInfo-Email"));
-    author.insert(QLatin1String("Website"), grp.readEntry("X-KDE-PluginInfo-Website"));
 
     return KPluginMetaData(root, fileName);
 }
