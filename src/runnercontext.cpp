@@ -7,8 +7,6 @@
 
 #include "runnercontext.h"
 
-#include <cmath>
-
 #include <QPointer>
 #include <QReadWriteLock>
 #include <QRegularExpression>

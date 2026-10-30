@@ -21,7 +21,6 @@
 #include <QTimer>
 #include <cmath>
 #include <qsortfilterproxymodel.h>
-#include <qtdeprecationdefinitions.h>
 
 using namespace KRunner;
 
