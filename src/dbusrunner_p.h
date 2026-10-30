@@ -33,8 +33,6 @@ public:
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
 
 private:
-    // Returns RemoteActions with service name as key
-    void requestActions();
     void requestActionsForService(const QString &service, const std::function<void()> &finishedCallback);
     QList<QueryMatch> convertMatches(const QString &service, const RemoteMatches &remoteMatches);
     void requestConfig();
