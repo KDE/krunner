@@ -35,6 +35,19 @@ public:
         if (context.query() == QLatin1String("fooblock")) {
             QThread::msleep(1000);
         }
+        if (context.query() == QLatin1String("hugetext")) {
+            const QString hugeText(2'000'000, QLatin1Char('a'));
+
+            QueryMatch singleLine = createDummyMatch(hugeText, 0.3);
+            singleLine.setId(QStringLiteral("singleline"));
+            singleLine.setSubtext(hugeText);
+            context.addMatch(singleLine);
+
+            QueryMatch multiLine = createDummyMatch(hugeText, 0.2);
+            multiLine.setId(QStringLiteral("multiline"));
+            multiLine.setMultiLine(true);
+            context.addMatch(multiLine);
+        }
     }
 
 private:

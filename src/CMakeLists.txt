@@ -36,6 +36,7 @@ target_sources(KF6Runner PRIVATE
     action.cpp
 
     model/runnerresultsmodel.cpp
+    model/resultsmodelconstants_p.h
     model/runnerresultsmodel_p.h
     model/resultsmodel.cpp
     model/resultsmodel.h

@@ -13,9 +13,21 @@
 #include <KRunner/RunnerManager>
 
 #include "resultsmodel.h"
+#include "resultsmodelconstants_p.h"
 
 namespace KRunner
 {
+// Views lay out the whole text of a result, also when it is elided, and the cost of that grows
+// faster than the length of the text. A runner returning an absurd amount of text, for example a
+// data: URL of several megabytes, would block the UI for minutes. Normal text is left untouched.
+static QString sanityLengthCheckForDisplay(const QString &text)
+{
+    if (text.length() <= maxDisplayTextLength) {
+        return text;
+    }
+    return QStringView(text).left(maxDisplayTextLength - 1) + QChar(u'…');
+}
+
 RunnerResultsModel::RunnerResultsModel(const KConfigGroup &configGroup, const KConfigGroup &stateConfigGroup, QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -244,7 +256,8 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
 
         switch (role) {
         case Qt::DisplayRole:
-            return match.text();
+            // Multi line results are meant to be long, e.g. dictionary definitions
+            return match.isMultiLine() ? match.text() : sanityLengthCheckForDisplay(match.text());
         case Qt::DecorationRole:
             if (!match.iconName().isEmpty()) {
                 return match.iconName();
@@ -261,7 +274,7 @@ QVariant RunnerResultsModel::data(const QModelIndex &index, int role) const
         case ResultsModel::CategoryRole:
             return match.matchCategory();
         case ResultsModel::SubtextRole:
-            return match.subtext();
+            return sanityLengthCheckForDisplay(match.subtext());
         case ResultsModel::UrlsRole:
             return QVariant::fromValue(match.urls());
         case ResultsModel::MultiLineRole:

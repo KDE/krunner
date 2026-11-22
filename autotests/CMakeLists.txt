@@ -12,6 +12,7 @@ ecm_add_tests(
     runnermanagerhistorytest.cpp
     runnermanagersinglerunnermodetest.cpp
     runnermanagertest.cpp
+    resultsmodeltest.cpp
     testmetadataconversion.cpp
     threadingtest.cpp
     LINK_LIBRARIES Qt6::Gui Qt6::DBus Qt6::Test KF6::Runner KF6::ConfigCore
@@ -24,6 +25,7 @@ kcoreaddons_add_plugin(suspendedrunnerplugin SOURCES plugins/suspendedrunner.cpp
 target_link_libraries(suspendedrunnerplugin KF6Runner)
 
 kcoreaddons_target_static_plugins(runnermanagerhistorytest NAMESPACE krunnertest)
+kcoreaddons_target_static_plugins(resultsmodeltest NAMESPACE krunnertest)
 kcoreaddons_target_static_plugins(runnermanagertest NAMESPACE krunnertest)
 kcoreaddons_target_static_plugins(runnermanagertest NAMESPACE krunnertest2)
 kcoreaddons_target_static_plugins(threadingtest NAMESPACE krunnertest)
