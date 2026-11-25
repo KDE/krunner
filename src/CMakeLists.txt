@@ -128,6 +128,7 @@ install(FILES
 ecm_add_installed_library_check(KF6Runner
     PACKAGE_NAME "KF6Runner"
     PACKAGE_TARGET_NAMESPACE "KF6::"
+    QT_STRICT_MODE_LEVEL 6.12
 )
 
 # AbstractRunnerTest is header-only, would need QTest to link
