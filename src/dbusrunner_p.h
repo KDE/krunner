@@ -33,6 +33,9 @@ public:
     Q_INVOKABLE void matchInternal(KRunner::RunnerContext context);
 
 private:
+    void doTeardown();
+    void sendTeardown();
+
     void requestActionsForService(const QString &service, const std::function<void()> &finishedCallback);
     QList<QueryMatch> convertMatches(const QString &service, const RemoteMatches &remoteMatches);
     void requestConfig();
@@ -45,6 +48,8 @@ private:
     bool m_actionsForSessionRequested = false;
     bool m_matchWasCalled = false;
     bool m_callLifecycleMethods = false;
+    bool m_waitingForXdgActivationToken = false;
+    bool m_teardownAfterRun = false;
     const QString m_ifaceName;
     QSet<QString> m_requestedActionServices;
 };

@@ -81,16 +81,7 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
         m_matchingServices << requestedServiceName;
     }
 
-    connect(this, &AbstractRunner::teardown, this, [this]() {
-        if (m_matchWasCalled) {
-            for (const QString &service : std::as_const(m_matchingServices)) {
-                auto method = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Teardown"));
-                QDBusConnection::sessionBus().asyncCall(method);
-            }
-        }
-        m_actionsForSessionRequested = false;
-        m_matchWasCalled = false;
-    });
+    connect(this, &AbstractRunner::teardown, this, &DBusRunner::doTeardown);
 
     // Load the runner syntaxes
     const QStringList syntaxes = data.value(QStringLiteral("X-Plasma-Runner-Syntaxes"), QStringList());
@@ -100,6 +91,31 @@ DBusRunner::DBusRunner(QObject *parent, const KPluginMetaData &data)
         const QString &query = syntaxes.at(i);
         const QString description = i < descriptionCount ? syntaxDescriptions.at(i) : QString();
         addSyntax(query, description);
+    }
+}
+
+void DBusRunner::sendTeardown()
+{
+    for (const QString &service : std::as_const(m_matchingServices)) {
+        auto method = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Teardown"));
+        QDBusConnection::sessionBus().asyncCall(method);
+    }
+}
+
+void DBusRunner::doTeardown()
+{
+    // Reset the session state right away, a new match session can start before the deferred Teardown call is made.
+    const bool needTeardown = m_matchWasCalled;
+    m_actionsForSessionRequested = false;
+    m_matchWasCalled = false;
+
+    if (m_waitingForXdgActivationToken) {
+        m_teardownAfterRun = m_teardownAfterRun || needTeardown;
+        return;
+    }
+
+    if (needTeardown) {
+        sendTeardown();
     }
 }
 
@@ -286,11 +302,18 @@ void DBusRunner::run(const KRunner::RunnerContext & /*context*/, const KRunner::
         auto runMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("Run"));
         runMethod.setArguments(QList<QVariant>({matchId, actionId}));
         QDBusConnection::sessionBus().call(runMethod, QDBus::NoBlock);
+
+        if (m_teardownAfterRun) {
+            m_teardownAfterRun = false;
+            sendTeardown();
+        }
     };
 
     if (KWindowSystem::isPlatformWayland() && qGuiApp->focusWindow()) {
+        m_waitingForXdgActivationToken = true;
         auto tokenFuture = KWaylandExtras::xdgActivationToken(qGuiApp->focusWindow(), {});
         tokenFuture.then(this, [this, service, matchId, actionId, run](const QString &token) {
+            m_waitingForXdgActivationToken = false;
             if (!token.isEmpty()) {
                 auto activationTokenMethod = QDBusMessage::createMethodCall(service, m_path, m_ifaceName, QStringLiteral("SetActivationToken"));
                 activationTokenMethod.setArguments(QList<QVariant>{token});
